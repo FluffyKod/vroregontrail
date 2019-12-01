@@ -257,12 +257,8 @@ function option(ref){
 
 }
 
-  function room(id, x, y, text,
-  o1text, o1type, o1value, o1valuetype,
-  o2text, o2type, o2value, o2valuetype,
-  o3text, o3type, o3value, o3valuetype,
-  o4text, o4type, o4value, o4valuetype,
-  o5text, o5type, o5value, o5valuetype){
+  function room( x, y, text,
+  options){
 
     this.id = id;
     this.x = x;
