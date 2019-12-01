@@ -210,7 +210,7 @@ function option(ref){
 
   }
   this.command = function() {
-      }
+      
       if(this.cmd == 'item'){
         player.invertory.push(this.values[0]);
 
@@ -233,9 +233,9 @@ function option(ref){
         player.y = this.values[1];
       }
 
-      if(this.cmd == 'stat'){
-
-      }
+      // if(this.cmd == 'stat'){
+      //
+      // }
       if(this.cmd == 'info'){
         textbox.html(this.values[0]);
         write = false;

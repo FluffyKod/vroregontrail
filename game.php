@@ -29,7 +29,7 @@
     <script src="/Users/Maglow/Dropbox/p5/addons/p5.sound.min.js"></script>
     <script src="/Users/Maglow/Dropbox/p5/addons/p5.play.js"></script>
   -->
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main-test.js"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Rooms.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
