@@ -1,6 +1,6 @@
 function loadRooms(){
 
-rooms = {
+rooms = [
 
   new Room(5, 8, 'hejhej', [
     {
@@ -14,7 +14,7 @@ rooms = {
       values: [5, 8, 'this is some more text']
     }
   ])
-}
+]
 
 
 
