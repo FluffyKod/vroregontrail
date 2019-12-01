@@ -1,4 +1,5 @@
 //ett git test
+// Ett till gittest
 
 var options = [];
 var currentoption;
