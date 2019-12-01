@@ -20,7 +20,7 @@ rooms = [
       text: 'new option 1 herre',
       cmd: 'tp',
       values: [0, 0]
-    },<
+    },
     {
       text: 'new option 2 herre',
       cmd: 'tp',
