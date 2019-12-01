@@ -1,10 +1,4 @@
-//ett git test
-// Ett till gittest
-// this is rooms 2.0 o.O
-// does this work?
 
-
-// HEjehjehdkfj
 var options = [];
 var currentoption;
 var optionlength;
@@ -260,13 +254,13 @@ function option(ref){
 
 }
 
-  function room( x, y, text,
-  options){
+function room( x, y, text, options){
 
     this.id = id;
     this.x = x;
     this.y = y;
     this.text = text;
+    this.options = options;
 
 
     this.o1text = o1text;
