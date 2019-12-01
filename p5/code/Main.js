@@ -2,6 +2,7 @@
 var displayedOptions = [];
 var currentoption;
 var optionlength;
+var maxOptionLength = 5;
 var rooms = [];
 var load;
 var grandparent;
@@ -259,12 +260,12 @@ function room( x, y, mainText, options ){
   this.load = function(){
 
     // Reset the displayed options
-    for (var i = 0; i < optionlength; i++) {
+    for (var i = 0; i < maxOptionLength; i++) {
       displayedOptions[i].ref.html('');
     }
 
     // Get the number of displayedOptions
-    optionlength = this.choices.length;
+    optionlength = this.options.length;
 
     // Set the option variables for use in front ends display options
     for (var i = 0; i < optionlength; i++) {
@@ -277,6 +278,7 @@ function room( x, y, mainText, options ){
 
   }
 
+  }
 }
 
   function typing(divId, inputtext){
@@ -306,17 +308,17 @@ function room( x, y, mainText, options ){
   }
 
 
-  function defineCanvas(){
-    canvas = createCanvas(600, 600);
-    canvas.style('position: static')
-    canvas.style('margin: auto')
-    canvas.style('margin-top: 140px')
+function defineCanvas(){
+  canvas = createCanvas(600, 600);
+  canvas.style('position: static')
+  canvas.style('margin: auto')
+  canvas.style('margin-top: 140px')
 
-    canvas.class('box');
-    canvas.hide();
+  canvas.class('box');
+  canvas.hide();
 
 
-  }
+}
 
 
 function drawTextbox(){
@@ -332,7 +334,7 @@ function drawTextbox(){
   for (var i = 0; i < rooms.length; i++) {
     if(player.x == rooms[i].x && player.y == rooms[i].y){
       if(write){
-        typing("textbox", rooms[i].text);
+        typing("textbox", rooms[i].mainText);
       }
       if(!load){
         rooms[i].load();// borde kanske inte uppdateras
@@ -342,7 +344,5 @@ function drawTextbox(){
 
 
   }
-
-}
 
 }

@@ -2,7 +2,7 @@ function loadRooms(){
 
 rooms = [
 
-  new Room(0, 0, 'you wake up on a...', [
+  new room(0, 0, 'you wake up on a...', [
     {
       text: 'option 1 herre',
       cmd: 'tp',
@@ -15,7 +15,7 @@ rooms = [
     }
   ]),
 //------------------------------------------------
-  new Room(5, 8, 'new place omg', [
+  new room(5, 8, 'new place omg', [
     {
       text: 'new option 1 herre',
       cmd: 'tp',
@@ -31,7 +31,6 @@ rooms = [
       cmd: 'info',
       values: ['info info waow!']
     },
-
 
   ])
 
