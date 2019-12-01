@@ -15,7 +15,7 @@ get_header();
   <video autoplay muted loop>
     <source src="<?php echo get_bloginfo('template_directory') ?>/img/video.mp4" type="video/mp4">
   </video>
-  <h2>Odenplan</h2>
+  <h2>VROREGON</h2>
 
   <a class="login login-btn" href="/wp-login.php">
     <span>Logga In</span>
