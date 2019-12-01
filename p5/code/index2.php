@@ -22,7 +22,7 @@
     <script src="/Users/Maglow/Dropbox/p5/addons/p5.sound.min.js"></script>
     <script src="/Users/Maglow/Dropbox/p5/addons/p5.play.js"></script>
   -->
-    <script src="Main-test.js"></script>
+    <script src="Main.js"></script>
     <script src="Rooms.js"></script>
     <script src="Minigame-pepe.js"></script>
     <script src="Minigame-card-game.js"></script>
