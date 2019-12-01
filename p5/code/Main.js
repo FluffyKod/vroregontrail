@@ -2,6 +2,9 @@
 // Ett till gittest
 // this is rooms 2.0 o.O
 // does this work?
+
+
+// HEjehjehdkfj
 var options = [];
 var currentoption;
 var optionlength;
