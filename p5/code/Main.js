@@ -1,5 +1,5 @@
 
-var options = [];
+var displayedOptions = [];
 var currentoption;
 var optionlength;
 var rooms = [];
@@ -53,11 +53,11 @@ function setup(){
 
 
 
-  options.push(new option('#option-1'));
-  options.push(new option('#option-2'));
-  options.push(new option('#option-3'));
-  options.push(new option('#option-4'));
-  options.push(new option('#option-5'));
+  displayedOptions.push(new option('#option-1'));
+  displayedOptions.push(new option('#option-2'));
+  displayedOptions.push(new option('#option-3'));
+  displayedOptions.push(new option('#option-4'));
+  displayedOptions.push(new option('#option-5'));
 
 
   textbox = select('#textbox');
@@ -66,6 +66,12 @@ function setup(){
 
 
 }
+
+
+
+////////////////////////////////////////////
+// MAIN GAME LOOP
+////////////////////////////////////////////
 
 function draw(){
   if(drawText){
@@ -122,6 +128,8 @@ function keyPressed(){
   timer = 0;
 
   if(!keypressed){
+    // Set the current selected option by the player to no one
+    // currentoption 1 is the first option, 2 is second etc.
     currentoption = 0;
     keypressed = true;
   }
@@ -146,7 +154,7 @@ function keyPressed(){
     textbox = select('#textbox');
     textbox.html("")
     counter = 0;
-    options[currentoption].command();
+    displayedOptions[currentoption].command();
     currentoption = 0;
     load = false;
 
@@ -160,6 +168,9 @@ function keyPressed(){
 
   }
 
+////////////////////////////////////////////
+// PLAYER CLASS
+////////////////////////////////////////////
 
 function player(){
   this.x = 0;
@@ -172,15 +183,18 @@ function player(){
   this.kindness = 0;
 }
 
+////////////////////////////////////////////
+// OPTION CLASS
+////////////////////////////////////////////
+
 function option(ref){
   this.ref = select(ref);
 
   this.text = 'test';
   this.ref.html(this.text);
 
-  this.type;
-  this.value;
-  this.valuetype;
+  this.cmd;
+  this.values;
 
   this.highlight = function(){
       this.ref.style('background-color','#fff');
@@ -196,152 +210,74 @@ function option(ref){
 
   }
   this.command = function() {
-
-      if(this.type == "move"){
-        write = true;
-        if(this.valuetype == "y"){
-          player.y += this.value;
-        } else if(this.valuetype == "x"){
-          player.x += this.value;
-        } else if(this.valuetype == "xy"){
-          player.y += this.value;
-          player.x += this.value;
-        }
+      }
+      if(this.cmd == 'item'){
+        player.invertory.push(this.values[0]);
 
       }
-      if(this.type == 'item'){
-        player.invertory.push(this.value);
-
-      }
-      if(this.type == 'encounter'){
-        current_encounter = this.value
+      if(this.cmd == 'encounter'){
+        current_encounter = this.values[0]
         define = true;
         clearVar = false;
         startSc = true;
         gameOver = true;
         score = 0;
-        if(this.valuetype){fr_hard = true;}//slarvigt måste ändras
-        if(!this.valuetype){er_hard = true;}
+        if(this.values[1]){fr_hard = true;}//slarvigt måste ändras
+        if(!this.values[1]){er_hard = true;}
         switchToEncounter();
       }
 
-      if(this.type == 'tp'){ //version av move
+      if(this.cmd == 'tp'){ //version av move
         write = true;
-        player.x = this.value;
-        player.y = this.valuetype;
+        player.x = this.values[0];
+        player.y = this.values[1];
       }
 
-      if(this.type == 'stat'){
-
-
+      if(this.cmd == 'stat'){
 
       }
-      if(this.type == 'info'){
-        textbox.html(this.value);
+      if(this.cmd == 'info'){
+        textbox.html(this.values[0]);
         write = false;
 
-
-
-
-
       }
-      if(this.type == 'test'){
-        id = this.value;
-        player.x = rooms[id].o2value
-        player.y = rooms[id].o2valuetype
-      }
+  }
+}
+
+////////////////////////////////////////////
+// ROOM CLASS
+////////////////////////////////////////////
+
+function room( x, y, mainText, options ){
+
+  // Set default values
+  this.x = x;
+  this.y = y;
+  this.mainText = mainText;
+  this.options = options;
+
+  this.load = function(){
+
+    // Reset the displayed options
+    for (var i = 0; i < optionlength; i++) {
+      displayedOptions[i].ref.html('');
+    }
+
+    // Get the number of displayedOptions
+    optionlength = this.choices.length;
+
+    // Set the option variables for use in front ends display options
+    for (var i = 0; i < optionlength; i++) {
+      // Set the displayed text on option
+      displayedOptions[i].ref.html(this.options[i].text);
+
+      displayedOptions[i].cmd = this.options[i].cmd;
+
+      displayedOptions[i].values = this.options[i].values;
+
   }
 
 }
-
-function room( x, y, text, options){
-
-    this.id = id;
-    this.x = x;
-    this.y = y;
-    this.text = text;
-    this.options = options;
-
-
-    this.o1text = o1text;
-    this.o1type = o1type;
-    this.o1value = o1value;
-    this.o1valuetype = o1valuetype;
-
-    this.o2text = o2text;
-    this.o2type = o2type;
-    this.o2value = o2value;
-    this.o2valuetype = o2valuetype;
-
-    this.o3text = o3text;
-    this.o3type = o3type;
-    this.o3value = o3value;
-    this.o3valuetype = o3valuetype;
-
-    this.o4text = o4text;
-    this.o4type = o4type;
-    this.o4value = o4value;
-    this.o4valuetype = o4valuetype;
-
-    this.o5text = o5text;
-    this.o5type = o5type;
-    this.o5value = o5value;
-    this.o5valuetype = o5valuetype;
-
-    this.load = function(){
-
-      optionlength=1;
-      options[0].ref.html(this.o1text);
-      options[0].type = this.o1type;
-      options[0].value = this.o1value;
-      options[0].valuetype = this.o1valuetype;
-
-      options[1].type = this.o2type;
-      options[1].value = this.o2value;
-      options[1].valuetype = this.o2valuetype;
-
-      options[2].type = this.o3type;
-      options[2].value = this.o3value;
-      options[2].valuetype = this.o3valuetype;
-
-      options[3].type = this.o4type;
-      options[3].value = this.o4value;
-      options[3].valuetype = this.o4valuetype;
-
-      options[4].type = this.o5type;
-      options[4].value = this.o5value;
-      options[4].valuetype = this.o5valuetype;
-
-      if(this.o2text != " "){
-        optionlength++;
-
-        options[1].ref.html(this.o2text);
-
-      }else{options[1].ref.html("")}
-
-      if(this.o3text != " "){
-        optionlength++;
-        options[2].ref.html(this.o3text);
-
-      }else{options[2].ref.html("")}
-
-      if(this.o4text != " "){
-        optionlength++;
-        options[3].ref.html(this.o4text);
-
-      }else{options[3].ref.html(""); }
-
-      if(this.o5text != " "){
-        optionlength++;
-
-        options[4].ref.html(this.o5text);
-
-      }else{options[4].ref.html("")}
-
-
-    }
-
-  }
 
   function typing(divId, inputtext){
     this.divId = divId;
@@ -353,9 +289,6 @@ function room( x, y, text, options){
     }
 
   }
-
-
-
 
   function switchToEncounter(){
     drawText = false;
@@ -387,13 +320,15 @@ function room( x, y, text, options){
 
 
 function drawTextbox(){
-  for (var i = 0; i < options.length; i++) {
-    options[i].unhighlight();
+  for (var i = 0; i < displayedOptions.length; i++) {
+    displayedOptions[i].unhighlight();
   }
   if(keypressed && timer < 600){
     timer++;
-    options[currentoption].highlight();
+    displayedOptions[currentoption].highlight();
   }
+
+  // Go through every room to find the room the current player is in
   for (var i = 0; i < rooms.length; i++) {
     if(player.x == rooms[i].x && player.y == rooms[i].y){
       if(write){
