@@ -210,7 +210,7 @@ function option(ref){
 
   }
   this.command = function() {
-      
+
       if(this.cmd == 'item'){
         player.invertory.push(this.values[0]);
 
@@ -342,5 +342,7 @@ function drawTextbox(){
 
 
   }
+
+}
 
 }
