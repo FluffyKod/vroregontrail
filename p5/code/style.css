@@ -1,0 +1,77 @@
+
+
+body{
+  background-color: #333
+
+}
+
+
+.box{
+
+
+  background-color: #80a4b2;
+  color: #ebebeb;
+  border: 5px #ebebeb;
+  outline-style: solid;
+  outline-width: 6px;
+  padding: 6px;
+  margin: 0px;
+
+}
+
+#grandparent{
+  display: flex;
+  position: fixed;
+  flex-direction: column;
+  justify-content: center;
+
+  margin: 0px auto;
+  height: 100%;
+  width: 100%;
+
+
+
+}
+
+
+
+#parent{
+  margin-left: auto;
+  margin-right: auto;
+
+  width: 588px;
+  height: 786px;
+
+}
+
+
+
+
+#textbox{
+  position: relative;
+
+  font-size: 18px;
+
+  height: 468px;
+
+
+
+}
+#optionbox{
+
+  position: relative;
+  margin-top: 24px;
+  height:270px;;
+
+}
+
+.option{
+  
+  padding: 6px;
+  font-size: 18px;
+
+  height: 42px;
+
+  color: #ebebeb
+
+}
