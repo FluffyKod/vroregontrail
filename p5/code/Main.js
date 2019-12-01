@@ -3,28 +3,45 @@ var currentoption;
 var optionlength;
 var rooms = [];
 var load;
-var gameOver;
-var win;
-var startSc;
+var grandparent;
+var canvas;
 var write = true; //kontrollerar om det som står i rummet ska skrivas eller inte
 var player;
+var gameOver;
+var startSc;
+var drawText;
+var drawCanvas;
+
+var define = true;
+var clearVar = false;
 
 var texttest;
 var counter;
 
-
 var textbox;
+
+//minigame-switch variables;
+var current_encounter;
+
+
+//ljud
+var blip;
+var soundEnabled;
+
+
 
 
 var keypressed = false;
 var timer;
 
 function setup(){
+
   loadRooms();
-  createCanvas(1,1)
+  defineCanvas();
+  grandparent = select('#grandparent');
 
-
-
+  drawText = true;
+  soundEnabled = false;
   optionlength = 1;
   load = false;
   counter = 0;
@@ -50,28 +67,52 @@ function setup(){
 }
 
 function draw(){
+  if(drawText){
+    drawTextbox();
+  }
+  if(drawCanvas){
+    switch (current_encounter) {
+      case 'flappy_river':
+        if(define){fr_defineVar(); define= false;}
+        fr_draw();
+        break;
+      case 'card_game':
+        if(define){cg_defineVar(); define= false;}
+        cg_draw();
+        break;
+      case 'ernst_running':
+        if(define){er_defineVar(); define= false;}
+        er_draw();
+        break;
+      case 'ddr':
+        if(define){ddr_defineVar(); define= false;}
+        ddr_draw();
+        break;
+      case 'mountain_jump':
+        if(define){mj_defineVar(); define = false;}
+        mj_draw();
+        break;
+      case 'wasp_invaders':
+        if(define){i_defineVar(); define= false}
+        i_draw();
+        break;
+      case 'frog_king':
+        break;
+      case 'pepes_bread':
+        if(define){pb_defineVar(); define = false;}
 
-  for (var i = 0; i < options.length; i++) {
-    options[i].unhighlight();
-  }
-  if(keypressed && timer < 600){
-    timer++;
-    options[currentoption].highlight();
-  }
-  for (var i = 0; i < rooms.length; i++) {
-    if(player.x == rooms[i].x && player.y == rooms[i].y){
-      if(write){
-        typing("textbox", rooms[i].text);
-      }
-      if(!load){
-        rooms[i].load();// borde kanske inte uppdateras
-        load = true;
-      }
+        pb_draw();
+        break;
+      case 'sheep_invaders':
+
+        break;
+      case 'wasp_attack':
+
+        break;
+
+
     }
-
-
   }
-
 
 
 }
@@ -108,13 +149,19 @@ function keyPressed(){
     currentoption = 0;
     load = false;
 
+
     }
+  if(keyCode == SHIFT && !soundEnabled){
+    blip = loadSound("menu_blip.wav")
+    soundEnabled = true;
+  }
+
 
   }
 
 
 function player(){
-  this.x = -1;
+  this.x = 0;
   this.y = 0;
 
   this.inventory = [];
@@ -135,15 +182,17 @@ function option(ref){
   this.valuetype;
 
   this.highlight = function(){
-
       this.ref.style('background-color','#fff');
       this.ref.style('padding-color', '#fff');
       this.ref.style('color','#80a4b2');
+
+      if(soundEnabled) {blip.play();}
   }
   this.unhighlight = function(){
       this.ref.style('background-color','#80a4b2');
       this.ref.style('padding-color', '#80a4b2');
       this.ref.style('color','#fff');
+
   }
   this.command = function() {
 
@@ -162,6 +211,17 @@ function option(ref){
       if(this.type == 'item'){
         player.invertory.push(this.value);
 
+      }
+      if(this.type == 'encounter'){
+        current_encounter = this.value
+        define = true;
+        clearVar = false;
+        startSc = true;
+        gameOver = true;
+        score = 0;
+        if(this.valuetype){fr_hard = true;}//slarvigt måste ändras
+        if(!this.valuetype){er_hard = true;}
+        switchToEncounter();
       }
 
       if(this.type == 'tp'){ //version av move
@@ -184,7 +244,11 @@ function option(ref){
 
 
       }
-
+      if(this.type == 'test'){
+        id = this.value;
+        player.x = rooms[id].o2value
+        player.y = rooms[id].o2valuetype
+      }
   }
 
 }
@@ -292,3 +356,59 @@ function option(ref){
     }
 
   }
+
+
+
+
+  function switchToEncounter(){
+    drawText = false;
+    drawCanvas = true;
+    grandparent.hide();
+    canvas.show();
+
+  }
+  function switchToText(){
+    drawText = true;
+    drawCanvas = false;
+    grandparent.show();
+    canvas.hide();
+
+  }
+
+
+  function defineCanvas(){
+    canvas = createCanvas(600, 600);
+    canvas.style('position: static')
+    canvas.style('margin: auto')
+    canvas.style('margin-top: 140px')
+
+    canvas.class('box');
+    canvas.hide();
+
+
+  }
+
+
+function drawTextbox(){
+  for (var i = 0; i < options.length; i++) {
+    options[i].unhighlight();
+  }
+  if(keypressed && timer < 600){
+    timer++;
+    options[currentoption].highlight();
+  }
+  for (var i = 0; i < rooms.length; i++) {
+    if(player.x == rooms[i].x && player.y == rooms[i].y){
+      if(write){
+        typing("textbox", rooms[i].text);
+      }
+      if(!load){
+        rooms[i].load();// borde kanske inte uppdateras
+        load = true;
+      }
+    }
+
+
+  }
+
+}
