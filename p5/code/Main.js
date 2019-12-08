@@ -30,11 +30,12 @@ var current_encounter;
 var blip;
 var soundEnabled;
 
-
-
-
 var keypressed = false;
 var timer;
+
+////////////////////////////////////////////
+// SETUP
+////////////////////////////////////////////
 
 function setup(){
 
@@ -49,11 +50,11 @@ function setup(){
   counter = 0;
 
   timer = 0;
+
+  // Create the player
   player = new player();
 
-
-
-
+  // Set id for the displayed options
   displayedOptions.push(new option('#option-1'));
   displayedOptions.push(new option('#option-2'));
   displayedOptions.push(new option('#option-3'));
@@ -64,11 +65,7 @@ function setup(){
   textbox = select('#textbox');
   textbox.html("")
 
-
-
 }
-
-
 
 ////////////////////////////////////////////
 // MAIN GAME LOOP
@@ -79,6 +76,8 @@ function draw(){
     drawTextbox();
   }
   if(drawCanvas){
+
+    // Check which encounter is chosen
     switch (current_encounter) {
       case 'flappy_river':
         if(define){fr_defineVar(); define= false;}
@@ -117,13 +116,13 @@ function draw(){
       case 'wasp_attack':
 
         break;
-
-
     }
   }
-
-
 }
+
+////////////////////////////////////////////
+// KEY PRESSED
+////////////////////////////////////////////
 
 function keyPressed(){
   timer = 0;
@@ -174,9 +173,11 @@ function keyPressed(){
 ////////////////////////////////////////////
 
 function player(){
+  // Keep track of which room the player is in
   this.x = 0;
   this.y = 0;
 
+  // Track stats
   this.inventory = [];
   this.intellegence = 0;
   this.charisma = 0;
@@ -212,34 +213,63 @@ function option(ref){
   }
   this.command = function() {
 
+      // Give player an item
       if(this.cmd == 'item'){
-        player.invertory.push(this.values[0]);
+        // Check that there are enough values
+        if (len(this.values) >= 1) {
+          player.invertory.push(this.values[0]);
+        } else {
+          console.log('ERROR: Not enough values supplied to item command');
+        }
 
       }
+
+      // Start a new game
       if(this.cmd == 'encounter'){
-        current_encounter = this.values[0]
-        define = true;
-        clearVar = false;
-        startSc = true;
-        gameOver = true;
-        score = 0;
-        if(this.values[1]){fr_hard = true;}//slarvigt måste ändras
-        if(!this.values[1]){er_hard = true;}
-        switchToEncounter();
+
+        // Check that there are enough values
+        if (len(this.values) >= 2) {
+          current_encounter = this.values[0]
+          define = true;
+          clearVar = false;
+          startSc = true;
+          gameOver = true;
+          score = 0;
+          if(this.values[1]){fr_hard = true;}//slarvigt måste ändras
+          if(!this.values[1]){er_hard = true;}
+          switchToEncounter();
+        } else {
+          console.log('ERROR: Not enough values supplied to encounter command');
+        }
+
       }
 
-      if(this.cmd == 'tp'){ //version av move
-        write = true;
-        player.x = this.values[0];
-        player.y = this.values[1];
+      // Move player to new location
+      if(this.cmd == 'tp'){
+
+        // Check that there are enough values
+        if (len(this.values) >= 2) {
+          write = true;
+          player.x = this.values[0];
+          player.y = this.values[1];
+        } else {
+          console.log('ERROR: Not enough values supplied to tp command');
+        }
+
       }
 
       // if(this.cmd == 'stat'){
       //
       // }
       if(this.cmd == 'info'){
-        textbox.html(this.values[0]);
-        write = false;
+
+        // Check that there are enough values
+        if (len(this.values) >= 1) {
+          textbox.html(this.values[0]);
+          write = false;
+        } else {
+          console.log('ERROR: Not enough values supplied to info command');
+        }
 
       }
   }
@@ -341,7 +371,6 @@ function drawTextbox(){
         load = true;
       }
     }
-
 
   }
 
