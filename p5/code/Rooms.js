@@ -6,16 +6,16 @@ rooms = [
     {
       text: 'option 1 herre',
       cmd: 'tp',
-      values: [5, 8]
+      values: [1, 0]
     },
     {
       text: 'option 2 herre',
       cmd: 'tp',
-      values: [5, 8]
+      values: [0, 1]
     }
   ]),
 //------------------------------------------------
-  new room(5, 8, 'new place omg', [
+  new room(0, 1, 'new place omg', [
     {
       text: 'new option 1 herre',
       cmd: 'tp',
