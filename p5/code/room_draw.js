@@ -3,8 +3,8 @@ roomSprites = [];
 var scaleFactor;
 
 function setup(){
-  scaleFactor = 50;
-  createCanvas(windowWidth,windowHeight);
+  scaleFactor = 100;
+  createCanvas(2000,2000);
 
   loadRooms();
 
@@ -23,39 +23,13 @@ function draw(){
 
 }
 
-function createRoomSprites(){
-  for (var i = 0; i < rooms.length; i++) {
-    roomX = rooms[i].x;
-    roomY = rooms[i].y;
-    x = floor(width/2) + roomX*scaleFactor;
-    y = floor(height/2) + roomY*scaleFactor;
-    roomSprite = createSprite(x, y, scaleFactor, scaleFactor);
-
-
-    roomSprites.push(roomSprite);
-    roomSprites[i].draw = function(){
-      strokeWeight(5);
-      stroke(0);
-      fill(255)
-      rect(0,0,scaleFactor,scaleFactor);
-      this.drawX = roomSprites[i].position.x/50 - floor(width/2)
-      this.drawY = roomSprites[i].position.y/50 - floor(height/2)
-      coordinateText = "(" +  this.drawX + "," + this.drawY + ")";
-      fill(0);
-      noStroke();
-      textSize(32);
-      text(coordinateText,0,0);
-    }
-
-  }
-}
 
 function vizualizeRooms(){
   for (var i = 0; i < rooms.length; i++) {
     rooms[i].vizualize();
   }
   for (var i = 0; i < rooms.length; i++) {
-    rooms[i].vizualize.drawConnections();
+    rooms[i].drawConnections();
   }
 }
 
@@ -101,29 +75,13 @@ function room( x, y, mainText, options ){
     this.drawX = this.x*scaleFactor; //borde translatea hela koordinatsystemet istället
     this.drawY = this.y*scaleFactor;
     this.textSize = 12;
-    this.connectionColors = [color(255, 0, 0), color(255, 255, 0), color(0, 255, 0), color(0, 255, 255), color(0, 0, 255)];
 
 
     //ritar rektangeln
-    fill(51);
+    noFill(51);
     stroke(255);
     rectMode(CENTER);
     rect(this.drawX,this.drawY,scaleFactor, scaleFactor);
-
-    //ritar kopplingar
-
-    this.drawConnections = function(){
-        for (var i = 0; i < this.options.length; i++) {
-          stroke(this.connectionColors[i]);
-          print("pipi")
-          line(this.drawX+i-5, this.drawY, this.connectionX, this.connectionY);
-
-          this.connectionX =  this.options[i].values[i]*scaleFactor;
-          this.connectionY =  this.options[i].values[i+1]*scaleFactor;
-
-        }
-    }
-
 
     noStroke();
     fill(255);
@@ -131,7 +89,19 @@ function room( x, y, mainText, options ){
     this.displayText = "("+this.x+","+this.y+")";
     text(this.displayText, this.drawX-scaleFactor/2, this.drawY+this.textSize-scaleFactor/2);
 
+  }
 
+  this.drawConnections = function(){
+    this.connectionColors = [color(255, 0, 0), color(255, 255, 0), color(0, 255, 0), color(0, 255, 255), color(0, 0, 255)];
+    print(this.options.length);
+    for (var i = 0; i < this.options.length; i++) {
+      stroke(this.connectionColors[i]);
+      print(i);
+      this.connectionX =  this.options[i].values[0]*scaleFactor;
+      this.connectionY =  this.options[i].values[1]*scaleFactor;
 
+      line(this.drawX+4*i*floor(scaleFactor/50)-6*floor(scaleFactor/50), this.drawY+4*i*floor(scaleFactor/50)-6*floor(scaleFactor/50), this.connectionX+4*i*floor(scaleFactor/50)-6*floor(scaleFactor/50), this.connectionY+4*i*floor(scaleFactor/50)-6*floor(scaleFactor/50));
+
+    }
   }
 }
