@@ -3,9 +3,9 @@
 --------------------------------------->
 <section id="status">
 
-  <a href="#" class="logout">
+  <a href="<?php echo wp_logout_url( '/' ); ?>" class="logout">
     <p><b>Logga ut</b></p>
-    <img src="img/logout.png" alt="">
+    <img src="<?php echo get_bloginfo('template_directory') ?>/img/logout.png" alt="">
   </a>
 
   <div class="profile">
