@@ -6,6 +6,15 @@
 
 ?>
 
+
+<?php
+
+// Show this page only to admin
+if (! is_user_logged_in() || ! current_user_can('administrator') ){
+  wp_redirect( '/' );
+} else {
+?>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -134,6 +143,11 @@
       ?>
 
     </div>
+
+  <?php
+  // End if admin
+  }
+  ?>
 
   </body>
 </html>
