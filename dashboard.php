@@ -24,77 +24,9 @@
       <!--
       * Admin Navbar
       --------------------------------------->
-      <section id="navigation-bar">
-
-        <div class="nav-header">
-          <img src="<?php echo get_bloginfo('template_directory') ?>/img/vitfluga.png" alt="">
-          <h2>Admin</h2>
-        </div>
-
-        <nav>
-
-          <a href="#" class="nav-item active">
-            <img src="<?php echo get_bloginfo('template_directory') ?>/img/hemsida.png" alt="" class="nav-icon">
-            <p>Dashboard</p>
-          </a>
-
-          <a href="visselpipan.html" class="nav-item">
-
-            <div class="notification">
-              <img src="<?php echo get_bloginfo('template_directory') ?>/img/chat.png" alt="" class="nav-icon ">
-              <span>2</span>
-            </div>
-
-            <p>Visselpipan</p>
-          </a>
-
-          <a href="#" class="nav-item">
-            <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
-            <p>Kommitéer</p>
-          </a>
-
-          <a href="#" class="nav-item">
-            <img src="<?php echo get_bloginfo('template_directory') ?>/img/calendar.png" alt="" class="nav-icon">
-            <p>Kalender</p>
-          </a>
-
-          <a href="#" class="nav-item">
-            <img src="<?php echo get_bloginfo('template_directory') ?>/img/trophy.png" alt="" class="nav-icon">
-            <p>Klasspokalen</p>
-          </a>
-
-          <a href="#" class="nav-item">
-            <img src="<?php echo get_bloginfo('template_directory') ?>/img/bowtie.png" alt="" class="nav-icon">
-            <p>Kåren</p>
-          </a>
-
-          <a href="#" class="nav-item">
-            <img src="<?php echo get_bloginfo('template_directory') ?>/img/members.png" alt="" class="nav-icon">
-            <p>Medlemmar</p>
-          </a>
-
-          <a href="#" class="nav-item">
-            <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
-            <p>Hemsidan</p>
-          </a>
-
-          <a href="#" class="nav-item">
-            <img src="<?php echo get_bloginfo('template_directory') ?>/img/cog.png" alt="" class="nav-icon">
-            <p>Inställningar</p>
-          </a>
-
-        </nav>
-
-        <div class="drive">
-
-          <img src="<?php echo get_bloginfo('template_directory') ?>/img/protocolfolder.png" alt="">
-          <p>Öppna <strong>DRIVE</strong> för att se de senaste protokollen!</p>
-
-          <a href="#" class="btn sm">Drive</a>
-
-        </div>
-
-      </section>
+      <?php
+        require_once(get_template_directory() . "/parts/navigation-bar.php");
+      ?>
 
       <!--
       * Dashboard
@@ -197,75 +129,9 @@
       <!--
       * Status View
       --------------------------------------->
-      <section id="status">
-
-        <a href="#" class="logout">
-          <p><b>Logga ut</b></p>
-          <img src="img/logout.png" alt="">
-        </a>
-
-        <div class="profile">
-          <div class="profile-img">
-            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80" alt="">
-            <button class="add-btn">+</button>
-          </div>
-
-          <p><b>Anna Morrison</b></p>
-          <p>Na21d</p>
-        </div>
-
-        <div class="upcoming">
-
-          <div class="see-more">
-            <h4>Kommande</h4>
-            <div>
-              <a href="#">Se alla events &#8594;</a>
-            </div>
-          </div>
-
-
-          <div class="event">
-            <div class="icon">
-              <p>$</p>
-            </div>
-
-            <div class="info">
-              <h5>Försäljning Catchergames</h5>
-              <p>12:10 - 13:00</p>
-              <p>14 Jan 2019, Fredag</p>
-            </div>
-
-          </div>
-
-          <div class="event">
-            <div class="icon">
-              <p>$</p>
-            </div>
-
-            <div class="info">
-              <h5>Försäljning Catchergames</h5>
-              <p>12:10 - 13:00</p>
-              <p>14 Jan 2019, Fredag</p>
-            </div>
-
-          </div>
-
-          <div class="event">
-            <div class="icon">
-              <p>$</p>
-            </div>
-
-            <div class="info">
-              <h5>Försäljning Catchergames</h5>
-              <p>12:10 - 13:00</p>
-              <p>14 Jan 2019, Fredag</p>
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
+      <?php
+        require_once(get_template_directory() . "/parts/status-bar.php");
+      ?>
 
     </div>
 
