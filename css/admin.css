@@ -1,0 +1,533 @@
+/*****************************************
+* Variables
+*****************************************/
+
+:root {
+  --main: #28825F;
+  --lighter: #38AA82;
+  --highlight: #BEF7E4;
+  --background: #E9F0EE;
+  --box: #FEFEFE;
+  --note: #EFF7EF;
+  --deny: #FD626F;
+}
+
+/*****************************************
+* Main Styles
+*****************************************/
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4%;
+}
+
+.box {
+  border-radius: 25px;
+  padding: 3%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.box.green {
+  background-color: var(--main);
+  color: #fff;
+}
+
+.box.white {
+  background-color: var(--box);
+  color: #000;
+}
+
+.box.sm {
+  width: 30%;
+}
+
+.box.md {
+  width: 65%;
+}
+
+.box.lg {
+  width: 100%;
+}
+
+.box h4 {
+  margin: 0;
+}
+
+.see-more {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.see-more a {
+  font-size: 0.8rem;
+  color: #555;
+  text-decoration: none;
+  transition: 0.5s;
+}
+
+.see-more a:hover {
+  color: #000;
+  transition: all .8s ease;
+}
+
+/*****************************************
+* Buttons
+*****************************************/
+
+.btn {
+  background-color: var(--lighter);
+  font-weight: 700;
+  padding: 13px 45px;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
+
+.btn.lg {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.add-btn {
+  text-decoration: none;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  background-color: var(--main);
+  border-radius: 100%;
+  text-align: center;
+  font-size: 1.5rem;
+  padding: 0 0 2px 2px;
+  outline: none;
+}
+
+.add-btn.lg {
+  width: 60px;
+  height: 60px;
+  padding: 0 0 3px 3px;
+  font-size: 1.8rem;
+}
+
+.add-btn:hover {
+  background-color: var(--lighter);
+}
+
+
+/*****************************************
+* Forms
+*****************************************/
+input[type="text"], input[type="number"], textarea {
+  border: 0;
+  background-color: var(--note);
+  width: 100%;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  color: #555;
+  margin: 15px 0 0 0;
+  outline: none;
+  transition: 0.4s;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+}
+
+input:focus {
+  background-color: var(--highlight);
+  transition: all 0.4s ease;
+}
+
+input:focus::placeholder, input:focus {
+  color: var(--main);
+}
+
+input[type="radio"] {
+  margin: 12px 10px 12px 0;
+}
+
+
+/*****************************************
+* Navbar
+*****************************************/
+
+#navigation-bar {
+  grid-area: navbar;
+  background-color: var(--main);
+  padding: 0;
+  color: #fff;
+}
+
+.nav-header {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 4% 5%;
+}
+
+.nav-header h2 {
+  font-weight: 700;
+  margin-left: 8%;
+}
+
+.nav-header img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  height: 60px;
+  padding: 0 10%;
+}
+
+.nav-item.active {
+  background-color: var(--lighter);
+}
+
+.nav-item:hover {
+  background-color: var(--lighter);
+}
+
+.nav-item p {
+  margin-left: 10%;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.notification {
+  position: relative;
+  display: inherit;
+}
+
+.notification span {
+  position: absolute;
+  right: -5px;
+  top: -10px;
+  width: 17px;
+  height: 17px;
+  border-radius: 100%;
+  background-color: var(--deny);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.drive {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+  padding: 10% 8%;
+  box-sizing: border-box;
+}
+
+.drive img {
+  width: 50%;
+}
+
+.drive p {
+  font-size: 0.9rem;
+}
+
+.drive p span {
+  font-weight: 700;
+}
+
+/*****************************************
+* Status bar
+*****************************************/
+
+#status {
+  grid-area: status;
+  background-color: var(--box);
+  color: #000;
+  padding: 5% 8%;
+}
+
+.logout {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 10%;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: #000;
+}
+
+.logout img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin: 0 20px;
+  transition: 1s;
+}
+
+.logout:hover img {
+  transform: translateX(10px);
+  transition: all .8s ease;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+}
+
+.profile .profile-img {
+  position: relative;
+}
+
+.profile img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 100%;
+  border: 10px solid var(--note);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.profile .add-btn {
+  position: absolute;
+  right: 10px;
+  bottom: 20px;
+}
+
+.profile p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.profile p:nth-child(3) {
+  color: #888;
+}
+
+.upcoming {
+  margin-top: 15%;
+}
+
+.upcoming h4 {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.upcoming .event {
+  display: flex;
+  background-color: var(--note);
+  color: #000;
+  border-radius: 10px;
+  padding: 15px 0;
+  margin: 20px 0;
+}
+
+.upcoming .event .icon {
+  width: 20%;
+  text-align: center;
+}
+
+.upcoming .event .icon p {
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 0;
+  color: var(--main);
+}
+
+.upcoming .event .info h5 {
+  margin: 0;
+}
+
+.upcoming .event .info p{
+  margin: 0;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.upcoming .event:nth-child(2) {
+  background-color: var(--main);
+  color: #fff;
+}
+
+.upcoming .event:nth-child(2) .info p {
+  color: #eee;
+}
+
+.upcoming .event:nth-child(2) .icon p {
+  color: #fff;
+}
+
+/*****************************************
+* Dashboard
+*****************************************/
+
+#dashboard {
+  grid-area: dashboard;
+  background-color: var(--background);
+  padding: 15px 5%;
+}
+
+/****** Top Bar ******/
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.top-bar p {
+  color: #555;
+}
+
+#dashboard .banner {
+  margin-top: 20px;
+  padding: 2% 8%;
+  background-color: var(--highlight);
+  color: var(--main);
+  border-radius: 50px;
+  position: relative;
+}
+
+.chatright, .chatleft {
+  width: 90px;
+  position: absolute;
+}
+
+.chatright {
+  top: -15px;
+  right: 5%;
+}
+
+.chatleft {
+  top: 30%;
+  right: 22%;
+}
+
+/****** Updates ******/
+
+.update h4 {
+  margin: 0;
+}
+
+.update img {
+  position: absolute;
+  right: 10%;
+  bottom: 25%;
+  width: 100px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.update:nth-child(2) img {
+  bottom: 35%;
+  width: 130px;
+  height: 100px;
+  right: 5%;
+}
+
+.update p {
+  font-size: 100px;
+  margin: 45px 0 0 0;
+  line-height: 1rem;
+}
+
+.update p::after {
+  content: "";
+  font-size: 12px;
+  color: #eee;
+  margin-left: 10px;
+}
+
+.update .whistle::after {
+  content: "Nya förslag";
+}
+
+.update .commit::after {
+  content: "Nya förfrågningar";
+}
+
+.alert {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.alert h4 {
+  margin: 10px;
+}
+
+/****** Classpoints ******/
+
+.classpoints {
+  display: flex;
+  flex-flow: column;
+}
+
+.first-place {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: auto;
+  position: relative;
+}
+
+.first-place p:first-child {
+  font-size: 100px;
+  margin: 0;
+  line-height: 70px;
+}
+
+.first-place p:last-child {
+  font-size: 1.2rem;
+}
+
+.first-place img {
+  position: absolute;
+}
+
+.first-place .trophy {
+  right: -13%;
+  top: 8%;
+}
+
+.first-place .circle {
+  left: -13%;
+}
+
+/*****************************************
+* Grids
+*****************************************/
+.container {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1.5fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "navbar dashboard status"
+}
