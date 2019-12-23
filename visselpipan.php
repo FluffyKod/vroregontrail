@@ -72,11 +72,25 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
                 echo '<div class="see-more">';
                   echo '<h4>' . $r->subject . '</h4>';
                   echo '<div>';
-                    echo '<a href="#">Svara &#8594;</a>';
+                    echo '<button onclick="showAnswerForm('. $r->id .')">Svara &#8594;</button>';
                   echo '</div>';
                 echo '</div>';
 
                 echo '<p>' . $r->text . '</p>';
+
+                echo '<div class="answer" id="' . $r->id .'">';
+
+                  echo '<hr>';
+
+                  echo '<h4>Svar</h4>';
+
+                  echo '<form>';
+                    echo '<textarea name="name" placeholder="Svar..."></textarea>';
+
+                    echo '<button class="btn lg" type="submit">Skicka</button>';
+                  echo '</form>';
+
+                echo '</div>';
 
               echo '</div>';
             echo '</div>';

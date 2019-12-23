@@ -71,16 +71,23 @@ body {
   align-items: center;
 }
 
-.see-more a {
+.see-more button {
   font-size: 0.8rem;
   color: #555;
   text-decoration: none;
   transition: 0.5s;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 10px 18px;
+  border-radius: 10px;
 }
 
-.see-more a:hover {
-  color: #000;
-  transition: all .8s ease;
+.see-more button:hover {
+  background: var(--main);
+  color: #fff;
+  transition: .5s;
+  cursor: pointer;
 }
 
 /*****************************************
@@ -161,6 +168,14 @@ input:focus::placeholder, input:focus {
 
 input[type="radio"] {
   margin: 12px 10px 12px 0;
+}
+
+.answer {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  transition: 1s;
+  overflow: hidden;
 }
 
 
