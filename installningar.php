@@ -43,7 +43,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
         <div class="top-bar">
           <h2>Inställningar</h2>
-          <p>17 Jan 2019, Fredag</p>
+          <p><?php echo current_time('d M Y'); ?></p>
         </div>
 
         <div class="banner">
