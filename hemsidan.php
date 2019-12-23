@@ -43,7 +43,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
         <div class="top-bar">
           <h2>Hemsidan</h2>
-          <p><?php echo current_time('d M Y'); ?></p>
+          <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
 
         <div class="banner">

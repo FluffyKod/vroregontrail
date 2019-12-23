@@ -23,6 +23,11 @@ get_header();
 </div>
 
 <section class="green" id="info">
+
+  <a href="/admin/dashboard/" class="btn sm">Adminpanel</a>
+  <a href="/test/" class="btn sm">Test</a>
+
+
   <h3>Viktor Rydberg Odenplans Elevkår</h3>
   <p>Viktor Rydberg Odenplans Elevkår är Viktor Rydberg Gymnasium Odenplans största förening, till vilken nästan 100 % av skolans elever aktivt valt att ansluta sig. Elevkåren samlar och engagerar elever från alla årskurser, program och klasser för att tillsammans förgylla skoltiden för kårens medlemmar. För oss i kåren är målet enkelt: medlemmarna ska leva sin gymnasietid, inte bara överleva den.</p>
 </section>
@@ -81,7 +86,7 @@ get_header();
   <h3>Kårbrevet</h3>
 </section>
 
- <script src="http://localhost:35729/livereload.js"></script>
+ <!-- <script src="http://localhost:35729/livereload.js"></script> -->
 
 <?php
 
