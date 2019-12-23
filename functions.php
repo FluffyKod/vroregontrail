@@ -3,54 +3,51 @@
 // Change login redirect
 function custom_login_redirect( $redirect_to, $request, $user ) {
   global $user;
+
+  // Check the user role of logged in user and send them to different default places
   if( isset( $user->roles ) && is_array( $user->roles ) ) {
+
+    // If administrator, send them to wordpress dashboard
     if( in_array( "administrator", $user->roles ) ) {
-      return '/admin/dashboard';
-    } else {
-      return home_url();
+      return '/wp-admin';
     }
+
+    // If part of elevkåren, send them to the elevkåren admin dashboard
+    if( in_array( "elevkaren", $user->roles ) ) {
+      return '/admin/dashboard/';
+    }
+
+    // Any other role, send home
+    return home_url();
+
   } else {
+
+    // Every other user, send home
     return home_url();
   }
 }
 add_filter("login_redirect", "custom_login_redirect", 10, 3);
 
 /*****************************************
+* Roles
+*****************************************/
+
+// Add elevkåren role and configure it's capabilities
+add_role( 'elevkaren', 'Elevkåren', array(
+  'read' => true,
+  'activate_plugins' => false,
+  'edit_plugins' => false,
+  'install_plugins' => false,
+  'edit_users' => false,
+  'manage_options' => false,
+  'promote_users' => false,
+  'remove_users' => false,
+  'switch_themes' => false,
+  'delete_site' => false,
+  'edit_dashboard' => false
+) );
+
+/*****************************************
 * Database
 *****************************************/
-function vro_setup() {
-
-  global $wpdb;
-
-  // Set prefix
-  $prefix = 'vro_';
-
-  // Create visselpipan table
-  $table_name = $prefix . 'visselpipan';
-
-  // Check if table already exists
-  $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
-  if ( ! $wpdb->get_var( $query ) == $table_name ) {
-
-    // Set fields
-    $sql = 'CREATE TABLE ' . $table_name . '(
-      id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-      user_id BIGINT(20) UNSIGNED NOT NULL,
-      subject VARCHAR(100) NOT NULL,
-      text VARCHAR(300) NOT NULL,
-      status VARCHAR(5) NOT NULL DEFAULT "w",
-      PRIMARY KEY (id),
-      FOREIGN KEY (user_id) REFERENCES wp_users(ID)
-    )';
-
-    // Get essential funcitons
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
-
-    // Set database option
-    add_option('vro_database_version', '1.1');
-
-  } // End check table name
-
-} // End vro_setup()
-add_action( 'after_setup_theme', 'vro_setup' );
+require_once(get_template_directory() . "/scripts/add_tables.php");

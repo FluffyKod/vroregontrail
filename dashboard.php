@@ -9,8 +9,8 @@
 
 <?php
 
-// Show this page only to admin
-if (! is_user_logged_in() || ! current_user_can('administrator') ){
+// Show this page only to admin or Elevkåren
+if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
   wp_redirect( '/' );
 } else {
 ?>
@@ -40,6 +40,15 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
       <!--
       * Dashboard
       --------------------------------------->
+      <?php
+
+      global $wpdb;
+
+      // Get the number of current suggestions
+      $visselpipan = count($wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "w"'));
+
+       ?>
+
       <section id="dashboard">
 
         <div class="top-bar">
@@ -58,7 +67,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
           <div class="box green sm update">
             <h4>Visselpipan</h4>
             <img src="<?php echo get_bloginfo('template_directory') ?>/img/whistle.png" alt="">
-            <p class="whistle amount"><b>4</b></p>
+            <p class="whistle amount"><b><?php echo $visselpipan; ?></b></p>
           </div>
 
           <div class="box green sm update">
@@ -145,7 +154,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
     </div>
 
 
-  <script src="<?php echo get_bloginfo('template_directory') ?>/scripts/admin.js" charset="utf-8"></script>
+  <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
   <script type="text/javascript">
     window.onload = highlightLink('link-dashboard');
   </script>

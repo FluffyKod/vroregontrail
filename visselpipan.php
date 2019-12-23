@@ -39,6 +39,16 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
       <!--
       * Dashboard
       --------------------------------------->
+
+      <?php
+
+        // Get all suggestions
+        global $wpdb;
+
+        $results = $wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "w"');
+
+       ?>
+
       <section id="dashboard">
 
         <div class="top-bar">
@@ -47,25 +57,33 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
         </div>
 
         <div class="banner">
-          <h3>4 nya förslag!</h3>
+          <h3><?php echo count($results); ?> nya förslag!</h3>
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>
 
-        <div class="row">
+          <?php
 
-          <div class="box white lg">
-            <div class="see-more">
-              <h4>Fler återvinningsplatser för plast!</h4>
-              <div>
-                <a href="#">Svara &#8594;</a>
-              </div>
-            </div>
+          // Add a new row and box for every suggestion
+          foreach ($results as $r)
+          {
+            echo '<div class="row">';
+              echo '<div class="box white lg">';
+                echo '<div class="see-more">';
+                  echo '<h4>' . $r->subject . '</h4>';
+                  echo '<div>';
+                    echo '<a href="#">Svara &#8594;</a>';
+                  echo '</div>';
+                echo '</div>';
 
-            <p>Hej! Jag tycker att man bör skapa fler återvinningsplatser för plast då det endast finns en i hela skolan! Det är många som slänger sina plastsaker i brännbart för att de inte orkar gå till denna enda, eller så vet de inte helt enkelt att det finns någon återvinning för plast.</p>
-          </div>
+                echo '<p>' . $r->text . '</p>';
 
-        </div>
+              echo '</div>';
+            echo '</div>';
+
+          }
+
+          ?>
 
       </section>
 
@@ -78,7 +96,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
     </div>
 
-    <script src="<?php echo get_bloginfo('template_directory') ?>/scripts/admin.js" charset="utf-8"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
     <script type="text/javascript">
       window.onload = highlightLink('link-visselpipan');
     </script>

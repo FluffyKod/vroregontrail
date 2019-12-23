@@ -1,6 +1,15 @@
 <!--
 * Admin Navbar
 --------------------------------------->
+<?php
+
+  global $wpdb;
+
+  // Get the number of current suggestions
+  $visselpipan = count($wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "w"'));
+
+ ?>
+
 <section id="navigation-bar">
 
   <div class="nav-header">
@@ -17,10 +26,15 @@
 
     <a href="/admin/visselpipan/" class="nav-item" id="link-visselpipan">
 
+      <!-- Check if there are any new visselpipan suggestions, if so -> add a notification circle -->
+      <?php if ($visselpipan > 0) { ?>
       <div class="notification">
         <img src="<?php echo get_bloginfo('template_directory') ?>/img/chat.png" alt="" class="nav-icon ">
-        <span>2</span>
+        <span><?php echo $visselpipan; ?></span>
       </div>
+    <?php } else { ?>
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/chat.png" alt="" class="nav-icon ">
+    <?php } ?>
 
       <p>Visselpipan</p>
     </a>
