@@ -24,6 +24,7 @@ body {
 
 .row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   margin-top: 4%;
 }
@@ -47,6 +48,9 @@ body {
 
 .box.sm {
   width: 30%;
+  /* flex: 1 0 calc(230px - 10px);
+  margin-left: 10px;
+  margin-top: 20px; */
 }
 
 .box.md {
@@ -367,16 +371,16 @@ input[type="radio"] {
   color: #555;
 }
 
-.upcoming .event:nth-child(2) {
+.upcoming .event:nth-child(1) {
   background-color: var(--main);
   color: #fff;
 }
 
-.upcoming .event:nth-child(2) .info p {
+.upcoming .event:nth-child(1) .info p {
   color: #eee;
 }
 
-.upcoming .event:nth-child(2) .icon p {
+.upcoming .event:nth-child(1) .icon p {
   color: #fff;
 }
 
@@ -435,9 +439,9 @@ input[type="radio"] {
 
 .update img {
   position: absolute;
-  right: 10%;
-  bottom: 25%;
-  width: 100px;
+  left: 40%;
+  bottom: 26%;
+  width: 8vw;
   height: 80px;
   object-fit: contain;
 }
@@ -529,5 +533,58 @@ input[type="radio"] {
   grid-template-columns: 1fr 4fr 1.5fr;
   grid-template-rows: auto;
   grid-template-areas:
-    "navbar dashboard status"
+    "navbar dashboard status";
+}
+
+@media screen and (max-width: 1306px) {
+  .container {
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas:
+      "status status status"
+      "navbar dashboard dashboard";
+  }
+
+  /* Status Bar Different Styles */
+  #status {
+    display: grid;
+    padding: 15px 30px;
+    grid-template-columns: 100%;
+    grid-template-areas:
+      "upcoming";
+  }
+
+  .upcoming {
+    margin-top: 0;
+    grid-area: upcoming;
+  }
+
+  .status-info {
+    display: none;
+  }
+
+  .events {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .event {
+    width: 32%;
+  }
+
+  .profile {
+    display: none;
+  }
+
+  .logout {
+    margin-bottom: 20px;
+  }
+
+  .logout p {
+    margin: 0;
+  }
+
+  .logout img {
+    margin: 0 0 0 20px;
+  }
+
 }

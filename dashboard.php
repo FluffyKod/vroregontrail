@@ -144,6 +144,12 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
     </div>
 
+
+  <script src="<?php echo get_bloginfo('template_directory') ?>/scripts/admin.js" charset="utf-8"></script>
+  <script type="text/javascript">
+    window.onload = highlightLink('link-dashboard');
+  </script>
+
   <?php
   // End if admin
   }

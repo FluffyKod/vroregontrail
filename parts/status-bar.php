@@ -3,20 +3,24 @@
 --------------------------------------->
 <section id="status">
 
-  <a href="<?php echo wp_logout_url( '/' ); ?>" class="logout">
-    <p><b>Logga ut</b></p>
-    <img src="<?php echo get_bloginfo('template_directory') ?>/img/logout.png" alt="">
-  </a>
+  <div class="status-info">
 
-  <div class="profile">
-    <div class="profile-img">
-      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80" alt="">
-      <button class="add-btn">+</button>
+    <a href="<?php echo wp_logout_url( '/' ); ?>" class="logout">
+      <p><b>Logga ut</b></p>
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/logout.png" alt="">
+    </a>
+
+    <div class="profile">
+      <div class="profile-img">
+        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80" alt="">
+        <button class="add-btn">+</button>
+      </div>
+
+      <p><b>Anna Morrison</b></p>
+      <p>Na21d</p>
     </div>
 
-    <p><b>Anna Morrison</b></p>
-    <p>Na21d</p>
-  </div>
+</div>
 
   <div class="upcoming">
 
@@ -27,6 +31,7 @@
       </div>
     </div>
 
+    <div class="events">
 
     <div class="event">
       <div class="icon">
@@ -66,6 +71,8 @@
       </div>
 
     </div>
+
+  </div>
 
   </div>
 
