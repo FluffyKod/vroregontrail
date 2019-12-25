@@ -102,12 +102,24 @@ body {
   color: #fff;
   border-radius: 15px;
   font-size: 0.9rem;
+  margin: 10px 10px 0 0;
+  transition: 0.5s;
+}
+
+.btn:hover {
+  transform: translateY(-5px);
+  transition: 0.5s;
+  cursor: pointer;
 }
 
 .btn.lg {
   display: block;
   text-align: center;
   margin-top: 20px;
+}
+
+.red {
+  background-color: var(--deny);
 }
 
 .add-btn {

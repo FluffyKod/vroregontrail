@@ -47,6 +47,9 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
       // Get the number of current suggestions
       $visselpipan = count($wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "w"'));
 
+      // Get the number of current kommitee aplications
+      $kommiteer = count($wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "w"'));
+
        ?>
 
       <section id="dashboard">
@@ -73,7 +76,7 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
           <div class="box green sm update">
             <h4>Kommitéer</h4>
             <img src="<?php echo get_bloginfo('template_directory') ?>/img/folderalert.png" alt="">
-            <p class="commit amount"><b>2</b></p>
+            <p class="commit amount"><b><?php echo $kommiteer ?></b></p>
           </div>
 
           <div class="box white sm alert">

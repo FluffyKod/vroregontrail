@@ -8,6 +8,9 @@
   // Get the number of current suggestions
   $visselpipan = count($wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "w"'));
 
+  // Get the number of current kommitee aplications
+  $kommiteer = count($wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "w"'));
+
  ?>
 
 <section id="navigation-bar">
@@ -32,15 +35,23 @@
         <img src="<?php echo get_bloginfo('template_directory') ?>/img/chat.png" alt="" class="nav-icon ">
         <span><?php echo $visselpipan; ?></span>
       </div>
-    <?php } else { ?>
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/chat.png" alt="" class="nav-icon ">
-    <?php } ?>
+      <?php } else { ?>
+        <img src="<?php echo get_bloginfo('template_directory') ?>/img/chat.png" alt="" class="nav-icon ">
+      <?php } ?>
 
       <p>Visselpipan</p>
     </a>
 
     <a href="/admin/kommiteer/" class="nav-item" id="link-kommiteer">
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
+      <?php if ($kommiteer > 0) { ?>
+      <div class="notification">
+        <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
+        <span><?php echo $kommiteer; ?></span>
+      </div>
+      <?php } else { ?>
+        <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
+      <?php } ?>
+
       <p>Kommitéer</p>
     </a>
 

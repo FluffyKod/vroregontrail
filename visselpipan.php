@@ -57,7 +57,13 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
         </div>
 
         <div class="banner">
-          <h3><?php echo count($results); ?> nya förslag!</h3>
+
+          <?php if (count($results) == 1){ ?>
+            <h3><?php echo count($results); ?> nytt förslag!</h3>
+          <?php } else { ?>
+            <h3><?php echo count($results); ?> nya förslag!</h3>
+          <?php } ?>
+
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>
