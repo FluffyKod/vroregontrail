@@ -1,6 +1,12 @@
 <!--
 * Status View
 --------------------------------------->
+<?php
+
+  $user = wp_get_current_user();
+
+?>
+
 <section id="status">
 
   <div class="status-info">
@@ -13,10 +19,10 @@
     <div class="profile">
       <div class="profile-img">
         <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80" alt="">
-        <button class="add-btn">+</button>
+        <button class="add-btn extra-btn">+</button>
       </div>
 
-      <p><b>Anna Morrison</b></p>
+      <p><b><?php echo $user->user_nicename; ?></b></p>
       <p>Na21d</p>
     </div>
 

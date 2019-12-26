@@ -12,7 +12,19 @@
 if (! is_user_logged_in() || ! current_user_can('administrator') ){
   wp_redirect( '/' );
 } else {
+
+
+  global $wpdb;
+
+  // Get all applications
+  $results = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "w"');
+
+  // Get all acceppted commitees
+  $kommiteer = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "y"');
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -27,28 +39,29 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
   </head>
   <body>
 
-    <?php
-
-      // Get all applications
-      global $wpdb;
-
-      $results = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "w"');
-
-     ?>
-
     <div class="container">
 
-      <!--
-      * Admin Navbar
-      --------------------------------------->
+      <!-- **************************
+        ADMIN NAVBAR
+      **************************  -->
       <?php
         require_once(get_template_directory() . "/parts/navigation-bar.php");
       ?>
 
-      <!--
-      * Dashboard
-      --------------------------------------->
+      <!-- **************************
+        DASHBOARD
+      **************************  -->
       <section id="dashboard">
+
+        <?php
+
+        // Check if a single kommitée should be displayed or the dashboard style
+        if (isset($_GET['k_id'])){
+            // Show the single view
+            require_once(get_template_directory() . "/parts/single_kommitee.php");
+        } else {
+
+        ?>
 
         <div class="top-bar">
           <h2>Kommitéer</h2>
@@ -57,6 +70,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
         <div class="banner">
 
+          <!-- Change the message depending on singular or plural application number -->
           <?php if (count($results) == 1){ ?>
             <h3><?php echo count($results); ?> ny förfrågan!</h3>
           <?php } else { ?>
@@ -72,38 +86,120 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
         // Add a new row and box for every suggestion
         foreach ($results as $r)
         {
-          echo '<div class="row">';
-            echo '<div class="box white lg">';
-              echo '<div class="see-more">';
-                echo '<h4>' . $r->name . '</h4>';
-                echo '<div>';
-                  echo '<button onclick="showAnswerForm('. $r->id .')">Svara &#8594;</button>';
-                echo '</div>';
-              echo '</div>';
 
-              echo '<p>' . $r->description . '</p>';
+          ?>
+          <div class="row">'
+            <div class="box white lg">
+              <div class="see-more">
+                <h4><?php echo $r->name ?></h4>
+                  <div>
+                  <button onclick="showAnswerForm(<?php echo $r->id ?>)">Svara &#8594;</button>
+                </div>
+              </div>
 
-              echo '<div class="answer" id="' . $r->id .'">';
+              <p><?php echo $r->description ?></p>
 
-                echo '<hr>';
+              <div class="answer" id="<?php echo $r->id ?>">
 
-                echo '<h4>Svar</h4>';
+                <hr>
 
-                echo '<form action="/admin/kommiteer/" method="POST">';
-                  echo '<textarea name="name" placeholder="Svar..."></textarea>';
+                <h4>Svar</h4>
 
-                  echo '<button name="accept" value="'. $r->id .'" class="btn" type="submit">Godkänn</button>';
-                  echo '<button name="deny" value="'. $r->id .'" class="btn red" type="submit">Avböj</button>';
-                echo '</form>';
+                <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
+                  <textarea name="name" placeholder="Svar..."></textarea>
 
-              echo '</div>';
+                  <button name="accept_kommitee" value="<?php echo $r->id ?>" class="btn" type="submit">Godkänn</button>
+                  <button name="deny_kommitee" value="<?php echo $r->id ?>" class="btn red" type="submit">Avböj</button>
+                </form>
 
-            echo '</div>';
-          echo '</div>';
+              </div>
 
+            </div>
+          </div>
+        <?php
         }
 
         ?>
+
+        <div class="row">
+
+          <div class="box white sm">
+            <h4>Kommiteeansvarig</h4>
+          </div>
+
+          <div class="box green md">
+            <h4>Sök kommiteer</h4>
+            <form>
+
+              <input type="text" name="" value="" placeholder="Kommitée...">
+
+              <button type="submit" name="button" class="btn lg">Sök</button>
+
+            </form>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="box green lg">
+            <h4>Alla kommiteer</h4>
+
+            <div class="kommiteer">
+
+              <div class="kommitee alert">
+                  <button class="add-btn lg">+</button>
+                  <h5>Skapa ny kommitée</h5>
+              </div>
+
+              <?php
+
+              foreach ($kommiteer as $k){
+
+                $member_count = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k->id));
+
+              ?>
+
+              <div class="kommitee">
+                <a href="/admin/kommiteer?k_id=<?php echo $k->id; ?>">
+                    <h4><?php echo $k->name ?></h4>
+
+                    <?php   // Change heading depening on plural or singular members
+                      $member_text = $member_count . ($member_count == 1 ? ' medlem' : ' medlemmar');
+                    ?>
+                    <p><?php echo $member_text; ?></p>
+                </a>
+
+              </div>
+
+            <?php } ?>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="box white lg">
+
+            <h3>Skapa ny kommitée</h3>
+            <form>
+              <input type="text" name="" value="" placeholder="Namn...">
+              <textarea name="name" type=="text" placeholder="Beskrivning..."></textarea>
+              <input type="text" name="" value="" placeholder="Ordförande...">
+
+              <button type="submit" name="button" class="btn lg">Skapa</button>
+            </form>
+
+          </div>
+
+        </div>
+
+        <?php } ?>
+
 
       </section>
 

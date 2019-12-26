@@ -35,3 +35,11 @@ function showAnswerForm( formId ){
   answerDiv.style.width = (answerDiv.style.width == 0 || answerDiv.style.width == '0px') ? '100%' : '0';
   answerDiv.style.height = (answerDiv.style.height == 0 || answerDiv.style.height == '0px') ? '100%' : '0';
 }
+
+function checkPlural( id ){
+  var element = document.getElementById(id);
+
+  if (element.innerText == '1'){
+    element.styleList = 'singular'
+  }
+}

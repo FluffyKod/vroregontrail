@@ -13,70 +13,6 @@ if (! is_user_logged_in() ){
   wp_redirect( '/' );
 } else {
 
-
-  // Create database entry
-  if ($_POST['subject'] and $_POST['subject'] != '' && $_POST['text'] && $_POST['text'] != '' ) {
-
-    global $wpdb;
-
-    // Create a new array that will hold all the arguments to create a new visselpipan suggestion
-    $suggestion = array();
-
-    $suggestion['user_id'] = get_current_user_id();
-    $suggestion['subject'] = $_POST['subject'];
-    $suggestion['text'] = $_POST['text'];
-
-    // Insert the new suggestion into the database
-    if($wpdb->insert(
-        'vro_visselpipan',
-        $suggestion
-    ) == false) {
-      wp_die('database insertion failed');
-    }
-
-  }
-
-  // Create database entry
-  if ($_POST['namn'] and $_POST['namn'] != '' && $_POST['description'] && $_POST['description'] != '' ) {
-
-    global $wpdb;
-
-    // Create a new array that will hold all the arguments to create a new kommitee
-    $kommitee = array();
-
-    $kommitee['name'] = $_POST['namn'];
-    $kommitee['description'] = $_POST['description'];
-    $kommitee['chairman'] = get_current_user_id();
-
-    // Insert the new suggestion into the database
-    if($wpdb->insert(
-        'vro_kommiteer',
-        $kommitee
-    ) == false) {
-      wp_die('database insertion failed');
-    } else {
-
-      // Set the chairman as a new member
-      $new_kommitee = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE name="'. $_POST['namn'] .'"');
-
-      $kommitee = array();
-
-      $kommitee['user_id'] = get_current_user_id();
-      $kommitee['kommitee_id'] = $new_kommitee[0]->id;
-      $kommitee['status'] = 'y';
-
-      // Insert the new suggestion into the database
-      if($wpdb->insert(
-          'vro_kommiteer_members',
-          $kommitee
-      ) == false) {
-        wp_die('database insertion failed');
-      }
-
-    }
-
-  }
-
 ?>
 
 <?php
@@ -89,24 +25,71 @@ if (! is_user_logged_in() ){
 
  <section id="forms-test">
 
-   <form action="/test/" method="post">
+   <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_visselpipan.inc.php'); ?>" method="post">
 
      <h2>Visselpipan</h2>
+
+     <?php // Show error messages
+
+     if (isset($_GET['visselpipa'])) {
+
+       $visselpipa_check = $_GET['visselpipa'];
+
+       if ($visselpipa_check == 'empty') {
+         echo '<p class="error">Du måste fylla i alla värden!</p>';
+       }
+       elseif ($visselpipa_check == 'success') {
+         echo '<p class="success">Ditt förslag har skickats!</p>';
+       }
+
+     }
+
+    ?>
+
      <input type="text" name="subject" placeholder="Rubrik..." required>
      <textarea name="text" placeholder="Förslag..." required></textarea>
 
-     <button class="btn lg" type="submit">Skicka</button>
+     <button name="new_visselpipa" class="btn lg" type="submit">Skicka</button>
 
    </form>
 
    <h2>Kommitéer</h2>
-   <form action="/test/" method="post">
+   <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
      <h2>Ny Kommitée</h2>
-     <input type="text" name="namn" placeholder="Namn..." required>
-     <textarea name="description" placeholder="Beskrivning..." required></textarea>
 
-     <button class="btn lg" type="submit">Skicka</button>
+     <?php // Show error messages
+
+     if (isset($_GET['application'])) {
+
+       $application_check = $_GET['application'];
+
+       if ($application_check == 'empty') {
+         echo '<p class="error">Du måste fylla i alla värden!</p>';
+       }
+       elseif ($application_check == 'nametaken') {
+         echo '<p class="error">Kommitéenamnet är redan taget!</p>';
+       }
+       elseif ($application_check == 'success') {
+         echo '<p class="success">Din förfrågan har skickats!</p>';
+       }
+
+     }
+
+    ?>
+
+     <input type="text" name="namn" placeholder="Namn..." required>
+
+     <?php
+
+      if (isset($_GET['the_description'])) {
+        echo '<textarea name="description" placeholder="Beskrivning..." required>'. $_GET['the_description'] .'</textarea>';
+      } else {
+        echo '<textarea name="description" placeholder="Beskrivning..." required></textarea>';
+      }
+     ?>
+
+     <button name="new_kommitee" class="btn lg" type="submit">Skicka</button>
 
    </form>
 
