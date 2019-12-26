@@ -5,6 +5,10 @@
 *****************************************/
 function vro_setup() {
 
+  /*****************************************
+  * VISSELPIPAN
+  *****************************************/
+
   global $wpdb;
 
   // Set prefix
@@ -41,7 +45,9 @@ function vro_setup() {
 
   } // End check table name
 
-  // KOMMITÈER TABLES
+  /*****************************************
+  * KOMMITEER
+  *****************************************/
 
   // Main Kommitee table
   $table_name = $prefix . 'kommiteer';
@@ -99,6 +105,34 @@ function vro_setup() {
 
   } // End check table name
 
+  /*****************************************
+  * CLASSES
+  *****************************************/
+
+  // Main Kommitee table
+  $table_name = $prefix . 'classes';
+
+  // Check if table already exists
+  $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
+  if ( ! $wpdb->get_var( $query ) == $table_name ) {
+
+    // Set fields
+    $sql = 'CREATE TABLE ' . $table_name . '(
+      id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+      created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+      last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+      name VARCHAR(50) NOT NULL,
+      points INTEGER(10) UNSIGNED NOT NULL DEFAULT 0,
+      PRIMARY KEY (id)
+    )';
+
+    // Get essential funcitons
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+    // Execute SQL
+    dbDelta($sql);
+
+  } // End check table name
 
 } // End vro_setup()
 add_action( 'after_setup_theme', 'vro_setup' );

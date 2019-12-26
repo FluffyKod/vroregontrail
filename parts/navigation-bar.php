@@ -43,6 +43,8 @@
     </a>
 
     <a href="/admin/kommiteer/" class="nav-item" id="link-kommiteer">
+
+      <!-- Check if there are any new kommitée applications, if so -> add a notification circle -->
       <?php if ($kommitee_applications > 0) { ?>
       <div class="notification">
         <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">

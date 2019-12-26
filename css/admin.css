@@ -10,6 +10,7 @@
   --box: #FEFEFE;
   --note: #EFF7EF;
   --deny: #FD626F;
+  --wait: #EA7C37;
 }
 
 /*****************************************
@@ -95,6 +96,15 @@ body {
   cursor: pointer;
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gt{
+  color: var(--main);
+}
 /*****************************************
 * Buttons
 *****************************************/
@@ -215,7 +225,7 @@ input:focus::placeholder, input:focus, textarea:focus::placeholder, textarea:foc
 
 input[type="radio"] {
   margin: 12px 10px 12px 0;
-  width: inherit;
+  width: 10px;
 }
 
 .answer {
@@ -749,6 +759,47 @@ div[class=kommitee] a {
 
 .kommitee_member p {
   margin: 0 0 0 15px;
+}
+
+/*****************************************
+* Classes
+*****************************************/
+.class {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--main);
+  color: #fff;
+  padding: 15px;
+  border-radius: 20px;
+  margin: 15px 0;
+  text-decoration: none;
+}
+
+.class .member_count {
+  display: flex;
+  align-items: center;
+}
+
+.class img {
+  width: 40px;
+  height: 40px;
+  margin: 0 20px 0 10px;
+}
+
+.student {
+  background-color: var(--main);
+  border-radius: 20px;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 10px 0;
+}
+
+.student.no-member {
+  background-color: var(--deny);
+}
+
+.student.waiting {
+  background-color: var(--wait);
 }
 
 /*****************************************

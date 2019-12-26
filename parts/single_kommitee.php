@@ -24,6 +24,12 @@ $current_kommitee = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id=' . $k_
 <!-- **************************
   BANNER
 **************************  -->
+<?php
+
+$waiting_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members where kommitee_id = ' . $k_id . ' AND status = "w"' );
+
+?>
+
 <div class="top-bar">
   <h2><?php echo $current_kommitee->name; ?></h2>
   <p><?php echo current_time('d M Y, D'); ?></p>
@@ -32,11 +38,54 @@ $current_kommitee = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id=' . $k_
 <div class="banner">
 
   <!-- Change the message depending on singular or plural application number -->
-  <h3><?php echo $current_kommitee->name; ?></h3>
+  <?php if (count($waiting_members) == 1){ ?>
+    <h3><?php echo count($waiting_members); ?> ny medlemsförfrågan!</h3>
+  <?php } else { ?>
+    <h3><?php echo count($waiting_members); ?> nya medlemsförfrågningar!</h3>
+  <?php } ?>
 
   <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
   <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
 </div>
+
+<?php
+// Add a new row and box for every suggestion
+foreach ($waiting_members as $wait_member)
+{
+  $wm = $wpdb->get_row('SELECT * FROM wp_users WHERE ID = ' . $wait_member->user_id);
+
+  ?>
+  <div class="row">'
+    <div class="box white lg">
+      <div class="see-more">
+        <h4><?php echo $wm->user_nicename ?></h4>
+          <div>
+          <button onclick="showAnswerForm(<?php echo $wm->ID ?>)">Svara &#8594;</button>
+        </div>
+      </div>
+
+      <div class="answer" id="<?php echo $wm->ID ?>">
+
+        <hr>
+
+        <h4>Svar</h4>
+
+        <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
+          <textarea name="kommitee_member_answer" placeholder="Svar..."></textarea>
+          <input name="kid" value="<?php echo $k_id; ?>" hidden>
+
+          <button name="accept_kommitee_member" value="<?php echo $wm->ID ?>" class="btn" type="submit">Godkänn</button>
+          <button name="deny_kommitee_member" value="<?php echo $wm->ID ?>" class="btn red" type="submit">Avböj</button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+<?php
+}
+
+?>
 
 <!-- **************************
   BASIC INFORMATION
@@ -46,24 +95,14 @@ $current_kommitee = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id=' . $k_
   <?php
 
   // Get chairman
-  $chairman_name = "";
-
-  $kommitee_member_row = $wpdb->get_row('SELECT * FROM vro_kommiteer_members where kommitee_id = ' . $k_id );
-  if (!isset($kommitee_member_row)){
-    // No chairman found
-    $chairman_name = "Ingen ordförande hittades";
-  } else {
-
-    $chairman = $wpdb->get_row('SELECT * FROM wp_users WHERE ID = '. $kommitee_member_row->user_id);
-    $chairman_name = $chairman->user_nicename;
-
-  }
+  $chairman_id = $wpdb->get_var('SELECT chairman FROM vro_kommiteer WHERE id = ' . $k_id);
+  $chairman = $wpdb->get_row('SELECT * FROM wp_users WHERE ID = ' . $chairman_id);
 
   ?>
 
   <div class="box white" id="chairman">
       <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
-      <h4><?php echo $chairman_name; ?></h4>
+      <h4><?php echo $chairman->user_nicename; ?></h4>
       <p>Kommitéeordförande</p>
   </div>
 
@@ -102,7 +141,7 @@ $current_kommitee = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id=' . $k_
       <?php
 
       // get all kommitee members
-      $all_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id);
+      $all_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id . ' AND status="y"');
 
       foreach($all_members as $m)
       {

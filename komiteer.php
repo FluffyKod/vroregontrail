@@ -4,26 +4,21 @@
  * Template Name: Kommiteer
  */
 
-?>
-
-<?php
-
 // Show this page only to admin
 if (! is_user_logged_in() || ! current_user_can('administrator') ){
   wp_redirect( '/' );
 } else {
 
-
+  // Get access to all wordpress database funcitonality
   global $wpdb;
 
-  // Get all applications
+  // Get all kommitéer applications
   $results = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "w"');
 
   // Get all acceppted commitees
   $kommiteer = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "y"');
 
 ?>
-
 
 
 <!DOCTYPE html>
@@ -63,6 +58,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
         ?>
 
+        <!-- Show page title and current date -->
         <div class="top-bar">
           <h2>Kommitéer</h2>
           <p><?php echo current_time('d M Y, D'); ?></p>
@@ -77,11 +73,16 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
             <h3><?php echo count($results); ?> nya förfrågningar!</h3>
           <?php } ?>
 
+          <!-- Chatbox images for style -->
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>
 
         <?php
+
+        /************************
+        *  Applications
+        ************************/
 
         // Add a new row and box for every suggestion
         foreach ($results as $r)
@@ -121,6 +122,10 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
         ?>
 
+        <!-- **************************
+          BASIC INFORMATION
+        **************************  -->
+
         <div class="row">
 
           <div class="box white sm">
@@ -141,6 +146,10 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
         </div>
 
+        <!-- **************************
+          ALL KOMMITÉES
+        **************************  -->
+
         <div class="row">
 
           <div class="box green lg">
@@ -148,6 +157,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
             <div class="kommiteer">
 
+              <!-- Always show the add new kommitée card -->
               <div class="kommitee alert">
                   <button class="add-btn lg">+</button>
                   <h5>Skapa ny kommitée</h5>
@@ -155,14 +165,18 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
               <?php
 
+              // Go through all accepted kommitées and display their name and member count
               foreach ($kommiteer as $k){
 
+                // Get the member count
                 $member_count = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k->id));
 
               ?>
 
+              <!-- Create new element to hold the information -->
               <div class="kommitee">
                 <a href="/admin/kommiteer?k_id=<?php echo $k->id; ?>">
+                    <!-- Name -->
                     <h4><?php echo $k->name ?></h4>
 
                     <?php   // Change heading depening on plural or singular members
@@ -180,6 +194,10 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
           </div>
 
         </div>
+
+        <!-- **************************
+          ADD NEW KOMMITÉE
+        **************************  -->
 
         <div class="row">
 
@@ -200,12 +218,11 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
         <?php } ?>
 
-
       </section>
 
-      <!--
-      * Status View
-      --------------------------------------->
+      <!-- **************************
+        STATUS BAR
+      **************************  -->
       <?php
         require_once(get_template_directory() . "/parts/status-bar.php");
       ?>

@@ -4,14 +4,13 @@
  * Template Name: Hemsidan
  */
 
-?>
-
-<?php
-
 // Show this page only to admin
 if (! is_user_logged_in() || ! current_user_can('administrator') ){
   wp_redirect( '/' );
 } else {
+
+  // Get current user
+  $user = wp_get_current_user();
 ?>
 
 <!DOCTYPE html>
@@ -36,15 +35,9 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
         require_once(get_template_directory() . "/parts/navigation-bar.php");
       ?>
 
-      <!--
-      * Dashboard
-      --------------------------------------->
-      <section id="dashboard">
-
-        <div class="top-bar">
-          <h2>Hemsidan</h2>
-          <p><?php echo current_time('d M Y, D'); ?></p>
-        </div>
+      <!-- ***********************************
+      * DASHBOARD
+      *************************************-->
 
         <div class="banner">
           <h3>Välkommen tillbaka Anna!</h3>
@@ -52,11 +45,18 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>
 
+        <!-- Display current name, number of visselpipan suggestions and number of kommitée applications -->
+        <div class="banner">
+          <h3>Välkommen tillbaka <?php echo $user->user_nicename; ?>!</h3>
+          <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
+          <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
+        </div>
+
       </section>
 
-      <!--
-      * Status View
-      --------------------------------------->
+      <!-- ***********************************
+      * STATUS BAR
+      *************************************-->
       <?php
         require_once(get_template_directory() . "/parts/status-bar.php");
       ?>

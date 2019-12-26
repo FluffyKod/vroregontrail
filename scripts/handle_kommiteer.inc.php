@@ -85,8 +85,7 @@
       // Change the specified kommitée to official
       $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET status = "y" WHERE id = %s', $_POST['accept_kommitee']));
 
-      // Reload the page
-      // wp_redirect($_SERVER['HTTP_REFERER']);
+      // Redirect with success message
       header("Location: /admin/kommiteer?change=success");
       exit();
 
@@ -98,9 +97,42 @@
       // Change the specified kommitée to be denied
       $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET status = "n" WHERE id = %s', $_POST['deny_kommitee']));
 
-      // Reload the page
-      // wp_redirect($_SERVER['HTTP_REFERER']);
+      // Redirect with success message
       header("Location: /admin/kommiteer?change=success");
+      exit();
+
+    }
+
+  }
+
+  elseif (isset($_POST['accept_kommitee_member']) || isset($_POST['deny_kommitee_member'])) {
+
+    /*****************************************
+    * Change status
+    *****************************************/
+
+    global $wpdb;
+
+    // Check if accept button is pressed for a kommitée application
+    if (isset($_POST['accept_kommitee_member']) && !empty($_POST['accept_kommitee_member']) && isset($_POST['kid'])) {
+
+      // Change the specified wanting member to official member
+      $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer_members SET status = "y" WHERE user_id = %s', $_POST['accept_kommitee_member']));
+
+      // Redirect with success message
+      header("Location: /admin/kommiteer?k_id=". $_POST['kid']);
+      exit();
+
+    }
+
+    // Check if eny buttons are pressed
+    elseif (isset($_POST['deny_kommitee_member']) && !empty($_POST['deny_kommitee_member']) && isset($_POST['kid']) ){
+
+      // Change the specified member to be denied
+      $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer_members SET status = "n" WHERE user_id = %s', $_POST['deny_kommitee_member']));
+
+      // Redirect with success message
+      header("Location: /admin/kommiteer?k_id=". $_POST['kid']);
       exit();
 
     }
