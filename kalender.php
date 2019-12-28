@@ -373,7 +373,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
     </div>
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/js/datePickerOO.js" charset="utf-8"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/datepicker.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/timepicker.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/calendar.js" charset="utf-8"></script>
     <script type="text/javascript">
