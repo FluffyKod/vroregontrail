@@ -1,38 +1,13 @@
 <?php
 
-/*****************************************
-* Database
-*****************************************/
-function vro_setup() {
+function createTable( $table_name, $sql ) {
 
-  /*****************************************
-  * VISSELPIPAN
-  *****************************************/
-
+  // Get access to wordpress database functions
   global $wpdb;
-
-  // Set prefix
-  $prefix = 'vro_';
-
-  // VISSELPIPAN TABLE
-  $table_name = $prefix . 'visselpipan';
 
   // Check if table already exists
   $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
   if ( ! $wpdb->get_var( $query ) == $table_name ) {
-
-    // Set fields
-    $sql = 'CREATE TABLE ' . $table_name . '(
-      id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-      created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      user_id BIGINT(20) UNSIGNED NOT NULL,
-      subject VARCHAR(100) NOT NULL,
-      text VARCHAR(300) NOT NULL,
-      status VARCHAR(5) NOT NULL DEFAULT "w",
-      PRIMARY KEY (id),
-      FOREIGN KEY (user_id) REFERENCES wp_users(ID)
-    )';
 
     // Get essential funcitons
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -40,10 +15,42 @@ function vro_setup() {
     // Execute SQL
     dbDelta($sql);
 
-    // Set database option
-    add_option('vro_database_version', '1.1');
-
   } // End check table name
+}
+
+/*****************************************
+* Database
+*****************************************/
+function vro_setup() {
+
+  // Set prefix
+  $prefix = 'vro_';
+
+  /*  status arguments described:
+        y - accepted (yes)
+        n - denied (no)
+        w - waiting to be handled
+  */
+
+  /*****************************************
+  * VISSELPIPAN
+  *****************************************/
+
+  $table_name = $prefix . 'visselpipan';
+
+  $sql_visselpipan = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    subject VARCHAR(100) NOT NULL,
+    text VARCHAR(300) NOT NULL,
+    status VARCHAR(5) NOT NULL DEFAULT "w",
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES wp_users(ID)
+  )';
+
+  createTable($table_name, $sql_visselpipan);
 
   /*****************************************
   * KOMMITEER
@@ -52,58 +59,38 @@ function vro_setup() {
   // Main Kommitee table
   $table_name = $prefix . 'kommiteer';
 
-  // Check if table already exists
-  $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
-  if ( ! $wpdb->get_var( $query ) == $table_name ) {
+  // Set fields
+  $sql_kommiteer = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    chairman BIGINT(20) UNSIGNED NOT NULL,
+    status VARCHAR(5) NOT NULL DEFAULT "w",
+    PRIMARY KEY (id),
+    FOREIGN KEY (chairman) REFERENCES wp_users(ID)
+  )';
 
-    // Set fields
-    $sql = 'CREATE TABLE ' . $table_name . '(
-      id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-      created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      name VARCHAR(100) NOT NULL,
-      description VARCHAR(300) NOT NULL,
-      chairman BIGINT(20) UNSIGNED NOT NULL,
-      status VARCHAR(5) NOT NULL DEFAULT "w",
-      PRIMARY KEY (id),
-      FOREIGN KEY (chairman) REFERENCES wp_users(ID)
-    )';
-
-    // Get essential funcitons
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-    // Execute SQL
-    dbDelta($sql);
-
-  } // End check table name
+  createTable($table_name, $sql_kommiteer);
 
   // Kommitee + users junction table
   $table_name = $prefix . 'kommiteer_members';
 
-  // Check if table already exists
-  $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
-  if ( ! $wpdb->get_var( $query ) == $table_name ) {
+  // Set fields
+  $sql_komiteer_members = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    kommitee_id INTEGER(10) UNSIGNED NOT NULL,
+    status VARCHAR(5) NOT NULL DEFAULT "w",
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES wp_users(ID),
+    FOREIGN KEY (kommitee_id) REFERENCES vro_kommiteer(id)
+  )';
 
-    // Set fields
-    $sql = 'CREATE TABLE ' . $table_name . '(
-      id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-      created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      user_id BIGINT(20) UNSIGNED NOT NULL,
-      kommitee_id INTEGER(10) UNSIGNED NOT NULL,
-      status VARCHAR(5) NOT NULL DEFAULT "w",
-      PRIMARY KEY (id),
-      FOREIGN KEY (user_id) REFERENCES wp_users(ID),
-      FOREIGN KEY (kommitee_id) REFERENCES vro_kommiteer(id)
-    )';
-
-    // Get essential funcitons
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-    // Execute SQL
-    dbDelta($sql);
-
-  } // End check table name
+  createTable($table_name, $sql_komiteer_members);
 
   /*****************************************
   * CLASSES
@@ -112,27 +99,93 @@ function vro_setup() {
   // Main Kommitee table
   $table_name = $prefix . 'classes';
 
-  // Check if table already exists
-  $query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) );
-  if ( ! $wpdb->get_var( $query ) == $table_name ) {
+  // Set fields
+  $sql_classes = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    points INTEGER(10) UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+  )';
 
-    // Set fields
-    $sql = 'CREATE TABLE ' . $table_name . '(
-      id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-      created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      name VARCHAR(50) NOT NULL,
-      points INTEGER(10) UNSIGNED NOT NULL DEFAULT 0,
-      PRIMARY KEY (id)
-    )';
+  createTable($table_name, $sql_classes);
 
-    // Get essential funcitons
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+  /*****************************************
+  * ELEVKÅREN
+  *****************************************/
 
-    // Execute SQL
-    dbDelta($sql);
+  // Main karen table
+  $table_name = $prefix . 'karen';
 
-  } // End check table name
+  // Set fields
+  $sql_karen = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    position_name VARCHAR(100) NOT NULL,
+    chairman BIGINT(20) UNSIGNED NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (chairman) REFERENCES wp_users(ID)
+  )';
+
+  createTable($table_name, $sql_karen);
+
+  /*****************************************
+  * EVENTS
+  *****************************************/
+
+  // Events type
+  $table_name = $prefix . 'event_types';
+
+  /*  color Arguments described
+        bg_color - background color of event (will show up color coded in calendar)
+        fg_color - foreground color or text color of event
+  */
+
+  // Set fields
+  $sql_event_type = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    bg_color VARCHAR(40) NOT NULL DEFAULT "#ffffff",
+    fg_color VARCHAR(40) NOT NULL DEFAULT "#000000",
+    PRIMARY KEY (id)
+  )';
+
+  createTable($table_name, $sql_event_type);
+
+  // Main events
+  $table_name = $prefix . 'events';
+
+  // Set fields
+  /*  Type arguments described:
+        u - only the hosting utskott
+        k - only elevkåren
+        m - only members of elevkåren
+        l - all logged in users
+        a - all visitors
+  */
+
+  $sql_events = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    start DATETIME NOT NULL,
+    end DATETIME NOT NULL,
+    place VARCHAR(100),
+    type INTEGER(10) UNSIGNED NOT NULL,
+    description VARCHAR(300),
+    host INTEGER(10) UNSIGNED,
+    visibility VARCHAR(5) NOT NULL DEFAULT "k",
+    FOREIGN KEY (type) REFERENCES vro_event_types(id),
+    FOREIGN KEY (host) REFERENCES vro_karen(id),
+    PRIMARY KEY (id)
+  )';
+
+  createTable($table_name, $sql_events);
 
 } // End vro_setup()
 add_action( 'after_setup_theme', 'vro_setup' );

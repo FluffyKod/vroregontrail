@@ -37,6 +37,12 @@
       </div>
     </div>
 
+    <form class="events_buttons">
+      <button>Idag</button>
+      <button class="selected">Vecka</button>
+      <button>Månad</button>
+    </form>
+
     <div class="events">
 
     <div class="event">
