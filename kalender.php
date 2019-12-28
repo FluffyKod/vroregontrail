@@ -229,27 +229,30 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
 
             <!-- ae stands form add event -->
-            <label for="">Eventtyp: </label>
-            <select name="ae_event_type">
-              <?php
+            <div class="select-group">
 
-              // Get all events type
-              global $wpdb;
+              <label for="">Eventtyp: </label>
+              <select name="ae_event_type">
+                <?php
 
-              $event_types = $wpdb->get_results('SELECT * FROM vro_event_types');
+                // Get all events type
+                global $wpdb;
 
-              if (empty($event_types)){
-                echo '<option value="none">Inga eventyper tillgängliga. Skapa en ovan</option>';
-              } else {
+                $event_types = $wpdb->get_results('SELECT * FROM vro_event_types');
 
-                foreach ($event_types as $et) {
-                  echo '<option value="'. $et->id .'">'. $et->name .'</option>';
+                if (empty($event_types)){
+                  echo '<option value="none">Inga eventyper tillgängliga. Skapa en ovan</option>';
+                } else {
+
+                  foreach ($event_types as $et) {
+                    echo '<option value="'. $et->id .'">'. $et->name .'</option>';
+                  }
+
                 }
+                ?>
 
-              }
-              ?>
-
-            </select>
+              </select>
+            </div>
 
             <input type="text" name="ae_name" value="" placeholder="*Eventnamn..." required>
 
@@ -344,12 +347,16 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
               <p id="event_description_char_count">300</p>
             </div>
 
-            <label for="">Syns för: </label>
-            <select class="" name="">
-              <option value="">Hela kåren</option>
-              <option value="">Aktuella utskottet</option>
-              <option value="">Alla medlemmar</option>
-            </select>
+            <div class="select-group">
+              <label for="">Syns för: </label>
+              <select class="" name="">
+                <option value="u">Endast aktuella utskottet</option>
+                <option value="k">Endast elevkåren</option>
+                <option value="m">Alla medlemmar</option>
+                <option value="l">Alla inloggade</option>
+                <option value="a">Alla besökare</option>
+              </select>
+            </div>
 
 
             <button class="btn lg" type="submit" name="add_event">Skapa</button>
