@@ -19,6 +19,9 @@ if (! is_user_logged_in() ){
 
  <a href="/admin/dashboard/" class="btn lg">Admin</a>
 
+
+
+
  <section id="forms-test">
 
    <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_visselpipan.inc.php'); ?>" method="post">
@@ -90,6 +93,8 @@ if (! is_user_logged_in() ){
    </form>
 
  </section>
+
+ <script src="<?php echo get_bloginfo('template_directory') ?>/js/modal.js" charset="utf-8"></script>
 
 
  <?php

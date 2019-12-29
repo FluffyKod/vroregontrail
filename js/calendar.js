@@ -114,8 +114,52 @@ function showCalendar(month, year){
           cellText.classList = 'current_day';
         }
 
+        // Add a unique id to the cell
+        let idDate = (date < 10) ? '0' + date : date;
+
+        let idMonth = month + 1;
+        idMonth = (idMonth < 10) ? '0' + idMonth : idMonth;
+
+        cell.id = year + '-' + (idMonth) + '-' + idDate;
+
         // Add the day to the calendar
-        cell.appendChild(cellText)
+        cell.appendChild(cellText);
+
+        // Check if there should be any events for this day
+
+        // Go through all events
+        for (ev in allEvents) {
+          // Get their start date in the format year-month-day to match with the this days date
+          let startDatetimeArray = allEvents[ev]['start'].split(' ');
+          let startDateString = startDatetimeArray[0];
+          let startTimeString = startDatetimeArray[1];
+          startTimeString = startTimeString.substring(0, startTimeString.length - 3);
+
+          let endDatetimeArray = allEvents[ev]['end'].split(' ');
+          let endDateString = endDatetimeArray[0];
+          let endTimeString = endDatetimeArray[1];
+          endTimeString = endTimeString.substring(0, endTimeString.length - 3);
+
+          // If they do match, this event should be shown on this day
+          if (cell.id == startDateString) {
+            // Get the type of event
+            let etId = allEvents[ev]['type'];
+
+            // console.log(allEvents[ev]);
+
+            // Check which type the event belongs to
+            for (evType in allEventTypes){
+              // If an event type is found, add the event to the calendar with the correct color codes
+              if (allEventTypes[evType]['id'] == etId){
+                add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description']);
+              }
+            }
+
+
+          }
+
+        }
+
         row.appendChild(cell);
       }
 
@@ -147,4 +191,58 @@ function calendar_next(){
 
   // Update the calendar
   showCalendar(currentMonth, currentYear);
+}
+
+function add_event_to_calendar(tdElement, text, bgColor, fgColor, start, end, place, host, description){
+  // Check if there already is an event on this day, if so -> the markingsContainer has already been created, therefore do not create it again.
+  let markingsContainer = (tdElement.childNodes.length == 1) ? document.createElement('div') : tdElement.childNodes[1];
+
+  // Add the correct class for styling if it does not exist
+  if (!markingsContainer.classList.contains('markings')){
+    markingsContainer.classList = 'markings';
+  }
+
+  // Create a new div element to hold the text for the event
+  let newEvent = document.createElement('div');
+  newEvent.textContent = text;
+
+  // Style it
+  newEvent.style.backgroundColor = bgColor;
+  newEvent.style.color = fgColor;
+
+  // Create a popup box if the event is clicked
+  newEvent.addEventListener('click', function() {
+    // Get the modal
+    let modal = document.querySelector('#modal');
+
+    // Change the modal header
+    document.querySelector('#modal .modal-header .title').textContent = this.textContent;
+
+    let modalText = '';
+
+    modalText += '<b>Tid:</b> ' + start + ' - ' + end + '<br>';
+
+    if (place){
+      modalText += '<b>Plats:</b> ' + place + '<br>';
+    }
+    if (host){
+      modalText += '<b>Host:</b> ' + host + '<br>';
+    }
+    if (description){
+      modalText += '<span class="modal-description">' + description + '</span>';
+    }
+
+    // Add the body text
+    document.querySelector('#modal .modal-body').innerHTML = modalText;
+
+    // OPen the modal
+    openModal(modal);
+  })
+
+  // Add event to main event container
+  markingsContainer.appendChild(newEvent);
+
+  // Add the event to the day
+  tdElement.appendChild(markingsContainer);
+
 }

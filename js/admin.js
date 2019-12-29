@@ -21,7 +21,7 @@ function highlightLink(linkId) {
   document.getElementById(linkId).classList.add('active');
 }
 
-function showAnswerForm( formId, onStart = null ){
+function showAnswerForm( formId, onStart = null, resetUrl = null ){
   answerDiv = document.getElementById(formId);
 
   // Check if display property is empty, if so set it a default of none
@@ -41,6 +41,10 @@ function showAnswerForm( formId, onStart = null ){
     document.addEventListener('DOMContentLoaded', function() {
        onStart();
     }, false);
+  }
+
+  if (resetUrl) {
+    window.history.pushState({}, document.title, "/" + resetUrl);
   }
 }
 

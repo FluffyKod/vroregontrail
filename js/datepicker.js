@@ -14,7 +14,7 @@ function checkEventPathForClass (path, selector) {
 }
 
 // Always make sure the date is double digits. Ex. 5 -> 05
-function formatDate(d){
+function formatDate(d, sql){
   let day = d.getDate();
   if (day < 10){
     day = '0' + day;
@@ -28,16 +28,21 @@ function formatDate(d){
   let year = d.getFullYear();
 
   // Return a formatted date such as 28 / 12 / 2019 for the 28th december 2019 (easter-egg: this file was created this date, hello future!)
-  return day + ' / ' + month + ' / ' + year;
+  if (!sql) {
+    return day + ' / ' + month + ' / ' + year;
+  } else {
+    return year + '-' + month + '-' + day;
+  }
 }
 
 // Create a new DAtepicker class so multiple timepickers can be created with the same functionalitity
 class Datepicker {
 
   // Setup the datepicker
-  constructor(date_picker_element, selected_date_element, dates_element, mth_element, next_mth_element, prev_mth_element, days_element) {
+  constructor(date_picker_element, hidden_input, selected_date_element, dates_element, mth_element, next_mth_element, prev_mth_element, days_element) {
     // Get all relevant html elements
     this.date_picker_element = date_picker_element;
+    this.hidden_input = hidden_input;
     this.selected_date_element = selected_date_element;
     this.dates_element = dates_element;
     this.mth_element = mth_element;
@@ -61,10 +66,11 @@ class Datepicker {
     this.mth_element.textContent = dp_months[this.month] + ' ' + this.year;
 
     // Display the formatted current date in the datepicker box
-    this.selected_date_element.textContent = formatDate(this.date);
+    this.selected_date_element.textContent = formatDate(this.date, false);
 
     // Set the dataset value to the current value to be used in php and database insertion
     this.selected_date_element.dataset.value = this.selectedDate;
+    this.hidden_input.value = formatDate(this.selectedDate, true);
 
     // Create the dropdown calendar
     this.populateDates();
@@ -111,8 +117,11 @@ class Datepicker {
         _this.selectedYear = _this.year;
 
         // Update the text
-        _this.selected_date_element.textContent = formatDate(_this.selectedDate);
+        _this.selected_date_element.textContent = formatDate(_this.selectedDate, false);
+
+        // Update the values of elements to be used in database insertion
         _this.selected_date_element.dataset.value = _this.selectedDate;
+        _this.hidden_input.value = formatDate(_this.selectedDate, true);
 
         // Call this function again to uodate what day is selected
         _this.populateDates();
@@ -164,6 +173,7 @@ class Datepicker {
 
 // Get all elements, see HTML
 const start_date_picker_element = document.querySelector('#start-datepicker.date-picker');
+const start_hidden_input = document.getElementById('start_hidden_input');
 const start_selected_date_element = document.querySelector('#start-datepicker.date-picker .selected-date');
 const start_dates_element = document.querySelector('#start-datepicker.date-picker .dates');
 const start_mth_element = document.querySelector('#start-datepicker.date-picker .dates .month .mth');
@@ -172,7 +182,7 @@ const start_prev_mth_element = document.querySelector('#start-datepicker.date-pi
 const start_days_element = document.querySelector('#start-datepicker.date-picker .dates .days');
 
 // Create a new Datepicker object and pass the relevant html elements
-let start_datepicker = new Datepicker(start_date_picker_element, start_selected_date_element, start_dates_element, start_mth_element, start_next_mth_element, start_prev_mth_element, start_days_element);
+let start_datepicker = new Datepicker(start_date_picker_element, start_hidden_input, start_selected_date_element, start_dates_element, start_mth_element, start_next_mth_element, start_prev_mth_element, start_days_element);
 
 // EVENT LISTENERS
 
@@ -198,6 +208,7 @@ start_prev_mth_element.addEventListener('click', function(e){
 
 // Get all elements, see HTML
 const end_date_picker_element = document.querySelector('#end-datepicker.date-picker');
+const end_hidden_input = document.getElementById('end_hidden_input');
 const end_selected_date_element = document.querySelector('#end-datepicker.date-picker .selected-date');
 const end_dates_element = document.querySelector('#end-datepicker.date-picker .dates');
 const end_mth_element = document.querySelector('#end-datepicker.date-picker .dates .month .mth');
@@ -206,7 +217,7 @@ const end_prev_mth_element = document.querySelector('#end-datepicker.date-picker
 const end_days_element = document.querySelector('#end-datepicker.date-picker .dates .days');
 
 // Create a new Datepicker object and pass the relevant html elements
-let end_datepicker = new Datepicker(end_date_picker_element, end_selected_date_element, end_dates_element, end_mth_element, end_next_mth_element, end_prev_mth_element, end_days_element);
+let end_datepicker = new Datepicker(end_date_picker_element, end_hidden_input, end_selected_date_element, end_dates_element, end_mth_element, end_next_mth_element, end_prev_mth_element, end_days_element);
 
 // EVENT LISTENERS
 

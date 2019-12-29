@@ -149,6 +149,7 @@ function vro_setup() {
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name VARCHAR(100) NOT NULL,
+    symbol VARCHAR(5) DEFAULT "",
     bg_color VARCHAR(40) NOT NULL DEFAULT "#ffffff",
     fg_color VARCHAR(40) NOT NULL DEFAULT "#000000",
     PRIMARY KEY (id)
@@ -162,8 +163,9 @@ function vro_setup() {
   // Set fields
   /*  Type arguments described:
         u - only the hosting utskott
-        k - only elevkåren
+        e - only elevkåren
         m - only members of elevkåren
+        k - only specified kommitée
         l - all logged in users
         a - all visitors
   */
@@ -178,10 +180,9 @@ function vro_setup() {
     place VARCHAR(100),
     type INTEGER(10) UNSIGNED NOT NULL,
     description VARCHAR(300),
-    host INTEGER(10) UNSIGNED,
+    host VARCHAR(100),
     visibility VARCHAR(5) NOT NULL DEFAULT "k",
     FOREIGN KEY (type) REFERENCES vro_event_types(id),
-    FOREIGN KEY (host) REFERENCES vro_karen(id),
     PRIMARY KEY (id)
   )';
 

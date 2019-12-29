@@ -38,6 +38,8 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
       --------------------------------------->
       <section id="dashboard">
 
+          <!-- <button data-modal-target="#modal" type="button" name="button">Open modal</button> -->
+
         <div class="top-bar">
           <h2>Kalender</h2>
           <p><?php echo current_time('d M Y, D'); ?></p>
@@ -65,10 +67,13 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
               foreach ($all_event_types as $et) {
                 ?>
 
-                <div class="event-type" style="background-color: <?php echo $et->bg_color; ?>">
+                <div class="event-type" style="background-color: <?php echo $et->bg_color; ?>" onclick="clickElement('alterEventTypeInput-<?php echo $et->id ?>')">
+
                   <p style="color: <?php echo $et->fg_color; ?>"><?php echo $et->name; ?></p>
-                  <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
-                    <button class="btn add-btn deny" type="submit" name="remove_event_type" value="<?php echo $et->id ?>">-</button>
+
+                  <form id="add-event-type-form" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
+                    <button form="add-event-type-form" class="btn add-btn deny" type="submit" name="remove_event_type" value="<?php echo $et->id ?>">-</button>
+                    <input hidden id="alterEventTypeInput-<?php echo $et->id; ?>" type="submit" name="show_alter_event_type" value="<?php echo $et->id ?>">
                   </form>
 
                 </div>
@@ -80,7 +85,19 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
               <div class="event-type add-new">
                 <p>Lägg till ny</p>
-                <button class="btn add-btn" type="button" name="button" onclick="showAnswerForm('add_event_type')" id="addEtBtn">+</button>
+                <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
+
+                <?php
+
+                // echo $_SERVER['REQUEST_URI'];
+                if (isset($_GET['show_alter_event_type']) or (isset($_GET['event_type']) && $_GET['event_type'] != 'open') ){
+                  echo '<button class="btn add-btn" type="submit" name="show_add_event_type" id="addEtBtn">+</button>';
+                } else {
+                  echo '<button class="btn add-btn" type="button" name="button" onclick="showAnswerForm('. '\'add_event_type\'' . ')" id="addEtBtn">+</button>';
+                }
+                ?>
+
+                </form>
               </div>
             </div>
 
@@ -88,7 +105,15 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
               <hr>
 
-              <h4>Lägg till ny eventtyp</h4>
+              <?php
+
+              if (isset($_GET['show_alter_event_type']) or isset($_GET['alter_event_type'])) {
+                echo '<h4>Uppdatera eventtyp</h4>';
+              } else {
+                echo '<h4>Lägg till ny eventtyp</h4>';
+              }
+
+              ?>
 
               <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="POST">
 
@@ -117,10 +142,59 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
                 }
 
+                // Check if form has been submited
+                else if (isset($_GET['alter_event_type'])) {
+
+                  // Get the msg from the form
+                  $aet_check = $_GET['alter_event_type'];
+
+                  // If it is not successful, make sure to open the form again
+                  if ($aet_check != 'success') {
+                    echo '<script type="text/javascript">showAnswerForm("add_event_type", updateEtPreview);</script>';
+
+                    // Then check what type of error
+                    if ($aet_check == 'empty'){
+                      echo '<p class="error">Du måste fylla i alla värden!</p>';
+                    }
+                    elseif ($aet_check == 'nametaken'){
+                      echo '<p class="error">Namnet är redan taget!</p>';
+
+                    }
+
+                  }
+
+                }
+
+                // Check if an alter event type request has been made
+                if (isset($_GET['show_alter_event_type']) ){
+                  // Check if the form has to be opened
+                  if ($_GET['show_alter_event_type'] == 'open'){
+                    echo '<script type="text/javascript">showAnswerForm("add_event_type", updateEtPreview);</script>';
+                  }
+                }
+
                ?>
 
-                <input type="text" name="etName" placeholder="Eventtyp..." id="etName" onKeyUp="updateEtPreview()" required>
-                <input type="text" name="etSymbol" placeholder="Symbol...">
+               <?php
+               // Check if there is a saved name from previous try
+               if (isset($_GET['type_name'])){
+                 echo '<input value="'. $_GET['type_name'] .'" type="text" name="etName" placeholder="*Namn på eventtyp..." id="etName" onKeyUp="updateEtPreview()" required>';
+               } else {
+                 echo '<input type="text" name="etName" placeholder="*Namn på eventtyp..." id="etName" onKeyUp="updateEtPreview()" required>';
+               }
+               ?>
+
+               <?php
+               // Check if there is a saved symbol from previous try
+               if (isset($_GET['symbol'])){
+                 echo '<input value="'. urldecode( $_GET['symbol'] ) .'" type="text" name="etSymbol" placeholder="Symbol..." onkeyup="checkForm(this, false, 1)" class="optional">';
+               } else {
+                 echo '<input type="text" name="etSymbol" placeholder="Symbol..." onkeyup="checkForm(this, false, 1)" class="optional">';
+               }
+               ?>
+
+
+
 
                 <p class="label"><b>Färg</b></p>
                 <div class="choose-et-colors">
@@ -155,7 +229,15 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
                   <!-- <button class="btn add-btn deny">-</button> -->
                 </div>
 
-                <button name="add_event_type" value="" class="btn" type="submit">Lägg till</button>
+                <?php
+
+                // If user is trying to alter an event type,
+                if (isset($_GET['show_alter_event_type']) or isset($_GET['alter_event_type'])){
+                  echo '<button name="alter_event_type" value="'. $_GET['id'] .'" class="btn" type="submit">Uppdatera</button>';
+                } else {
+                  echo '<button name="add_event_type" value="" class="btn" type="submit">Lägg till</button>';
+                }
+                ?>
 
               </form>
 
@@ -170,7 +252,22 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
         </div>
 
+
         <div class="events_view">
+
+          <!-- MODAL FOR CLICKED EVENTS -->
+          <div class="modal" id="modal">
+            <div class="modal-header">
+              <div class="title">
+                Example modal
+              </div>
+              <button data-close-button class="close-button" type="button" name="button">&times;</button>
+            </div>
+            <div class="modal-body">
+              sdfjsldkjf
+            </div>
+          </div>
+          <div id="overlay"></div>
 
           <div class="calendar_container">
 
@@ -225,8 +322,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
             <h4>Lägg till nytt event</h4>
 
-            <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
-
+            <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
 
             <!-- ae stands form add event -->
             <div class="select-group">
@@ -265,7 +361,8 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
                 <p><b>Start</b></p>
 
                 <div class="date-picker" id="start-datepicker">
-                  <div class="selected-date" name="start_date"></div>
+                  <div class="selected-date"></div>
+                  <input type="hidden" name="ae_start_date" value="" id="start_hidden_input"/>
 
                   <div class="dates">
                     <div class="month">
@@ -281,7 +378,8 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
                   </div>
                 </div>
 
-                <div class="timepicker" data-time="00:00" id="start-timepicker" name="start_time">
+                <div class="timepicker" data-time="00:00" id="start-timepicker">
+                  <input type="hidden" name="ae_start_time" value="00:00" id="start_time_hidden_input"/>
                   <div class="hour">
                     <div class="hr-up"></div>
                     <input type="number" class="hr" value="00" />
@@ -304,7 +402,8 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
                 <p><b>Slut</b></p>
 
                 <div class="date-picker" id="end-datepicker">
-                  <div class="selected-date" name="end_date"></div>
+                  <div class="selected-date"></div>
+                  <input type="hidden" name="ae_end_date" value="" id="end_hidden_input"/>
 
                   <div class="dates">
                     <div class="month">
@@ -321,6 +420,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
                 </div>
 
                 <div class="timepicker" data-time="00:00" id="end-timepicker">
+                  <input type="hidden" name="ae_end_time" value="00:00" id="end_time_hidden_input"/>
                   <div class="hour">
                     <div class="hr-up"></div>
                     <input type="number" class="hr" value="00" />
@@ -349,15 +449,14 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
             <div class="select-group">
               <label for="">Syns för: </label>
-              <select class="" name="">
+              <select class="" name="ae_visibility">
                 <option value="u">Endast aktuella utskottet</option>
-                <option value="k">Endast elevkåren</option>
+                <option value="e">Endast elevkåren</option>
                 <option value="m">Alla medlemmar</option>
                 <option value="l">Alla inloggade</option>
                 <option value="a">Alla besökare</option>
               </select>
             </div>
-
 
             <button class="btn lg" type="submit" name="add_event">Skapa</button>
 
@@ -379,13 +478,47 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
     </div>
 
+    <?php
+
+    // Get all events
+    global $wpdb;
+
+    $all_events = $wpdb->get_results('SELECT * FROM vro_events');
+
+    $event_type_array = array();
+    $all_event_types = $wpdb->get_results('SELECT * FROM vro_event_types');
+
+    foreach($all_event_types as $et){
+      $event_type_array += array(
+        $ét->id => array($et->bg_color, $et->fg_color)
+      );
+    }
+
+    $json_events = json_encode($all_events);
+    $json_event_types = json_encode($all_event_types)
+
+    ?>
+    <script type="text/javascript">
+      var allEvents = <?php echo $json_events; ?>;
+      var allEventTypes = <?php echo $json_event_types; ?>;
+    </script>
+
+    <?php
+
+
+
+    ?>
+
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/datepicker.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/timepicker.js" charset="utf-8"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/modal.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/calendar.js" charset="utf-8"></script>
+
     <script type="text/javascript">
       window.onload = highlightLink('link-kalender');
     </script>
+
 
     <?php
     // End if admin

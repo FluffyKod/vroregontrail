@@ -16,9 +16,10 @@ let d = new Date();
 class Timepicker {
 
   // Set up the time picker
-  constructor(timepicker_element, hr_element = hr_element, min_element, hr_up, hr_down, min_up, min_down){
+  constructor(timepicker_element, hidden_input, hr_element = hr_element, min_element, hr_up, hr_down, min_up, min_down){
     // bind all html elements that will be used
     this.timepicker_element = timepicker_element;
+    this.hidden_input = hidden_input;
     this.hr_element = hr_element;
     this.min_element = min_element;
     this.hr_up = hr_up;
@@ -44,6 +45,7 @@ class Timepicker {
 
     // Update its dataset for use in php and database insertion
     this.timepicker_element.dataset.time = formatTime(this.hour) + ':' + formatTime(this.minute);
+    this.hidden_input.value = formatTime(this.hour) + ':' + formatTime(this.minute);
   }
 
   // Handle the hours when user types in a value
@@ -145,6 +147,7 @@ class Timepicker {
 
 // Get all elements, see HTML
 const start_timepicker_element = document.querySelector('#start-timepicker.timepicker');
+const start_time_hidden_input = document.getElementById('start_time_hidden_input');
 
 const start_hr_element = document.querySelector('#start-timepicker.timepicker .hour .hr');
 const start_min_element = document.querySelector('#start-timepicker.timepicker .minute .min');
@@ -156,7 +159,7 @@ const start_min_up = document.querySelector('#start-timepicker.timepicker .minut
 const start_min_down = document.querySelector('#start-timepicker.timepicker .minute .min-down');
 
 // Create a new Timepicker object and pass the relevant html elements
-let start_timepicker = new Timepicker(start_timepicker_element, start_hr_element, start_min_element, start_hr_up, start_hr_down, start_min_up, start_min_down);
+let start_timepicker = new Timepicker(start_timepicker_element, start_time_hidden_input, start_hr_element, start_min_element, start_hr_up, start_hr_down, start_min_up, start_min_down);
 
 // EVENT LISTENERS
 
@@ -187,6 +190,7 @@ start_timepicker.min_element.addEventListener('change', function(e) {
 
 // Get all elements, see HTML
 const end_timepicker_element = document.querySelector('#end-timepicker.timepicker');
+const end_time_hidden_input = document.getElementById('end_time_hidden_input');
 
 const end_hr_element = document.querySelector('#end-timepicker.timepicker .hour .hr');
 const end_min_element = document.querySelector('#end-timepicker.timepicker .minute .min');
@@ -198,7 +202,7 @@ const end_min_up = document.querySelector('#end-timepicker.timepicker .minute .m
 const end_min_down = document.querySelector('#end-timepicker.timepicker .minute .min-down');
 
 // Create a new Timepicker object and pass the relevant html elements
-let end_timepicker = new Timepicker(end_timepicker_element, end_hr_element, end_min_element, end_hr_up, end_hr_down, end_min_up, end_min_down);
+let end_timepicker = new Timepicker(end_timepicker_element, end_time_hidden_input, end_hr_element, end_min_element, end_hr_up, end_hr_down, end_min_up, end_min_down);
 
 // EVENT LISTENERS
 

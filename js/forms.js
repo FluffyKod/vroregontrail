@@ -3,5 +3,12 @@ function checkForm(form, textElement, limit){
   let trimmedText = formText.substring(0, limit);
   form.value = trimmedText;
 
-  textElement.innerText = limit - trimmedText.length;
+  if (textElement) {
+    textElement.innerText = limit - trimmedText.length;
+  }
+
+}
+
+function clickElement(id){
+  document.getElementById(id).click();
 }

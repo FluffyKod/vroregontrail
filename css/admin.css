@@ -4,6 +4,7 @@
 
 :root {
   --main: #28825F;
+  --main-rgb: 40,130,95;
   --lighter: #38AA82;
   --highlight: #BEF7E4;
   --background: #E9F0EE;
@@ -105,6 +106,7 @@ body {
 .gt{
   color: var(--main);
 }
+
 /*****************************************
 * Buttons
 *****************************************/
@@ -213,6 +215,10 @@ input[type="search"] {
 input[type="color"] {
   style: inherit;
 }
+
+/* input.optional {
+  width: min-content;
+} */
 
 .white input {
   background-color: #ddd;
@@ -909,6 +915,7 @@ div[class=kommitee] a {
   align-items: center;
   border-radius: 10px;
   justify-content: space-between;
+  cursor: pointer;
 }
 
 .event-type button {
@@ -970,13 +977,13 @@ div[class=kommitee] a {
 .calendar_container #calendar {
   width: 100%;
   text-align: center;
-  border-spacing: 15px;
+  border-spacing: 10px;
   table-layout: fixed;
 }
 
 .calendar_container #calendar td {
   background-color: var(--background);
-  height: 100px;
+  height: 120px;
   width: 100%;
   text-align: center;
   border-radius: 10px;
@@ -988,8 +995,8 @@ div[class=kommitee] a {
 .calendar_container #calendar td p {
   position: absolute;
   margin: 0;
-  top: 10px;
-  left: 10px;
+  bottom: 10px;
+  right: 10px;
 }
 
 .calendar_container #calendar td p.current_day {
@@ -1004,7 +1011,7 @@ div[class=kommitee] a {
 }
 
 .calendar_container #calendar .week {
-  width: 40px;
+  width: 30px;
 }
 
 .calendar_container #calendar td .markings {
@@ -1012,18 +1019,16 @@ div[class=kommitee] a {
   flex-direction: column;
   width: 100%;
   height: 100%;
+  max-height: 100px;
 }
 
-.calendar_container #calendar td .markings .sale {
-  background-color: var(--main);
-  width: 100%;
-  height: 100%;
+.calendar_container #calendar td .markings div {
+  margin: 4px 0;
+  font-size: 14px;
 }
 
-.calendar_container #calendar td .markings .themeday {
-  background-color: var(--deny);
-  width: 100%;
-  height: 100%;
+.calendar_container #calendar td .markings div:hover {
+  cursor: pointer;
 }
 
 .calendar_container #calendar td:first-child {
@@ -1034,6 +1039,8 @@ div[class=kommitee] a {
 .calendar_container #calendar td:first-child p {
   position: relative;
   color: #888;
+  top: 10px;
+  left: 10px;
 }
 
 .calendar_container #calendar td:first-child p.current {
@@ -1094,7 +1101,7 @@ div[class=kommitee] a {
   background-color: var(--box);
   margin: 20px 0;
   border-radius: 20px;
-  padding: 20px;
+  padding: 20px 0;
   display: grid;
   /* grid-template-columns: 2fr 1.2fr;
   grid-template-areas:
@@ -1303,6 +1310,80 @@ div[class=kommitee] a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+/*****************************************
+* Modal
+*****************************************/
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: 200ms ease-in-out;
+  /* border: 1px solid #000; */
+  box-shadow: 0px 0px 20px 20px rgba(0,0,0,0.2);
+  border-radius: 15px;
+  z-index: 10;
+  background-color: var(--box);
+  width: 600px;
+  max-width: 80%;
+  overflow: hidden;
+}
+
+.modal.active {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  padding: 20px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--main);
+  background-color: var(--highlight);
+  color: var(--main);
+  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header .title {
+  font-size: 1.1rem;
+  font-weight: 7000;
+}
+
+.modal-header .close-button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.modal-body {
+  padding: 15px 20px;
+}
+
+.modal-description {
+  line-height: 50px;
+}
+
+#overlay {
+  position: fixed;
+  transition: 200ms ease-in-out;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 3;
+}
+
+#overlay.active {
+  pointer-events: all;
+  opacity: 1;
 }
 
 /*****************************************

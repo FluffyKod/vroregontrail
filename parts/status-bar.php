@@ -3,6 +3,9 @@
 --------------------------------------->
 <?php
 
+  // Include helpful functions
+  // include_once('helpful_functions.php');
+
   $user = wp_get_current_user();
 
 ?>
@@ -39,13 +42,46 @@
 
     <form class="events_buttons">
       <button>Idag</button>
-      <button class="selected">Vecka</button>
-      <button>Månad</button>
+      <button >Vecka</button>
+      <button class="selected">Månad</button>
     </form>
 
     <div class="events">
 
-    <div class="event">
+      <?php
+
+      global $wpdb;
+      // $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE start > DATE_SUB(NOW(), INTERVAL 1 MONTH) ORDER BY start DESC');
+      $currentMonth = date('m');
+      $currentYear = date('Y');
+
+      // Get all events for the current month
+      $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' ORDER BY start ASC');
+
+      foreach ($upcoming_events as $up_event) {
+
+        $current_event_type = $wpdb->get_row('SELECT * FROM vro_event_types WHERE id=' . $up_event->type);
+        $symbol = ($current_event_type) ? $current_event_type->symbol : '';
+
+        ?>
+        <div class="event">
+          <div class="icon">
+            <p><?php echo $symbol; ?></p>
+          </div>
+
+          <div class="info">
+            <h5><?php echo $up_event->name; ?></h5>
+            <p><?php echo date('H:i', strtotime($up_event->start)); ?> - <?php echo date('H:i', strtotime($up_event->end)); ?></p>
+            <p><?php echo date('d M Y, l', strtotime($up_event->start)); ?></p>
+          </div>
+
+        </div>
+        <?php
+      }
+
+      ?>
+
+    <!-- <div class="event">
       <div class="icon">
         <p>$</p>
       </div>
@@ -56,33 +92,7 @@
         <p>14 Jan 2019, Fredag</p>
       </div>
 
-    </div>
-
-    <div class="event">
-      <div class="icon">
-        <p>$</p>
-      </div>
-
-      <div class="info">
-        <h5>Försäljning Catchergames</h5>
-        <p>12:10 - 13:00</p>
-        <p>14 Jan 2019, Fredag</p>
-      </div>
-
-    </div>
-
-    <div class="event">
-      <div class="icon">
-        <p>$</p>
-      </div>
-
-      <div class="info">
-        <h5>Försäljning Catchergames</h5>
-        <p>12:10 - 13:00</p>
-        <p>14 Jan 2019, Fredag</p>
-      </div>
-
-    </div>
+    </div> -->
 
   </div>
 
