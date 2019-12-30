@@ -9,7 +9,7 @@
 <?php
 
 // Show this page only to admin
-if (! is_user_logged_in() || ! current_user_can('administrator') ){
+if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
   wp_redirect( '/' );
 } else {
 ?>

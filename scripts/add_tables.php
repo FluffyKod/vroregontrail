@@ -152,6 +152,7 @@ function vro_setup() {
     symbol VARCHAR(5) DEFAULT "",
     bg_color VARCHAR(40) NOT NULL DEFAULT "#ffffff",
     fg_color VARCHAR(40) NOT NULL DEFAULT "#000000",
+    status VARCHAR(5) NOT NULL DEFAULT "y",
     PRIMARY KEY (id)
   )';
 

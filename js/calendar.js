@@ -13,6 +13,13 @@ Date.prototype.getWeek = function() {
         return week;
     }
 
+  var getDaysArray = function(start, end) {
+      for(var arr=[],dt=start; dt<=end; dt.setDate(dt.getDate()+1)){
+          arr.push(new Date(dt).toISOString().slice(0,10));
+      }
+      return arr;
+  };
+
 // Get the curent date, month, year and week
 let today = (new Date());
 let currentMonth = today.getMonth();
@@ -140,8 +147,10 @@ function showCalendar(month, year){
           let endTimeString = endDatetimeArray[1];
           endTimeString = endTimeString.substring(0, endTimeString.length - 3);
 
+          let allDates = getDaysArray(new Date(startDateString), new Date(endDateString));
+
           // If they do match, this event should be shown on this day
-          if (cell.id == startDateString) {
+          if (allDates.includes(cell.id)) {
             // Get the type of event
             let etId = allEvents[ev]['type'];
 
@@ -151,7 +160,7 @@ function showCalendar(month, year){
             for (evType in allEventTypes){
               // If an event type is found, add the event to the calendar with the correct color codes
               if (allEventTypes[evType]['id'] == etId){
-                add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description']);
+                add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startDateString, endDateString, startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description']);
               }
             }
 
@@ -193,7 +202,7 @@ function calendar_next(){
   showCalendar(currentMonth, currentYear);
 }
 
-function add_event_to_calendar(tdElement, text, bgColor, fgColor, start, end, place, host, description){
+function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, endDate, startTime, endTime, place, host, description){
   // Check if there already is an event on this day, if so -> the markingsContainer has already been created, therefore do not create it again.
   let markingsContainer = (tdElement.childNodes.length == 1) ? document.createElement('div') : tdElement.childNodes[1];
 
@@ -220,7 +229,11 @@ function add_event_to_calendar(tdElement, text, bgColor, fgColor, start, end, pl
 
     let modalText = '';
 
-    modalText += '<b>Tid:</b> ' + start + ' - ' + end + '<br>';
+    if (startDate == endDate){
+      modalText += '<b>Tid:</b> ' + startTime + ' - ' + endTime + '<br>';
+    } else {
+      modalText += '<b>Tid:</b> ' + startTime + ' <i>' + startDate.replace(/-/g, '/') + '</i> - ' + endTime + ' <i>' + endDate.replace(/-/g, '/') + '</i></br>';
+    }
 
     if (place){
       modalText += '<b>Plats:</b> ' + place + '<br>';

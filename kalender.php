@@ -5,7 +5,7 @@
  */
 
 // Show this page only to admin
-if (! is_user_logged_in() || ! current_user_can('administrator') ){
+if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
   wp_redirect( '/' );
 } else {
 ?>
@@ -20,7 +20,8 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
-      <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
 
@@ -62,16 +63,16 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
 
               global $wpdb;
 
-              $all_event_types = $wpdb->get_results('SELECT * FROM vro_event_types');
+              $enabled_event_types = $wpdb->get_results('SELECT * FROM vro_event_types WHERE status="y"');
 
-              foreach ($all_event_types as $et) {
+              foreach ($enabled_event_types as $et) {
                 ?>
 
                 <div class="event-type" style="background-color: <?php echo $et->bg_color; ?>" onclick="clickElement('alterEventTypeInput-<?php echo $et->id ?>')">
 
                   <p style="color: <?php echo $et->fg_color; ?>"><?php echo $et->name; ?></p>
 
-                  <form id="add-event-type-form" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
+                  <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
                     <button form="add-event-type-form" class="btn add-btn deny" type="submit" name="remove_event_type" value="<?php echo $et->id ?>">-</button>
                     <input hidden id="alterEventTypeInput-<?php echo $et->id; ?>" type="submit" name="show_alter_event_type" value="<?php echo $et->id ?>">
                   </form>
@@ -334,7 +335,7 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
                 // Get all events type
                 global $wpdb;
 
-                $event_types = $wpdb->get_results('SELECT * FROM vro_event_types');
+                $event_types = $wpdb->get_results('SELECT * FROM vro_event_types WHERE status="y"');
 
                 if (empty($event_types)){
                   echo '<option value="none">Inga eventyper tillgängliga. Skapa en ovan</option>';
@@ -502,12 +503,6 @@ if (! is_user_logged_in() || ! current_user_can('administrator') ){
       var allEvents = <?php echo $json_events; ?>;
       var allEventTypes = <?php echo $json_event_types; ?>;
     </script>
-
-    <?php
-
-
-
-    ?>
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/datepicker.js" charset="utf-8"></script>

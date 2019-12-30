@@ -12,7 +12,7 @@ if (isset($_POST['add_event_type'])) {
   global $wpdb;
 
   $name = test_input( $_POST['etName'] );
-  $symbol = urlencode( test_input( $_POST['etSymbol'] ) );
+  $symbol = urldecode( test_input( $_POST['etSymbol'] ) );
   $bgColor = test_input( $_POST['etBgColor'] );
   $fgColor = test_input( $_POST['etFgColor'] );
 
@@ -33,6 +33,7 @@ if (isset($_POST['add_event_type'])) {
     $new_et = array();
 
     $new_et['name'] = $name;
+    $new_et['symbol'] = $symbol;
     $new_et['bg_color'] = $bgColor;
     $new_et['fg_color'] = $fgColor;
 
@@ -71,15 +72,24 @@ elseif (isset($_POST['remove_event_type'])) {
     exit();
   }
 
-  // Delete the specified table
-  if ($wpdb->delete( 'vro_event_types', array( 'id' => $etId ) ) == false ){
-    // If it did not work, send back error
-    wp_die('database deletion failed');
+  // disable the specified event type
+  if ($wpdb->update( 'vro_event_types', array( 'status' => 'n' ), array( 'id' => $etId ) ) == false){
+    wp_die('database remove event type failed');
   } else {
     // Success!
     header("Location: /admin/kalender?remove_event_type=success");
     exit();
   }
+
+  // Delete the specified event type
+  // if ($wpdb->delete( 'vro_event_types', array( 'id' => $etId ) ) == false ){
+  //   // If it did not work, send back error
+  //   wp_die('database deletion failed');
+  // } else {
+  //   // Success!
+  //   header("Location: /admin/kalender?remove_event_type=success");
+  //   exit();
+  // }
 }
 elseif (isset($_POST['alter_event_type'])) {
 

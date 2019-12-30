@@ -1,5 +1,5 @@
 /*****************************************
-* Variables
+* Variables ALICE WAS HERE AGAIN
 *****************************************/
 
 :root {
@@ -186,7 +186,7 @@ button.btn.lg {
 /*****************************************
 * Forms
 *****************************************/
-input[type="text"], textarea, input[type="number"] {
+input[type="text"], textarea, input[type="number"], input[type="search"] {
   border: 0;
   background-color: var(--note);
   width: 100%;
@@ -547,16 +547,16 @@ select:focus {
   color: #555;
 }
 
-.upcoming .event:nth-child(1) {
+.upcoming .event.first {
   background-color: var(--main);
   color: #fff;
 }
 
-.upcoming .event:nth-child(1) .info p {
+.upcoming .event.first .info p {
   color: #eee;
 }
 
-.upcoming .event:nth-child(1) .icon p {
+.upcoming .event.first .icon p {
   color: #fff;
 }
 
@@ -1365,7 +1365,8 @@ div[class=kommitee] a {
 }
 
 .modal-description {
-  line-height: 50px;
+  padding-top: 10px;
+  display: inline-block;
 }
 
 #overlay {
