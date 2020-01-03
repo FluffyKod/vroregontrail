@@ -4,10 +4,11 @@
  * Template Name: Kalender
  */
 
-// Show this page only to admin
-if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
+// CHECK IF LOGGED IN
+if (! is_user_logged_in() ){
   wp_redirect( '/' );
 } else {
+
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +52,12 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>
+
+        <?php
+        // Only show the event types for admins
+        if (current_user_can('administrator') || current_user_can('elevkaren') ){
+
+        ?>
 
         <div class="row">
 
@@ -243,15 +250,15 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
               </form>
 
             </div>
-            <?php
-
-
-            ?>
-
 
           </div>
 
         </div>
+
+        <?php
+        } // End check if user is admin, elevkår to show event types
+
+        ?>
 
 
         <div class="events_view">
@@ -316,6 +323,10 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
           </div>
 
         </div>
+
+        <?php
+        if (current_user_can('administrator') || current_user_can('elevkaren') ){
+        ?>
 
         <div class="row">
 
@@ -451,8 +462,8 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
             <div class="select-group">
               <label for="">Syns för: </label>
               <select class="" name="ae_visibility">
-                <option value="u">Endast aktuella utskottet</option>
                 <option value="e">Endast elevkåren</option>
+                <option value="u">Endast aktuella utskottet</option>
                 <option value="m">Alla medlemmar</option>
                 <option value="l">Alla inloggade</option>
                 <option value="a">Alla besökare</option>
@@ -466,6 +477,11 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
           </div>
 
         </div>
+
+        <?php
+
+      } // End add new event check if admin
+         ?>
 
 
       </section>
@@ -514,11 +530,11 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
       window.onload = highlightLink('link-kalender');
     </script>
 
-
-    <?php
-    // End if admin
-    }
-    ?>
-
   </body>
 </html>
+
+<?php
+
+} // End is logged in
+
+ ?>

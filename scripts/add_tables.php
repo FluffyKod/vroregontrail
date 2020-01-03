@@ -115,6 +115,38 @@ function vro_setup() {
   * ELEVKÅREN
   *****************************************/
 
+  // Utskott table
+  $table_name = $prefix . 'utskott';
+
+  // Set fields
+  $sql_utskott = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    chairman BIGINT(20) UNSIGNED,
+    PRIMARY KEY (id),
+    FOREIGN KEY (chairman) REFERENCES wp_users(ID)
+  )';
+
+  createTable($table_name, $sql_utskott);
+
+  // Positions table
+  $table_name = $prefix . 'position_types';
+
+  // Set fields
+  $sql_positions = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    is_unique BIT NOT NULL DEFAULT 0,
+    is_linked_utskott BIT NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+  )';
+
+  createTable($table_name, $sql_positions);
+
   // Main karen table
   $table_name = $prefix . 'karen';
 
@@ -123,10 +155,13 @@ function vro_setup() {
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    position_name VARCHAR(100) NOT NULL,
-    chairman BIGINT(20) UNSIGNED NOT NULL,
+    position_id INTEGER(10) UNSIGNED NOT NULL,
+    student BIGINT(20) UNSIGNED,
+    utskott_id INTEGER(10) UNSIGNED,
     PRIMARY KEY (id),
-    FOREIGN KEY (chairman) REFERENCES wp_users(ID)
+    FOREIGN KEY (student) REFERENCES wp_users(ID),
+    FOREIGN KEY (utskott_id) REFERENCES vro_utskott(id),
+    FOREIGN KEY (position_id) REFERENCES vro_positions(id)
   )';
 
   createTable($table_name, $sql_karen);

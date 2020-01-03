@@ -37,6 +37,7 @@ body {
   padding: 3%;
   box-sizing: border-box;
   position: relative;
+  overflow: hidden;
 }
 
 .box.green {
@@ -174,6 +175,8 @@ button.btn.lg {
 
 .add-btn.deny {
   background-color: var(--deny);
+  width: 30px;
+  height: 30px;
 }
 
 .extra-btn {
@@ -186,7 +189,7 @@ button.btn.lg {
 /*****************************************
 * Forms
 *****************************************/
-input[type="text"], textarea, input[type="number"], input[type="search"] {
+input[type="text"], textarea, input[type="number"], input[type="search"], input[type="email"], input[type="password"] {
   border: 0;
   background-color: var(--note);
   width: 100%;
@@ -268,6 +271,14 @@ form .label {
   margin: 10px 0 0 0;
 }
 
+form .yes-no {
+  margin: 20px 0;
+}
+
+form .yes-no input[type="radio"] {
+  margin: 0 10px 0 15px;
+}
+
 .choose-et-colors {
   display: flex;
   justify-content: flex-start;
@@ -320,6 +331,43 @@ select:focus {
   right: 20px;
   bottom: 0px;
   color: #333;
+}
+
+/*****************************************
+* Autocomplete
+*****************************************/
+
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+  color: #000;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9;
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important;
+  color: #ffffff;
 }
 
 /*****************************************
@@ -684,6 +732,11 @@ select:focus {
   line-height: 70px;
 }
 
+.first-place.members p:first-child {
+  font-size: 70px;
+  color: var(--lighter);
+}
+
 .first-place p:last-child {
   font-size: 1.2rem;
 }
@@ -884,6 +937,9 @@ div[class=kommitee] a {
   color: #fff;
   padding: 10px 20px;
   margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .student.no-member {
@@ -892,6 +948,29 @@ div[class=kommitee] a {
 
 .student.waiting {
   background-color: var(--wait);
+}
+
+.student_actions {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.student_actions button {
+  background: none;
+  padding: none;
+  border: none;
+  outline: none;
+}
+
+.student img {
+  width: 40px;
+  height: 40px;
+  margin-left: 20px;
+}
+
+.student img:hover {
+  cursor: pointer;
 }
 
 /*****************************************

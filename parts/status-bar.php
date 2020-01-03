@@ -25,7 +25,7 @@
         <button class="add-btn extra-btn">+</button>
       </div>
 
-      <p><b><?php echo $user->user_nicename; ?></b></p>
+      <p><b><?php echo get_user_meta($user->ID,'nickname',true); ?></b></p>
       <p>Na21d</p>
     </div>
 

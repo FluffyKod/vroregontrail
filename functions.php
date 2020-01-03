@@ -33,14 +33,14 @@ function custom_login_redirect( $redirect_to, $request, $user ) {
 add_filter("login_redirect", "custom_login_redirect", 10, 3);
 
 // Add custom meta data on login
-function save_custom_meta_data( $user_id ) {
-  // Set user as member of elevkåren
-  add_user_meta( $user_id, 'status', 'y' );
-
-  // Set the class for the user
-  add_user_meta( $user_id, 'class_id', 1 );
-}
-add_action('user_register', 'save_custom_meta_data');
+// function save_custom_meta_data( $user_id ) {
+//   // Set user as member of elevkåren
+//   add_user_meta( $user_id, 'status', 'y' );
+//
+//   // Set the class for the user
+//   add_user_meta( $user_id, 'class_id', 1 );
+// }
+// add_action('user_register', 'save_custom_meta_data');
 
 /*****************************************
 * Roles

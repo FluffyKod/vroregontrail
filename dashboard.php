@@ -20,6 +20,7 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
   </head>
   <body>
 
@@ -101,16 +102,65 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
               <h4>Ge klasspoäng</h4>
 
-              <input type="text" name="" value="" placeholder="Klass...">
-              <input type="number" name="" value="" placeholder="Poäng...">
+              <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_classes.inc.php'); ?>" method="post" autocomplete="off">
+                <?php
 
-              <a href="#" class="btn lg">Ge poäng</a>
+                if (isset($_GET['class_points'])) {
+
+                  $class_point_check = $_GET['class_points'];
+
+                  if ($class_point_check == 'empty') {
+                    echo '<p class="error">Du måste fylla i alla värden!</p>';
+                  }
+                  elseif ($class_point_check == 'noclassfound') {
+                    echo '<p class="error">Ingen klass hittades!</p>';
+                  }
+                  elseif ($class_point_check == 'success') {
+                    echo '<p class="success">Poängen har lagts till!</p>';
+                  }
+
+                }
+
+                ?>
+
+                <div class="autocomplete">
+                  <input id="class-name" type="text" name="class-name" value="" placeholder="Klass..." required>
+                </div>
+
+                <input type="number" name="add-points" value="" placeholder="+/-Poäng..." required>
+
+                <button class="btn lg" type="submit" name="give_class_points">Ge poäng</button>
+              </form>
+
+
+
+              <?php
+              // AUTOCOMPLETE
+              global $wpdb;
+
+              $results = $wpdb->get_results('SELECT name FROM vro_classes ORDER BY points DESC');
+
+              if (count($results) > 0){
+                $top_class = $results[0];
+              }
+
+              echo '<script type="text/javascript">';
+              echo 'var jsonclasses = ' . json_encode($results);
+              echo '</script>'
+
+              ?>
+
+              <script>
+              var classes = getArrayFromColumn(jsonclasses, 'name');
+
+              autocomplete(document.getElementById("class-name"), classes, 'Denna klass är ännu inte skapad');
+              </script>
 
             </div>
 
             <div class="first-place">
               <p><b>1</b></p>
-              <p><b>Na21c</b></p>
+              <p><b><?php echo $top_class->name; ?></b></p>
 
               <img class="trophy" src="<?php echo get_bloginfo('template_directory') ?>/img/bigtrophy.png" alt="">
               <img class="circle"src="<?php echo get_bloginfo('template_directory') ?>/img/circle.png" alt="">

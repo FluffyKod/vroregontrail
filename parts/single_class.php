@@ -37,7 +37,11 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
 
   <div class="box white lg">
 
-    <h4>Elever</h4>
+    <div class="see-more">
+      <h4>Elever</h4>
+      <h4>Växla medlem</h4>
+    </div>
+
 
     <?php
 
@@ -65,23 +69,33 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
           if ($s_status[0] == 'n'){
           ?>
             <div class="student no-member">
-              <p><?php echo $student->user_nicename; ?></p>
+              <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
+              <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
+                <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
+                <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
+              </form>
             </div>
           <?php
         } elseif ($s_status[0] == 'w'){
           // Check if student is waiting to become a member
           ?>
             <div class="student waiting">
-              <p><?php echo $student->user_nicename; ?></p>
+              <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
+              <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
+                <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
+                <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
+                <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
+              </form>
             </div>
           <?php
         } elseif ($s_status[0] == 'y'){
           // Check if student is a member
           ?>
             <div class="student">
-              <p><?php echo $student->user_nicename; ?></p>
-              <form class="student_actions" action="index.html" method="post">
-
+              <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
+              <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
+                <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
+                <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
               </form>
             </div>
           <?php
@@ -93,6 +107,42 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
     }
 
     ?>
+
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="box green lg">
+
+    <h4>Lägg till / ta bort poäng</h4>
+    <form class="" method="post" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_classes.inc.php'); ?>">
+      <input type="number" name="add-points" value="" placeholder="+/-Poäng..." required>
+      <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
+
+      <button class="btn lg" type="" name="give_classpoints_internal">Ge poäng</button>
+    </form>
+
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="box green lg">
+
+    <h4>Lägg till ny elev</h4>
+    <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="POST">
+      <input style="display:none">
+      <input type="text" name="first_name" value="" placeholder="Förnamn..." required>
+      <input type="text" name="last_name" value="" placeholder="Efernamn..." required>
+      <input type="email" name="email_address" value="" placeholder="Skolmail..." required>
+      <input type="password" name="password" value="" placeholder="Lösenord..." required>
+
+      <input id="class" hidden type="text" name="class_id" value="<?php echo $c_id; ?>">
+     <button type="submit" name="add_new_user" class="btn lg">Skapa ny elev</button>
+   </form>
 
   </div>
 

@@ -5,7 +5,7 @@
  */
 
 // Show this page only to admin
-iif (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
+if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
   wp_redirect( '/' );
 } else {
 
@@ -13,7 +13,7 @@ iif (! is_user_logged_in() || !(current_user_can('administrator') || current_use
 global $wpdb;
 
 // Get all classes
-$classes = $wpdb->get_results('SELECT * FROM vro_classes');
+$classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name , 3, 2)');
 
 ?>
 
@@ -59,7 +59,7 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes');
         </div>
 
         <div class="banner">
-          <h3>0 nya förfrågningar!</h3>
+          <h3>0 nya medlemsförfrågningar!</h3>
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>
@@ -68,7 +68,39 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes');
 
           <div class="box white sm center">
 
-            <h2 class="gt">97% medlemmar!</h2>
+            <!-- <h2 class="gt">97% medlemmar!</h2> -->
+
+            <?php
+
+            global $wpdb;
+
+            // Get the number of all members
+            $user_amount = count(get_users(array(
+              'meta_key' => 'class_id'
+            )));
+
+            // Get all users that are members in kåren
+            $args = array(
+                'meta_query' => array(
+                    array(
+                        'key' => 'status',
+                        'value' => 'y',
+                        'compare' => '=='
+                    )
+                )
+            );
+
+            // Get all students for that class
+            $member_amount = count(get_users($args));
+
+            $percentage = round($member_amount / $user_amount * 100);
+
+            ?>
+
+            <div class="first-place members">
+              <p><b><?php echo $percentage; ?>%</b></p>
+              <p><b>Medlemmar</b></p>
+            </div>
 
           </div>
 
@@ -95,7 +127,10 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes');
 
           <div class="box white lg">
 
-            <h4>Klasser</h4>
+            <div class="see-more">
+              <h4>Klasser</h4>
+              <h4>Medlemmar i elevkåren</h4>
+            </div>
 
             <?php
 
@@ -154,6 +189,21 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes');
 
           <?php } ?>
 
+
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="box green lg">
+
+            <h4>Skapa ny klass</h4>
+            <form class="" method="post" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_classes.inc.php'); ?>">
+              <input type="text" name="class-name" value="" placeholder="Klassnamn...">
+
+              <button class="btn lg" type="submit" name="add_class">Skapa klass</button>
+            </form>
 
           </div>
 

@@ -60,7 +60,7 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
         <!-- Show page title and current date -->
         <div class="top-bar">
-          <h2>Kommitéer</h2>
+          <h2>Kommittéer</h2>
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
 

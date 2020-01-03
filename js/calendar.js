@@ -100,7 +100,7 @@ function showCalendar(month, year){
       }
 
       // Display empty boxes if the first day is not a monday
-      if(i === 0 && j < firstDay){
+      if(i === 0 && j < firstDay + 1){
         let cellText = document.createElement('p');
         cellText.innerText = '';
         cell.appendChild(cellText);

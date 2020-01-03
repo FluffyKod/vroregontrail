@@ -21,6 +21,7 @@ if (! is_user_logged_in() ){
 
 
 
+ <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
 
  <section id="forms-test">
 
@@ -92,9 +93,39 @@ if (! is_user_logged_in() ){
 
    </form>
 
+   <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="POST">
+     <input style="display:none">
+     <input type="text" name="first_name" value="" placeholder="Förnamn..." required>
+     <input type="text" name="last_name" value="" placeholder="Efernamn..." required>
+     <input type="email" name="email_address" value="" placeholder="Skolmail..." required>
+     <input type="password" name="password" value="" placeholder="Lösenord..." required>
+    <div class="autocomplete">
+      <input id="class" type="text" name="class_name" placeholder="Klass..." required>
+    </div>
+    <button type="submit" name="add_new_user" class="btn lg">Lägg till användare</button>
+  </form>
+
+
+<?php
+
+global $wpdb;
+
+$results = $wpdb->get_results('SELECT name FROM vro_classes');
+echo '<script type="text/javascript">';
+echo 'var jsonclasses = ' . json_encode($results);
+echo '</script>'
+
+?>
+
+<script>
+var classes = getArrayFromColumn(jsonclasses, 'name');
+
+autocomplete(document.getElementById("class"), classes, 'Denna klass är ännu inte skapad');
+</script>
+
  </section>
 
- <script src="<?php echo get_bloginfo('template_directory') ?>/js/modal.js" charset="utf-8"></script>
+ <!-- <script src="<?php echo get_bloginfo('template_directory') ?>/js/modal.js" charset="utf-8"></script> -->
 
 
  <?php

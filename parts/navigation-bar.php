@@ -17,7 +17,15 @@
 
   <div class="nav-header">
     <a href="/"><img src="<?php echo get_bloginfo('template_directory') ?>/img/vitfluga.png" alt=""></a>
-    <h2>Admin</h2>
+    <?php
+
+    if (current_user_can('administrator') || current_user_can('elevkaren') ){
+      echo '<h2>Admin</h2>';
+    } else {
+      echo '<h2>VRO</h2>';
+    }
+     ?>
+
   </div>
 
   <nav id="navbar-nav">
@@ -57,7 +65,7 @@
       <p>Kommitéer</p>
     </a>
 
-    <a href="/admin/kalender/" class="nav-item" id="link-kalender">
+    <a href="/kalender/" class="nav-item" id="link-kalender">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/calendar.png" alt="" class="nav-icon">
       <p>Kalender</p>
     </a>
