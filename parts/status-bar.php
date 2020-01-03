@@ -8,6 +8,8 @@
 
   $user = wp_get_current_user();
 
+  global $wpdb;
+
 ?>
 
 <section id="status">
@@ -26,7 +28,26 @@
       </div>
 
       <p><b><?php echo get_user_meta($user->ID,'nickname',true); ?></b></p>
-      <p>Na21d</p>
+
+      <?php
+      // Get class name
+      $display_class_name = '';
+
+      // Check if a class has been set for this student
+      if (metadata_exists('user', $user->ID, 'class_id')){
+        // Get the class id
+        $user_class_id = get_user_meta($user->ID, 'class_id', true);
+
+        // Check if there is a class with that class id
+        if ($user_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id='. $user_class_id)) {
+          // if so, get the class name
+          $display_class_name = $user_class->name;
+        }
+
+      }
+      
+      ?>
+      <p><?php echo $display_class_name; ?></p>
     </div>
 
 </div>
@@ -36,7 +57,7 @@
     <div class="see-more">
       <h4>Kommande</h4>
       <div>
-        <a href="/admin/kalender">Se alla events &#8594;</a>
+        <a href="/panel/kalender">Se alla events &#8594;</a>
       </div>
     </div>
 

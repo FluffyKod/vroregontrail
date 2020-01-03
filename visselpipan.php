@@ -4,12 +4,8 @@
  * Template Name: Visselpipan
  */
 
-?>
-
-<?php
-
-// Show this page only to admin
-if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
+// CHECK IF LOGGED IN
+if (! is_user_logged_in() ){
   wp_redirect( '/' );
 } else {
 ?>
@@ -29,32 +25,42 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
     <div class="container">
 
-      <!--
-      * Admin Navbar
-      --------------------------------------->
+      <!-- ***********************************
+      * NAVBAR
+      *************************************-->
+
       <?php
-        require_once(get_template_directory() . "/parts/navigation-bar.php");
+      // Display a special navbar for admins
+      if (current_user_can('administrator') || current_user_can('elevkaren') ){
+        require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
+      } else {
+        require_once(get_template_directory() . "/parts/member-navigation-bar.php");
+      }
       ?>
 
       <!--
       * Dashboard
       --------------------------------------->
-
-      <?php
-
-        // Get all suggestions
-        global $wpdb;
-
-        $results = $wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "w"');
-
-       ?>
-
       <section id="dashboard">
 
         <div class="top-bar">
           <h2>Visselpipan</h2>
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
+
+
+        <?php
+
+          // Only show the event types for admins
+          if (current_user_can('administrator') || current_user_can('elevkaren') ){
+
+
+          // Get all suggestions
+          global $wpdb;
+
+          $results = $wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "w"');
+
+         ?>
 
         <div class="banner">
 
@@ -101,9 +107,48 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
               echo '</div>';
             echo '</div>';
 
-          }
+          } // End foreach
+
+        } // End check admin
 
           ?>
+
+      <!-- TODO: send visselpipan suggestion -->
+      <div class="row">
+
+        <div class="box lg green">
+
+          <h4>Skicka ett nytt förslag</h4>
+
+          <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_visselpipan.inc.php'); ?>" method="post">
+
+            <?php // Show error messages
+
+            if (isset($_GET['visselpipa'])) {
+
+              $visselpipa_check = $_GET['visselpipa'];
+
+              if ($visselpipa_check == 'empty') {
+                echo '<p class="error">Du måste fylla i alla fält!</p>';
+              }
+              elseif ($visselpipa_check == 'success') {
+                echo '<p class="success">Ditt förslag har skickats!</p>';
+              }
+
+            }
+
+           ?>
+
+            <input type="text" name="subject" placeholder="Rubrik..." required>
+            <textarea name="text" placeholder="Förslag..." required></textarea>
+
+            <button name="new_visselpipa" class="btn lg" type="submit">Skicka</button>
+
+          </form>
+
+        </div>
+
+      </div>
 
       </section>
 

@@ -4,10 +4,10 @@
  * Template Name: Kommiteer
  */
 
-// Show this page only to admin
-if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
-  wp_redirect( '/' );
-} else {
+ // Show this page to all logged in users
+ if (! is_user_logged_in() ){
+   wp_redirect( '/' );
+ } else {
 
   // Get access to all wordpress database funcitonality
   global $wpdb;
@@ -36,13 +36,18 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
     <div class="container">
 
-      <!-- **************************
-        ADMIN NAVBAR
-      **************************  -->
-      <?php
-        require_once(get_template_directory() . "/parts/navigation-bar.php");
-      ?>
+      <!-- ***********************************
+      * NAVBAR
+      *************************************-->
 
+      <?php
+      // Display a special navbar for admins
+      if (current_user_can('administrator') || current_user_can('elevkaren') ){
+        require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
+      } else {
+        require_once(get_template_directory() . "/parts/member-navigation-bar.php");
+      }
+      ?>
       <!-- **************************
         DASHBOARD
       **************************  -->
@@ -63,6 +68,12 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
           <h2>Kommittéer</h2>
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
+
+        <?php
+        // Show this only to admins and working student in elevkaren
+        if (current_user_can('administrator') || current_user_can('elevkaren') ){
+
+        ?>
 
         <div class="banner">
 
@@ -118,8 +129,8 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
             </div>
           </div>
         <?php
-        }
-
+      } // End foreach applications
+    } // End check administartor
         ?>
 
         <!-- **************************
@@ -157,11 +168,18 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
             <div class="kommiteer">
 
+              <?php
+              // Show this only to admins and working student in elevkaren
+              if (current_user_can('administrator') || current_user_can('elevkaren') ){
+                ?>
+
               <!-- Always show the add new kommitée card -->
               <div class="kommitee alert">
                   <button class="add-btn lg">+</button>
                   <h5>Skapa ny kommitée</h5>
               </div>
+
+            <?php } //End if admin ?>
 
               <?php
 
@@ -169,13 +187,13 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
               foreach ($kommiteer as $k){
 
                 // Get the member count
-                $member_count = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k->id));
+                $member_count = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k->id . ' AND status="y"'));
 
               ?>
 
               <!-- Create new element to hold the information -->
               <div class="kommitee">
-                <a href="/admin/kommiteer?k_id=<?php echo $k->id; ?>">
+                <a href="/panel/kommiteer?k_id=<?php echo $k->id; ?>">
                     <!-- Name -->
                     <h4><?php echo $k->name ?></h4>
 
@@ -195,9 +213,15 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
         </div>
 
+
         <!-- **************************
           ADD NEW KOMMITÉE
         **************************  -->
+
+        <?php
+        // Show this only to admins and working student in elevkaren
+        if (current_user_can('administrator') || current_user_can('elevkaren') ){
+        ?>
 
         <div class="row">
 
@@ -216,7 +240,11 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
         </div>
 
-        <?php } ?>
+      <?php }
+
+    }// End if admin ?>
+
+
 
       </section>
 

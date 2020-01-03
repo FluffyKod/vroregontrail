@@ -24,7 +24,7 @@ get_header();
 
 <section class="green" id="info">
 
-  <a href="/admin/dashboard/" class="btn sm">Adminpanel</a>
+  <a href="/panel/dashboard/" class="btn sm">Adminpanel</a>
   <a href="/test/" class="btn sm">Test</a>
 
 

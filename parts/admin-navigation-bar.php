@@ -17,25 +17,18 @@
 
   <div class="nav-header">
     <a href="/"><img src="<?php echo get_bloginfo('template_directory') ?>/img/vitfluga.png" alt=""></a>
-    <?php
-
-    if (current_user_can('administrator') || current_user_can('elevkaren') ){
-      echo '<h2>Admin</h2>';
-    } else {
-      echo '<h2>VRO</h2>';
-    }
-     ?>
+    <h2>Admin</h2>
 
   </div>
 
   <nav id="navbar-nav">
 
-    <a href="/admin/dashboard/" class="nav-item active" id="link-dashboard">
+    <a href="/panel/dashboard/" class="nav-item active" id="link-dashboard">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/hemsida.png" alt="" class="nav-icon">
       <p>Dashboard</p>
     </a>
 
-    <a href="/admin/visselpipan/" class="nav-item" id="link-visselpipan">
+    <a href="/panel/visselpipan/" class="nav-item" id="link-visselpipan">
 
       <!-- Check if there are any new visselpipan suggestions, if so -> add a notification circle -->
       <?php if ($visselpipan_suggestions > 0) { ?>
@@ -50,7 +43,7 @@
       <p>Visselpipan</p>
     </a>
 
-    <a href="/admin/kommiteer/" class="nav-item" id="link-kommiteer">
+    <a href="/panel/kommiteer/" class="nav-item" id="link-kommiteer">
 
       <!-- Check if there are any new kommitée applications, if so -> add a notification circle -->
       <?php if ($kommitee_applications > 0) { ?>
@@ -70,27 +63,27 @@
       <p>Kalender</p>
     </a>
 
-    <a href="/admin/klasspokalen/" class="nav-item" id="link-klasspokalen">
+    <a href="/panel/klasspokalen/" class="nav-item" id="link-klasspokalen">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/trophy.png" alt="" class="nav-icon">
       <p>Klasspokalen</p>
     </a>
 
-    <a href="/admin/karen/" class="nav-item" id="link-karen">
+    <a href="/panel/karen/" class="nav-item" id="link-karen">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/bowtie.png" alt="" class="nav-icon">
       <p>Kåren</p>
     </a>
 
-    <a href="/admin/medlemmar/" class="nav-item" id="link-medlemmar">
+    <a href="/panel/medlemmar/" class="nav-item" id="link-medlemmar">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/members.png" alt="" class="nav-icon">
       <p>Medlemmar</p>
     </a>
 
-    <a href="/admin/hemsidan/" class="nav-item" id="link-hemsidan">
+    <a href="/panel/hemsidan/" class="nav-item" id="link-hemsidan">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
       <p>Hemsidan</p>
     </a>
 
-    <a href="/admin/installningar/" class="nav-item" id="link-installningar">
+    <a href="/panel/installningar/" class="nav-item" id="link-installningar">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/cog.png" alt="" class="nav-icon">
       <p>Inställningar</p>
     </a>

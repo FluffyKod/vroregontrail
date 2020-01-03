@@ -2,13 +2,13 @@
 
 // Check if this page has been called
 if (!isset($_GET['c_id'])) {
-  wp_redirect('/admin/medlemmar');
+  wp_redirect('/panel/medlemmar');
   exit();
 }
 
 // Check if an id has been supplied
 if (!is_numeric($_GET['c_id'])){
-  header('Location: /admin/medlemmar?status=idnan');
+  header('Location: /panel/medlemmar?status=idnan');
   exit();
 }
 
@@ -184,7 +184,7 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
        }
       ?>
 
-      
+
       <!-- <input type="number" name="end_year" value="" placeholder="Avgångsår (ex. 2022)..." list="end_years">
 
       <datalist id="end_years">

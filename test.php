@@ -17,7 +17,7 @@ if (! is_user_logged_in() ){
 
  ?>
 
- <a href="/admin/dashboard/" class="btn lg">Admin</a>
+ <a href="/panel/dashboard/" class="btn lg">Admin</a>
 
 
 

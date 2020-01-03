@@ -86,7 +86,7 @@
       $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET status = "y" WHERE id = %s', $_POST['accept_kommitee']));
 
       // Redirect with success message
-      header("Location: /admin/kommiteer?change=success");
+      header("Location: /panel/kommiteer?change=success");
       exit();
 
     }
@@ -98,7 +98,7 @@
       $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET status = "n" WHERE id = %s', $_POST['deny_kommitee']));
 
       // Redirect with success message
-      header("Location: /admin/kommiteer?change=success");
+      header("Location: /panel/kommiteer?change=success");
       exit();
 
     }
@@ -113,14 +113,49 @@
 
     global $wpdb;
 
+    // Check kommité id
+    $k_id = $_POST['kid'];
+
+    $member_message = test_input( $_POST['kommitee_member_answer'] );
+
+    if (!is_numeric($k_id)){
+      header("Location: /panel/kommiteer?komitte_member=nokid");
+      exit();
+    }
+
+    $k_id = (int)$k_id;
+
+    // Get the kommitté name
+    $kommitte_name = ($wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id='. $k_id))->name;
+
     // Check if accept button is pressed for a kommitée application
     if (isset($_POST['accept_kommitee_member']) && !empty($_POST['accept_kommitee_member']) && isset($_POST['kid'])) {
 
+      $u_id = $_POST['accept_kommitee_member'];
+
+      if (!is_numeric($u_id)){
+        header("Location: /panel/kommiteer?k_id=$k_id&komitte_member=nan");
+        exit();
+      }
+
+      $u_id = (int)$u_id;
+
       // Change the specified wanting member to official member
-      $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer_members SET status = "y" WHERE user_id = %s', $_POST['accept_kommitee_member']));
+      $accept_sql = 'UPDATE vro_kommiteer_members SET status = "y" WHERE kommitee_id= '. $k_id .' AND user_id = '. $u_id;
+      $wpdb->query( $wpdb->prepare( $accept_sql ) );
+
+      // Check if there was a message
+      if (!empty($member_message) && !empty($kommitte_name)){
+        // Get the applying student
+        if ($student = get_user_by('id', $u_id)) {
+          // Send the mail
+          $email_address = $student->user_email;
+          wp_mail( $email_address, 'Din ansökan till '. $kommitte_name .' har godkänts', $member_message );
+        }
+      }
 
       // Redirect with success message
-      header("Location: /admin/kommiteer?k_id=". $_POST['kid']);
+      header("Location: /panel/kommiteer?k_id=$k_id&komitte_member=success");
       exit();
 
     }
@@ -128,18 +163,140 @@
     // Check if eny buttons are pressed
     elseif (isset($_POST['deny_kommitee_member']) && !empty($_POST['deny_kommitee_member']) && isset($_POST['kid']) ){
 
-      // Change the specified member to be denied
-      $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer_members SET status = "n" WHERE user_id = %s', $_POST['deny_kommitee_member']));
+      $u_id = $_POST['deny_kommitee_member'];
+
+      if (!is_numeric($u_id)){
+        header("Location: /panel/kommiteer?k_id=$k_id&komitte_member=nan");
+        exit();
+      }
+
+      $u_id = (int)$u_id;
+
+      // Change the specified wanting member to official member
+      $deny_sql = 'UPDATE vro_kommiteer_members SET status = "n" WHERE kommitee_id= '. $k_id .' AND user_id = '. $u_id;
+      $wpdb->query( $wpdb->prepare( $deny_sql ) );
+
+      // Check if there was a message
+      if (!empty($member_message) && !empty($kommitte_name)){
+        // Get the applying student
+        if ($student = get_user_by('id', $u_id)) {
+          // Send the mail
+          $email_address = $student->user_email;
+          wp_mail( $email_address, 'Din ansökan till '. $kommitte_name .' har nekats', $member_message );
+        }
+      }
 
       // Redirect with success message
-      header("Location: /admin/kommiteer?k_id=". $_POST['kid']);
+      header("Location: /panel/kommiteer?k_id=$k_id&komitte_member=success");
       exit();
+
+    }
+
+
+
+  }
+
+  elseif (isset($_POST['apply_for_kommitte'])){
+
+    global $wpdb;
+
+    // Get the id's
+    $k_id = test_input( $_POST['kommitte_id'] );
+    $student_id = test_input( $_POST['student_id'] );
+
+    // INPUT VALIDATION
+    if (empty($k_id)){
+      header("Location: /panel/kommiteer?apply_kommitte=nokid");
+      exit();
+    }
+
+    if (!is_numeric($k_id)){
+      header("Location: /panel/kommiteer?apply_kommitte=nan");
+      exit();
+    }
+
+    $k_id = (int)$k_id;
+
+    if (empty($student_id)){
+      header("Location: /panel/kommiteer?k_id=$k_id&apply_kommitte=empty");
+      exit();
+    }
+
+    if (!is_numeric($student_id)){
+      header("Location: /panel/kommiteer?k_id=$k_id&apply_kommitte=nan");
+      exit();
+    }
+
+    $student_id = (int)$student_id;
+
+    // Check if this user already has sent an application
+    if ( count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id='. $student_id .' AND kommitee_id='. $k_id .'')) > 0 ) {
+      header("Location: /panel/kommiteer?k_id=$k_id&apply_kommitte=alreadythere");
+      exit();
+    } else {
+
+      // Insert an application
+      $new_application = array();
+
+      $new_application['user_id'] = $student_id;
+      $new_application['kommitee_id'] = $k_id;
+      $new_application['status'] = 'w';
+
+      // Insert the new suggestion into the database
+      if($wpdb->insert(
+          'vro_kommiteer_members',
+          $new_application
+      ) == false) {
+        wp_die('database insertion failed');
+      } else {
+        header("Location: /panel/kommiteer?k_id=$k_id&apply_kommitte=success");
+        exit();
+      }
 
     }
 
   }
 
+  elseif (isset($_POST['leave_kommitte'])){
+    global $wpdb;
+
+    // Get the id's
+    $k_id = test_input( $_POST['kommitte_id'] );
+    $student_id = test_input( $_POST['student_id'] );
+
+    // INPUT VALIDATION
+    if (empty($k_id)){
+      header("Location: /panel/kommiteer?leave_kommitte=nokid");
+      exit();
+    }
+
+    if (!is_numeric($k_id)){
+      header("Location: /panel/kommiteer?leave_kommitte=nan");
+      exit();
+    }
+
+    $k_id = (int)$k_id;
+
+    if (empty($student_id)){
+      header("Location: /panel/kommiteer?k_id=$k_id&leave_kommitte=empty");
+      exit();
+    }
+
+    if (!is_numeric($student_id)){
+      header("Location: /panel/kommiteer?k_id=$k_id&leave_kommitte=nan");
+      exit();
+    }
+
+    $student_id = (int)$student_id;
+
+    // Delete the student from the record
+    $wpdb->delete( 'vro_kommiteer_members', array( 'kommitee_id' => $k_id, 'user_id' => $student_id ) );
+
+    header("Location: /panel/kommiteer?k_id=$k_id&leave_kommitte=success");
+    exit();
+  }
+
   else {
-    header("Location: /test?application=error");
+    header("Location: /panel/kommiteer?apply_kommitte=error");
     exit();
   } // End post

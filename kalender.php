@@ -9,6 +9,8 @@ if (! is_user_logged_in() ){
   wp_redirect( '/' );
 } else {
 
+// Get the current student
+$current_student = wp_get_current_user();
 ?>
 
 <!DOCTYPE html>
@@ -28,11 +30,17 @@ if (! is_user_logged_in() ){
 
     <div class="container">
 
-      <!--
-      * Admin Navbar
-      --------------------------------------->
+      <!-- ***********************************
+      * NAVBAR
+      *************************************-->
+
       <?php
-        require_once(get_template_directory() . "/parts/navigation-bar.php");
+      // Display a special navbar for admins
+      if (current_user_can('administrator') || current_user_can('elevkaren') ){
+        require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
+      } else {
+        require_once(get_template_directory() . "/parts/member-navigation-bar.php");
+      }
       ?>
 
       <!--
@@ -48,7 +56,7 @@ if (! is_user_logged_in() ){
         </div>
 
         <div class="banner">
-          <h3>Välkommen tillbaka Anna!</h3>
+          <h3>Välkommen tillbaka <?php echo get_user_meta($current_student->ID,'nickname',true); ?>!</h3>
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>
@@ -56,7 +64,6 @@ if (! is_user_logged_in() ){
         <?php
         // Only show the event types for admins
         if (current_user_can('administrator') || current_user_can('elevkaren') ){
-
         ?>
 
         <div class="row">

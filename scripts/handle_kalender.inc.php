@@ -17,7 +17,7 @@ if (isset($_POST['add_event_type'])) {
   $fgColor = test_input( $_POST['etFgColor'] );
 
   if ( empty($name) ){
-    header("Location: /admin/kalender?event_type=empty");
+    header("Location: /panel/kalender?event_type=empty");
     exit();
   } else {
 
@@ -26,7 +26,7 @@ if (isset($_POST['add_event_type'])) {
       $bgColor = '%23' . substr($bgColor, 1);
       $fgColor = '%23' . substr($fgColor, 1);
 
-      header("Location: /admin/kalender?event_type=nametaken&symbol=$symbol&bgColor=$bgColor&fgColor=$fgColor");
+      header("Location: /panel/kalender?event_type=nametaken&symbol=$symbol&bgColor=$bgColor&fgColor=$fgColor");
       exit();
     }
     // Create a new array that will hold all the arguments to create a new visselpipan suggestion
@@ -45,14 +45,14 @@ if (isset($_POST['add_event_type'])) {
       wp_die('database insertion failed');
     }
 
-    header("Location: /admin/kalender?event_type=success");
+    header("Location: /panel/kalender?event_type=success");
     exit();
 
     }
 
 }
 elseif (isset($_POST['show_add_event_type'])) {
-  header("Location: /admin/kalender?event_type=open");
+  header("Location: /panel/kalender?event_type=open");
   exit();
 }
 
@@ -63,12 +63,12 @@ elseif (isset($_POST['remove_event_type'])) {
   $etId = $_POST['remove_event_type'];
 
   if (empty($etId)) {
-    header("Location: /admin/kalender?remove_event_type=empty");
+    header("Location: /panel/kalender?remove_event_type=empty");
     exit();
   }
 
   if (!is_numeric($etId)) {
-    header("Location: /admin/kalender?remove_event_type=nan");
+    header("Location: /panel/kalender?remove_event_type=nan");
     exit();
   }
 
@@ -77,7 +77,7 @@ elseif (isset($_POST['remove_event_type'])) {
     wp_die('database remove event type failed');
   } else {
     // Success!
-    header("Location: /admin/kalender?remove_event_type=success");
+    header("Location: /panel/kalender?remove_event_type=success");
     exit();
   }
 
@@ -87,7 +87,7 @@ elseif (isset($_POST['remove_event_type'])) {
   //   wp_die('database deletion failed');
   // } else {
   //   // Success!
-  //   header("Location: /admin/kalender?remove_event_type=success");
+  //   header("Location: /panel/kalender?remove_event_type=success");
   //   exit();
   // }
 }
@@ -98,12 +98,12 @@ elseif (isset($_POST['alter_event_type'])) {
   $etId = $_POST['alter_event_type'];
 
   if (empty($etId)) {
-    header("Location: /admin/kalender?alter_event_type=noid");
+    header("Location: /panel/kalender?alter_event_type=noid");
     exit();
   }
 
   if (!is_numeric($etId)) {
-    header("Location: /admin/kalender?alter_event_type=nan");
+    header("Location: /panel/kalender?alter_event_type=nan");
     exit();
   }
 
@@ -113,7 +113,7 @@ elseif (isset($_POST['alter_event_type'])) {
   $fgColor = test_input( $_POST['etFgColor'] );
 
   if ( empty($name) ){
-    header("Location: /admin/kalender?alter_event_type=empty");
+    header("Location: /panel/kalender?alter_event_type=empty");
     exit();
   }
 
@@ -124,7 +124,7 @@ elseif (isset($_POST['alter_event_type'])) {
     $fgColor = '%23' . substr($fgColor, 1);
     $symbol = urlencode( $symbol );
 
-    header("Location: /admin/kalender?alter_event_type=nametaken&id=$etId&symbol=$symbol&bgColor=$bgColor&fgColor=$fgColor");
+    header("Location: /panel/kalender?alter_event_type=nametaken&id=$etId&symbol=$symbol&bgColor=$bgColor&fgColor=$fgColor");
     exit();
   }
 
@@ -139,7 +139,7 @@ elseif (isset($_POST['alter_event_type'])) {
     wp_die('database alter event type failed');
   } else {
     // Success!
-    header("Location: /admin/kalender?alter_event_type=success");
+    header("Location: /panel/kalender?alter_event_type=success");
     exit();
   }
 
@@ -153,13 +153,13 @@ elseif (isset($_POST['show_alter_event_type'])) {
 
   // Check if there is an event type id
   if (empty($et_id)){
-    header("Location: /admin/kalender?show_alter_event_type=noetid");
+    header("Location: /panel/kalender?show_alter_event_type=noetid");
     exit();
   }
 
   // Check if the event type id is a number
   if (!is_numeric($et_id)) {
-    header("Location: /admin/kalender?show_alter_event_type=nan");
+    header("Location: /panel/kalender?show_alter_event_type=nan");
     exit();
   }
 
@@ -167,7 +167,7 @@ elseif (isset($_POST['show_alter_event_type'])) {
   $selected_et = $wpdb->get_row('SELECT * FROM vro_event_types WHERE id=' . $et_id);
 
   if (!$selected_et){
-    header("Location: /admin/kalender?show_alter_event_type=noetfound");
+    header("Location: /panel/kalender?show_alter_event_type=noetfound");
     exit();
   }
 
@@ -175,7 +175,7 @@ elseif (isset($_POST['show_alter_event_type'])) {
   $bg_color = '%23' . substr($selected_et->bg_color, 1);
   $fg_color = '%23' . substr($selected_et->fg_color, 1);
 
-  header("Location: /admin/kalender?show_alter_event_type=open&id=$selected_et->id&type_name=$selected_et->name&symbol=$selected_et->symbol&bgColor=$bg_color&fgColor=$fg_color");
+  header("Location: /panel/kalender?show_alter_event_type=open&id=$selected_et->id&type_name=$selected_et->name&symbol=$selected_et->symbol&bgColor=$bg_color&fgColor=$fg_color");
   exit();
 
 }
@@ -198,12 +198,12 @@ elseif (isset($_POST['add_event'])) {
   $event_visibility = $_POST['ae_visibility'];
 
   if ($event_type == 'none'){
-    header("Location: /admin/kalender?add_event=noeventtype");
+    header("Location: /panel/kalender?add_event=noeventtype");
     exit();
   }
 
   if (empty($event_name)) {
-    header("Location: /admin/kalender?add_event=noname");
+    header("Location: /panel/kalender?add_event=noname");
     exit();
   }
 
@@ -237,12 +237,12 @@ elseif (isset($_POST['add_event'])) {
     wp_die('database insertion failed');
   }
 
-  header("Location: /admin/kalender?add_event=success");
+  header("Location: /panel/kalender?add_event=success");
   exit();
 
 
 }
 else {
-  header("Location: /admin/kalender");
+  header("Location: /panel/kalender");
   exit();
 }

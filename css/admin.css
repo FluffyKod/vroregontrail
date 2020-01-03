@@ -116,6 +116,10 @@ button {
   border: none;
 }
 
+button:hover {
+  cursor: pointer;
+}
+
 .btn {
   background-color: var(--lighter);
   font-weight: 700;
@@ -223,9 +227,9 @@ input[type="color"] {
   width: min-content;
 } */
 
-.white input {
+/* .white input {
   background-color: #ddd;
-}
+} */
 
 input:focus, textarea:focus {
   background-color: var(--highlight);
@@ -261,6 +265,10 @@ form .success, form .error {
 
 form .success {
   background-color: var(--main);
+}
+
+.green form .success {
+  background-color: var(--lighter);
 }
 
 form .error {
@@ -379,6 +387,7 @@ select:focus {
   background-color: var(--main);
   padding: 0;
   color: #fff;
+  min-height: 100vh;
 }
 
 .nav-header {
@@ -475,6 +484,7 @@ select:focus {
   background-color: var(--box);
   color: #000;
   padding: 5% 8%;
+  min-height: 100vh;
 }
 
 .logout {
@@ -616,6 +626,7 @@ select:focus {
   grid-area: dashboard;
   background-color: var(--background);
   padding: 15px 5%;
+  min-height: 100vh;
 }
 
 /****** Top Bar ******/
@@ -838,7 +849,7 @@ div[class=kommitee] a {
     "chairman send_message"
     "add_member send_message";
 }
-.kommitee-row #chairman {
+#chairman {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -851,7 +862,7 @@ div[class=kommitee] a {
   height: 120px;
 }
 
-.kommitee-row #chairman p {
+#chairman p {
   margin: 0;
   font-size: 0.9rem;
   color: #888;

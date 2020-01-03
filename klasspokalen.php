@@ -8,8 +8,8 @@
 
 <?php
 
-// Show this page only to admin
-if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
+// Show this page to all logged in users
+if (! is_user_logged_in() ){
   wp_redirect( '/' );
 } else {
 ?>
@@ -29,13 +29,18 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
     <div class="container">
 
-      <!--
-      * Admin Navbar
-      --------------------------------------->
-      <?php
-        require_once(get_template_directory() . "/parts/navigation-bar.php");
-      ?>
+      <!-- ***********************************
+      * NAVBAR
+      *************************************-->
 
+      <?php
+      // Display a special navbar for admins
+      if (current_user_can('administrator') || current_user_can('elevkaren') ){
+        require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
+      } else {
+        require_once(get_template_directory() . "/parts/member-navigation-bar.php");
+      }
+      ?>
       <!--
       * Dashboard
       --------------------------------------->

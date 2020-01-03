@@ -15,7 +15,7 @@ if (isset($_POST['new_visselpipa'])) {
   $text = test_input( $_POST['text'] );
 
   if ( empty($subject) || empty($text) ){
-    header("Location: /test?visselpipa=empty");
+    header("Location: /panel/visselpipan?visselpipa=empty");
     exit();
   } else {
 
@@ -34,12 +34,12 @@ if (isset($_POST['new_visselpipa'])) {
       wp_die('database insertion failed');
     }
 
-    header("Location: /test?visselpipa=success");
+    header("Location: /panel/visselpipan?visselpipa=success");
     exit();
 
   }
 
 } else {
-  header("Location: /test?visselpipa=error");
+  header("Location: /panel/visselpipan?visselpipa=error");
   exit();
 } // End post

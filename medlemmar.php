@@ -36,7 +36,7 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
       * Admin Navbar
       --------------------------------------->
       <?php
-        require_once(get_template_directory() . "/parts/navigation-bar.php");
+        require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
       ?>
 
       <!--
@@ -181,7 +181,7 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
 
             ?>
 
-              <a href="/admin/medlemmar?c_id=<?php echo $c->id; ?>" class="class">
+              <a href="/panel/medlemmar?c_id=<?php echo $c->id; ?>" class="class">
                 <p><?php echo $c->name; ?></p>
                 <div class="member_count">
                   <p><?php echo $student_members; ?></p>

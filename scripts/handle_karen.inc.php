@@ -16,12 +16,12 @@ if (isset($_POST['add_new_position_type'])) {
   $is_linked_utskott = test_input( $_POST['is_linked_utskott'] );
 
   if ( empty($position_name) || empty($is_unique) || empty($is_linked_utskott) ){
-    header("Location: /admin/karen?new_position_type=empty");
+    header("Location: /panel/karen?new_position_type=empty");
     exit();
   } else {
 
     if ( ($is_unique != 'True' and $is_unique != 'False') or ($is_linked_utskott != 'True' and $is_linked_utskott != 'False') ){
-      header("Location: /admin/karen?new_position_type=nottruefalse");
+      header("Location: /panel/karen?new_position_type=nottruefalse");
       exit();
     }
 
@@ -40,12 +40,12 @@ if (isset($_POST['add_new_position_type'])) {
       wp_die('database insertion failed');
     }
 
-    header("Location: /admin/karen?new_position_type=success");
+    header("Location: /panel/karen?new_position_type=success");
     exit();
 
   }
 
 } else {
-  header("Location: /admin/karen?new_position_type=error");
+  header("Location: /panel/karen?new_position_type=error");
   exit();
 } // End post

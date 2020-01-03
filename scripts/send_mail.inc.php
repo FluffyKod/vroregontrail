@@ -16,7 +16,7 @@ if (isset($_POST['send_message_school'])) {
   $mail_to = test_input( $_POST['mail-to'] );
 
   if ( empty($message) || empty($mail_to) || empty($subject) ){
-    header("Location: /admin/dashboard?send_message=empty");
+    header("Location: /panel/dashboard?send_message=empty");
     exit();
   } else {
 
@@ -30,7 +30,7 @@ if (isset($_POST['send_message_school'])) {
       $mail_to = (int)$mail_to;
 
       if ($mail_to < 1 or $mail_to > 3){
-        header("Location: /admin/dashboard?send_message=invalidyear");
+        header("Location: /panel/dashboard?send_message=invalidyear");
         exit();
       }
 
@@ -51,12 +51,66 @@ if (isset($_POST['send_message_school'])) {
 
     }
 
-    header("Location: /admin/dashboard?send_message=success");
+    header("Location: /panel/dashboard?send_message=success");
     exit();
 
   }
 
-} else {
-  header("Location: /test?visselpipa=error");
+}
+elseif (isset($_POST['send_message_kommitte'])){
+
+  global $wpdb;
+
+  $subject = test_input( $_POST['subject'] );
+  $message = test_input( $_POST['message'] );
+  $mail_to = test_input( $_POST['mail-to'] );
+  $k_id = test_input( $_POST['k_id'] );
+
+  if (empty($k_id) || !is_numeric($k_id) ){
+    header("Location: /panel/kommiteer?send_message=empty");
+    exit();
+  }
+
+  if ( empty($message) || empty($subject) ){
+    header("Location: /panel/kommiteer?k_id=$k_id&send_message=empty");
+    exit();
+  } else {
+
+    // Get all memeber
+    $member_ids = $wpdb->get_results('SELECT user_id FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id );
+
+    // CH
+    if ( isset($mail_to) && $mail_to == 'only_chairman'){
+      // Only mail to the chairman
+      $member_ids = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id=' . $k_id);
+    }
+
+    // Mail all students the message
+    foreach ($member_ids as $m) {
+
+      // GET USER
+      $member = get_user_by('id', (int)$m);
+
+      // Get the students email
+      $email_address = $member->user_email;
+
+      // Check that there is a valid email
+      if (filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+        // Send the mail!
+        wp_mail( $email_address, $subject, $message );
+      }
+
+    }
+
+    // SUccess
+    header("Location: /panel/kommiteer?k_id=$k_id&send_message=success");
+    exit();
+
+  }
+
+}
+
+else {
+  header("Location: /panel/kommiteer?send_message=error");
   exit();
 } // End post

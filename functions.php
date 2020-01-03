@@ -18,7 +18,7 @@ function custom_login_redirect( $redirect_to, $request, $user ) {
 
     // If part of elevkåren, send them to the elevkåren admin dashboard
     if( in_array( "elevkaren", $user->roles ) ) {
-      return '/admin/dashboard/';
+      return '/panel/dashboard/';
     }
 
     // Any other role, send home

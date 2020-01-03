@@ -15,24 +15,24 @@ if (isset($_POST['toggle_member'])) {
   $class_id = test_input( $_POST['c_id'] );
 
   if (empty( $class_id ) or !is_numeric( $class_id )){
-    header("Location: /admin/medlemmar?toggle_member=noclassid");
+    header("Location: /panel/medlemmar?toggle_member=noclassid");
     exit();
   }
 
   if ( empty($student_id) ){
-    header("Location: /admin/medlemmar/?c_id=$class_id&toggle_member=empty");
+    header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=empty");
     exit();
   } else {
 
     if(!is_numeric($student_id)){
-      header("Location: /admin/medlemmar/?c_id=$class_id&toggle_member=empty");
+      header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=empty");
       exit();
     }
 
     $status = get_user_meta($student_id, 'status');
 
     if (!$status[0]){
-      header("Location: /admin/medlemmar/?c_id=$class_id&toggle_member=nouser");
+      header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=nouser");
       exit();
     }
 
@@ -43,7 +43,7 @@ if (isset($_POST['toggle_member'])) {
     }
     else {
       // Success!
-      header("Location: /admin/medlemmar/?c_id=$class_id&toggle_member=success");
+      header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=success");
       exit();
     }
 
@@ -67,7 +67,7 @@ elseif (isset($_POST['add_new_user'])) {
   // Check if a class id or a class name has been supplied
   if (isset($class_id)) {
     if (!is_numeric($class_id)) {
-      header("Location: /admin/medlemmar?add_user=nan");
+      header("Location: /panel/medlemmar?add_user=nan");
       exit();
     }
     // Get class with id
@@ -84,37 +84,37 @@ elseif (isset($_POST['add_new_user'])) {
 
   } else {
     // No class name or id supplied
-    header("Location: /admin/medlemmar?add_user=noclass");
+    header("Location: /panel/medlemmar?add_user=noclass");
     exit();
   }
 
   // Check if a class was found with the given class id or class name
   if (!$class) {
-    header("Location: /admin/medlemmar?c_id=$class_id&add_user=noclassfound");
+    header("Location: /panel/medlemmar?c_id=$class_id&add_user=noclassfound");
     exit();
   }
 
   if (!isset($first_name) or !isset($last_name) or !isset($email_address) or !isset($password)){
-    header("Location: /admin/medlemmar?c_id=$class_id&add_user=empty");
+    header("Location: /panel/medlemmar?c_id=$class_id&add_user=empty");
     exit();
   }
 
   // Check valid mail
   if (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
-    header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidemail&first_name=$first_name&last_name=$last_name");
+    header("Location: /panel/medlemmar?c_id=$class_id&add_user=invalidemail&first_name=$first_name&last_name=$last_name");
     exit();
   }
 
   // Check mail ends with vrg.se
   if (! (substr($email_address, -6) == 'vrg.se')){
-    header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidemail&first_name=$first_name&last_name=$last_name");
+    header("Location: /panel/medlemmar?c_id=$class_id&add_user=invalidemail&first_name=$first_name&last_name=$last_name");
     exit();
   }
 
   // IF INPUT END YEAR SELF
   // CHeck the end year is numeric
   // if (!is_numeric($end_year)) {
-  //   header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name&email=$email_address");
+  //   header("Location: /panel/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name&email=$email_address");
   //   exit();
   // }
   //
@@ -123,7 +123,7 @@ elseif (isset($_POST['add_new_user'])) {
   //
   // // Check it is 4 digits
   // if ($end_year < 999 or $end_year > 9999){
-  //   header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name");
+  //   header("Location: /panel/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name");
   //   exit();
   // }
 
@@ -135,7 +135,7 @@ elseif (isset($_POST['add_new_user'])) {
   $yearFromClassName = $yearFromClassName->format('Y');
 
   if (!is_numeric($yearFromClassName)){
-    header("Location: /admin/medlemmar?c_id=$class_id&add_user=noyearfound&first_name=$first_name&last_name=$last_name");
+    header("Location: /panel/medlemmar?c_id=$class_id&add_user=noyearfound&first_name=$first_name&last_name=$last_name");
     exit();
   }
 
@@ -144,13 +144,13 @@ elseif (isset($_POST['add_new_user'])) {
 
   // Check it is 4 digits
   if ($end_year < 999 or $end_year > 9999){
-    header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name");
+    header("Location: /panel/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name");
     exit();
   }
 
   if (username_exists( $email_address )){
     // Send error header
-    header("Location: /admin/medlemmar?c_id=$class_id&add_user=emailexists");
+    header("Location: /panel/medlemmar?c_id=$class_id&add_user=emailexists");
     exit();
   } else {
     // Generate a 15 character long password with special characters
@@ -183,13 +183,13 @@ elseif (isset($_POST['add_new_user'])) {
     wp_mail( $email_address, 'Välkommen till Viktor Rydberg Odenplans hemsida!', 'Hej '. $first_name .'! Välkommen till Viktor Rydbergs Odenplans hemsida! Gå in på vroelevkar.se för att se matsedeln, ansöka till kommittéer och mycket mer!' );
 
     //Success!
-    header("Location: /admin/medlemmar?c_id=$class->id&add_user=success");
+    header("Location: /panel/medlemmar?c_id=$class->id&add_user=success");
     exit();
   }
 
 }
 
 else {
-  header("Location: /admin/medlemmar?add_user=error");
+  header("Location: /panel/medlemmar?add_user=error");
   exit();
 } // End post
