@@ -90,10 +90,16 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
                 )
             );
 
-            // Get all students for that class
+            // Get all members
             $member_amount = count(get_users($args));
 
-            $percentage = round($member_amount / $user_amount * 100);
+            // Only do the calculation if there are any students
+            if ($user_amount != 0){
+              $percentage = round($member_amount / $user_amount * 100);
+            } else {
+              $percentage = 0;
+            }
+
 
             ?>
 

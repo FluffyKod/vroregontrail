@@ -58,6 +58,7 @@ elseif (isset($_POST['add_new_user'])) {
   $last_name = test_input( $_POST['last_name'] );
   $email_address = $_POST['email_address'];
   $class_name = test_input( $_POST['class_name'] );
+  // $end_year = test_input ( $_POST['end_year'] );
   $password = $_POST['password'];
   $class_id = $_POST['class_id'];
 
@@ -71,6 +72,7 @@ elseif (isset($_POST['add_new_user'])) {
     }
     // Get class with id
     $class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . (int)$class_id);
+    $class_name = $class->name;
 
   } elseif (isset($class_name)) {
 
@@ -93,13 +95,58 @@ elseif (isset($_POST['add_new_user'])) {
   }
 
   if (!isset($first_name) or !isset($last_name) or !isset($email_address) or !isset($password)){
-    header("Location: /admin/medlemmar?c_id=$class_id&add_user=valuemissing");
+    header("Location: /admin/medlemmar?c_id=$class_id&add_user=empty");
     exit();
   }
 
   // Check valid mail
+  if (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+    header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidemail&first_name=$first_name&last_name=$last_name");
+    exit();
+  }
 
   // Check mail ends with vrg.se
+  if (! (substr($email_address, -6) == 'vrg.se')){
+    header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidemail&first_name=$first_name&last_name=$last_name");
+    exit();
+  }
+
+  // IF INPUT END YEAR SELF
+  // CHeck the end year is numeric
+  // if (!is_numeric($end_year)) {
+  //   header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name&email=$email_address");
+  //   exit();
+  // }
+  //
+  // // Convert just in case
+  // $end_year = (int)$end_year;
+  //
+  // // Check it is 4 digits
+  // if ($end_year < 999 or $end_year > 9999){
+  //   header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name");
+  //   exit();
+  // }
+
+  // Get the end year from the class name
+  $yearFromClassName = substr($class_name, 2, 2);
+
+  // Get the year in 4-digit form
+  $yearFromClassName = date_create_from_format('y', $yearFromClassName);
+  $yearFromClassName = $yearFromClassName->format('Y');
+
+  if (!is_numeric($yearFromClassName)){
+    header("Location: /admin/medlemmar?c_id=$class_id&add_user=noyearfound&first_name=$first_name&last_name=$last_name");
+    exit();
+  }
+
+  // Convert to int
+  $end_year = (int)$yearFromClassName;
+
+  // Check it is 4 digits
+  if ($end_year < 999 or $end_year > 9999){
+    header("Location: /admin/medlemmar?c_id=$class_id&add_user=invalidyear&first_name=$first_name&last_name=$last_name");
+    exit();
+  }
 
   if (username_exists( $email_address )){
     // Send error header
@@ -124,13 +171,16 @@ elseif (isset($_POST['add_new_user'])) {
     // Set the class for the user
     add_user_meta( $user_id, 'class_id', $class->id );
 
+    // Set the end year
+    add_user_meta( $user_id, 'end_year', $end_year );
+
     // Set user role
     $user = new WP_User( $user_id );
     $user->set_role( 'subscriber' );
 
     // Mail the user
     // wp_mail( $email_address, 'Välkommen till Viktor Rydberg Odenplans hemsida!', 'Ditt lösenord är: ' . $password . '. Logga in för att ändra lösenordet.' );
-    wp_mail( $email_address, 'Välkommen till Viktor Rydberg Odenplans hemsida!', 'Hej! Välkommen till Viktor Rydbergs Odenplans hemsida! Gå in på vroelevkar.se för att se matsedeln, ansöka till kommittéer och mycket mer!' );
+    wp_mail( $email_address, 'Välkommen till Viktor Rydberg Odenplans hemsida!', 'Hej '. $first_name .'! Välkommen till Viktor Rydbergs Odenplans hemsida! Gå in på vroelevkar.se för att se matsedeln, ansöka till kommittéer och mycket mer!' );
 
     //Success!
     header("Location: /admin/medlemmar?c_id=$class->id&add_user=success");

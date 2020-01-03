@@ -14,7 +14,7 @@ if (isset($_POST['add_class'])) {
   $class_name = test_input( $_POST['class-name'] );
 
   if ( empty($class_name) ){
-    header("Location: /admin/medlemmar?new_class=noname");
+    header("Location: /panel/medlemmar?new_class=noname");
     exit();
   } else {
 
@@ -23,7 +23,7 @@ if (isset($_POST['add_class'])) {
 
     // Check if there already is a class with that name
     if ( count($wpdb->get_results('SELECT * FROM vro_classes WHERE name="'. $class_name .'"')) > 0 ) {
-      header("Location: /admin/medlemmar?=new_class=nametaken");
+      header("Location: /panel/medlemmar?=new_class=nametaken");
       exit();
     } else {
 
@@ -40,7 +40,7 @@ if (isset($_POST['add_class'])) {
         wp_die('database insertion failed');
       }
 
-      header("Location: /admin/medlemmar?new_class=success");
+      header("Location: /panel/medlemmar?new_class=success");
       exit();
 
     }
@@ -56,12 +56,12 @@ elseif (isset($_POST['give_class_points'])) {
   $class_points = test_input( $_POST['add-points'] );
 
   if ( empty($class_name) || empty($class_points)){
-    header("Location: /admin/dashboard?class_points=empty");
+    header("Location: /panel/dashboard?class_points=empty");
     exit();
   } else {
 
     if (!is_numeric($class_points)) {
-      header("Location: /admin/dashboard?class_points=nan&class_name=$class_name");
+      header("Location: /panel/dashboard?class_points=nan&class_name=$class_name");
       exit();
     }
 
@@ -72,7 +72,7 @@ elseif (isset($_POST['give_class_points'])) {
 
     // Check if there already is a class with that name
     if ( !$class_record ) {
-      header("Location: /admin/dashboard?class_points=noclassfound");
+      header("Location: /panel/dashboard?class_points=noclassfound");
       exit();
     } else {
 
@@ -85,7 +85,7 @@ elseif (isset($_POST['give_class_points'])) {
         wp_die('add class points failed');
       } else {
 
-        header("Location: /admin/dashboard?class_points=success");
+        header("Location: /panel/dashboard?class_points=success");
         exit();
 
       }
@@ -101,17 +101,17 @@ elseif (isset($_POST['give_classpoints_internal'])){
   $class_points = test_input( $_POST['add-points'] );
 
   if (empty( $class_id ) or !is_numeric( $class_id )){
-    header("Location: /admin/medlemmar?give_classpoints=noclassid");
+    header("Location: /panel/medlemmar?give_classpoints=noclassid");
     exit();
   }
 
   if ( empty($class_points)){
-    header("Location: /admin/medlemmar/?c_id=$class_id&give_classpoints=empty");
+    header("Location: /panel/medlemmar/?c_id=$class_id&give_classpoints=empty");
     exit();
   } else {
 
     if (!is_numeric($class_points)) {
-      header("Location: /admin/medlemmar/?c_id=$class_id&give_classpoints=nan");
+      header("Location: /panel/medlemmar/?c_id=$class_id&give_classpoints=nan");
       exit();
     }
 
@@ -121,7 +121,7 @@ elseif (isset($_POST['give_classpoints_internal'])){
 
     // Check if there already is a class with that name
     if ( !$class_record ) {
-      header("Location: /admin/medlemmar/?c_id=$class_id&give_classpoints=noclassfound");
+      header("Location: /panel/medlemmar/?c_id=$class_id&give_classpoints=noclassfound");
       exit();
     } else {
 
@@ -134,7 +134,7 @@ elseif (isset($_POST['give_classpoints_internal'])){
         wp_die('add class points failed');
       } else {
 
-        header("Location: /admin/medlemmar/?c_id=$class_id&give_classpoints=success");
+        header("Location: /panel/medlemmar/?c_id=$class_id&give_classpoints=success");
         exit();
 
       }
@@ -144,6 +144,6 @@ elseif (isset($_POST['give_classpoints_internal'])){
 }
 
 else {
-  header("Location: /admin/medlemmar?new_class=error");
+  header("Location: /panel/medlemmar?new_class=error");
   exit();
 } // End post

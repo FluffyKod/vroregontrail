@@ -134,10 +134,66 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
 
     <h4>Lägg till ny elev</h4>
     <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="POST">
-      <input style="display:none">
-      <input type="text" name="first_name" value="" placeholder="Förnamn..." required>
-      <input type="text" name="last_name" value="" placeholder="Efernamn..." required>
-      <input type="email" name="email_address" value="" placeholder="Skolmail..." required>
+      <?php
+
+      // Check if form has been submited
+      if (isset($_GET['add_user'])) {
+
+        // Get the msg from the form
+        $user_check = $_GET['add_user'];
+
+        // Then check if there has been an error
+        if ($user_check == 'empty'){
+          echo '<p class="error">Du måste fylla i alla värden!</p>';
+        }
+        elseif ($user_check == 'noclassfound'){
+          echo '<p class="error">Klassen hittades inte!</p>';
+        }
+        elseif ($user_check == 'invalidemail'){
+          echo '<p class="error">Mailaddresesn är inte godtagbar!</p>';
+        }
+        elseif ($user_check == 'emailexists'){
+          echo '<p class="error">Mailaddressen är redan använd!</p>';
+        }
+        elseif ($user_check == 'invalidyear'){
+          echo '<p class="error">Avångsåret stämmer inte!</p>';
+        }
+
+      }
+
+      ?>
+
+      <?php
+       if (!isset($_GET['first_name'])){
+         echo '<input type="text" name="first_name" value="" placeholder="Förnamn..." required>';
+       } else {
+         echo '<input type="text" name="first_name" value="'. $_GET['first_name'] .'" placeholder="Förnamn..." required>';
+       }
+
+
+       if (!isset($_GET['last_name'])){
+         echo '<input type="text" name="last_name" value="" placeholder="Efernamn..." required>';
+       } else {
+         echo '<input type="text" name="last_name" value="'. $_GET['last_name'] .'" placeholder="Efternamn..." required>';
+       }
+
+       if (!isset($_GET['email'])){
+         echo '<input type="email" name="email_address" value="" placeholder="Skolmail..." required>';
+       } else {
+         echo '<input type="email" name="email_address" value="'. $_GET['email'] .'" placeholder="Skolmail..." required>';
+       }
+      ?>
+
+      
+      <!-- <input type="number" name="end_year" value="" placeholder="Avgångsår (ex. 2022)..." list="end_years">
+
+      <datalist id="end_years">
+        <option value="<?php echo date('Y', strtotime('+3 years')); ?>" />
+        <option value="<?php echo date('Y', strtotime('+2 years')); ?>" />
+        <option value="<?php echo date('Y', strtotime('+1 years')); ?>" />
+        <option value="<?php echo date('Y'); ?>" />
+      </datalist> -->
+
       <input type="password" name="password" value="" placeholder="Lösenord..." required>
 
       <input id="class" hidden type="text" name="class_id" value="<?php echo $c_id; ?>">
