@@ -11,6 +11,20 @@
   // Get the number of current kommitee aplications
   $kommitee_applications = count($wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "w"'));
 
+  // Get all users that are waiting to become members of kåren
+  $args = array(
+      'meta_query' => array(
+          array(
+              'key' => 'status',
+              'value' => 'w',
+              'compare' => '=='
+          )
+      )
+  );
+
+  // Get all members
+  $member_applications = count(get_users($args));
+
  ?>
 
 <section id="navigation-bar">
@@ -74,8 +88,17 @@
     </a>
 
     <a href="/panel/medlemmar/" class="nav-item" id="link-medlemmar">
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/members.png" alt="" class="nav-icon">
-      <p>Medlemmar</p>
+      <!-- Check if there are any new memebr suggestions, if so -> add a notification circle -->
+      <?php if ($member_applications > 0) { ?>
+      <div class="notification">
+        <img src="<?php echo get_bloginfo('template_directory') ?>/img/members.png" alt="" class="nav-icon">
+        <span><?php echo $member_applications; ?></span>
+      </div>
+      <?php } else { ?>
+        <img src="<?php echo get_bloginfo('template_directory') ?>/img/members.png" alt="" class="nav-icon">
+      <?php } ?>
+
+        <p>Medlemmar</p>
     </a>
 
     <a href="/panel/hemsidan/" class="nav-item" id="link-hemsidan">

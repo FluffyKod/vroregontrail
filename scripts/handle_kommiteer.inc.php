@@ -19,13 +19,13 @@
     $new_description = test_input( $_POST['description'] );
 
     if ( empty($new_name) || empty($new_description) ){
-      header("Location: /test?application=empty");
+      header("Location: /panel/kommiteer?application=empty");
       exit();
     } else {
 
       // Check if there already is a kommitée with that name
       if ( count($wpdb->get_results('SELECT * FROM vro_kommiteer WHERE name="'. $new_name .'"')) > 0 ) {
-        header("Location: /test?application=nametaken&the_description=$new_description");
+        header("Location: /panel/kommiteer?application=nametaken&the_description=$new_description");
         exit();
       } else {
 
@@ -60,7 +60,7 @@
               wp_die('database insertion failed');
             }
 
-            header("Location: /test?application=success");
+            header("Location: /panel/kommiteer?application=success");
             exit();
 
           } // End wpdb->insert
@@ -186,7 +186,7 @@
         }
       }
 
-      // Redirect with success message
+      //Redirect with success message
       header("Location: /panel/kommiteer?k_id=$k_id&komitte_member=success");
       exit();
 
@@ -289,6 +289,14 @@
 
     $student_id = (int)$student_id;
 
+    $kommitte = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id='. $k_id );
+
+    //Check if chairman
+    if ($student_id == $kommitte->chairman) {
+      header("Location: /panel/kommiteer?k_id=$k_id&leave_kommitte=ischairman");
+      exit();
+    }
+
     // Delete the student from the record
     $wpdb->delete( 'vro_kommiteer_members', array( 'kommitee_id' => $k_id, 'user_id' => $student_id ) );
 
@@ -296,7 +304,84 @@
     exit();
   }
 
+  elseif (isset($_POST['change_kommitte_description'])){
+
+    global $wpdb;
+
+    $new_description = test_input( $_POST['kommitee_description'] );
+    $k_id = test_input( $_POST['k_id'] );
+
+    if (empty($k_id) or !is_numeric($k_id)){
+      header("Location: /panel/kommiteer?alter_description=emptyornan");
+      exit();
+    }
+
+    $k_id = (int)$k_id;
+
+    if (empty($new_description)){
+      header("Location: /panel/kommiteer?k_id=$k_id&alter_description=empty");
+      exit();
+    }
+
+    // Update the description
+    if (!$wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET description = %s WHERE id = %s', $new_description, $k_id))) {
+      header("Location: /panel/kommiteer?k_id=$k_id&alter_description=failed");
+      exit();
+    } else {
+      header("Location: /panel/kommiteer?k_id=$k_id&alter_description=success");
+      exit();
+    }
+  }
+
+  elseif (isset($_POST['change_chairman'])){
+
+    global $wpdb;
+
+    $k_id = test_input( $_POST['k_id'] );
+    $new_chairman_name = test_input( $_POST['new_chairman_name'] );
+
+    if (empty($k_id) or !is_numeric($k_id)){
+      header("Location: /panel/kommiteer?alter_chairman=emptyornan");
+      exit();
+    }
+
+    $k_id = (int)$k_id;
+
+    if (empty($new_chairman_name)){
+      header("Location: /panel/kommiteer?k_id=$k_id&alter_chairman=empty");
+      exit();
+    }
+
+    // Get the student with the supplied nickname
+    $args = array(
+        'meta_query' => array(
+            array(
+                'key' => 'nickname',
+                'value' => $new_chairman_name,
+                'compare' => '=='
+            )
+        )
+    );
+
+    // Get the student
+    $student = get_users($args);
+
+    if (count($student) < 1) {
+      header("Location: /panel/kommiteer?k_id=$k_id&alter_chairman=nostudentfound");
+      exit();
+    }
+
+    if (!$wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET chairman = %s WHERE id = %s', $student[0]->ID, $k_id))) {
+      header("Location: /panel/kommiteer?k_id=$k_id&alter_chairman=failed");
+      exit();
+    } else {
+      header("Location: /panel/kommiteer?k_id=$k_id&alter_chairman=success");
+      exit();
+    }
+
+  }
+
   else {
-    header("Location: /panel/kommiteer?apply_kommitte=error");
+    header("Location: /panel/kommiteer?kommitte=error");
     exit();
   } // End post

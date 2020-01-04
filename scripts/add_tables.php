@@ -151,6 +151,19 @@ function vro_setup() {
   $table_name = $prefix . 'karen';
 
   // Set fields
+  // $sql_karen = 'CREATE TABLE ' . $table_name . '(
+  //   id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  //   created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  //   last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  //   position_id INTEGER(10) UNSIGNED NOT NULL,
+  //   student BIGINT(20) UNSIGNED,
+  //   utskott_id INTEGER(10) UNSIGNED,
+  //   PRIMARY KEY (id),
+  //   FOREIGN KEY (student) REFERENCES wp_users(ID),
+  //   FOREIGN KEY (utskott_id) REFERENCES vro_utskott(id),
+  //   FOREIGN KEY (position_id) REFERENCES vro_positions(id)
+  // )';
+
   $sql_karen = 'CREATE TABLE ' . $table_name . '(
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,

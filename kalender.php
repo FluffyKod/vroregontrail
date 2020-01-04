@@ -507,6 +507,21 @@ $current_student = wp_get_current_user();
     // Get all events
     global $wpdb;
 
+    /*  Type arguments described:
+          u - only the hosting utskott
+          e - only elevkåren
+          m - only members of elevkåren
+          k - only specified kommitée
+          l - all logged in users
+          a - all visitors
+    */
+
+    $sql_options = array('u', 'e', 'm', 'k', 'l', 'a');
+
+    if (!current_user_can('administrator') || !current_user_can('elevkaren') ){
+        $sql_options .= ' AND ';
+    }
+
     $all_events = $wpdb->get_results('SELECT * FROM vro_events');
 
     $event_type_array = array();

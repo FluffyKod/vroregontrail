@@ -16,7 +16,7 @@
   $results = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "w"');
 
   // Get all acceppted commitees
-  $kommiteer = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "y"');
+  $kommiteer = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "y" ORDER BY name');
 
 ?>
 
@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
   </head>
   <body>
 
@@ -217,6 +218,57 @@
         <!-- **************************
           ADD NEW KOMMITÉE
         **************************  -->
+
+        <div class="row">
+
+          <div class="box white lg">
+
+            <h3>Ansök om en ny kommitté</h3>
+            <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+
+              <?php // Show error messages
+
+              if (isset($_GET['application'])) {
+
+                $application_check = $_GET['application'];
+
+                if ($application_check == 'empty') {
+                  echo '<p class="error">Du måste fylla i alla värden!</p>';
+                }
+                elseif ($application_check == 'nametaken') {
+                  echo '<p class="error">Kommitéenamnet är redan taget!</p>';
+                }
+                elseif ($application_check == 'success') {
+                  echo '<p class="success">Din förfrågan har skickats!</p>';
+                }
+
+              }
+
+             ?>
+
+              <input type="text" name="namn" placeholder="Namn på kommittéen..." required>
+
+              <?php
+
+               if (isset($_GET['the_description'])) { ?>
+                 <div class="text-limited-root">
+                   <textarea name="description" placeholder="Beskrivning av kommittéen..." required onkeyup="checkForm(this, event_description_char_count, 300)"><?php echo $_GET['the_description']; ?></textarea>
+                   <p id="event_description_char_count">300</p>
+                 </div>
+               <?php } else {  ?>
+                 <div class="text-limited-root">
+                   <textarea name="description" placeholder="Beskrivning av kommittéen..." required onkeyup="checkForm(this, event_description_char_count, 300)"></textarea>
+                   <p id="event_description_char_count">300</p>
+                 </div>
+              <?php } ?>
+
+              <button name="new_kommitee" class="btn lg" type="submit">Skicka ansökan</button>
+
+            </form>
+
+          </div>
+
+        </div>
 
         <?php
         // Show this only to admins and working student in elevkaren

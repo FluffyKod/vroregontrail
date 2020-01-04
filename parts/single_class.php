@@ -197,7 +197,7 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
       <input type="password" name="password" value="" placeholder="Lösenord..." required>
 
       <input id="class" hidden type="text" name="class_id" value="<?php echo $c_id; ?>">
-     <button type="submit" name="add_new_user" class="btn lg">Skapa ny elev</button>
+     <button type="submit" name="add_new_user" class="btn lg" value="/panel/medlemmar">Skapa ny elev</button>
    </form>
 
   </div>

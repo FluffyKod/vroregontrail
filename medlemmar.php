@@ -4,8 +4,8 @@
  * Template Name: Medlemmar
  */
 
-// Show this page only to admin
-if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
+// CHECK IF LOGGED IN
+if (! is_user_logged_in() ){
   wp_redirect( '/' );
 } else {
 
@@ -14,6 +14,18 @@ global $wpdb;
 
 // Get all classes
 $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name , 3, 2)');
+
+// Get the current student
+$current_student_id = get_current_user_id();
+
+// Check if the student is a member in the elevkår
+if (metadata_exists('user', $current_student_id, 'status')){
+  $status = get_user_meta($current_student_id, 'status', true);
+  $is_member = $status != 'n' ? True : False;
+} else {
+  $is_member = NULL;
+}
+
 
 ?>
 
@@ -36,7 +48,11 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
       * Admin Navbar
       --------------------------------------->
       <?php
+      if (current_user_can('administrator') || current_user_can('elevkaren') ){
         require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
+      } else {
+        require_once(get_template_directory() . "/parts/member-navigation-bar.php");
+      }
       ?>
 
       <!--
@@ -58,50 +74,116 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
 
+        <?php
+
+        global $wpdb;
+
+        // Get the number of all members
+        $user_amount = count(get_users(array(
+          'meta_key' => 'class_id'
+        )));
+
+        // Get all users that are members in kåren
+        $args = array(
+            'meta_query' => array(
+                array(
+                    'key' => 'status',
+                    'value' => 'y',
+                    'compare' => '=='
+                )
+            )
+        );
+
+        // Get all members
+        $member_amount = count(get_users($args));
+
+        // Only do the calculation if there are any students
+        if ($user_amount != 0){
+          $percentage = round($member_amount / $user_amount * 100);
+        } else {
+          $percentage = 0;
+        }
+
+        ?>
+
+        <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
+
+          <?php
+
+          // Get all users that are waiting to become members of kåren
+          $args = array(
+              'meta_query' => array(
+                  array(
+                      'key' => 'status',
+                      'value' => 'w',
+                      'compare' => '=='
+                  )
+              )
+          );
+
+          // Get all members
+          $waiting_members = get_users($args);
+          ?>
+
         <div class="banner">
-          <h3>0 nya medlemsförfrågningar!</h3>
+
+          <?php
+            if (count($waiting_members) == 1){
+              echo '<h3>1 ny medlemsförfrågan!</h3>';
+            } else {
+              echo '<h3>'. count($waiting_members) .' nya medlemsförfrågningar!</h3>';
+            }
+          ?>
+
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>
 
+        <?php
+
+        // Add a new row and box for every suggestion
+        echo '<div class="row">';
+
+        foreach ($waiting_members as $wm)
+        {
+          ?>
+
+            <div class="box white lg">
+              <div class="see-more">
+                <h4><?php echo get_user_meta($wm->ID, 'nickname', true); ?></h4>
+                  <div>
+                  <button onclick="showAnswerForm(<?php echo $wm->ID ?>)">Svara &#8594;</button>
+                </div>
+              </div>
+
+              <div class="answer" id="<?php echo $wm->ID; ?>">
+
+                <hr>
+
+                <h4>Svar</h4>
+
+                <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="POST">
+                  <textarea name="member_answer" placeholder="Svar..."></textarea>
+                  <input name="student_id" value="<?php echo $wm->ID; ?>" hidden>
+
+                  <button name="accept_member" class="btn" type="submit">Godkänn</button>
+                  <button name="quit_being_member" class="btn red" type="submit">Avböj</button>
+                </form>
+
+              </div>
+
+            </div>
+
+        <?php
+        } // ENd foreach
+
+        echo '</div>';
+
+        ?>
+
         <div class="row">
 
           <div class="box white sm center">
-
-            <!-- <h2 class="gt">97% medlemmar!</h2> -->
-
-            <?php
-
-            global $wpdb;
-
-            // Get the number of all members
-            $user_amount = count(get_users(array(
-              'meta_key' => 'class_id'
-            )));
-
-            // Get all users that are members in kåren
-            $args = array(
-                'meta_query' => array(
-                    array(
-                        'key' => 'status',
-                        'value' => 'y',
-                        'compare' => '=='
-                    )
-                )
-            );
-
-            // Get all members
-            $member_amount = count(get_users($args));
-
-            // Only do the calculation if there are any students
-            if ($user_amount != 0){
-              $percentage = round($member_amount / $user_amount * 100);
-            } else {
-              $percentage = 0;
-            }
-
-
-            ?>
 
             <div class="first-place members">
               <p><b><?php echo $percentage; ?>%</b></p>
@@ -135,7 +217,10 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
 
             <div class="see-more">
               <h4>Klasser</h4>
-              <h4>Medlemmar i elevkåren</h4>
+              <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){
+                echo '<h4>Medlemmar i elevkåren</h4>';
+              }
+              ?>
             </div>
 
             <?php
@@ -183,15 +268,17 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
 
               <a href="/panel/medlemmar?c_id=<?php echo $c->id; ?>" class="class">
                 <p><?php echo $c->name; ?></p>
-                <div class="member_count">
-                  <p><?php echo $student_members; ?></p>
-                  <img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png">
-                  <p><?php echo $student_non_members; ?></p>
-                  <img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png">
-                </div>
 
+                <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
+                  <div class="member_count">
+                    <p><?php echo $student_members; ?></p>
+                    <img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png">
+                    <p><?php echo $student_non_members; ?></p>
+                    <img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png">
+                  </div>
+                <?php } ?>
 
-            </a>
+              </a>
 
           <?php } ?>
 
@@ -199,6 +286,8 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
           </div>
 
         </div>
+
+        <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
 
         <div class="row">
 
@@ -215,7 +304,58 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name
 
         </div>
 
-      <?php } // End show single_class or overview ?>
+      <?php } // end check admin to add new class ?>
+
+      <?php } else { // End check admin ?>
+
+        <div class="row">
+
+          <div class="box white lg center">
+
+            <div class="first-place members">
+              <p><b><?php echo $percentage; ?>%</b></p>
+              <p><b>Medlemmar</b></p>
+            </div>
+
+          </div>
+
+        </div>
+
+      <?php } ?>
+
+      <div class="row">
+
+        <div class="box green lg">
+
+
+          <?php
+          if (!$is_member){
+            echo '<h4>Ansök om att bli medlem i elevkåren</h4>';
+          } else {
+            echo '<h4>Gå ut ur elevkåren</h4>';
+          }
+          ?>
+          <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
+            <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
+
+            <?php
+
+            if ($is_member){
+              echo '<button class="btn red" type="submit" name="quit_being_member">Klicka för att gå ut ur elevkåren</button>';
+            } else {
+              echo '<button class="btn lg" type="submit" name="apply_for_member">Klicka för att skicka en medlemsansökan!</button>';
+            }
+
+            ?>
+
+          </form>
+
+        </div>
+
+      </div>
+
+
+    <?php } // End show single_class or overview ?>
 
       </section>
 

@@ -36,6 +36,9 @@ $is_chairman = ($current_student_id == $chairman_id);
 // Check if user already has applied / is in
 $is_related_to_kommitte = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id='. $current_student_id .' AND kommitee_id='. $k_id .''));
 
+// get all kommitee members
+$all_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id . ' AND status="y"');
+
 ?>
 
 <!-- **************************
@@ -47,6 +50,8 @@ $waiting_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members where
 
 ?>
 
+<script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
+
 <div class="top-bar">
   <h2><?php echo $current_kommitee->name; ?></h2>
   <p><?php echo current_time('d M Y, D'); ?></p>
@@ -54,7 +59,7 @@ $waiting_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members where
 
 <?php
 
-if (current_user_can('administrator') || current_user_can('elevkaren' || $is_chairman) ){
+if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){
 
 ?>
 
@@ -74,13 +79,14 @@ if (current_user_can('administrator') || current_user_can('elevkaren' || $is_cha
 <?php
 
 // Add a new row and box for every suggestion
-echo '<div class="row">';
 
 foreach ($waiting_members as $wait_member)
 {
   $wm = $wpdb->get_row('SELECT * FROM wp_users WHERE ID = ' . $wait_member->user_id);
 
   ?>
+  <div class="row">
+
     <div class="box white lg">
       <div class="see-more">
         <h4><?php echo get_user_meta($wm->ID, 'nickname', true); ?></h4>
@@ -107,10 +113,11 @@ foreach ($waiting_members as $wait_member)
 
     </div>
 
+  </div>
+
 <?php
 } // ENd foreach
 
-echo '</div>';
 
 } // End is admin, elevkår or chairman
 ?>
@@ -118,23 +125,105 @@ echo '</div>';
 <!-- **************************
   BASIC INFORMATION
 **************************  -->
+<div class="row">
+
+  <div class="box white lg">
+    <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){?>
+
+        <div class="see-more">
+            <h4>Beskrivning</h4>
+            <div>
+              <button onclick="showAnswerForm('change_description')">Ändra beskrivning &#8594;</button>
+            </div>
+        </div>
+
+        <p><?php echo $current_kommitee->description; ?></p>
+
+        <div class="answer" id="change_description">
+
+          <hr>
+
+          <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
+            <div class="text-limited-root">
+              <textarea name="kommitee_description" placeholder="Ny beskrivning..." required onkeyup="checkForm(this, event_description_char_count, 300)"></textarea>
+              <p id="event_description_char_count">300</p>
+            </div>
+            <input name="k_id" value="<?php echo $k_id; ?>" hidden>
+
+            <button name="change_kommitte_description" class="btn" type="submit">Ändra beskrivning</button>
+          </form>
+
+        </div>
+
+    <?php } else { ?>
+      <h4>Beskrivning</h4>
+      <p><?php echo $current_kommitee->description; ?></p>
+    <?php } ?>
+
+
+  </div>
+
+</div>
+
 <?php
 // Only show the event types for admins
-if (current_user_can('administrator') || current_user_can('elevkaren' || $is_chairman) ){
+if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){
 ?>
 <div class="kommitee-row">
 
 
   <div class="box white" id="chairman">
       <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
-      <h4><?php echo $chairman->user_nicename; ?></h4>
+      <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
       <p>Kommitéeordförande</p>
+
+      <button onclick="showAnswerForm('change_chairman')">Ändra ordförande &#8594;</button>
+
+      <div class="answer" id="change_chairman">
+
+        <hr>
+
+        <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
+          <div class="autocomplete">
+              <input type="text" name="new_chairman_name" value="" placeholder="Ny ordförande..." id="chairman-field">
+          </div>
+
+          <input name="k_id" value="<?php echo $k_id; ?>" hidden>
+
+          <button name="change_chairman" class="btn lg" type="submit">Ändra ordförande</button>
+        </form>
+
+      </div>
+
+      <?php
+
+      global $wpdb;
+
+      // Get first and last name from every student
+      $first_last_array = array();
+      foreach($all_members as $s){
+        array_push($first_last_array, get_user_meta( $s->user_id, 'nickname', true));
+      }
+
+      echo '<script type="text/javascript">';
+      echo 'var jsonstudents = ' . json_encode($first_last_array);
+      echo '</script>'
+
+      ?>
+
+      <script>
+      // var jsonstudents = getArrayFromColumn(jsonstudents, 'display_name');
+
+      autocomplete(document.getElementById("chairman-field"), jsonstudents, 'Inga medlemmar hittades.');
+      </script>
   </div>
 
+  <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
   <div class="box white alert" id="add_member">
     <button class="add-btn lg">+</button>
     <h5>Lägg till medlem</h5>
   </div>
+<?php } ?>
 
   <div class="box green" id="send_message">
 
@@ -172,6 +261,20 @@ if (current_user_can('administrator') || current_user_can('elevkaren' || $is_cha
     ?>
 
     <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+      <?php // Show error messages
+
+      if (isset($_GET['leave_kommitte'])) {
+
+        $kom_check = $_GET['leave_kommitte'];
+
+        if ($kom_check == 'ischairman') {
+          echo '<p class="error">Du måste göra någon annan till ordförande innan du kan lämna kommittéen!</p>';
+        }
+
+      }
+
+     ?>
+
       <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
       <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
 
@@ -197,7 +300,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren' || $is_cha
 
     <div class="box white sm" id="chairman">
         <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
-        <h4><?php echo $chairman->user_nicename; ?></h4>
+        <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
         <p>Kommitéeordförande</p>
     </div>
 
@@ -244,9 +347,6 @@ if (current_user_can('administrator') || current_user_can('elevkaren' || $is_cha
 
       <?php
 
-      // get all kommitee members
-      $all_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id . ' AND status="y"');
-
       foreach($all_members as $m)
       {
 
@@ -257,7 +357,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren' || $is_cha
           <div class="kommitee_member_img">
             <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
 
-            <?php if (current_user_can('administrator') || current_user_can('elevkaren' || $is_chairman) ){ ?>
+            <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){ ?>
               <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
                 <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
                 <input type="text" name="student_id" value="<?php echo $member->ID; ?>" hidden>
@@ -294,9 +394,14 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 
     <h4>Lägg till medlem</h4>
 
-    <input type="text" name="" value="" placeholder="Namn...">
+    <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
-    <a href="#" class="btn lg">Lägg till</a>
+      <input type="text" name="member_name" value="" placeholder="Namn...">
+      <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>">
+
+      <button type="submit" class="btn lg" name="add_member">Lägg till</button>
+
+    </form>
 
   </div>
 </div>

@@ -77,7 +77,12 @@ elseif (isset($_POST['send_message_kommitte'])){
   } else {
 
     // Get all memeber
-    $member_ids = $wpdb->get_results('SELECT user_id FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id );
+    $member_ids_sql = $wpdb->get_results('SELECT user_id FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id );
+    $member_ids = array();
+
+    foreach ($member_ids_sql as $mi) {
+      array_push($member_ids, $mi->user_id);
+    }
 
     // CH
     if ( isset($mail_to) && $mail_to == 'only_chairman'){
@@ -87,9 +92,10 @@ elseif (isset($_POST['send_message_kommitte'])){
 
     // Mail all students the message
     foreach ($member_ids as $m) {
+      $m = (int)$m;
 
       // GET USER
-      $member = get_user_by('id', (int)$m);
+      $member = get_user_by('id', $m);
 
       // Get the students email
       $email_address = $member->user_email;

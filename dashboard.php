@@ -5,7 +5,7 @@
  */
 
 // Show this page only to admin or Elevkåren
-if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
+if (! is_user_logged_in() ){
   wp_redirect( '/' );
 } else {
 ?>
@@ -32,14 +32,12 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
       <?php
       // Display a special navbar for admins
-      if (current_user_can('administrator') || current_user_can('elevkaren') ){
-        require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
+      if (!current_user_can('administrator') and !current_user_can('elevkaren') ){
+        // Get the members view
+        require_once(get_template_directory() . "/parts/member-dashboard.php");
       } else {
-        require_once(get_template_directory() . "/parts/member-navigation-bar.php");
-      }
-      ?>
 
-      <?php
+      require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
 
       // Get access to wordpress database functions
       global $wpdb;
@@ -214,6 +212,8 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
         </div>
 
       </section>
+
+    <?php } // End show member dashboard or admin dashboard ?>
 
       <!-- ***********************************
       * STATUS BAR

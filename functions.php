@@ -13,21 +13,22 @@ function custom_login_redirect( $redirect_to, $request, $user ) {
 
     // If administrator, send them to wordpress dashboard
     if( in_array( "administrator", $user->roles ) ) {
-      return '/wp-admin';
-    }
-
-    // If part of elevkåren, send them to the elevkåren admin dashboard
-    if( in_array( "elevkaren", $user->roles ) ) {
+      // return '/wp-admin';
       return '/panel/dashboard/';
     }
 
-    // Any other role, send home
-    return home_url();
+    // If part of elevkåren, send them to the elevkåren admin dashboard
+    // if( in_array( "elevkaren", $user->roles ) ) {
+    //   return '/panel/dashboard/';
+    // }
+
+    // Any other role, send to startscreen
+    return '/panel/dashboard/';
 
   } else {
 
-    // Every other user, send home
-    return home_url();
+    // Send to the startscreen
+    return '/panel/dashboard/';
   }
 }
 add_filter("login_redirect", "custom_login_redirect", 10, 3);
