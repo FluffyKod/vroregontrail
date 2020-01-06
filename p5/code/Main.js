@@ -216,7 +216,7 @@ function option(ref){
       // Give player an item
       if(this.cmd == 'item'){
         // Check that there are enough values
-        if (len(this.values) >= 1) {
+        if (this.values.length >= 1) {
           player.invertory.push(this.values[0]);
         } else {
           console.log('ERROR: Not enough values supplied to item command');
@@ -228,7 +228,7 @@ function option(ref){
       if(this.cmd == 'encounter'){
 
         // Check that there are enough values
-        if (len(this.values) >= 2) {
+        if (this.values.length >= 2) {
           current_encounter = this.values[0]
           define = true;
           clearVar = false;
@@ -248,7 +248,7 @@ function option(ref){
       if(this.cmd == 'tp'){
 
         // Check that there are enough values
-        if (len(this.values) >= 2) {
+        if (this.values.length >= 2) {
           write = true;
           player.x = this.values[0];
           player.y = this.values[1];
@@ -264,7 +264,7 @@ function option(ref){
       if(this.cmd == 'info'){
 
         // Check that there are enough values
-        if (len(this.values) >= 1) {
+        if (this.values.length >= 1) {
           textbox.html(this.values[0]);
           write = false;
         } else {
@@ -360,7 +360,7 @@ function drawTextbox(){
     displayedOptions[currentoption].highlight();
   }
 
-  // Go through every room to find the room the current player is in
+  // Goes through every room to find the room the current player is in
   for (var i = 0; i < rooms.length; i++) {
     if(player.x == rooms[i].x && player.y == rooms[i].y){
       if(write){
