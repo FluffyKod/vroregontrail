@@ -3,8 +3,7 @@
  * Template Name: Game
  */
 
-
-
+ // Only show game to logged in users
  if (! is_user_logged_in() ){
    echo "<h1>Du måste vara inloggad för att se spelet</h1>";
    echo '<a href="/wp-login.php">Logga In</a>';
@@ -76,16 +75,10 @@
             </div>
 
           </div>
-
-
-
-
+          
       </div>
         <a id="mountain-jump" href="index-minigame-mountain-jump.html"></a>
       </div>
-
-
-
 
   </body>
 </html>

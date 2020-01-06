@@ -72,6 +72,24 @@ rooms = [
       {
         text: 'new option 1 herre',
         cmd: 'tp',
+        values: [3, 4]
+      },
+      {
+        text: 'new option 2 herre',
+        cmd: 'tp',
+        values: [1, 1]
+      },
+      {
+        text: 'new option 3 herre',
+        cmd: 'info',
+        values: ['info info waow!']
+      },
+
+    ]),
+    new room(3, 4, 'even newer place', [
+      {
+        text: 'new option 1 herre',
+        cmd: 'tp',
         values: [3, 3]
       },
       {
