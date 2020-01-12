@@ -6,7 +6,7 @@ rooms = [
     {
       text: 'option 1 herre',
       cmd: 'tp',
-      values: [0, 1]
+      values: [12, 40]
     },
     {
       text: 'option 2 herre',
@@ -106,5 +106,6 @@ rooms = [
     ])
 
 ]//slut på rooms arrayn
+
 
 }
