@@ -54,14 +54,19 @@ elseif (isset($_POST['give_class_points'])) {
 
   $class_name = test_input( $_POST['class-name'] );
   $class_points = test_input( $_POST['add-points'] );
+  $callback = test_input( $_POST['callback'] );
+
+  if (empty($callback)){
+    $callback = '/panel/dashboard';
+  }
 
   if ( empty($class_name) || empty($class_points)){
-    header("Location: /panel/dashboard?class_points=empty");
+    header("Location: $callback?class_points=empty");
     exit();
   } else {
 
     if (!is_numeric($class_points)) {
-      header("Location: /panel/dashboard?class_points=nan&class_name=$class_name");
+      header("Location: $callback?class_points=nan&class_name=$class_name");
       exit();
     }
 
@@ -72,7 +77,7 @@ elseif (isset($_POST['give_class_points'])) {
 
     // Check if there already is a class with that name
     if ( !$class_record ) {
-      header("Location: /panel/dashboard?class_points=noclassfound");
+      header("Location: $callback?class_points=noclassfound");
       exit();
     } else {
 
@@ -85,7 +90,7 @@ elseif (isset($_POST['give_class_points'])) {
         wp_die('add class points failed');
       } else {
 
-        header("Location: /panel/dashboard?class_points=success");
+        header("Location: $callback?class_points=success");
         exit();
 
       }

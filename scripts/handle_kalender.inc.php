@@ -242,6 +242,82 @@ elseif (isset($_POST['add_event'])) {
 
 
 }
+
+elseif (isset($_POST['publish_event'])){
+
+  global $wpdb;
+
+  $event_id = test_input( $_POST['publish_event'] );
+
+  $id_response = check_id( $event_id, 'vro_events' );
+
+  if ($id_response[0] == false){
+    header("Location: /panel/kalender?publish_event=". $id_response[1]);
+    exit();
+  }
+
+  $event_id = (int)$event_id;
+
+  if ($wpdb->update( 'vro_events', array('visibility' => 'a'), array( 'id' => $event_id ) ) == false){
+    wp_die('publish event failed');
+  } else {
+    // Success!
+    header("Location: /panel/kalender?publish_event=success");
+    exit();
+  }
+
+}
+
+elseif (isset($_POST['unpublish_event'])){
+
+  global $wpdb;
+
+  $event_id = test_input( $_POST['unpublish_event'] );
+
+  $id_response = check_id( $event_id, 'vro_events' );
+
+  if ($id_response[0] == false){
+    header("Location: /panel/kalender?unpublish_event=". $id_response[1]);
+    exit();
+  }
+
+  $event_id = (int)$event_id;
+
+  if ($wpdb->update( 'vro_events', array('visibility' => 'e'), array( 'id' => $event_id ) ) == false){
+    wp_die('publish event failed');
+  } else {
+    // Success!
+    header("Location: /panel/kalender?unpublish_event=success");
+    exit();
+  }
+
+}
+
+elseif (isset($_POST['remove_event'])){
+
+  global $wpdb;
+
+  $event_id = test_input( $_POST['remove_event'] );
+
+  $id_response = check_id( $event_id, 'vro_events' );
+
+  if ($id_response[0] == false){
+    header("Location: /panel/kalender?remove_event=". $id_response[1]);
+    exit();
+  }
+
+  $event_id = (int)$event_id;
+
+  if ($wpdb->delete( 'vro_events', array( 'id' => $event_id ) ) == false){
+    wp_die('remove event failed');
+  } else {
+    // Success!
+    header("Location: /panel/kalender?remove_event=success");
+    exit();
+  }
+
+}
+
 else {
   header("Location: /panel/kalender");
   exit();

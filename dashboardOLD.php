@@ -20,7 +20,6 @@ if (! is_user_logged_in() ){
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
   </head>
   <body>
@@ -73,24 +72,20 @@ if (! is_user_logged_in() ){
         </div>
 
         <!-- Basic info -->
-        <div class="bow">
+        <div class="row">
 
           <!-- Show visselpipan info-->
           <div class="box green sm update">
-              <h4>Visselpipan</h4>
-              <div class="content">
-                <img src="<?php echo get_bloginfo('template_directory') ?>/img/whistle.png" alt="">
-                <p class="amount" data-content="Nya förslag"><b><?php echo $visselpipan_amount; ?></b></p>
-              </div>
+            <h4>Visselpipan</h4>
+            <img src="<?php echo get_bloginfo('template_directory') ?>/img/whistle.png" alt="">
+            <p class="amount" data-content="Nya förslag"><b><?php echo $visselpipan_amount; ?></b></p>
           </div>
 
           <!-- show kommitée info -->
           <div class="box green sm update">
             <h4>Kommitéer</h4>
-            <div class="content">
-              <img src="<?php echo get_bloginfo('template_directory') ?>/img/folderalert.png" alt="" class="folder">
-              <p class="amount" data-content="Nya förfrågningar"><b><?php echo $kommiteer_amount ?></b></p>
-            </div>
+            <img src="<?php echo get_bloginfo('template_directory') ?>/img/folderalert.png" alt="">
+            <p class="amount" data-content="Nya förfrågningar"><b><?php echo $kommiteer_amount ?></b></p>
           </div>
 
           <!-- Box to add a new event -->
@@ -98,6 +93,11 @@ if (! is_user_logged_in() ){
             <button class="add-btn lg"><a href="/panel/kalender#datetime-box">+</a></button>
             <h4>Skapa nytt event</h4>
           </div>
+
+        </div>
+
+
+        <div class="row">
 
           <!-- Classpoints box -->
           <div class="box white sm classpoints">
@@ -194,7 +194,11 @@ if (! is_user_logged_in() ){
 
           </div>
 
+        </div>
+
         <!-- Search for member -->
+        <div class="row">
+
           <div class="box white lg">
 
             <h4>Sök medlem</h4>
@@ -242,90 +246,6 @@ if (! is_user_logged_in() ){
         wp_reset_postdata();
 
         ?>
-
-        <div class="bow">
-
-          <?php
-
-          $odenplan_frescati_url = 'https://api.sl.se/api2/TravelplannerV3_1/trip.json?key=471f7b533072422587300653963192ad&originExtId=9117&destExtId=9203&products=8&lines=50';
-          $curl = curl_init();
-          curl_setopt($curl, CURLOPT_URL, $odenplan_frescati_url);
-          curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-          $result = curl_exec($curl);
-          curl_close($curl);
-
-          $json_odenplan_frescati = json_decode($result, true);
-
-          $frescait_odenplan_url = 'https://api.sl.se/api2/TravelplannerV3_1/trip.json?key=471f7b533072422587300653963192ad&originExtId=9203&destExtId=9117&products=8&lines=50';
-          $curl = curl_init();
-          curl_setopt($curl, CURLOPT_URL, $frescait_odenplan_url);
-          curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-          $result = curl_exec($curl);
-          curl_close($curl);
-
-          $json_frescati_odenplan = json_decode($result, true);
-
-          ?>
-
-          <div class="box green hl frescati">
-            <div class="see-more">
-              <h3>Nästa buss Frescati</h3>
-              <button onclick="toggleClass('frescatis', 'all', 'one');">See alla &#8594;</button>
-            </div>
-
-
-            <div id="frescatis" class="one">
-
-              <?php foreach ($json_odenplan_frescati['Trip'] as $key => $trip) { ?>
-                <div class="frescati-time">
-                  <hr>
-                  <p><b><?php echo $trip['LegList']['Leg'][0]['Origin']['name']; ?>: </b> <?php echo $trip['LegList']['Leg'][0]['Origin']['time']?></p>
-                  <p><b><?php echo $trip['LegList']['Leg'][0]['Destination']['name']; ?>: </b> <?php echo $trip['LegList']['Leg'][0]['Destination']['time']?></p>
-                </div>
-              <?php } ?>
-          </div>
-
-        </div>
-
-        <div class="box white hl frescati">
-          <div class="see-more">
-            <h3>Nästa buss Odenplan</h3>
-            <button onclick="toggleClass('odenplans', 'all', 'one');">See alla &#8594;</button>
-          </div>
-
-
-          <div id="odenplans" class="one">
-
-            <?php foreach ($json_frescati_odenplan['Trip'] as $key => $trip) { ?>
-              <div class="frescati-time">
-                <hr>
-                <p><b><?php echo $trip['LegList']['Leg'][0]['Origin']['name']; ?>: </b> <?php echo $trip['LegList']['Leg'][0]['Origin']['time']?></p>
-                <p><b><?php echo $trip['LegList']['Leg'][0]['Destination']['name']; ?>: </b> <?php echo $trip['LegList']['Leg'][0]['Destination']['time']?></p>
-              </div>
-            <?php } ?>
-        </div>
-
-      </div>
-
-      <div class="box white sm">
-        <h3>Dagens lunch</h3>
-        <p><b>Huvudrätt: </b>Pannbiff med gräddsås, inlagd gurka och kokt potatis</p>
-        <p><b>Vegetarisk: </b>Tofu- och grönsaker i kokoscurry serveras med basmatiris</p>
-      </div>
-
-      <div class="box white sm classpoints smaller">
-        <h3>Klasspokalen</h3>
-        <div class="first-place">
-          <p><b>1</b></p>
-          <p><b><?php echo $top_class->name; ?></b></p>
-
-          <img class="trophy" src="<?php echo get_bloginfo('template_directory') ?>/img/bigtrophy.png" alt="">
-          <img class="circle"src="<?php echo get_bloginfo('template_directory') ?>/img/circle.png" alt="">
-        </div>
-
-      </div>
-
-        </div>
 
       </section>
 

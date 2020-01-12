@@ -56,16 +56,7 @@ function checkPlural( id ){
   }
 }
 
-// Update the event type preview
-function updateEtPreview() {
-  var textInput = document.getElementById('etName');
-  var bgColor = document.getElementById('etBgColor');
-  var fgColor = document.getElementById('etFgColor');
-
-  var etPreview = document.getElementById('etPreview');
-  var etPreviewText = document.getElementById('etPreviewText');
-
-  etPreviewText.innerText = textInput.value;
-  etPreviewText.style.color = fgColor.value;
-  etPreview.style.backgroundColor = bgColor.value;
+function toggleClass(id, classOn, classOff){
+  var element = document.getElementById(id);
+  element.classList = (element.classList.contains(classOn)) ? classOff : classOn;
 }

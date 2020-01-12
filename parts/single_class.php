@@ -72,6 +72,7 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
               <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
               <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
                 <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
+                <input class="student-email" name="" value="<?php echo get_userdata($c_id)->user_email; ?>" hidden>
                 <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
               </form>
             </div>
