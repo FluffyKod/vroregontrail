@@ -1,4 +1,4 @@
-let roomBoxSize = 64;
+let roomBoxSize = 64; //helst delbar m 2
 let spriteGridWidth = 3;
 let spriteGridHeight = 3;
 
@@ -22,7 +22,7 @@ function setup(){
   };
 
   createCanvas(canvasSize.width, canvasSize.height);
-  createRoomSprites();
+  createFirstRoom();
   print(roomSprites);
   Camera(floor(width/2),floor(height/2))
 }
@@ -60,37 +60,24 @@ function draw(){
       }
     }
     if(!onSprite){
-      createRoomSprite()
+      createRoom(mouseX + (roomBoxSize/2-(mouseX%roomBoxSize)), mouseY + (roomBoxSize/2-(mouseY%roomBoxSize)) ) //modulo skiten gör så att den hamnar på  sitt grid
     }
   }
 
-function createRoomSprite(){
-  x = mouseX + (32-(mouseX%64))
-  y = mouseY + (32-(mouseY%64))
-  drawBox(x,y);
+function createFirstRoom(){
+    drawCoordinate = {x: floor(width/2)+roomBoxSize/2, y: floor(height/2)+roomBoxSize/2};
+    createRoom(drawCoordinate.x, drawCoordinate.y);
 }
 
 
-
-
-
-function createRoomSprites(){
-
-  for (var i = topCoordinate.y; i < spriteGridHeight+topCoordinate.y; i++) {
-      for (var j = topCoordinate.x; j < spriteGridWidth+topCoordinate.x; j++) {
-        drawCoordinate = {x: floor(width/2)+j*roomBoxSize+32, y: floor(height/2)+i*roomBoxSize+32};
-        drawBox(drawCoordinate.x, drawCoordinate.y);
-
-
-
-    }
-  }
-}
-
-
-function drawBox(x, y){
-  roomSprite = createSprite(x, y, roomBoxSize, roomBoxSize);
+function createRoom(x, y){
+  this.x = x;
+  this.y = y;
+  roomSprite = createSprite(this.x, this.y, roomBoxSize, roomBoxSize);
   roomSprite.active = false;
+
+  roomSprite.indexX = (this.x-floor(width/2)-roomBoxSize/2)/roomBoxSize;
+  roomSprite.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
 
   roomSprite.draw = function(){
     rectMode(CENTER);
@@ -106,10 +93,15 @@ function drawBox(x, y){
     rect(0,0, roomBoxSize, roomBoxSize);
 
   }
-
-  roomSprite.onMousePressed = function(){
+  print(this.x);
+  roomSprite.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
 
     this.active = true;
+
+    print(this.indexY +", "+ this.indexX)
+    //if(this.roomObj === null){
+    //  this.roomObj = new room(this.indexX, this.indexY, this.mainText, this.options);
+    //}
   }
 
   roomSprite.debug = true;
@@ -118,50 +110,49 @@ function drawBox(x, y){
   //roomSprite.indexY = i;
 
   roomSprites.push(roomSprite);
+
+
 }
+//not used---
+function createVisualizationBox(roomObj){
 
+  this.roomObj = roomObj
 
+  this.drawCoordinates = {x: (this.roomObj.x*64-floor(width/2)), y: (this.roomObj.y*64-floor(height/2))};
+  this.roomSprite = createSprite(this.drawCoordinates.x, this.drawCoordinates.y, roomBoxSize, roomBoxSize);
+  this.roomSprite.active = false;
 
+  this.roomSprite.draw = function(){
+    rectMode(CENTER);
 
-
-
-
-
-
-
-
-
-function room( x, y, mainText, options ){
-
-  // Set default values
-  this.x = x;
-  this.y = y;
-  this.mainText = mainText;
-  this.options = options;
-
-  this.load = function(){
-
-    // Reset the displayed options
-    for (var i = 0; i < maxOptionLength; i++) {
-      displayedOptions[i].ref.html('');
+    if(this.active){
+      fill(colors.fillColor);
+      stroke(colors.strokeColor);
     }
-
-    // Get the number of displayedOptions
-    optionlength = this.options.length;
-
-    // Set the option variables for use in front ends display options
-    for (var i = 0; i < optionlength; i++) {
-      // Set the displayed text on option
-      displayedOptions[i].ref.html(this.options[i].text);
-
-      displayedOptions[i].cmd = this.options[i].cmd;
-
-      displayedOptions[i].values = this.options[i].values;
-
+    if(!this.active){
+      fill(colors.inactiveFillColor);
+      noStroke();
     }
+     rect(0,0, roomBoxSize, roomBoxSize);
 
-  }//this.load()
+  }
+
+  this.roomSprite.onMousePressed = function(){
+
+    this.active = true;
+  }
+
+  this.roomSprite.debug = true;
+
+    //roomSprite.indexX = j;
+    //roomSprite.indexY = i;
 
 
+
+  this.generateGui = function(){
+    this.gui = createGui( "(" + this.roomObj.x + ", " + this.roomObj.y + ")" );
+    this.gui.addGlobals('roomText');
+    noLoop();
+  }
 
 }
