@@ -18,6 +18,8 @@
   // Get all acceppted commitees
   $kommiteer = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "y" ORDER BY name');
 
+  require_once(get_template_directory() . "/scripts/helpful_functions.php");
+
 ?>
 
 
@@ -138,6 +140,41 @@
           BASIC INFORMATION
         **************************  -->
 
+        <?php
+
+        $cat_array = get_kommitte_cat_ids( get_current_user_id() );
+
+        $args = array(
+            'category__in' => $cat_array,
+            'post_status' => 'publish',
+            'post_type' => 'post',
+            'orderby' => 'post_date',
+        );
+
+        // The Query
+        $the_query = new WP_Query( $args );
+
+        // The Loop
+        if ( $the_query->have_posts() ) : ?>
+
+            <div class="see-more blogposts-header">
+              <h2>Nya notiser</h2>
+              <div class="">
+                <a href="">See alla inlägg &#8594;</a>
+              </div>
+            </div>
+
+            <?php while ( $the_query->have_posts() ) {
+                $the_query->the_post();
+
+                get_template_part( 'content' );
+            } ?>
+        <?php endif;
+        /* Restore original Post Data */
+        wp_reset_postdata();
+
+        ?>
+
         <div class="row">
 
           <div class="box white sm">
@@ -224,6 +261,12 @@
           <div class="box white lg">
 
             <h3>Ansök om en ny kommitté</h3>
+
+            <?php if (!is_member(get_current_user_id())) { ?>
+              <p>Du måste vara medlem för att kunna ansöka om en kommitté!</p>
+            <?php } else { ?>
+
+
             <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
               <?php // Show error messages
@@ -265,6 +308,8 @@
               <button name="new_kommitee" class="btn lg" type="submit">Skicka ansökan</button>
 
             </form>
+
+          <?php } // End isMember ?>
 
           </div>
 

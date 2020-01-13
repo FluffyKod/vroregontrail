@@ -1,5 +1,8 @@
 <?php
 
+require_once ABSPATH . '/wp-admin/includes/taxonomy.php';
+
+
 // Form validation function
 function test_input( $data ){
   $data = trim($data);
@@ -74,4 +77,84 @@ function getStudentsInYear($year, $students) {
   }
 
   return $yearArray;
+}
+
+function check_id( $id, $table_name ) {
+  if (empty($id)){
+    return array(false, 'empty');
+  }
+
+  if (!is_numeric($id)){
+    return array(false, 'nan');
+  }
+
+  global $wpdb;
+
+  if ( count($wpdb->get_results('SELECT * FROM '. $table_name .' WHERE id="'. $id .'"')) < 1 ) {
+    return array(false, 'norecord');
+  }
+
+  return array(true, (int)$id);
+}
+
+function value_exists_in_table( $value, $column_name, $table_name, $row_id = false ){
+
+  global $wpdb;
+
+  if ($row_id){
+
+    if ( count($wpdb->get_results('SELECT * FROM '. $table_name .' WHERE '. $column_name .'="'. $value .'" AND id <>'. $row_id)) > 0 ) {
+      return true;
+    } else {
+      return false;
+    }
+
+  } else {
+
+    if ( count($wpdb->get_results('SELECT * FROM '. $table_name .' WHERE '. $column_name .'="'. $value .'"')) > 0 ) {
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
+
+
+}
+
+function is_member( $u_id ){
+
+  global $wpdb;
+
+  $status = get_metadata('user', $u_id, 'status');
+
+  return ($status == 'y') ? true : false;
+
+}
+
+function get_kommitte_cat_ids( $u_id ) {
+
+  global $wpdb;
+
+  $all_kommittes = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id = '. $u_id);
+
+  $cat_array = array();
+
+  foreach ($all_kommittes as $k){
+    $cat_name = 'kommitte_' . $k->kommitee_id;
+
+    if ( category_exists( $cat_name ) ){
+
+      $cat_id = get_cat_ID( $cat_name );
+
+      if ( $cat_id != 0 ) {
+        array_push( $cat_array, $cat_id );
+      }
+
+    }
+  }
+
+  return $cat_array;
+
 }

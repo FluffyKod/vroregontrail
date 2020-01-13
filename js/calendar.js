@@ -160,7 +160,7 @@ function showCalendar(month, year){
             for (evType in allEventTypes){
               // If an event type is found, add the event to the calendar with the correct color codes
               if (allEventTypes[evType]['id'] == etId){
-                add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startDateString, endDateString, startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description']);
+                add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startDateString, endDateString, startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description'], allEvents[ev]['visibility'], allEvents[ev]['id']);
               }
             }
 
@@ -202,7 +202,7 @@ function calendar_next(){
   showCalendar(currentMonth, currentYear);
 }
 
-function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, endDate, startTime, endTime, place, host, description){
+function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, endDate, startTime, endTime, place, host, description, visibility, id){
   // Check if there already is an event on this day, if so -> the markingsContainer has already been created, therefore do not create it again.
   let markingsContainer = (tdElement.childNodes.length == 1) ? document.createElement('div') : tdElement.childNodes[1];
 
@@ -218,6 +218,13 @@ function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, end
   // Style it
   newEvent.style.backgroundColor = bgColor;
   newEvent.style.color = fgColor;
+
+  // If the visibility is not for all, add a class
+  if (visibility != 'a'){
+    newEvent.style.opacity = '60%';
+    // newEvent.style.border = '4px dashed gray';
+    // newEvent.style.textDecoration = 'line-through';
+  }
 
   // Create a popup box if the event is clicked
   newEvent.addEventListener('click', function() {
@@ -242,8 +249,18 @@ function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, end
       modalText += '<b>Host:</b> ' + host + '<br>';
     }
     if (description){
-      modalText += '<span class="modal-description">' + description + '</span>';
+      modalText += '<span class="modal-description">' + description + '</span><br>';
     }
+    // Add publish/unpublish buttons depending if the event is only accesible to elevkaren or all members
+    if (visibility != 'a'){
+      modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="publish_event" value='+ id +'>Publicera event</button><button class="btn lg red" type="submit" name="remove_event" value='+ id +'>-</button></div></form>';
+    } else {
+      modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="unpublish_event" value='+ id +'>Avpublicera event</button><button class="btn lg red" type="submit" name="remove_event" value='+ id +'>-</button></div></form>';
+    }
+
+    // Add a remove button
+    modalText += '';
+
 
     // Add the body text
     document.querySelector('#modal .modal-body').innerHTML = modalText;

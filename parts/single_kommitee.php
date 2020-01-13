@@ -227,9 +227,10 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
   <div class="box green" id="send_message">
 
-    <h4>Skicka Meddelande</h4>
+    <h4>Skicka Notis</h4>
 
-    <form autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_mail.inc.php'); ?>" method="post">
+    <!-- SEND MAIL -->
+    <!-- <form autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_mail.inc.php'); ?>" method="post">
 
       <input type="text" name="subject" value="" placeholder="Ämne...">
       <textarea name="message" placeholder="Meddelande..."></textarea>
@@ -241,6 +242,17 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       <?php } ?>
 
       <button name="send_message_kommitte" class="btn lg">Skicka</button>
+
+    </form> -->
+
+    <!-- SEND NOTIFICATION -->
+    <form autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_notification.inc.php'); ?>" method="post">
+
+      <input type="text" name="title" value="" placeholder="Titel..">
+      <textarea name="content" placeholder="Meddelande..."></textarea>
+      <input type="text" name="k_id" value="<?php echo $k_id; ?>" hidden>
+
+      <button name="send_notification_kommitte" value="" class="btn lg">Skicka</button>
 
     </form>
 

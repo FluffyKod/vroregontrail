@@ -8,6 +8,13 @@
    echo "<h1>Du måste vara inloggad för att se spelet</h1>";
    echo '<a href="/wp-login.php">Logga In</a>';
  } else {
+
+   // global $wpdb;
+   //
+   // $str_json = $wpdb->get_var('SELECT rooms FROM vroregon_testrooms');
+   // echo $str_json;
+
+
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +49,6 @@
   </head>
   <body>
 
-
       <div id="grandparent">
         <img src="<?php echo get_bloginfo('template_directory') ?>/p5/code/test.png" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">
         <!--<div id="topbox">
@@ -75,7 +81,7 @@
             </div>
 
           </div>
-          
+
       </div>
         <a id="mountain-jump" href="index-minigame-mountain-jump.html"></a>
       </div>

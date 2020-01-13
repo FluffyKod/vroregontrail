@@ -27,11 +27,15 @@
 
  ?>
 
-<section id="navigation-bar">
+<section id="navigation-bar" class="closed">
 
   <div class="nav-header">
     <a href="/"><img src="<?php echo get_bloginfo('template_directory') ?>/img/vitfluga.png" alt=""></a>
     <h2>Admin</h2>
+
+    <button class="icon" onclick="toggleNavbar('navigation-bar')">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/menu.png" alt="">
+    </button>
 
   </div>
 
@@ -111,6 +115,8 @@
       <p>Inställningar</p>
     </a>
 
+
+
   </nav>
 
   <div class="drive">
@@ -123,3 +129,11 @@
   </div>
 
 </section>
+
+<script>
+  function toggleNavbar(id) {
+    var navbar = document.getElementById(id);
+
+    navbar.classList = (navbar.classList == 'closed') ? 'open' : 'closed';
+  }
+</script>

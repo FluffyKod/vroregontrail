@@ -87,7 +87,7 @@ $current_student = wp_get_current_user();
                   <p style="color: <?php echo $et->fg_color; ?>"><?php echo $et->name; ?></p>
 
                   <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
-                    <button form="add-event-type-form" class="btn add-btn deny" type="submit" name="remove_event_type" value="<?php echo $et->id ?>">-</button>
+                    <button class="btn add-btn deny" type="submit" name="remove_event_type" value="<?php echo $et->id ?>" onclick="event.stopPropagation();">-</button>
                     <input hidden id="alterEventTypeInput-<?php echo $et->id; ?>" type="submit" name="show_alter_event_type" value="<?php echo $et->id ?>">
                   </form>
 
@@ -470,10 +470,10 @@ $current_student = wp_get_current_user();
               <label for="">Syns för: </label>
               <select class="" name="ae_visibility">
                 <option value="e">Endast elevkåren</option>
-                <option value="u">Endast aktuella utskottet</option>
+                <!-- <option value="u">Endast aktuella utskottet</option>
                 <option value="m">Alla medlemmar</option>
-                <option value="l">Alla inloggade</option>
-                <option value="a">Alla besökare</option>
+                <option value="l">Alla inloggade</option> -->
+                <option value="a">Alla</option>
               </select>
             </div>
 
@@ -516,13 +516,13 @@ $current_student = wp_get_current_user();
           a - all visitors
     */
 
-    $sql_options = array('u', 'e', 'm', 'k', 'l', 'a');
-
-    if (!current_user_can('administrator') || !current_user_can('elevkaren') ){
-        $sql_options .= ' AND ';
+    if (current_user_can('administrator') || current_user_can('elevkaren') ){
+        // Get all events
+        $all_events = $wpdb->get_results('SELECT * FROM vro_events');
+    } else {
+      // Only get events that has been published
+      $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a"');
     }
-
-    $all_events = $wpdb->get_results('SELECT * FROM vro_events');
 
     $event_type_array = array();
     $all_event_types = $wpdb->get_results('SELECT * FROM vro_event_types');
@@ -538,8 +538,10 @@ $current_student = wp_get_current_user();
 
     ?>
     <script type="text/javascript">
+      var actionLink = "<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>";
       var allEvents = <?php echo $json_events; ?>;
       var allEventTypes = <?php echo $json_event_types; ?>;
+
     </script>
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>

@@ -124,6 +124,7 @@ function vro_setup() {
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name VARCHAR(100) NOT NULL,
+    description VARCHAR(300),
     chairman BIGINT(20) UNSIGNED,
     PRIMARY KEY (id),
     FOREIGN KEY (chairman) REFERENCES wp_users(ID)
@@ -132,23 +133,23 @@ function vro_setup() {
   createTable($table_name, $sql_utskott);
 
   // Positions table
-  $table_name = $prefix . 'position_types';
-
-  // Set fields
-  $sql_positions = 'CREATE TABLE ' . $table_name . '(
-    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    is_unique BIT NOT NULL DEFAULT 0,
-    is_linked_utskott BIT NOT NULL DEFAULT 0,
-    PRIMARY KEY (id)
-  )';
-
-  createTable($table_name, $sql_positions);
+  // $table_name = $prefix . 'position_types';
+  //
+  // // Set fields
+  // $sql_positions = 'CREATE TABLE ' . $table_name . '(
+  //   id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  //   created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  //   last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  //   name VARCHAR(100) NOT NULL,
+  //   is_unique BIT NOT NULL DEFAULT 0,
+  //   is_linked_utskott BIT NOT NULL DEFAULT 0,
+  //   PRIMARY KEY (id)
+  // )';
+  //
+  // createTable($table_name, $sql_positions);
 
   // Main karen table
-  $table_name = $prefix . 'karen';
+  // $table_name = $prefix . 'karen';
 
   // Set fields
   // $sql_karen = 'CREATE TABLE ' . $table_name . '(
@@ -164,17 +165,15 @@ function vro_setup() {
   //   FOREIGN KEY (position_id) REFERENCES vro_positions(id)
   // )';
 
+  $table_name = $prefix . 'styrelsen';
+
   $sql_karen = 'CREATE TABLE ' . $table_name . '(
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    position_id INTEGER(10) UNSIGNED NOT NULL,
+    position_name VARCHAR(100) NOT NULL,
     student BIGINT(20) UNSIGNED,
-    utskott_id INTEGER(10) UNSIGNED,
-    PRIMARY KEY (id),
-    FOREIGN KEY (student) REFERENCES wp_users(ID),
-    FOREIGN KEY (utskott_id) REFERENCES vro_utskott(id),
-    FOREIGN KEY (position_id) REFERENCES vro_positions(id)
+    PRIMARY KEY (id)
   )';
 
   createTable($table_name, $sql_karen);
@@ -236,6 +235,24 @@ function vro_setup() {
   )';
 
   createTable($table_name, $sql_events);
+
+  /*****************************************
+  * VROREGON
+  *****************************************/
+
+  $table_name = 'vroregon_testrooms';
+
+  $sql_regon = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    rooms JSON,
+    PRIMARY KEY (id)
+  )';
+
+  createTable($table_name, $sql_regon);
+
+
 
 } // End vro_setup()
 add_action( 'after_setup_theme', 'vro_setup' );

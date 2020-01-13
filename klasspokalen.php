@@ -135,6 +135,7 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY points DESC');
                 </div>
 
                 <input type="number" name="add-points" value="" placeholder="+/-Poäng..." required>
+                <input type="text" name="callback" value="/panel/klasspokalen" hidden>
 
                 <button class="btn lg" type="submit" name="give_class_points">Ge poäng</button>
               </form>

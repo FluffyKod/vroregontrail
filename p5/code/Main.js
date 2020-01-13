@@ -347,7 +347,6 @@ function defineCanvas(){
   canvas.class('box');
   canvas.hide();
 
-
 }
 
 
