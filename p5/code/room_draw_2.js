@@ -4,8 +4,8 @@ let spriteGridHeight = 3;
 
 let canvasSize = {width: roomBoxSize*100, height: roomBoxSize*100 }
 
-let   topCoordinate = {x: -1, y: -1};
-
+let topCoordinate = {x: -1, y: -1};
+let activeRoom;
 
 let colors = {};
 
@@ -23,6 +23,7 @@ function setup(){
 
   createCanvas(canvasSize.width, canvasSize.height);
   createFirstRoom();
+
   print(roomSprites);
   Camera(floor(width/2),floor(height/2))
 }
@@ -32,6 +33,7 @@ function draw(){
   background(colors.inactiveFillColor);
   highlightOverMouse();
   drawSprites();
+
 
 
 
@@ -74,10 +76,21 @@ function createRoom(x, y){
   this.x = x;
   this.y = y;
   roomSprite = createSprite(this.x, this.y, roomBoxSize, roomBoxSize);
-  roomSprite.active = false;
+  roomSprite.active = true;
 
   roomSprite.indexX = (this.x-floor(width/2)-roomBoxSize/2)/roomBoxSize;
   roomSprite.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
+  roomSprite.coordinateString = "(" + roomSprite.indexX + ", " + roomSprite.indexY + ")"
+
+
+
+
+  roomSprite.gui = createGui( "Room "+ roomSprite.coordinateString );
+  select('.qs_main').position('fixed');
+  if (activeRoom === null) {
+    activeRoom = roomSprite.gui();
+
+  }
 
   roomSprite.draw = function(){
     rectMode(CENTER);
@@ -91,20 +104,27 @@ function createRoom(x, y){
       noStroke();
     }
     rect(0,0, roomBoxSize, roomBoxSize);
+    textSize(15);
+    noStroke();
+    fill(colors.strokeColor)
+    text(this.coordinateString, -roomBoxSize/2+10,-roomBoxSize/2+25)
 
   }
   print(this.x);
   roomSprite.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
 
-    this.active = true;
-
+    if(activeRoom != null){
+      activeRoom.hide();
+    }
+    this.gui.show();
+    activeRoom = this.gui;
     print(this.indexY +", "+ this.indexX)
     //if(this.roomObj === null){
     //  this.roomObj = new room(this.indexX, this.indexY, this.mainText, this.options);
     //}
   }
 
-  roomSprite.debug = true;
+  roomSprite.debug = false;
 
   //roomSprite.indexX = j;
   //roomSprite.indexY = i;
