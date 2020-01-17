@@ -72,6 +72,16 @@ function setup(){
 
 }
 
+function addNewRoom(currentRooms, newRoom){
+  roomsToSave = currentRooms;
+  roomsToSave.push(newRoom);
+  saveRooms(roomsToSave)
+
+  loadRooms(function(returnedRooms) {
+    rooms = returnedRooms;
+  });
+}
+
 ////////////////////////////////////////////
 // MAIN GAME LOOP
 ////////////////////////////////////////////
