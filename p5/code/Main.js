@@ -364,7 +364,7 @@ function drawTextbox(){
     displayedOptions[currentoption].highlight();
   }
 
-  // Go through every room to find the room the current player is in
+  // Goes through every room to find the room the current player is in
   for (var i = 0; i < rooms.length; i++) {
     if(player.x == rooms[i].x && player.y == rooms[i].y){
       if(write){
