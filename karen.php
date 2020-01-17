@@ -197,6 +197,24 @@ if (! is_user_logged_in() ){
 
           <div class="box green lg">
 
+            <h4>Komponera nytt kårbrev</h4>
+            <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">
+
+              <input type="text" name="letter_title" placeholder="Titel...">
+
+              <textarea name="letter_content" placeholder="Kårbrevet..."></textarea>
+
+             <button type="submit" name="publish_karbrev" class="btn lg">Publicera kårbrev</button>
+           </form>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="box white lg">
+
             <h4>Lägg till nytt utskott</h4>
             <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">
 
@@ -221,7 +239,7 @@ if (! is_user_logged_in() ){
 
         <div class="row">
 
-          <div class="box white lg">
+          <div class="box green lg">
 
             <h4>Lägg till ny styrelsepost</h4>
             <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">
@@ -238,6 +256,8 @@ if (! is_user_logged_in() ){
         </div>
 
       </div>
+
+
 
       <?php
 

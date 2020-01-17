@@ -22,6 +22,7 @@ if (! is_user_logged_in() ){
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
 
@@ -35,10 +36,14 @@ if (! is_user_logged_in() ){
       // Display a special navbar for admins
       if (!current_user_can('administrator') and !current_user_can('elevkaren') ){
         // Get the members view
+        require_once(get_template_directory() . "/scripts/helpful_functions.php");
+
         require_once(get_template_directory() . "/parts/member-dashboard.php");
       } else {
 
       require_once(get_template_directory() . "/parts/admin-navigation-bar.php");
+
+      require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
       // Get access to wordpress database functions
       global $wpdb;
@@ -195,137 +200,37 @@ if (! is_user_logged_in() ){
           </div>
 
         <!-- Search for member -->
-          <div class="box white lg">
 
+          <div class="box white lg">
             <h4>Sök medlem</h4>
 
-            <input type="text" name="" value="" placeholder="Namn...">
-            <input type="text" name="" value="" placeholder="Klass...">
+            <input type="search" placeholder="Namn.." name="keyword" id="keyword" onkeyup="fetch()"></input>
 
-            <a href="#" class="btn lg">Sök</a>
+            <div id="datafetch"></div>
+
+            <script type="text/javascript">
+            function fetch(){
+
+                jQuery.ajax({
+                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                    type: 'post',
+                    data: { action: 'data_fetch', keyword: jQuery('#keyword').val() },
+                    success: function(data) {
+                        jQuery('#datafetch').html( data );
+                    }
+                });
+
+              }
+            </script>
+
 
           </div>
 
         </div>
 
         <?php
-
-        $args = array(
-            // 'category_name' => $catString,
-            // 'category__in' => $catArray,
-            'post_status' => 'publish',
-            'post_type' => 'post',
-            'orderby' => 'post_date',
-            'posts_per_page' => 2
-        );
-
-        // The Query
-        $the_query = new WP_Query( $args );
-
-        // The Loop
-        if ( $the_query->have_posts() ) : ?>
-
-            <div class="see-more blogposts-header">
-              <h2>Senaste nytt</h2>
-              <div class="">
-                <a href="">See alla inlägg &#8594;</a>
-              </div>
-            </div>
-
-            <?php while ( $the_query->have_posts() ) {
-                $the_query->the_post();
-
-                get_template_part( 'content' );
-            } ?>
-        <?php endif;
-        /* Restore original Post Data */
-        wp_reset_postdata();
-
+          require_once(get_template_directory() . "/parts/dashboard-gadgets.php");
         ?>
-
-        <div class="bow">
-
-          <?php
-
-          $odenplan_frescati_url = 'https://api.sl.se/api2/TravelplannerV3_1/trip.json?key=471f7b533072422587300653963192ad&originExtId=9117&destExtId=9203&products=8&lines=50';
-          $curl = curl_init();
-          curl_setopt($curl, CURLOPT_URL, $odenplan_frescati_url);
-          curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-          $result = curl_exec($curl);
-          curl_close($curl);
-
-          $json_odenplan_frescati = json_decode($result, true);
-
-          $frescait_odenplan_url = 'https://api.sl.se/api2/TravelplannerV3_1/trip.json?key=471f7b533072422587300653963192ad&originExtId=9203&destExtId=9117&products=8&lines=50';
-          $curl = curl_init();
-          curl_setopt($curl, CURLOPT_URL, $frescait_odenplan_url);
-          curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-          $result = curl_exec($curl);
-          curl_close($curl);
-
-          $json_frescati_odenplan = json_decode($result, true);
-
-          ?>
-
-          <div class="box green hl frescati">
-            <div class="see-more">
-              <h3>Nästa buss Frescati</h3>
-              <button onclick="toggleClass('frescatis', 'all', 'one');">See alla &#8594;</button>
-            </div>
-
-
-            <div id="frescatis" class="one">
-
-              <?php foreach ($json_odenplan_frescati['Trip'] as $key => $trip) { ?>
-                <div class="frescati-time">
-                  <hr>
-                  <p><b><?php echo $trip['LegList']['Leg'][0]['Origin']['name']; ?>: </b> <?php echo $trip['LegList']['Leg'][0]['Origin']['time']?></p>
-                  <p><b><?php echo $trip['LegList']['Leg'][0]['Destination']['name']; ?>: </b> <?php echo $trip['LegList']['Leg'][0]['Destination']['time']?></p>
-                </div>
-              <?php } ?>
-          </div>
-
-        </div>
-
-        <div class="box white hl frescati">
-          <div class="see-more">
-            <h3>Nästa buss Odenplan</h3>
-            <button onclick="toggleClass('odenplans', 'all', 'one');">See alla &#8594;</button>
-          </div>
-
-
-          <div id="odenplans" class="one">
-
-            <?php foreach ($json_frescati_odenplan['Trip'] as $key => $trip) { ?>
-              <div class="frescati-time">
-                <hr>
-                <p><b><?php echo $trip['LegList']['Leg'][0]['Origin']['name']; ?>: </b> <?php echo $trip['LegList']['Leg'][0]['Origin']['time']?></p>
-                <p><b><?php echo $trip['LegList']['Leg'][0]['Destination']['name']; ?>: </b> <?php echo $trip['LegList']['Leg'][0]['Destination']['time']?></p>
-              </div>
-            <?php } ?>
-        </div>
-
-      </div>
-
-      <div class="box white sm">
-        <h3>Dagens lunch</h3>
-        <p><b>Huvudrätt: </b>Pannbiff med gräddsås, inlagd gurka och kokt potatis</p>
-        <p><b>Vegetarisk: </b>Tofu- och grönsaker i kokoscurry serveras med basmatiris</p>
-      </div>
-
-      <div class="box white sm classpoints smaller">
-        <h3>Klasspokalen</h3>
-        <div class="first-place">
-          <p><b>1</b></p>
-          <p><b><?php echo $top_class->name; ?></b></p>
-
-          <img class="trophy" src="<?php echo get_bloginfo('template_directory') ?>/img/bigtrophy.png" alt="">
-          <img class="circle"src="<?php echo get_bloginfo('template_directory') ?>/img/circle.png" alt="">
-        </div>
-
-      </div>
-
-        </div>
 
       </section>
 

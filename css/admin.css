@@ -265,6 +265,10 @@ input[type="radio"] {
   width: 10px;
 }
 
+input[type="file"] {
+
+}
+
 .answer {
   opacity: 0;
   width: 0;
@@ -637,16 +641,21 @@ select:focus {
   color: #555;
 }
 
-.upcoming .event.first {
+.upcoming .event:first-child {
   background-color: var(--main);
   color: #fff;
 }
 
-.upcoming .event.first .info p {
+.upcoming .event.unpublished {
+  opacity: 70%;
+  border: 5px dashed gray;
+}
+
+.upcoming .event:first-child .info p {
   color: #eee;
 }
 
-.upcoming .event.first .icon p {
+.upcoming .event:first-child .icon p {
   color: #fff;
 }
 
@@ -797,12 +806,21 @@ select:focus {
 }
 
 .first-place .trophy {
-  right: -13%;
-  top: 8%;
+  right: -25px;
+  bottom: -10px;
 }
 
 .first-place .circle {
-  left: -13%;
+  left: -25px;
+}
+
+.classpoints.smaller .first-place .trophy {
+  width: 120px;
+}
+
+.classpoints.smaller .first-place .circle {
+  width: 100px;
+  bottom: -40px;
 }
 
 /*****************************************
@@ -938,7 +956,13 @@ div[class=kommitee] a {
 .kommitee_member {
   display: flex;
   align-items: center;
+  position: relative;
+  background-color: var(--main);
+  color: #fff;
+  border-radius: 15px;
+  padding: 10px 20px;
 }
+
 
 .kommitee_member_img {
   position: relative;
@@ -1798,6 +1822,71 @@ div[class=kommitee] a {
 }
 
 /*****************************************
+* Tooltip
+*****************************************/
+button.description {
+  position: relative;
+}
+
+button .btn-description {
+  position: absolute;
+  left: -100%;
+  top: 40%;
+}
+
+/*****************************************
+* Archives
+*****************************************/
+.archive-title {
+  margin-top: 50px;
+  border-bottom: 2px solid;
+}
+
+.archive-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.archive-links a {
+  min-width: min-content;
+  margin: 10px 15px;
+}
+/*****************************************
+* Autocomplete
+*****************************************/
+#datafetch {
+  background-color: var(--background);
+  padding: 0;
+}
+
+#datafetch a {
+  text-decoration: none;
+  color: #fff;
+}
+
+#datafetch p {
+  margin: 0;
+  padding: 15px 20px;
+  font-size: 0.9rem;
+  border-bottom: 2px solid var(--box);
+  display: flex;
+  justify-content: space-between;
+}
+
+#datafetch p.member {
+  background-color: var(--main);
+  color: #fff;
+
+}
+
+#datafetch p.not-member {
+  background-color: var(--deny);
+  color: #fff;
+}
+
+/*****************************************
 * Grids
 *****************************************/
 .container {
@@ -1994,5 +2083,16 @@ div[class=kommitee] a {
   .update .content img.folder {
     right: 20%;
     bottom: 25px;
+  }
+
+  /* FIRST PLACE */
+  .first-place .trophy {
+    right: -20px;
+    width: 150px;
+  }
+
+  .first-place .circle {
+    bottom: -70px;
+    width: 120px;
   }
 }

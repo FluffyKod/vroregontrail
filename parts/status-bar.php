@@ -23,7 +23,7 @@
 
     <div class="profile">
       <div class="profile-img">
-        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80" alt="">
+        <?php echo get_avatar( $user->ID ); ?>
         <button class="add-btn extra-btn">+</button>
       </div>
 
@@ -45,7 +45,7 @@
         }
 
       }
-      
+
       ?>
       <p><?php echo $display_class_name; ?></p>
     </div>
@@ -62,8 +62,8 @@
     </div>
 
     <form class="events_buttons" action="" method="post">
-      <button name="day-event-btn" id="today-event-btn" value="today" class="selected">Idag</button>
-      <button name="day-event-btn" id="week-event-btn" value="week">Vecka</button>
+      <button name="day-event-btn" id="today-event-btn" value="today" >Idag</button>
+      <button name="day-event-btn" id="week-event-btn" value="week" class="selected">Vecka</button>
       <button name="day-event-btn" id="month-event-btn" value="month">Månad</button>
     </form>
 
@@ -122,20 +122,52 @@
 
       // DEFAULT DAY
       // Get all events for the current day
-      $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' AND DAY(start) = ' . $currentDay . ' ORDER BY start ASC');
+      // $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' AND DAY(start) = ' . $currentDay . ' ORDER BY start ASC');
+      //
+      // if (isset($_POST['day-event-btn'])){
+      //   if ($_POST['day-event-btn'] == 'month'){
+      //     // Get all events for the current day
+      //     $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' ORDER BY start ASC');
+      //
+      //     updateEventBtnLinks('month-event-btn');
+      //   }
+      //   elseif ($_POST['day-event-btn'] == 'week'){
+      //     // Get all events for the current day
+      //     $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE YEAR(start) = ' . $currentYear . ' AND WEEK(start, 3) = ' . $currentWeek . ' ORDER BY start ASC');
+      //
+      //     updateEventBtnLinks('week-event-btn');
+      //   }
+      // }
+
+      // DEFAULT WEEK
+      // Get all events for the current day
+      if (current_user_can('administrator') || current_user_can('elevkaren') ){
+        $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE YEAR(start) = ' . $currentYear . ' AND WEEK(start, 3) = ' . $currentWeek . ' ORDER BY start ASC');
+      } else {
+        $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE YEAR(start) = ' . $currentYear . ' AND WEEK(start, 3) = ' . $currentWeek . ' AND visibility="a" ORDER BY start ASC');
+      }
 
       if (isset($_POST['day-event-btn'])){
         if ($_POST['day-event-btn'] == 'month'){
           // Get all events for the current day
-          $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' ORDER BY start ASC');
+          if (current_user_can('administrator') || current_user_can('elevkaren') ){
+            $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' ORDER BY start ASC');
+          } else {
+            $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' AND visibility="a" ORDER BY start ASC');
+          }
 
           updateEventBtnLinks('month-event-btn');
         }
-        elseif ($_POST['day-event-btn'] == 'week'){
+        elseif ($_POST['day-event-btn'] == 'today'){
           // Get all events for the current day
-          $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE YEAR(start) = ' . $currentYear . ' AND WEEK(start, 3) = ' . $currentWeek . ' ORDER BY start ASC');
 
-          updateEventBtnLinks('week-event-btn');
+          if (current_user_can('administrator') || current_user_can('elevkaren') ){
+            $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' AND DAY(start) = ' . $currentDay . ' ORDER BY start ASC');
+          } else {
+            $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' AND DAY(start) = ' . $currentDay . ' AND visibility="a" ORDER BY start ASC');
+          }
+
+          updateEventBtnLinks('today-event-btn');
         }
       }
 
@@ -145,10 +177,10 @@
         $current_event_type = $wpdb->get_row('SELECT * FROM vro_event_types WHERE id=' . $up_event->type);
         $symbol = ($current_event_type) ? $current_event_type->symbol : '';
 
-        if ($i == 0){
-          echo '<div class="event first">';
-        } else {
+        if ($up_event->visibility == 'a') {
           echo '<div class="event">';
+        } else {
+          echo '<div class="event unpublished">';
         }
         ?>
 
@@ -156,7 +188,10 @@
             <p><?php echo $symbol; ?></p>
           </div>
 
+
+
           <div class="info">
+
             <h5><?php echo $up_event->name; ?></h5>
             <?php
               // Check if the event is on one or mulitple days
@@ -171,6 +206,7 @@
                   <p><?php echo date('d M Y, l', strtotime($up_event->start)); ?></p>
                 <?php } ?>
           </div>
+
 
         </div>
         <?php

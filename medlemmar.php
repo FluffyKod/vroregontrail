@@ -39,6 +39,7 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
   <body>
 
@@ -181,7 +182,7 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
         ?>
 
-        <div class="row">
+        <div class="bow">
 
           <div class="box white sm center">
 
@@ -210,6 +211,35 @@ if (metadata_exists('user', $current_student_id, 'status')){
           </div>
 
         </div>
+
+        <div class="row">
+
+          <div class="box white lg">
+            <h4>Sök medlem</h4>
+
+            <input type="search" placeholder="Namn.." name="keyword" id="keyword" onkeyup="fetch()"></input>
+
+            <div id="datafetch"></div>
+
+            <script type="text/javascript">
+            function fetch(){
+
+                jQuery.ajax({
+                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                    type: 'post',
+                    data: { action: 'data_fetch', keyword: jQuery('#keyword').val() },
+                    success: function(data) {
+                        jQuery('#datafetch').html( data );
+                    }
+                });
+
+              }
+            </script>
+
+
+          </div>
+
+      </div>
 
         <div class="row">
 

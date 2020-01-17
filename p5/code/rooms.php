@@ -18,11 +18,9 @@
 // }
 
 
-echo json_encode(42); 
+// echo json_encode(42);
 
 // global $wpdb;
 //
 // $str_json = $wpdb->get_row('SELECT * FROM vroregon_testrooms WHERE id=1');
 // echo $str_json;
-
-?>

@@ -39,31 +39,36 @@ var timer;
 
 function setup(){
 
-  loadRooms();
-  defineCanvas();
-  grandparent = select('#grandparent');
+  loadRooms(function(returnedRooms) {
+    rooms = returnedRooms;
 
-  drawText = true;
-  soundEnabled = false;
-  optionlength = 1;
-  load = false;
-  counter = 0;
+    defineCanvas();
+    grandparent = select('#grandparent');
 
-  timer = 0;
+    drawText = true;
+    soundEnabled = false;
+    optionlength = 1;
+    load = false;
+    counter = 0;
 
-  // Create the player
-  player = new player();
+    timer = 0;
 
-  // Set id for the displayed options
-  displayedOptions.push(new option('#option-1'));
-  displayedOptions.push(new option('#option-2'));
-  displayedOptions.push(new option('#option-3'));
-  displayedOptions.push(new option('#option-4'));
-  displayedOptions.push(new option('#option-5'));
+    // Create the player
+    player = new player();
+
+    // Set id for the displayed options
+    displayedOptions.push(new option('#option-1'));
+    displayedOptions.push(new option('#option-2'));
+    displayedOptions.push(new option('#option-3'));
+    displayedOptions.push(new option('#option-4'));
+    displayedOptions.push(new option('#option-5'));
 
 
-  textbox = select('#textbox');
-  textbox.html("")
+    textbox = select('#textbox');
+    textbox.html("")
+
+    // saveRooms(rooms);
+  });
 
 }
 
@@ -279,7 +284,7 @@ function option(ref){
 // ROOM CLASS
 ////////////////////////////////////////////
 
-function room( x, y, mainText, options ){
+function Room( x, y, mainText, options ){
 
   // Set default values
   this.x = x;

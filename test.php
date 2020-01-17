@@ -73,23 +73,49 @@ if (! is_user_logged_in() ){
 
 
 
+
+
  <a href="/panel/dashboard/" class="btn lg">Admin</a>
 
  <?php
 
- $travel_url = 'https://api.sl.se/api2/TravelplannerV3_1/trip.json?key=471f7b533072422587300653963192ad&originExtId=9117&destExtId=9203&products=8&lines=50';
- $curl = curl_init();
- curl_setopt($curl, CURLOPT_URL, $travel_url);
- curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
- $result = curl_exec($curl);
- curl_close($curl);
+ if (isset($_POST['save_user'])) {
 
- $json = json_decode($result, true);
- // echo $json['Trip'][0]['LegList']['Leg'][0]['Origin']['time'];
+   $profile_image_name = time() . '_' . $_FILES['profileImage']['name'];
 
- foreach ($json['Trip'] as $trip) {
-   echo '<h2>' . $trip['LegList']['Leg'][0]['Origin']['name'] . ': '. $trip['LegList']['Leg'][0]['Origin']['time'] .' - ' . $trip['LegList']['Leg'][0]['Destination']['name'] . ': '. $trip['LegList']['Leg'][0]['Destination']['time'] .'</h2>';
+   $target = $_SERVER['DOCUMENT_ROOT'] . '/uploaded-images/' . $profile_image_name;
+
+   move_uploaded_file( $_SERVER['DOCUMENT_ROOT'] . $_FILES['profileImage']['tmp_name'], $target );
+
  }
+
+?>
+
+
+<form class="" action="/test" method="post" enctype="multipart/form-data">
+  <p>Profile image</p>
+  <input type="file" name="profileImage" id="profileImage" value="">
+
+  <button type="submit" class="btn" name="save_user">Save profile image</button>
+</form>
+
+
+
+ <?php
+
+ // $travel_url = 'https://api.sl.se/api2/TravelplannerV3_1/trip.json?key=471f7b533072422587300653963192ad&originExtId=9117&destExtId=9203&products=8&lines=50';
+ // $curl = curl_init();
+ // curl_setopt($curl, CURLOPT_URL, $travel_url);
+ // curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+ // $result = curl_exec($curl);
+ // curl_close($curl);
+ //
+ // $json = json_decode($result, true);
+ // // echo $json['Trip'][0]['LegList']['Leg'][0]['Origin']['time'];
+ //
+ // foreach ($json['Trip'] as $trip) {
+ //   echo '<h2>' . $trip['LegList']['Leg'][0]['Origin']['name'] . ': '. $trip['LegList']['Leg'][0]['Origin']['time'] .' - ' . $trip['LegList']['Leg'][0]['Destination']['name'] . ': '. $trip['LegList']['Leg'][0]['Destination']['time'] .'</h2>';
+ // }
 
 ?>
 

@@ -142,36 +142,7 @@
 
         <?php
 
-        $cat_array = get_kommitte_cat_ids( get_current_user_id() );
-
-        $args = array(
-            'category__in' => $cat_array,
-            'post_status' => 'publish',
-            'post_type' => 'post',
-            'orderby' => 'post_date',
-        );
-
-        // The Query
-        $the_query = new WP_Query( $args );
-
-        // The Loop
-        if ( $the_query->have_posts() ) : ?>
-
-            <div class="see-more blogposts-header">
-              <h2>Nya notiser</h2>
-              <div class="">
-                <a href="">See alla inlägg &#8594;</a>
-              </div>
-            </div>
-
-            <?php while ( $the_query->have_posts() ) {
-                $the_query->the_post();
-
-                get_template_part( 'content' );
-            } ?>
-        <?php endif;
-        /* Restore original Post Data */
-        wp_reset_postdata();
+        display_kommitte_notifications();
 
         ?>
 

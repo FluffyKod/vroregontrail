@@ -68,8 +68,9 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
           // Check if status not set
           if ($s_status[0] == 'n'){
           ?>
-            <div class="student no-member">
+            <div class="student no-member" id="student_<?php echo $student->ID; ?>">
               <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
+              <p><?php echo $student->user_email; ?></p>
               <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
                 <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
                 <input class="student-email" name="" value="<?php echo get_userdata($c_id)->user_email; ?>" hidden>
@@ -80,8 +81,9 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
         } elseif ($s_status[0] == 'w'){
           // Check if student is waiting to become a member
           ?>
-            <div class="student waiting">
+            <div class="student waiting" id="student_<?php echo $student->ID; ?>">
               <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
+              <p><?php echo $student->user_email; ?></p>
               <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
                 <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
                 <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
@@ -89,11 +91,12 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
               </form>
             </div>
           <?php
-        } elseif ($s_status[0] == 'y'){
+        } elseif ($s_status[0] == 'y' ){
           // Check if student is a member
           ?>
-            <div class="student">
+            <div class="student" id="student_<?php echo $student->ID; ?>">
               <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
+              <p><?php echo $student->user_email; ?></p>
               <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
                 <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
                 <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">

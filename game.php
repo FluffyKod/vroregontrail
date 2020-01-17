@@ -35,6 +35,7 @@
     <script src="/Users/Maglow/Dropbox/p5/addons/p5.sound.min.js"></script>
     <script src="/Users/Maglow/Dropbox/p5/addons/p5.play.js"></script>
   -->
+    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/rooms.php"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Rooms.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
@@ -46,8 +47,27 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
   </head>
   <body>
+
+    <script type="text/javascript">
+    function load_rooms(){
+
+        jQuery.ajax({
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            type: 'post',
+            dataType: "json",
+            data: { action: 'fetch_rooms' },
+            success: function(data) {
+              rooms = data;
+            }
+        });
+
+      }
+
+    </script>
 
       <div id="grandparent">
         <img src="<?php echo get_bloginfo('template_directory') ?>/p5/code/test.png" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">

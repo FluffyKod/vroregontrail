@@ -73,7 +73,50 @@ if (isset($_POST['send_notification_kommitte'])) {
 
 }
 
+elseif (isset( $_POST['archive_notification'] )){
+
+  $post_id = test_input( $_POST['archive_notification'] );
+
+  if (empty($post_id) or !is_numeric($post_id)){
+    header("Location: /panel/kommiteer?archive_notification=nan");
+    exit();
+  }
+
+  // Post arguments
+
+  $args = array(
+		'ID'          => $post_id,
+		'post_status' => 'archive',
+	);
+
+	if (!wp_update_post( $args ) ) {
+    wp_die('Update post status to archive failed');
+  } else {
+    header("Location: /panel/kommiteer?archive_notification=success");
+    exit();
+  }
+
+}
+
+elseif (isset( $_POST['delete_notification'] )){
+
+  $post_id = test_input( $_POST['delete_notification'] );
+
+  if (empty($post_id) or !is_numeric($post_id)){
+    header("Location: /panel/arkiv?delete_notification=nan");
+    exit();
+  }
+
+	if (!wp_delete_post( $post_id ) ) {
+    wp_die('delte post status to archive failed');
+  } else {
+    header("Location: /panel/arkiv?delete_notification=success");
+    exit();
+  }
+
+}
+
 else {
-  header("Location: /panel/kommiteer?send_notification=error");
+  header("Location: /panel/arkiv?send_notification=error");
   exit();
 } // End post
