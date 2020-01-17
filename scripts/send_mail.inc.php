@@ -116,6 +116,32 @@ elseif (isset($_POST['send_message_kommitte'])){
 
 }
 
+elseif (isset($_POST['send_mail'])) {
+
+  global $wpdb;
+
+  $subject = test_input( $_POST['subject'] );
+  $message = test_input( $_POST['message'] );
+  $mail_to = test_input( $_POST['mail_to'] );
+  $mail_from = test_input( $_POST['mail_from'] );
+  $callback = test_input( $_POST['callback'] );
+
+  if ( empty($message) || empty($mail_to) || empty($subject) || empty($mail_from || empty($callback)) ){
+    header("Location: ". $callback ."?send_message=empty");
+    exit();
+  } else {
+
+    $headers = array('From: '. '<' . $mail_from . '>');
+
+    wp_mail( $mail_to, $subject, $message, $headers );
+
+    header("Location: ". $callback ."?send_message=success");
+    exit();
+
+  }
+
+}
+
 else {
   header("Location: /panel/kommiteer?send_message=error");
   exit();

@@ -5,6 +5,8 @@
 :root {
   --main: #28825F;
   --main-rgb: 40,130,95;
+  --secondary: #754271;
+  --darker: #0F3023;
   --lighter: #38AA82;
   --highlight: #BEF7E4;
   --background: #E9F0EE;
@@ -21,6 +23,10 @@
 * Main Styles
 *****************************************/
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -30,6 +36,11 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+.green {
+  background-color: var(--main);
+  color: #fff;
 }
 
 .row {
@@ -610,7 +621,7 @@ select:focus {
   font-weight: 600;
 }
 
-.upcoming .event {
+.upcoming .event, #latest-events .event {
   display: flex;
   background-color: var(--note);
   color: #000;
@@ -619,43 +630,43 @@ select:focus {
   margin: 20px 0;
 }
 
-.upcoming .event .icon {
+.upcoming .event .icon, #latest-events .event .icon {
   width: 20%;
   text-align: center;
 }
 
-.upcoming .event .icon p {
+.upcoming .event .icon p, #latest-events .event .icon p {
   font-size: 1.5rem;
   margin: 0;
   padding: 0;
   color: var(--main);
 }
 
-.upcoming .event .info h5 {
+.upcoming .event .info h5, #latest-events .event .info h5 {
   margin: 0;
 }
 
-.upcoming .event .info p{
+.upcoming .event .info p, #latest-events .event .info p{
   margin: 0;
   font-size: 0.8rem;
   color: #555;
 }
 
-.upcoming .event:first-child {
+.upcoming .event:first-child, #latest-events .event:first-child {
   background-color: var(--main);
   color: #fff;
 }
 
-.upcoming .event.unpublished {
+.upcoming .event.unpublished, #latest-events .event.unpublished {
   opacity: 70%;
   border: 5px dashed gray;
 }
 
-.upcoming .event:first-child .info p {
+.upcoming .event:first-child .info p, #latest-events .event:first-child .info p {
   color: #eee;
 }
 
-.upcoming .event:first-child .icon p {
+.upcoming .event:first-child .icon p, #latest-events .event:first-child .icon p {
   color: #fff;
 }
 

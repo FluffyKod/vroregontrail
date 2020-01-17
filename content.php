@@ -36,6 +36,7 @@
 
     <p class="text-preview"><?php the_content() ?></p>
 
+    <?php if ($edit) : ?>
     <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ): ?>
     <div class="delete-button">
       <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
@@ -51,6 +52,7 @@
     </div>
 
   <?php endif; ?>
+<?php endif; ?>
 
   </article>
 

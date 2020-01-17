@@ -4,6 +4,29 @@
 * Login
 *****************************************/
 
+// Custom Login
+function my_custom_login() {
+  echo '<link rel="stylesheet" type="text/css" href="' . get_bloginfo('template_directory') . '/css/custom-login-style.css" />';
+}
+add_action('login_head', 'my_custom_login');
+
+add_filter( 'register_url', 'my_register_url' );
+function my_register_url( $url ) {
+    return '/register';
+}
+
+// Change logo url
+function custom_login_logo_url() {
+  return get_bloginfo( 'url' );
+}
+add_filter( 'login_headerurl', 'custom_login_logo_url' );
+
+// Change login title
+function custom_login_logo_url_title() {
+  return 'Viktor Rydberg Odenplan';
+}
+add_filter( 'login_headertitle', 'custom_login_logo_url_title' );
+
 // Change login redirect
 function custom_login_redirect( $redirect_to, $request, $user ) {
   global $user;

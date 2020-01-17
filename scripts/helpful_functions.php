@@ -159,7 +159,7 @@ function get_kommitte_cat_ids( $u_id ) {
 
 }
 
-function display_karbrev( $amount = 0, $header = true ){
+function display_karbrev( $amount = 0, $header = true, $edit = true ){
 
   require_once ABSPATH . '/wp-admin/includes/taxonomy.php';
 
@@ -241,4 +241,98 @@ function display_kommitte_notifications( $amount = 0, $header = true ) {
     wp_reset_postdata();
 
   } // End if current student is part of any kommittées
+}
+
+function display_karen( $edit = false ){
+
+  ?>
+
+  <h2>Styrelsen</h2>
+  <div class="row styrelsen" id="styrelsen">
+
+    <?php
+
+    // Get all events type
+    global $wpdb;
+
+    $styrelsen = $wpdb->get_results('SELECT * FROM vro_styrelsen');
+
+    foreach ($styrelsen as $s) {
+      ?>
+
+      <?php
+        if ($edit) {
+          echo '<div class="box white chairman sm clickable">';
+        } else {
+          echo '<div class="box white chairman sm">';
+        }
+      ?>
+
+        <?php if ($edit) { ?>
+        <div class="edit-image">
+          <?php echo get_avatar( $s->ID ); ?>
+          <button type="button" name="button" class="edit-styrelse"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+        </div>
+      <?php } else {
+            echo get_avatar( $s->ID );
+          }
+        ?>
+
+          <h3><?php echo $s->position_name; ?></h3>
+          <p><?php echo get_user_meta($s->student, 'nickname', true); ?></p>
+          <input type="text" name="" value="<?php echo $s->id; ?>" hidden>
+          <input class="position-student-email" name="" value="<?php echo get_userdata($s->student)->user_email; ?>" hidden>
+      </div>
+
+      <?php
+    }
+
+    ?>
+  </div>
+
+  <h2>Utskotten</h2>
+  <div class="row styrelsen" id="utskotten">
+
+    <?php
+
+    // Get all events type
+    global $wpdb;
+
+    $utskotten = $wpdb->get_results('SELECT * FROM vro_utskott');
+
+    foreach ($utskotten as $u) {
+      ?>
+
+      <?php
+        if ($edit) {
+          echo '<div class="box white chairman sm clickable">';
+        } else {
+          echo '<div class="box white chairman sm">';
+        }
+      ?>
+
+          <?php if ($edit) { ?>
+            <div class="edit-image">
+              <?php echo get_avatar( $u->ID ); ?>
+              <button type="button" name="button" class="edit"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+            </div>
+          <?php } else {
+            echo get_avatar( $u->ID );
+          } ?>
+
+          <h3><?php echo $u->name; ?></h3>
+          <p>Ordförande: <?php echo get_user_meta($u->chairman, 'nickname', true); ?></p>
+          <input class="utskott-id" type="text" name="" value="<?php echo $u->id; ?>" hidden>
+          <input class="utskott-description" type="text" name="" value="<?php echo $u->description; ?>" hidden>
+          <input class="utskott-chairman-email" name="" value="<?php echo get_userdata($u->chairman)->user_email; ?>" hidden>
+      </div>
+
+      <?php
+    }
+
+    ?>
+  </div>
+
+  <?php
+
 }
