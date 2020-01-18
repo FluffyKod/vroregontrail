@@ -42,7 +42,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
         </svg>
 
         <hr id="logo-sepparator">
-      <a class="btn" href="/login">Logga in</a>
+      <a class="btn" href="/wp-login.php">Logga in</a>
     </div>
 
 

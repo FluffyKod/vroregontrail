@@ -102,7 +102,7 @@
      <button type="submit" name="register_new_user" class="btn lg" value="/register">Registrera dig</button>
    </form>
 
-		<p id="nav"><a href="/login">Logga in</a> <span>|</span> <a href="/wp-login.php?action=lostpassword">Glömt lösenordet?</a></p>
+		<p id="nav"><a href="/wp-login.php">Logga in</a> <span>|</span> <a href="/wp-login.php?action=lostpassword">Glömt lösenordet?</a></p>
     <p id="backtoblog"><a href="/">	← Tillbaka till VRO-Elevkar		</a></p>
 	</div>
 
