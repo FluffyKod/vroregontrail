@@ -129,7 +129,7 @@ function is_member( $u_id ){
 
   $status = get_metadata('user', $u_id, 'status');
 
-  return ($status == 'y') ? true : false;
+  return ($status[0] == 'y') ? true : false;
 
 }
 
@@ -137,7 +137,7 @@ function get_kommitte_cat_ids( $u_id ) {
 
   global $wpdb;
 
-  $all_kommittes = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id = '. $u_id);
+  $all_kommittes = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id = '. $u_id . ' AND status="y"');
 
   $cat_array = array();
 
@@ -157,4 +157,204 @@ function get_kommitte_cat_ids( $u_id ) {
 
   return $cat_array;
 
+}
+
+function display_karbrev( $amount = 0, $header = true, $edit = true ){
+
+  require_once ABSPATH . '/wp-admin/includes/taxonomy.php';
+
+  if (category_exists( 'karbrev' ) ) {
+    $catArray = array( get_cat_ID('karbrev') );
+  }
+
+  if (count($catArray) > 0){
+
+    $args = array(
+        'category__in' => $catArray,
+        'post_status' => 'publish',
+        'post_type' => 'post',
+        'orderby' => 'post_date',
+        'posts_per_page' => $amount
+    );
+
+    // The Query
+    $the_query = new WP_Query( $args );
+
+      if ( $the_query->have_posts() ) : ?>
+
+          <?php if ( $header ): ?>
+          <div class="see-more blogposts-header">
+            <h2>Kårbrev</h2>
+            <div class="">
+              <a href="/panel/arkiv#karbrev">See alla kårbrev &#8594;</a>
+            </div>
+          </div>
+          <?php endif; ?>
+
+          <?php while ( $the_query->have_posts() ) {
+              $the_query->the_post();
+
+              get_template_part( 'content' );
+          } ?>
+      <?php endif;
+    /* Restore original Post Data */
+      wp_reset_postdata();
+
+  }
+
+}
+
+function display_kommitte_notifications( $amount = 0, $header = true ) {
+  $cat_array = get_kommitte_cat_ids( get_current_user_id() );
+
+  if (count($cat_array) > 0) {
+
+    $args = array(
+        'category__in' => $cat_array,
+        'post_status' => 'publish',
+        'post_type' => 'post',
+        'orderby' => 'post_date',
+    );
+
+    // The Query
+    $the_query = new WP_Query( $args );
+
+    // The Loop
+    if ( $the_query->have_posts() ) : ?>
+
+        <?php if ( $header ): ?>
+        <div class="see-more blogposts-header">
+          <h2>Nya notiser</h2>
+          <div class="">
+            <a href="/panel/arkiv#kommitte">See alla notiser &#8594;</a>
+          </div>
+        </div>
+      <?php endif; ?>
+
+        <?php while ( $the_query->have_posts() ) {
+            $the_query->the_post();
+
+            get_template_part( 'content' );
+        } ?>
+    <?php endif;
+    /* Restore original Post Data */
+    wp_reset_postdata();
+
+  } // End if current student is part of any kommittées
+}
+
+function display_karen( $edit = false ){
+
+  ?>
+
+  <h2>Styrelsen</h2>
+  <div class="row styrelsen" id="styrelsen">
+
+    <?php
+
+    // Get all events type
+    global $wpdb;
+
+    $styrelsen = $wpdb->get_results('SELECT * FROM vro_styrelsen');
+
+    foreach ($styrelsen as $s) {
+      ?>
+
+      <?php
+        if ($edit) {
+          echo '<div class="box white chairman sm clickable">';
+        } else {
+          echo '<div class="box white chairman sm">';
+        }
+      ?>
+
+        <?php if ($edit) { ?>
+        <div class="edit-image">
+          <?php echo get_avatar( $s->ID ); ?>
+          <button type="button" name="button" class="edit-styrelse"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+        </div>
+      <?php } else {
+            echo get_avatar( $s->ID );
+          }
+        ?>
+
+          <h3><?php echo $s->position_name; ?></h3>
+          <p><?php echo get_user_meta($s->student, 'nickname', true); ?></p>
+          <input type="text" name="" value="<?php echo $s->id; ?>" hidden>
+          <input class="position-student-email" name="" value="<?php echo get_userdata($s->student)->user_email; ?>" hidden>
+      </div>
+
+      <?php
+    }
+
+    ?>
+  </div>
+
+  <h2>Utskotten</h2>
+  <div class="row styrelsen" id="utskotten">
+
+    <?php
+
+    // Get all events type
+    global $wpdb;
+
+    $utskotten = $wpdb->get_results('SELECT * FROM vro_utskott');
+
+    foreach ($utskotten as $u) {
+      ?>
+
+      <?php
+        if ($edit) {
+          echo '<div class="box white chairman sm clickable">';
+        } else {
+          echo '<div class="box white chairman sm">';
+        }
+      ?>
+
+          <?php if ($edit) { ?>
+            <div class="edit-image">
+              <?php echo get_avatar( $u->ID ); ?>
+              <button type="button" name="button" class="edit"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+            </div>
+          <?php } else {
+            echo get_avatar( $u->ID );
+          } ?>
+
+          <h3><?php echo $u->name; ?></h3>
+          <p>Ordförande: <?php echo get_user_meta($u->chairman, 'nickname', true); ?></p>
+          <input class="utskott-id" type="text" name="" value="<?php echo $u->id; ?>" hidden>
+          <input class="utskott-description" type="text" name="" value="<?php echo $u->description; ?>" hidden>
+          <input class="utskott-chairman-email" name="" value="<?php echo get_userdata($u->chairman)->user_email; ?>" hidden>
+      </div>
+
+      <?php
+    }
+
+    ?>
+  </div>
+
+  <?php
+
+}
+
+
+// META DATA
+function update_or_add_meta( $u_id, $key, $value ) {
+
+  //CHeck if meta data exists
+  if (metadata_exists( 'user', $u_id, $key )){
+
+    // If so, update its value
+    if ( update_user_meta( $u_id, $key, $value ) == false ){
+      return false;
+    }
+  } else {
+    // Otherwise, add a user meta with the supplied value
+
+    if ( add_user_meta( $u_id, $key, $value ) == false){
+      return false;
+    }
+  }
+
+  return true;
 }

@@ -308,21 +308,7 @@ $current_student = wp_get_current_user();
               </thead>
 
               <tbody id="calendar-body">
-                <!-- <tr>
-                  <td><p>1</p></td>
-                  <td>
-                    <p>2</p>
-                    <div class="markings">
-                      <div class="sale"></div>
-                      <div class="themeday"></div>
-                      <div class="sale"></div>
-                    </div>
-                  </td>
-                  <td><p>3</p></td>
-                  <td><p>4</p></td>
-                  <td><p>5</p></td>
-                  <td><p>6</p></td>
-                </tr> -->
+              
               </tbody>
 
             </table>

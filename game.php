@@ -9,12 +9,6 @@
    echo '<a href="/wp-login.php">Logga In</a>';
  } else {
 
-   // global $wpdb;
-   //
-   // $str_json = $wpdb->get_var('SELECT rooms FROM vroregon_testrooms');
-   // echo $str_json;
-
-
 ?>
 
 <!DOCTYPE html>
@@ -29,12 +23,7 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.sound.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.play.js"></script>
 
-    <!--
-    <script src="/Users/Maglow/Dropbox/p5/p5.min.js"></script>
-    <script src="/Users/Maglow/Dropbox/p5/addons/p5.dom.min.js"></script>
-    <script src="/Users/Maglow/Dropbox/p5/addons/p5.sound.min.js"></script>
-    <script src="/Users/Maglow/Dropbox/p5/addons/p5.play.js"></script>
-  -->
+    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/rooms.php"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Rooms.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
@@ -46,9 +35,13 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
   </head>
   <body>
 
+      <button onclick="savePlayerSate()">Save State</button>
+      <button onclick="getSavedPlayerState()">Get state</button>
       <div id="grandparent">
         <img src="<?php echo get_bloginfo('template_directory') ?>/p5/code/test.png" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">
         <!--<div id="topbox">

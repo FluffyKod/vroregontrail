@@ -222,7 +222,7 @@ function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, end
   // If the visibility is not for all, add a class
   if (visibility != 'a'){
     newEvent.style.opacity = '60%';
-    // newEvent.style.border = '4px dashed gray';
+    newEvent.style.border = '4px dotted gray';
     // newEvent.style.textDecoration = 'line-through';
   }
 

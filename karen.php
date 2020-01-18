@@ -130,72 +130,30 @@ if (! is_user_logged_in() ){
 
         <div id="overlay"></div>
 
-        <h2>Styrelsen</h2>
-        <div class="row styrelsen" id="styrelsen">
+        <?php display_karen(true); ?>
 
-          <?php
-
-          // Get all events type
-          global $wpdb;
-
-          $styrelsen = $wpdb->get_results('SELECT * FROM vro_styrelsen');
-
-          foreach ($styrelsen as $s) {
-            ?>
-
-            <div class="box white chairman sm clickable">
-              <div class="edit-image">
-                <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
-                <button type="button" name="button" class="edit-styrelse"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
-              </div>
-
-                <h3><?php echo $s->position_name; ?></h3>
-                <p><?php echo get_user_meta($s->student, 'nickname', true); ?></p>
-                <input type="text" name="" value="<?php echo $s->id; ?>" hidden>
-                <input class="position-student-email" name="" value="<?php echo get_userdata($s->student)->user_email; ?>" hidden>
-            </div>
-
-            <?php
-          }
-
-          ?>
-        </div>
-
-        <h2>Utskotten</h2>
-        <div class="row styrelsen" id="utskotten">
-
-          <?php
-
-          // Get all events type
-          global $wpdb;
-
-          $utskotten = $wpdb->get_results('SELECT * FROM vro_utskott');
-
-          foreach ($utskotten as $u) {
-            ?>
-
-            <div class="box white chairman sm clickable">
-              <div class="edit-image">
-                <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
-                <button type="button" name="button" class="edit"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
-              </div>
-
-                <h3><?php echo $u->name; ?></h3>
-                <p>Ordförande: <?php echo get_user_meta($u->chairman, 'nickname', true); ?></p>
-                <input class="utskott-id" type="text" name="" value="<?php echo $u->id; ?>" hidden>
-                <input class="utskott-description" type="text" name="" value="<?php echo $u->description; ?>" hidden>
-                <input class="utskott-chairman-email" name="" value="<?php echo get_userdata($u->chairman)->user_email; ?>" hidden>
-            </div>
-
-            <?php
-          }
-
-          ?>
-        </div>
 
         <div class="row">
 
           <div class="box green lg">
+
+            <h4>Komponera nytt kårbrev</h4>
+            <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">
+
+              <input type="text" name="letter_title" placeholder="Titel...">
+
+              <textarea name="letter_content" placeholder="Kårbrevet..."></textarea>
+
+             <button type="submit" name="publish_karbrev" class="btn lg">Publicera kårbrev</button>
+           </form>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="box white lg">
 
             <h4>Lägg till nytt utskott</h4>
             <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">
@@ -221,7 +179,7 @@ if (! is_user_logged_in() ){
 
         <div class="row">
 
-          <div class="box white lg">
+          <div class="box green lg">
 
             <h4>Lägg till ny styrelsepost</h4>
             <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">
@@ -238,6 +196,8 @@ if (! is_user_logged_in() ){
         </div>
 
       </div>
+
+
 
       <?php
 

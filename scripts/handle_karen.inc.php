@@ -344,6 +344,69 @@ elseif (isset($_POST['delete_utskott'])){
 
 }
 
+elseif ( isset($_POST['publish_karbrev'])){
+
+  global $wpdb;
+
+  $letter_title = test_input( $_POST['letter_title'] );
+  $letter_content = test_input( $_POST['letter_content'] );
+
+  if (empty($letter_title) or empty($letter_content)){
+    header("Location: /panel/karen?publish_karbrev=empty");
+    exit();
+  }
+
+  // Create category for kårbrev if it does not already exist
+
+  // Set a category name
+  $cat_name = 'karbrev';
+
+  // Create new category for this kommitté if it does not already exist
+  if ( !category_exists( $cat_name ) ) {
+    // Create a new category and get the category id
+    $cat_id = wp_create_category( $cat_name );
+
+  } else {
+
+    // Get the id of the category
+    $cat_id = get_cat_ID( $cat_name );
+  }
+
+  // If cat_id is 0, then it could not create the category
+  if ( $cat_id == 0 ){
+    header("Location: /panel/karen?publish_karbrev=badcat_id");
+    exit();
+  }
+
+  // Get all memeber
+  $post_args = array(
+      'post_title' => $letter_title,
+      'post_content' => $letter_content,
+      'post_category' => array( $cat_id ),
+      'post_status' => 'publish'
+  );
+
+  // insert the post
+  if ( !$post_id = wp_insert_post( $post_args, $error ) ){
+    wp_die( $error );
+  } else {
+
+    // Add post meta
+    $swedish_months = array('Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December');
+    $english_months = array('January', 'February', 'Mars', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+
+    $current_month = date('F');
+    $current_month = str_ireplace( $english_months, $swedish_months, $current_month );
+
+    add_post_meta( $post_id, 'month', $current_month );
+
+    // SUccess
+    header("Location: /panel/karen?publish_karbrev=success");
+    exit();
+  }
+
+}
+
 else {
   header("Location: /panel/karen?new_position_type=error");
   exit();

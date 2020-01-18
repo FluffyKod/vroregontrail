@@ -25,7 +25,6 @@ var textbox;
 //minigame-switch variables;
 var current_encounter;
 
-
 //ljud
 var blip;
 var soundEnabled;
@@ -39,31 +38,79 @@ var timer;
 
 function setup(){
 
-  loadRooms();
-  defineCanvas();
-  grandparent = select('#grandparent');
+  loadRooms(function(returnedRooms) {
+    rooms = returnedRooms;
 
-  drawText = true;
-  soundEnabled = false;
-  optionlength = 1;
-  load = false;
-  counter = 0;
+    defineCanvas();
+    grandparent = select('#grandparent');
 
-  timer = 0;
+    drawText = true;
+    soundEnabled = false;
+    optionlength = 1;
+    load = false;
+    counter = 0;
 
-  // Create the player
-  player = new player();
+    timer = 0;
 
-  // Set id for the displayed options
-  displayedOptions.push(new option('#option-1'));
-  displayedOptions.push(new option('#option-2'));
-  displayedOptions.push(new option('#option-3'));
-  displayedOptions.push(new option('#option-4'));
-  displayedOptions.push(new option('#option-5'));
+    // Create the player
+    player = new player();
+
+    // Set id for the displayed options
+    displayedOptions.push(new option('#option-1'));
+    displayedOptions.push(new option('#option-2'));
+    displayedOptions.push(new option('#option-3'));
+    displayedOptions.push(new option('#option-4'));
+    displayedOptions.push(new option('#option-5'));
 
 
-  textbox = select('#textbox');
-  textbox.html("")
+    textbox = select('#textbox');
+    textbox.html("")
+
+  });
+
+}
+
+////////////////////////////////////////////
+// ROOMS TO DATABASE FUNCTIONALITY
+////////////////////////////////////////////
+
+// Call saveRooms() to update the database with the new rooms, this functionality lies in rooms.js file
+
+////////////////////////////////////////////
+// SAVE PLAYER OPTIONS TO DATABASE
+////////////////////////////////////////////
+function savePlayerSate() {
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      data: { action: 'save_player_state', x: player.x, y: player.y },
+      success: function(data) {
+
+        console.log(data);
+
+      }
+  });
+}
+
+function getSavedPlayerState() {
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      dataType: 'json',
+      data: { action: 'get_saved_player_state' },
+      success: function(data) {
+
+        // Update player data
+        player.x = data.x;
+        player.y = data.y;
+
+        // Update text box
+        // write = true;
+        // drawTextbox();
+      }
+  });
 
 }
 
@@ -72,6 +119,7 @@ function setup(){
 ////////////////////////////////////////////
 
 function draw(){
+
   if(drawText){
     drawTextbox();
   }
@@ -273,13 +321,14 @@ function option(ref){
 
       }
   }
+
 }
 
 ////////////////////////////////////////////
 // ROOM CLASS
 ////////////////////////////////////////////
 
-function room( x, y, mainText, options ){
+function Room( x, y, mainText, options ){
 
   // Set default values
   this.x = x;

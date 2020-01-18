@@ -173,9 +173,9 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
 
   <div class="box white" id="chairman">
-      <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
+      <?php echo get_avatar( $chairman_id ); ?>
       <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
-      <p>Kommitéeordförande</p>
+      <p>Ordförande</p>
 
       <button onclick="showAnswerForm('change_chairman')">Ändra ordförande &#8594;</button>
 
@@ -246,7 +246,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
     </form> -->
 
     <!-- SEND NOTIFICATION -->
-    <form autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_notification.inc.php'); ?>" method="post">
+    <form autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
 
       <input type="text" name="title" value="" placeholder="Titel..">
       <textarea name="content" placeholder="Meddelande..."></textarea>
@@ -311,9 +311,9 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
   <div class="row">
 
     <div class="box white sm" id="chairman">
-        <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
+        <?php echo get_avatar( $user->ID ); ?>
         <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
-        <p>Kommitéeordförande</p>
+        <p>Ordförande</p>
     </div>
 
     <div class="box green md">
@@ -366,8 +366,8 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       ?>
 
         <div class="kommitee_member">
-          <div class="kommitee_member_img">
-            <img src="https://images.unsplash.com/photo-1491349174775-aaafddd81942?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80" alt="">
+          <!-- <div class="kommitee_member_img">
+            <?php echo get_avatar( $member->ID ); ?>
 
             <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){ ?>
               <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
@@ -378,11 +378,20 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
               </form>
             <?php } ?>
 
-          </div>
+          </div> -->
 
           <div>
             <p><b><?php echo get_user_meta($member->ID, 'nickname', true); ?></b></p>
             <p><?php echo ($wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . get_user_meta($member->ID, 'class_id', true)))->name; ?></p>
+
+            <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){ ?>
+              <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+                <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
+                <input type="text" name="student_id" value="<?php echo $member->ID; ?>" hidden>
+
+                <button type="submit" name="leave_kommitte" class="add-btn extra-btn deny">-</button>
+              </form>
+            <?php } ?>
           </div>
         </div>
 

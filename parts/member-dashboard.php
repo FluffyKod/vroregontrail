@@ -32,10 +32,8 @@ $user = wp_get_current_user();
     <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
   </div>
 
-  <?php if ( have_posts() ) : while ( have_posts() ) : the_post();
-
-    get_template_part( 'content' );
-
-  endwhile; endif; ?>
+  <?php
+    require_once(get_template_directory() . "/parts/dashboard-gadgets.php");
+  ?>
 
 </section>
