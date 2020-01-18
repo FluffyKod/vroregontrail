@@ -252,7 +252,6 @@ function save_player_state(){
     }
 
   }
-
   // Quit the function
   die();
 

@@ -25,7 +25,6 @@ var textbox;
 //minigame-switch variables;
 var current_encounter;
 
-
 //ljud
 var blip;
 var soundEnabled;

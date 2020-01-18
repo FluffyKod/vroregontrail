@@ -42,7 +42,6 @@
 
       <button onclick="savePlayerSate()">Save State</button>
       <button onclick="getSavedPlayerState()">Get state</button>
-
       <div id="grandparent">
         <img src="<?php echo get_bloginfo('template_directory') ?>/p5/code/test.png" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">
         <!--<div id="topbox">
