@@ -67,19 +67,52 @@ function setup(){
     textbox = select('#textbox');
     textbox.html("")
 
-    // saveRooms(rooms);
   });
 
 }
 
-function addNewRoom(currentRooms, newRoom){
-  roomsToSave = currentRooms;
-  roomsToSave.push(newRoom);
-  saveRooms(roomsToSave)
+////////////////////////////////////////////
+// ROOMS TO DATABASE FUNCTIONALITY
+////////////////////////////////////////////
 
-  loadRooms(function(returnedRooms) {
-    rooms = returnedRooms;
+// Call saveRooms() to update the database with the new rooms, this functionality lies in rooms.js file
+
+////////////////////////////////////////////
+// SAVE PLAYER OPTIONS TO DATABASE
+////////////////////////////////////////////
+function savePlayerSate() {
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      data: { action: 'save_player_state', x: player.x, y: player.y },
+      success: function(data) {
+
+        console.log(data);
+
+      }
   });
+}
+
+function getSavedPlayerState() {
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      dataType: 'json',
+      data: { action: 'get_saved_player_state' },
+      success: function(data) {
+
+        // Update player data
+        player.x = data.x;
+        player.y = data.y;
+
+        // Update text box
+        // write = true;
+        // drawTextbox();
+      }
+  });
+
 }
 
 ////////////////////////////////////////////
@@ -87,6 +120,7 @@ function addNewRoom(currentRooms, newRoom){
 ////////////////////////////////////////////
 
 function draw(){
+
   if(drawText){
     drawTextbox();
   }
@@ -288,6 +322,7 @@ function option(ref){
 
       }
   }
+
 }
 
 ////////////////////////////////////////////

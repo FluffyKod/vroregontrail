@@ -336,3 +336,25 @@ function display_karen( $edit = false ){
   <?php
 
 }
+
+
+// META DATA
+function update_or_add_meta( $u_id, $key, $value ) {
+
+  //CHeck if meta data exists
+  if (metadata_exists( 'user', $u_id, $key )){
+
+    // If so, update its value
+    if ( update_user_meta( $u_id, $key, $value ) == false ){
+      return false;
+    }
+  } else {
+    // Otherwise, add a user meta with the supplied value
+
+    if ( add_user_meta( $u_id, $key, $value ) == false){
+      return false;
+    }
+  }
+
+  return true;
+}

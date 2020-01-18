@@ -1,5 +1,11 @@
 <?php
 
+// Include wp_core
+require_once(explode("wp-content", __FILE__)[0] . "wp-load.php");
+
+// INclude heplful functions
+require_once(get_template_directory() . "/scripts/helpful_functions.php");
+
 /*****************************************
 * Login
 *****************************************/
@@ -196,6 +202,86 @@ function save_rooms(){
   }
 
   // Quit the function
+  die();
+
+}
+
+// SAVE OPTIONS
+add_action('wp_ajax_save_player_state' , 'save_player_state');
+add_action('wp_ajax_nopriv_save_player_state','save_player_state');
+function save_player_state(){
+
+  // Access the wordpress database functions
+  global $wpdb;
+
+  // Get current user id and check if one was found
+  $u_id = get_current_user_id();
+  if ( $u_id == 0){
+    echo 'Error: no user id found';
+  } else {
+
+    // Get the values to save
+    $x = $_POST['x'];
+    $y = $_POST['y'];
+
+    //Check if coordinates are int
+    if ( !is_numeric( $x ) or !is_numeric($y) ) {
+      echo 'Error: coor are not numbers!';
+    } else {
+
+      // Convert into int
+      $x = (int)$x;
+      $y = (int)$y;
+
+      //Update the meta values
+      // if ( update_or_add_meta( $u_id, 'x', $x ) == false or update_or_add_meta( $u_id, 'y', $y ) == false ){
+      //
+      //   echo 'Error: could not add x or y';
+      //
+      // } else {
+      //   // Success!
+      //   echo 'Success: Saved the user x and y!';
+      // }
+
+      update_user_meta( $u_id, 'x', $x );
+      update_user_meta( $u_id, 'y', $y );
+
+
+      echo 'Success: Updated x and y coordinate';
+
+    }
+
+  }
+
+  // Quit the function
+  die();
+
+}
+
+add_action('wp_ajax_get_saved_player_state' , 'get_saved_player_state');
+add_action('wp_ajax_nopriv_get_saved_player_state','get_saved_player_state');
+function get_saved_player_state() {
+
+  $x = 0;
+  $y = 0;
+
+  $u_id = get_current_user_id();
+  if ( $u_id == 0){
+    echo json_encode( array('error' => 'no user id') );
+  } else {
+
+    if ( metadata_exists( 'user', $u_id, 'x' ) ){
+      $x = (int)get_metadata( 'user', $u_id, 'x', true );
+    }
+
+    if ( metadata_exists( 'user', $u_id, 'y' ) ){
+      $y = (int)get_metadata( 'user', $u_id, 'y', true );
+    }
+
+  }
+
+  echo json_encode( array('x' => $x, 'y' => $y) );
+
   die();
 
 }
