@@ -3,12 +3,12 @@
  * Template Name: Game
  */
 
-
-
+ // Only show game to logged in users
  if (! is_user_logged_in() ){
    echo "<h1>Du måste vara inloggad för att se spelet</h1>";
    echo '<a href="/wp-login.php">Logga In</a>';
  } else {
+
 ?>
 
 <!DOCTYPE html>
@@ -23,13 +23,8 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.sound.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.play.js"></script>
 
-    <!--
-    <script src="/Users/Maglow/Dropbox/p5/p5.min.js"></script>
-    <script src="/Users/Maglow/Dropbox/p5/addons/p5.dom.min.js"></script>
-    <script src="/Users/Maglow/Dropbox/p5/addons/p5.sound.min.js"></script>
-    <script src="/Users/Maglow/Dropbox/p5/addons/p5.play.js"></script>
-  -->
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main-test.js"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/rooms.php"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Rooms.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
@@ -40,10 +35,13 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
   </head>
   <body>
 
-
+      <button onclick="savePlayerSate()">Save State</button>
+      <button onclick="getSavedPlayerState()">Get state</button>
       <div id="grandparent">
         <img src="<?php echo get_bloginfo('template_directory') ?>/p5/code/test.png" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">
         <!--<div id="topbox">
@@ -77,15 +75,9 @@
 
           </div>
 
-
-
-
       </div>
         <a id="mountain-jump" href="index-minigame-mountain-jump.html"></a>
       </div>
-
-
-
 
   </body>
 </html>

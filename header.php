@@ -4,6 +4,24 @@
     <meta charset="utf-8">
     <title></title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/main.css">
+    <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
+    <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/front.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/animate-page.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
-  <body>
+  <body class="front">
+
+    <?php require_once(get_template_directory() . "/scripts/helpful_functions.php"); ?>
+
+    <section id="front-navbar">
+
+      <nav>
+        <a href="/">Hem</a>
+        <a href="/om-karen">Kåren</a>
+        <a href="/front-kalender">Kalender</a>
+        <a href="/panel/dashboard">Panel</a>
+      </nav>
+
+    </section>

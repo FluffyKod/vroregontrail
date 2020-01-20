@@ -1,9 +1,8 @@
-//ett git test
-// Ett till gittest
 
-var options = [];
+var displayedOptions = [];
 var currentoption;
 var optionlength;
+var maxOptionLength = 5;
 var rooms = [];
 var load;
 var grandparent;
@@ -26,54 +25,107 @@ var textbox;
 //minigame-switch variables;
 var current_encounter;
 
-
 //ljud
 var blip;
 var soundEnabled;
 
-
-
-
 var keypressed = false;
 var timer;
 
+////////////////////////////////////////////
+// SETUP
+////////////////////////////////////////////
+
 function setup(){
 
-  loadRooms();
-  defineCanvas();
-  grandparent = select('#grandparent');
+  loadRooms(function(returnedRooms) {
+    rooms = returnedRooms;
 
-  drawText = true;
-  soundEnabled = false;
-  optionlength = 1;
-  load = false;
-  counter = 0;
+    defineCanvas();
+    grandparent = select('#grandparent');
 
-  timer = 0;
-  player = new player();
+    drawText = true;
+    soundEnabled = false;
+    optionlength = 1;
+    load = false;
+    counter = 0;
 
+    timer = 0;
 
+    // Create the player
+    player = new player();
 
-
-  options.push(new option('#option-1'));
-  options.push(new option('#option-2'));
-  options.push(new option('#option-3'));
-  options.push(new option('#option-4'));
-  options.push(new option('#option-5'));
-
-
-  textbox = select('#textbox');
-  textbox.html("")
+    // Set id for the displayed options
+    displayedOptions.push(new option('#option-1'));
+    displayedOptions.push(new option('#option-2'));
+    displayedOptions.push(new option('#option-3'));
+    displayedOptions.push(new option('#option-4'));
+    displayedOptions.push(new option('#option-5'));
 
 
+    textbox = select('#textbox');
+    textbox.html("")
+
+  });
 
 }
 
+////////////////////////////////////////////
+// ROOMS TO DATABASE FUNCTIONALITY
+////////////////////////////////////////////
+
+// Call saveRooms() to update the database with the new rooms, this functionality lies in rooms.js file
+
+////////////////////////////////////////////
+// SAVE PLAYER OPTIONS TO DATABASE
+////////////////////////////////////////////
+function savePlayerSate() {
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      data: { action: 'save_player_state', x: player.x, y: player.y },
+      success: function(data) {
+
+        console.log(data);
+
+      }
+  });
+}
+
+function getSavedPlayerState() {
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      dataType: 'json',
+      data: { action: 'get_saved_player_state' },
+      success: function(data) {
+
+        // Update player data
+        player.x = data.x;
+        player.y = data.y;
+
+        // Update text box
+        // write = true;
+        // drawTextbox();
+      }
+  });
+
+}
+
+////////////////////////////////////////////
+// MAIN GAME LOOP
+////////////////////////////////////////////
+
 function draw(){
+
   if(drawText){
     drawTextbox();
   }
   if(drawCanvas){
+
+    // Check which encounter is chosen
     switch (current_encounter) {
       case 'flappy_river':
         if(define){fr_defineVar(); define= false;}
@@ -112,18 +164,20 @@ function draw(){
       case 'wasp_attack':
 
         break;
-
-
     }
   }
-
-
 }
+
+////////////////////////////////////////////
+// KEY PRESSED
+////////////////////////////////////////////
 
 function keyPressed(){
   timer = 0;
 
   if(!keypressed){
+    // Set the current selected option by the player to no one
+    // currentoption 1 is the first option, 2 is second etc.
     currentoption = 0;
     keypressed = true;
   }
@@ -148,7 +202,7 @@ function keyPressed(){
     textbox = select('#textbox');
     textbox.html("")
     counter = 0;
-    options[currentoption].command();
+    displayedOptions[currentoption].command();
     currentoption = 0;
     load = false;
 
@@ -162,11 +216,16 @@ function keyPressed(){
 
   }
 
+////////////////////////////////////////////
+// PLAYER CLASS
+////////////////////////////////////////////
 
 function player(){
+  // Keep track of which room the player is in
   this.x = 0;
   this.y = 0;
 
+  // Track stats
   this.inventory = [];
   this.intellegence = 0;
   this.charisma = 0;
@@ -174,15 +233,18 @@ function player(){
   this.kindness = 0;
 }
 
+////////////////////////////////////////////
+// OPTION CLASS
+////////////////////////////////////////////
+
 function option(ref){
   this.ref = select(ref);
 
   this.text = 'test';
   this.ref.html(this.text);
 
-  this.type;
-  this.value;
-  this.valuetype;
+  this.cmd;
+  this.values;
 
   this.highlight = function(){
       this.ref.style('background-color','#fff');
@@ -199,155 +261,104 @@ function option(ref){
   }
   this.command = function() {
 
-      if(this.type == "move"){
-        write = true;
-        if(this.valuetype == "y"){
-          player.y += this.value;
-        } else if(this.valuetype == "x"){
-          player.x += this.value;
-        } else if(this.valuetype == "xy"){
-          player.y += this.value;
-          player.x += this.value;
+      // Give player an item
+      if(this.cmd == 'item'){
+        // Check that there are enough values
+        if (this.values.length >= 1) {
+          player.invertory.push(this.values[0]);
+        } else {
+          console.log('ERROR: Not enough values supplied to item command');
         }
 
       }
-      if(this.type == 'item'){
-        player.invertory.push(this.value);
+
+      // Start a new game
+      if(this.cmd == 'encounter'){
+
+        // Check that there are enough values
+        if (this.values.length >= 2) {
+          current_encounter = this.values[0]
+          define = true;
+          clearVar = false;
+          startSc = true;
+          gameOver = true;
+          score = 0;
+          if(this.values[1]){fr_hard = true;}//slarvigt måste ändras
+          if(!this.values[1]){er_hard = true;}
+          switchToEncounter();
+        } else {
+          console.log('ERROR: Not enough values supplied to encounter command');
+        }
 
       }
-      if(this.type == 'encounter'){
-        current_encounter = this.value
-        define = true;
-        clearVar = false;
-        startSc = true;
-        gameOver = true;
-        score = 0;
-        if(this.valuetype){fr_hard = true;}//slarvigt måste ändras
-        if(!this.valuetype){er_hard = true;}
-        switchToEncounter();
-      }
 
-      if(this.type == 'tp'){ //version av move
-        write = true;
-        player.x = this.value;
-        player.y = this.valuetype;
-      }
+      // Move player to new location
+      if(this.cmd == 'tp'){
 
-      if(this.type == 'stat'){
-
-
+        // Check that there are enough values
+        if (this.values.length >= 2) {
+          write = true;
+          player.x = this.values[0];
+          player.y = this.values[1];
+        } else {
+          console.log('ERROR: Not enough values supplied to tp command');
+        }
 
       }
-      if(this.type == 'info'){
-        textbox.html(this.value);
-        write = false;
 
+      // if(this.cmd == 'stat'){
+      //
+      // }
+      if(this.cmd == 'info'){
 
+        // Check that there are enough values
+        if (this.values.length >= 1) {
+          textbox.html(this.values[0]);
+          write = false;
+        } else {
+          console.log('ERROR: Not enough values supplied to info command');
+        }
 
-
-
-      }
-      if(this.type == 'test'){
-        id = this.value;
-        player.x = rooms[id].o2value
-        player.y = rooms[id].o2valuetype
       }
   }
 
 }
 
-  function room(id, x, y, text,
-  o1text, o1type, o1value, o1valuetype,
-  o2text, o2type, o2value, o2valuetype,
-  o3text, o3type, o3value, o3valuetype,
-  o4text, o4type, o4value, o4valuetype,
-  o5text, o5type, o5value, o5valuetype){
+////////////////////////////////////////////
+// ROOM CLASS
+////////////////////////////////////////////
 
-    this.id = id;
-    this.x = x;
-    this.y = y;
-    this.text = text;
+function Room( x, y, mainText, options ){
 
+  // Set default values
+  this.x = x;
+  this.y = y;
+  this.mainText = mainText;
+  this.options = options;
 
-    this.o1text = o1text;
-    this.o1type = o1type;
-    this.o1value = o1value;
-    this.o1valuetype = o1valuetype;
+  this.load = function(){
 
-    this.o2text = o2text;
-    this.o2type = o2type;
-    this.o2value = o2value;
-    this.o2valuetype = o2valuetype;
-
-    this.o3text = o3text;
-    this.o3type = o3type;
-    this.o3value = o3value;
-    this.o3valuetype = o3valuetype;
-
-    this.o4text = o4text;
-    this.o4type = o4type;
-    this.o4value = o4value;
-    this.o4valuetype = o4valuetype;
-
-    this.o5text = o5text;
-    this.o5type = o5type;
-    this.o5value = o5value;
-    this.o5valuetype = o5valuetype;
-
-    this.load = function(){
-
-      optionlength=1;
-      options[0].ref.html(this.o1text);
-      options[0].type = this.o1type;
-      options[0].value = this.o1value;
-      options[0].valuetype = this.o1valuetype;
-
-      options[1].type = this.o2type;
-      options[1].value = this.o2value;
-      options[1].valuetype = this.o2valuetype;
-
-      options[2].type = this.o3type;
-      options[2].value = this.o3value;
-      options[2].valuetype = this.o3valuetype;
-
-      options[3].type = this.o4type;
-      options[3].value = this.o4value;
-      options[3].valuetype = this.o4valuetype;
-
-      options[4].type = this.o5type;
-      options[4].value = this.o5value;
-      options[4].valuetype = this.o5valuetype;
-
-      if(this.o2text != " "){
-        optionlength++;
-
-        options[1].ref.html(this.o2text);
-
-      }else{options[1].ref.html("")}
-
-      if(this.o3text != " "){
-        optionlength++;
-        options[2].ref.html(this.o3text);
-
-      }else{options[2].ref.html("")}
-
-      if(this.o4text != " "){
-        optionlength++;
-        options[3].ref.html(this.o4text);
-
-      }else{options[3].ref.html(""); }
-
-      if(this.o5text != " "){
-        optionlength++;
-
-        options[4].ref.html(this.o5text);
-
-      }else{options[4].ref.html("")}
-
-
+    // Reset the displayed options
+    for (var i = 0; i < maxOptionLength; i++) {
+      displayedOptions[i].ref.html('');
     }
 
+    // Get the number of displayedOptions
+    optionlength = this.options.length;
+
+    // Set the option variables for use in front ends display options
+    for (var i = 0; i < optionlength; i++) {
+      // Set the displayed text on option
+      displayedOptions[i].ref.html(this.options[i].text);
+
+      displayedOptions[i].cmd = this.options[i].cmd;
+
+      displayedOptions[i].values = this.options[i].values;
+
   }
+
+  }
+}
 
   function typing(divId, inputtext){
     this.divId = divId;
@@ -359,9 +370,6 @@ function option(ref){
     }
 
   }
-
-
-
 
   function switchToEncounter(){
     drawText = false;
@@ -379,38 +387,38 @@ function option(ref){
   }
 
 
-  function defineCanvas(){
-    canvas = createCanvas(600, 600);
-    canvas.style('position: static')
-    canvas.style('margin: auto')
-    canvas.style('margin-top: 140px')
+function defineCanvas(){
+  canvas = createCanvas(600, 600);
+  canvas.style('position: static')
+  canvas.style('margin: auto')
+  canvas.style('margin-top: 140px')
 
-    canvas.class('box');
-    canvas.hide();
+  canvas.class('box');
+  canvas.hide();
 
-
-  }
+}
 
 
 function drawTextbox(){
-  for (var i = 0; i < options.length; i++) {
-    options[i].unhighlight();
+  for (var i = 0; i < displayedOptions.length; i++) {
+    displayedOptions[i].unhighlight();
   }
   if(keypressed && timer < 600){
     timer++;
-    options[currentoption].highlight();
+    displayedOptions[currentoption].highlight();
   }
+
+  // Goes through every room to find the room the current player is in
   for (var i = 0; i < rooms.length; i++) {
     if(player.x == rooms[i].x && player.y == rooms[i].y){
       if(write){
-        typing("textbox", rooms[i].text);
+        typing("textbox", rooms[i].mainText);
       }
       if(!load){
         rooms[i].load();// borde kanske inte uppdateras
         load = true;
       }
     }
-
 
   }
 
