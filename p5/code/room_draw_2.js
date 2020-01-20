@@ -2,15 +2,11 @@ let roomBoxSize = 64; //helst delbar m 2
 let spriteGridWidth = 3;
 let spriteGridHeight = 3;
 
-let params = {
-  poop: 1,
-  pee: "text"
-}
-
 let canvasSize = {width: roomBoxSize*100, height: roomBoxSize*100 }
 
 let topCoordinate = {x: -1, y: -1};
 let activeRoom;
+let activeOptionGui;
 
 let colors = {};
 
@@ -32,15 +28,13 @@ function setup(){
   };
 
   createCanvas(canvasSize.width, canvasSize.height);
-  createFirstRoom();
 
   guiParent = document.getElementById('guiBackground');
-  guiBackground = createDiv('');
-  guiBackground.class('guiBackground');
-  guiBackground.hide();
-  guiBackgroundHidden = true;
-  guiBackground.mouseOver(guiMouseOver);
-  guiBackground.mouseOut(guiMouseOut);
+  guiParent.onmouseenter = function(){guiMouseIsOver = true;}
+  guiParent.onmouseleave = function(){guiMouseIsOver = false;}
+
+  createFirstRoom();
+
 
   print(roomSprites);
   Camera(floor(width/2),floor(height/2))
@@ -83,7 +77,7 @@ function draw(){
         onSprite = true;
       }
     }
-    if(!onSprite && (event.clientX > 250) && (event.clientY > 300)){ //borde bli en låda
+    if(!onSprite && !guiMouseIsOver){ //borde bli en låda
       createRoom(mouseX + (roomBoxSize/2-(mouseX%roomBoxSize)), mouseY + (roomBoxSize/2-(mouseY%roomBoxSize)) ); //modulo skiten gör så att den hamnar på  sitt grid
     }
   }
@@ -99,15 +93,6 @@ function createRoom(x, y){
   this.x = x;
   this.y = y;
 
-  this.mainGuiParams = {
-    mainText: "",
-    optionAmount: [0,1,2,3,4,5]
-  }
-  this.optionGuiParams= {
-    optionText: "",
-    command: ["tp", "info", "itemTp", "statTp", "encounter"],
-
-  }
 
 
   roomSprite = createSprite(this.x, this.y, roomBoxSize, roomBoxSize);
@@ -118,22 +103,51 @@ function createRoom(x, y){
   roomSprite.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
   roomSprite.coordinateString = "(" + roomSprite.indexX + ", " + roomSprite.indexY + ")";
 
-
-
   if (guiBackgroundHidden) {
     guiBackground.show();
     guiBackgroundHidden =false;
 
   }
   roomSprite.gui =  QuickSettings.create(10, 10, "Room "+ roomSprite.coordinateString, guiParent);
-  roomSprite.gui.addTextArea('yolo', "", draw)
+  roomSprite.gui.addTextArea('main_text', "", function(){})
+  roomSprite.gui.addNumber('option_amount', 0,5,0,1, function(value)
+  {
+    for (var i = 0; i < 5; i++) {
+      roomSprite.optionGuis[i].hide()
+    }
+    for (var i = 0; i < value; i++) {
+      roomSprite.optionGuis[i].show()
+    }
+  });
+  roomSprite.gui.addButton('revert_changes', function(){
+    //GET VALUES AND PUT IN FROM ROOM ARRAY
+  });
+  roomSprite.gui.addButton('save', function(){
+    //CREATE/ UPDATE ROOM OBJECT HERE WITH VALUES
+  });
 
 
+  roomSprite.optionGuis = [];
 
-  if (activeRoom === null) {
-    activeRoom = roomSprite.gui();
-    noLoop();// kanske kan kallas för alla
+  for (var i = 1; i <= 5; i++) {
+    roomSprite.optionGui = QuickSettings.create( 210*i+10,10,'option_'+i, guiParent).hide();
+    roomSprite.optionGui.addText('opt_text',"");
+    roomSprite.optionGui.addDropDown('option_command', ['','tp', 'info'], function(value){
+      valuesRequired = 0;
+      print(value.value)
+      switch (value.value) {
+        case 'tp':
+          valuesRequired = 2
+          print(valuesRequired)
+          break;
 
+      };
+      for (var j = 0; j < valuesRequired; j++) {
+        roomSprite.optionGui.addText('value_'+j, ""); //OBSfungerar inte eftersom den måste veta index
+        print('que')
+      }
+    });
+    roomSprite.optionGuis.push(roomSprite.optionGui);
   }
 
   roomSprite.draw = function(){
@@ -157,18 +171,24 @@ function createRoom(x, y){
   print(this.x);
   roomSprite.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
 
-    if (guiBackgroundHidden) {
-      guiBackground.show();
-      guiBackgroundHidden =false;
-
-    }
     if(activeRoom!= null){
       activeRoom.hide();
 
     }
+
+    if (activeOptionGui!=null) {
+      for (var i = 0; i < 5; i++) {
+        activeOptionGui[i].hide();
+      }
+      for (var i = 0; i < this.gui.getValue('option_amount'); i++) {
+        this.optionGuis[i].show();
+      }
+    }
+
+
     this.gui.show();
     activeRoom = this.gui;
-    print(this.indexY +", "+ this.indexX)
+    activeOptionGui = this.optionGuis;//väldigt slarvigt borde sättas ihop m activeRoom
     //if(this.roomObj === null){
     //  this.roomObj = new room(this.indexX, this.indexY, this.mainText, this.options);
     //}
@@ -183,12 +203,6 @@ function createRoom(x, y){
 
 
 }
-
-//BRUH GUIN RÄKNAS SOM MOUSE OUT
-function guiMouseOver(){
-  guiMouseIsOver = true;
-};
-
-function guiMouseOut(){
-  guiMouseIsOver = false;
-};
+function addOptionGuis(roomSprite){
+  print(roomSprite.gui.getValue('option_amount'));
+}
