@@ -19,6 +19,7 @@ if (! is_user_logged_in() ){
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -76,7 +77,7 @@ if (! is_user_logged_in() ){
 
               <div class="button-group">
                 <button class="btn lg" type="submit" name="" id="submit-button">Ändra</button>
-                <button class="btn lg red" type="submit" name="" id="delete-button">-</button>
+                <button class="btn lg red" type="submit" name="" id="delete-button" onclick="return confirm('Är du säker på att du vill ta bort denna post?')">-</button>
               </div>
 
             </form>
@@ -108,7 +109,7 @@ if (! is_user_logged_in() ){
 
               <div class="button-group">
                 <button class="btn lg" type="submit" name="edit_utskott" >Ändra</button>
-                <button class="btn lg red" type="submit" name="delete_utskott">-</button>
+                <button class="btn lg red" type="submit" name="delete_utskott" onclick="return confirm('Är du säker på att du vill ta bort detta utskott?')">-</button>
               </div>
 
             </form>

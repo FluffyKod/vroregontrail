@@ -28,7 +28,7 @@ if (count($kommitees) == 0){
 
   <div class="nav-header">
     <a href="/"><img src="<?php echo get_bloginfo('template_directory') ?>/img/vitfluga.png" alt=""></a>
-    <h2>Admin</h2>
+    <a href="/panel/dashboard"><h2>Panel</h2></a>
 
     <button class="icon" onclick="toggleNavbar('navigation-bar')">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/menu.png" alt="">

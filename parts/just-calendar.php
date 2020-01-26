@@ -66,9 +66,15 @@
   if (current_user_can('administrator') || current_user_can('elevkaren') ){
       // Get all events
       $all_events = $wpdb->get_results('SELECT * FROM vro_events');
+
+      // Set is admin
+      $is_admin = 1;
   } else {
     // Only get events that has been published
     $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a"');
+
+    // Set is admin
+    $is_admin = 0;
   }
 
   $event_type_array = array();
@@ -81,13 +87,14 @@
   }
 
   $json_events = json_encode($all_events);
-  $json_event_types = json_encode($all_event_types)
+  $json_event_types = json_encode($all_event_types);
 
   ?>
   <script type="text/javascript">
     var actionLink = "<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>";
     var allEvents = <?php echo $json_events; ?>;
     var allEventTypes = <?php echo $json_event_types; ?>;
+    var isAdmin = <?php echo $is_admin; ?>;
   </script>
 
   <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>

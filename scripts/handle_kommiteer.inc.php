@@ -85,6 +85,9 @@
       // Change the specified kommitée to official
       $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET status = "y" WHERE id = %s', $_POST['accept_kommitee']));
 
+      // Send mail
+      $chairman_id = 
+
       // Redirect with success message
       header("Location: /panel/kommiteer?change=success");
       exit();

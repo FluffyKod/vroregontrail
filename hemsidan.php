@@ -18,6 +18,7 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 

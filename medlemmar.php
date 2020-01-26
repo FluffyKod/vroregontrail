@@ -34,6 +34,7 @@ if (metadata_exists('user', $current_student_id, 'status')){
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -196,7 +197,7 @@ if (metadata_exists('user', $current_student_id, 'status')){
           <!-- Send message box -->
           <div class="box green md">
 
-            <h4>Skicka Meddelande</h4>
+            <h4>Skicka mail till elever</h4>
 
 
             <textarea name="name" placeholder="Meddelande..."></textarea>
@@ -215,23 +216,32 @@ if (metadata_exists('user', $current_student_id, 'status')){
         <div class="row">
 
           <div class="box white lg">
-            <h4>Sök medlem</h4>
+            <h4>Sök elev</h4>
 
             <input type="search" placeholder="Namn.." name="keyword" id="keyword" onkeyup="fetch()"></input>
+            <div id="loader" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 
             <div id="datafetch"></div>
 
             <script type="text/javascript">
             function fetch(){
 
-                jQuery.ajax({
-                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                    type: 'post',
-                    data: { action: 'data_fetch', keyword: jQuery('#keyword').val() },
-                    success: function(data) {
-                        jQuery('#datafetch').html( data );
+              jQuery.ajax({
+                  url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                  type: 'post',
+                  data: { action: 'data_fetch', keyword: jQuery('#keyword').val() },
+                  beforeSend: function() {
+                    if (document.getElementById('keyword').value.length == 1){
+                      document.getElementById('loader').style.display = 'block';
                     }
-                });
+                  },
+                  success: function(data) {
+                      jQuery('#datafetch').html( data );
+                  },
+                  complete: function() {
+                    document.getElementById('loader').style.display = 'none';
+                  }
+              });
 
               }
             </script>
@@ -338,9 +348,11 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
       <?php } else { // End check admin ?>
 
+        <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
         <div class="row">
 
           <div class="box white lg center">
+
 
             <div class="first-place members">
               <p><b><?php echo $percentage; ?>%</b></p>
@@ -350,6 +362,7 @@ if (metadata_exists('user', $current_student_id, 'status')){
           </div>
 
         </div>
+        <?php } ?>
 
       <?php } ?>
 
@@ -371,7 +384,7 @@ if (metadata_exists('user', $current_student_id, 'status')){
             <?php
 
             if ($is_member){
-              echo '<button class="btn red" type="submit" name="quit_being_member">Klicka för att gå ut ur elevkåren</button>';
+              echo '<p>Du behöver skicak ett mail till.... för att gå ut</p>';
             } else {
               echo '<button class="btn lg" type="submit" name="apply_for_member">Klicka för att skicka en medlemsansökan!</button>';
             }

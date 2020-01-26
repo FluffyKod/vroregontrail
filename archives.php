@@ -16,6 +16,7 @@ if (! is_user_logged_in() ){
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -63,7 +64,7 @@ if (! is_user_logged_in() ){
 
         <h2 id="karbrev" class="archive-title">Kårbrev</h2>
 
-        <?php display_karbrev( 0, false ); ?>
+        <?php display_karbrev( 0, false, true ); ?>
 
         <h2 id="kommitte" class="archive-title">Kommittéenotiser</h2>
 
@@ -88,7 +89,7 @@ if (! is_user_logged_in() ){
 
   <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
   <script type="text/javascript">
-    window.onload = highlightLink('link-dashboard');
+    window.onload = highlightLink('link-arkiv');
   </script>
 
   <?php

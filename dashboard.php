@@ -6,7 +6,7 @@
 
 // Show this page only to admin or Elevkåren
 if (! is_user_logged_in() ){
-  wp_redirect( '/' );
+  wp_redirect( '/wp-login.php' );
 } else {
 ?>
 
@@ -15,6 +15,7 @@ if (! is_user_logged_in() ){
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -23,8 +24,19 @@ if (! is_user_logged_in() ){
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
+
+    <?php if (isset($_GET['register']) && $_GET['register'] == 'success') : ?>
+      <script type="text/javascript">
+      Swal.fire(
+        'Succée!',
+        'Du är nu registrerad och kan använda alla funktioner på hemsidan!',
+        'success'
+        )
+      </script>
+    <?php endif; ?>
 
     <div class="container">
 
@@ -81,22 +93,22 @@ if (! is_user_logged_in() ){
         <div class="bow">
 
           <!-- Show visselpipan info-->
-          <div class="box green sm update">
+          <a href="/panel/visselpipan" class="box green sm update">
               <h4>Visselpipan</h4>
               <div class="content">
                 <img src="<?php echo get_bloginfo('template_directory') ?>/img/whistle.png" alt="">
                 <p class="amount" data-content="Nya förslag"><b><?php echo $visselpipan_amount; ?></b></p>
               </div>
-          </div>
+          </a>
 
           <!-- show kommitée info -->
-          <div class="box green sm update">
+          <a href="/panel/kommiteer/" class="box green sm update">
             <h4>Kommitéer</h4>
             <div class="content">
               <img src="<?php echo get_bloginfo('template_directory') ?>/img/folderalert.png" alt="" class="folder">
               <p class="amount" data-content="Nya förfrågningar"><b><?php echo $kommiteer_amount ?></b></p>
             </div>
-          </div>
+          </a>
 
           <!-- Box to add a new event -->
           <div class="box white sm alert">
@@ -136,10 +148,34 @@ if (! is_user_logged_in() ){
                   <input id="class-name" type="text" name="class-name" value="" placeholder="Klass..." required>
                 </div>
 
-                <input type="number" name="add-points" value="" placeholder="+/-Poäng..." required>
+                <input type="number" name="add-points" value="" placeholder="+/-Poäng..." required min="-1000" max="1000">
                 <input type="text" name="callback" value="/panel/dashboard" hidden>
 
                 <button class="btn lg" type="submit" name="give_class_points">Ge poäng</button>
+
+                <!-- <script>
+
+                function confirmDeletion(button) {
+                  Swal.fire({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, delete it!'
+                  }).then((result) => {
+                  if (result.value) {
+                    button.click()
+                    Swal.fire(
+                      'Deleted!',
+                      'Your file has been deleted.',
+                      'success'
+                    )
+                  }
+                  })
+                }
+                </script> -->
               </form>
 
 
@@ -181,7 +217,7 @@ if (! is_user_logged_in() ){
           <!-- Send message box -->
           <div class="box green md">
 
-            <h4>Skicka Meddelande</h4>
+            <h4>Skicka mail till elever</h4>
 
             <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_mail.inc.php'); ?>" method="post">
 
@@ -202,9 +238,10 @@ if (! is_user_logged_in() ){
         <!-- Search for member -->
 
           <div class="box white lg">
-            <h4>Sök medlem</h4>
+            <h4>Sök elev</h4>
 
             <input type="search" placeholder="Namn.." name="keyword" id="keyword" onkeyup="fetch()"></input>
+            <div id="loader" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 
             <div id="datafetch"></div>
 
@@ -215,8 +252,16 @@ if (! is_user_logged_in() ){
                     url: '<?php echo admin_url('admin-ajax.php'); ?>',
                     type: 'post',
                     data: { action: 'data_fetch', keyword: jQuery('#keyword').val() },
+                    beforeSend: function() {
+                      if (document.getElementById('keyword').value.length == 1){
+                        document.getElementById('loader').style.display = 'block';
+                      }
+                    },
                     success: function(data) {
                         jQuery('#datafetch').html( data );
+                    },
+                    complete: function() {
+                      document.getElementById('loader').style.display = 'none';
                     }
                 });
 

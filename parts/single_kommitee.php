@@ -35,6 +35,7 @@ $is_chairman = ($current_student_id == $chairman_id);
 
 // Check if user already has applied / is in
 $is_related_to_kommitte = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id='. $current_student_id .' AND kommitee_id='. $k_id .''));
+$is_waiting = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id='. $current_student_id .' AND kommitee_id='. $k_id .' AND status="w"'));
 
 // get all kommitee members
 $all_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id . ' AND status="y"');
@@ -265,7 +266,10 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
   <div class="box green lg">
 
     <?php
-    if ($is_related_to_kommitte){
+    if ($is_waiting) {
+      echo '<h4>Dra tillbaka din kommittéförfrågan</h4>';
+    }
+    elseif ($is_related_to_kommitte){
       echo '<h4>Gå ut ur denna kommitté</h4>';
     } else {
       echo '<h4>Ansök till denna kommitté</h4>';
@@ -291,9 +295,11 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
 
       <?php
-
-      if ($is_related_to_kommitte){
-        echo '<button class="btn lg red" type="submit" name="leave_kommitte">Klicka för att gå ut ur kommittén</button>';
+      if ($is_waiting) {
+        echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill dra tillbaka din förfrågan?\');">Klicka för att dra tillbaka din ansökan</button>';
+      }
+      elseif ($is_related_to_kommitte){
+        echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill gå ut ur kommittén?\');">Klicka för att gå ut ur kommittén</button>';
       } else {
         echo '<button class="btn lg" type="submit" name="apply_for_kommitte">Klicka för att skicka en ansökan!</button>';
       }
@@ -318,7 +324,10 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
     <div class="box green md">
       <?php
-      if ($is_related_to_kommitte){
+      if ($is_waiting){
+        echo '<h4>Dra tillbaka din kommittéansökan</h4>';
+      }
+      elseif ($is_related_to_kommitte){
         echo '<h4>Gå ut ur denna kommitté</h4>';
       } else {
         echo '<h4>Ansök till denna kommitté</h4>';
@@ -331,8 +340,11 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
         <?php
 
-        if ($is_related_to_kommitte){
-          echo '<button class="btn lg red" type="submit" name="leave_kommitte">Klicka för att gå ut ur kommittén</button>';
+        if ($is_waiting) {
+          echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill dra tillbaka din förfrågan?\');">Klicka för att dra tillbaka din ansökan</button>';
+        }
+        elseif ($is_related_to_kommitte){
+          echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill gå ut ur kommittén?\');">Klicka för att gå ut ur kommittén</button>';
         } else {
           echo '<button class="btn lg" type="submit" name="apply_for_kommitte">Klicka för att skicka en ansökan!</button>';
         }
@@ -389,7 +401,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
                 <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
                 <input type="text" name="student_id" value="<?php echo $member->ID; ?>" hidden>
 
-                <button type="submit" name="leave_kommitte" class="add-btn extra-btn deny">-</button>
+                <button type="submit" name="leave_kommitte" class="add-btn extra-btn deny" onclick="return confirm('Är du säker på att du vill ta bort denna medlem?');">-</button>
               </form>
             <?php } ?>
           </div>

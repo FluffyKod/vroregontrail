@@ -36,6 +36,8 @@ let monthAndYear = document.getElementById('monthAndYear');
 showCalendar(currentMonth, currentYear);
 
 function showCalendar(month, year){
+
+
   // Get the weekday that the month starts on
   let firstDay = new Date(year, month).getDay();
 
@@ -252,11 +254,14 @@ function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, end
       modalText += '<span class="modal-description">' + description + '</span><br>';
     }
     // Add publish/unpublish buttons depending if the event is only accesible to elevkaren or all members
-    if (visibility != 'a'){
-      modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="publish_event" value='+ id +'>Publicera event</button><button class="btn lg red" type="submit" name="remove_event" value='+ id +'>-</button></div></form>';
-    } else {
-      modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="unpublish_event" value='+ id +'>Avpublicera event</button><button class="btn lg red" type="submit" name="remove_event" value='+ id +'>-</button></div></form>';
+    if (isAdmin){
+      if (visibility != 'a'){
+        modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="publish_event" value='+ id +'>Publicera event</button><button class="btn lg red" type="submit" name="remove_event" onclick="return confirm(\'Är du säker på att du vill publicera detta event?\');" value='+ id +'>-</button></div></form>';
+      } else {
+        modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="unpublish_event" value='+ id +'>Avpublicera event</button><button class="btn lg red" type="submit" name="remove_event" onclick="return confirm(\'Är du säker på att du vill avpublicera detta event?\');" value='+ id +'>-</button></div></form>';
+      }
     }
+
 
     // Add a remove button
     modalText += '';

@@ -1,5 +1,5 @@
 /*****************************************
-* Variables ALICE WAS HERE AGAIN
+* Variables
 *****************************************/
 
 :root {
@@ -224,7 +224,7 @@ button.btn.lg {
 /*****************************************
 * Forms
 *****************************************/
-input[type="text"], textarea, input[type="number"], input[type="search"], input[type="email"], input[type="password"] {
+input[type="text"], textarea, input[type="number"], input[type="search"], input[type="email"], input[type="password"], input[type="tel"] {
   border: 0;
   background-color: var(--note);
   width: 100%;
@@ -294,7 +294,7 @@ form .success, form .error {
   padding: 10px;
   font-size: 0.8rem;
   color: #fff;
-  display: inline-block;
+  display: block;
   border-radius: 10px;
 }
 
@@ -376,6 +376,63 @@ select:focus {
   color: #333;
 }
 
+/**  Loading Form  **/
+.lds-ellipsis {
+  display: none;
+  position: relative;
+  height: 50px;
+  background-color: var(--background);
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 20px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--lighter);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 15px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 15px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 39px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 65px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
 /*****************************************
 * Autocomplete
 *****************************************/
@@ -431,9 +488,15 @@ select:focus {
   padding: 4% 5%;
 }
 
+.nav-header a {
+  text-decoration: none;
+}
+
 .nav-header h2 {
   font-weight: 700;
   margin-left: 8%;
+  text-decoration: none;
+  color: #fff;
 }
 
 .nav-header img {
@@ -721,6 +784,10 @@ select:focus {
 
 /****** Updates ******/
 
+.update {
+  text-decoration: none;
+}
+
 .update h4 {
   margin: 0;
 }
@@ -735,7 +802,7 @@ select:focus {
   position: absolute;
   left: auto;
   right: 3%;
-  bottom: 30px;
+  bottom: 40px;
   order: 1;
   width: 130px;
   height: auto;
@@ -781,6 +848,11 @@ select:focus {
   display: flex;
   flex-flow: column;
   min-height: 400px;
+}
+
+.classpoints form {
+  position: relative;
+  z-index: 2;
 }
 
 .classpoints.smaller {
@@ -1806,6 +1878,34 @@ div[class=kommitee] a {
   border-radius: 5px;
 }
 
+.blog-post-link {
+  color: var(--highlight);
+  margin-top: 20px;
+  display: block;
+  text-decoration: none;
+  transition: .5s;
+}
+
+.box.white .blog-post-link {
+  color: var(--main);
+}
+
+.blog-post-link:hover, .box.white .blog-post-link:hover {
+  color: var(--darker);
+  transition: .5s;
+}
+
+.blog-post-link::after {
+  margin-left: 5px;
+  content: '→';
+  transition: .5s ease;
+}
+
+.blog-post-link:hover::after {
+  margin-left: 10px;
+  transition: .5s ease;
+}
+
 .blog-post .delete-button{
   position: absolute;
   top: 20px;
@@ -1816,6 +1916,21 @@ div[class=kommitee] a {
   width: 30px;
   height: 30px;
   object-fit: contain;
+}
+
+.big-post {
+  padding: 60px 15%;
+}
+
+.big-post .blog-post-category {
+  display: block;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  max-width: 500px;
+}
+
+.big-post .blog-post-date {
+  margin-bottom: 20px;
 }
 
 /*****************************************
@@ -2075,6 +2190,29 @@ button .btn-description {
     display: none;
   }
 
+  .banner {
+    text-align: center;
+  }
+
+  .banner img.chatleft {
+    display: none;
+  }
+
+  .banner .chatright {
+    top: -25px;
+  }
+
+  .events {
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .events .event {
+    height: min-content;
+    flex-grow: 1;
+    min-width: 200px;
+    margin: 10px;
+  }
 
   /* UPDATES */
 
@@ -2083,16 +2221,32 @@ button .btn-description {
     bottom: 40%;
   }
 
+  #calendar .week {
+    display: none;
+  }
+
+  .calendar_container #calendar td:first-child {
+    display: none;
+  }
+
 }
 
 @media only screen and (max-width: 534px) {
+  .update h4 {
+    text-align: center;
+  }
+
+  .update .content {
+    margin-left: 20%;
+  }
+
   .update .content img {
-    right: 16%;
-    bottom: 20px;
+    right: 10%;
+    bottom: 18px;
   }
 
   .update .content img.folder {
-    right: 20%;
+    right: 12%;
     bottom: 25px;
   }
 
@@ -2106,4 +2260,9 @@ button .btn-description {
     bottom: -70px;
     width: 120px;
   }
+
+  .timepicker .hour .hr, .timepicker .minute .min {
+    font-size: 25px;
+  }
+
 }

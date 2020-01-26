@@ -193,7 +193,7 @@ function display_karbrev( $amount = 0, $header = true, $edit = true ){
 
           <?php while ( $the_query->have_posts() ) {
               $the_query->the_post();
-
+              global $edit;
               get_template_part( 'content' );
           } ?>
       <?php endif;
@@ -271,7 +271,7 @@ function display_karen( $edit = false ){
         <?php if ($edit) { ?>
         <div class="edit-image">
           <?php echo get_avatar( $s->ID ); ?>
-          <button type="button" name="button" class="edit-styrelse"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+          <button type="button" name="button" class="edit-styrelse" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
         </div>
       <?php } else {
             echo get_avatar( $s->ID );

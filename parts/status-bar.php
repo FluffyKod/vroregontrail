@@ -57,7 +57,7 @@
     <div class="see-more">
       <h4>Kommande</h4>
       <div>
-        <a href="/panel/kalender">Se alla events &#8594;</a>
+        <a href="/panel/kalender">Se alla event &#8594;</a>
       </div>
     </div>
 

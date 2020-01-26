@@ -10,6 +10,7 @@
  <html lang="en" dir="ltr">
    <head>
      <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width; initial-scale=1.0;">
      <title></title>
      <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
      <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
@@ -44,7 +45,7 @@
           echo '<p class="error">Klassen hittades inte!</p>';
         }
         elseif ($user_check == 'invalidemail'){
-          echo '<p class="error">Mailaddresesn är inte godtagbar!</p>';
+          echo '<p class="error">Använd din skolmail!</p>';
         }
         elseif ($user_check == 'emailexists'){
           echo '<p class="error">Mailaddressen är redan använd!</p>';
@@ -79,11 +80,20 @@
        <?php
 
        if (!isset($_GET['email'])){
-         echo '<input type="email" name="email_address" value="" placeholder="Skolmail..." required>';
+         echo '<input type="email" name="email_address" value="" placeholder="Skolmail..." pattern="(.+?)vrg.se$" oninvalid="this.setCustomValidity(\'Använd din skolmail!\')" oninput="this.setCustomValidity(\'\')" required>';
        } else {
          echo '<input type="email" name="email_address" value="'. $_GET['email'] .'" placeholder="Skolmail..." required>';
        }
       ?>
+
+      <?php
+
+      if (!isset($_GET['phonenumber'])){
+        echo '<input type="tel" name="phonenumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telefonnummer... (ex: 123-456-7890)" required>';
+      } else {
+        echo '<input type="tel" name="phonenumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telefonnummer... (ex: 123-456-7890)" value="'. $_GET['telefonnummer'] .'" required>';
+      }
+     ?>
 
 
 
@@ -98,6 +108,9 @@
       </datalist> -->
 
       <input type="password" name="password" value="" placeholder="Lösenord..." required>
+
+      <p class="notice"><i><b>Notera:</b> En medlemsansökan till kåren kommer att skickas automatiskt vid registrering om du inte redan är medlem.</i></p>
+      <label>Jag godkänner <a href="#" target="_blank">medlemsvillkoren</a></label>  <input type="checkbox" required>
 
      <button type="submit" name="register_new_user" class="btn lg" value="/register">Registrera dig</button>
    </form>

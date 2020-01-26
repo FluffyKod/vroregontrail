@@ -58,6 +58,8 @@ elseif (isset($_POST['add_new_user'])) {
   $last_name = test_input( $_POST['last_name'] );
   $email_address = $_POST['email_address'];
   $class_name = test_input( $_POST['class_name'] );
+  $phonenumber = test_input( $_POST['phonenumber'] );
+
   // $end_year = test_input ( $_POST['end_year'] );
   $password = $_POST['password'];
   $class_id = $_POST['class_id'];
@@ -94,7 +96,7 @@ elseif (isset($_POST['add_new_user'])) {
     exit();
   }
 
-  if (!isset($first_name) or !isset($last_name) or !isset($email_address) or !isset($password)){
+  if (!isset($first_name) or !isset($last_name) or !isset($email_address) or !isset($password) or !isset($phonenumber)){
     header("Location: /panel/medlemmar?c_id=$class_id&add_user=empty");
     exit();
   }
@@ -165,14 +167,17 @@ elseif (isset($_POST['add_new_user'])) {
       )
     );
 
-    // Default to not a member in the elevkår
-    add_user_meta( $user_id, 'status', 'n' );
+    // Default to not waiting member in the elevkår
+    add_user_meta( $user_id, 'status', 'w' );
 
     // Set the class for the user
     add_user_meta( $user_id, 'class_id', $class->id );
 
     // Set the end year
     add_user_meta( $user_id, 'end_year', $end_year );
+
+    // Set the phonenumber
+    add_user_meta( $user_id, 'phonenumber', $phonenumber );
 
     // Set user role
     $user = new WP_User( $user_id );
@@ -196,6 +201,7 @@ elseif (isset($_POST['register_new_user'])) {
   $last_name = test_input( $_POST['last_name'] );
   $email_address = $_POST['email_address'];
   $class_name = test_input( $_POST['class_name'] );
+  $phonenumber = test_input( $_POST['phonenumber'] );
   // $end_year = test_input ( $_POST['end_year'] );
   $password = $_POST['password'];
 
@@ -222,7 +228,7 @@ elseif (isset($_POST['register_new_user'])) {
     exit();
   }
 
-  if (!isset($first_name) or !isset($last_name) or !isset($email_address) or !isset($password)){
+  if (!isset($first_name) or !isset($last_name) or !isset($email_address) or !isset($password) or !isset($phonenumber) ){
     header("Location: /register?class_name=$class_name&add_user=empty");
     exit();
   }
@@ -302,6 +308,9 @@ elseif (isset($_POST['register_new_user'])) {
     // Set the end year
     add_user_meta( $user_id, 'end_year', $end_year );
 
+    // Set the phonenumber
+    add_user_meta( $user_id, 'phonenumber', $phonenumber );
+
     // Set user role
     $user = new WP_User( $user_id );
     $user->set_role( 'subscriber' );
@@ -316,7 +325,7 @@ elseif (isset($_POST['register_new_user'])) {
     do_action( 'wp_login', $user->user_login );
 
     //Success!
-    header("Location: /panel/visselpipan");
+    header("Location: /panel/dashboard?register=success");
     exit();
   }
 

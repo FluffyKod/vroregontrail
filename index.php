@@ -62,11 +62,25 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
 <section id="matsedel" class="green">
 
-  <div class="box white lg">
-  <h3>Dagens lunch</h3>
-  <p><b>Huvudrätt: </b>Pannbiff med gräddsås, inlagd gurka och kokt potatis</p>
-  <p><b>Vegetarisk: </b>Tofu- och grönsaker i kokoscurry serveras med basmatiris</p>
+  <div class="box white lg food">
+    <h3>Dagens lunch</h3>
+    <div class="food-item">
+      <p> <b>Huvudrätt: </b> </p>
+      <p id="head-dish">Pannbiff med gräddsås, inlagd gurka och kokt potatis</p>
+    </div>
+
+    <div class="food-item">
+      <p> <b>Vegetarisk: </b> </p>
+      <p id="vegetarian-dish">Tofu- och grönsaker i kokoscurry serveras med basmatiris</p>
+    </div>
   </div>
+
+  <iframe src="https://mpi.mashie.com/public/menu/kk+vrvasastan/4465fa56?country=se" width="" height=""></iframe>
+  <script type="text/javascript">
+
+
+
+  </script>
 
   <h2>Bussar</h2>
 
@@ -146,6 +160,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
   <?php
 
+  $karbrev = true;
   display_karbrev( 1, false, false );
 
   ?>
@@ -222,7 +237,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
   </div>
 
-  <a href="#" class="btn lg">Se hela kalendern</a>
+  <a href="/front-kalender" class="btn lg">Se hela kalendern</a>
 
 </section>
 

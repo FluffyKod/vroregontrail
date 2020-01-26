@@ -18,6 +18,7 @@ $current_student = wp_get_current_user();
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -87,7 +88,7 @@ $current_student = wp_get_current_user();
                   <p style="color: <?php echo $et->fg_color; ?>"><?php echo $et->name; ?></p>
 
                   <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
-                    <button class="btn add-btn deny" type="submit" name="remove_event_type" value="<?php echo $et->id ?>" onclick="event.stopPropagation();">-</button>
+                    <button class="btn add-btn deny" type="submit" name="remove_event_type" value="<?php echo $et->id ?>" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill ta bort denna eventtyp?');">-</button>
                     <input hidden id="alterEventTypeInput-<?php echo $et->id; ?>" type="submit" name="show_alter_event_type" value="<?php echo $et->id ?>">
                   </form>
 
@@ -184,7 +185,7 @@ $current_student = wp_get_current_user();
                 if (isset($_GET['show_alter_event_type']) ){
                   // Check if the form has to be opened
                   if ($_GET['show_alter_event_type'] == 'open'){
-                    echo '<script type="text/javascript">showAnswerForm("add_event_type", updateEtPreview);</script>';
+                    echo '<script type="text/javascript">showAnswerForm("add_event_type");</script>';
                   }
                 }
 
@@ -308,7 +309,7 @@ $current_student = wp_get_current_user();
               </thead>
 
               <tbody id="calendar-body">
-              
+
               </tbody>
 
             </table>
@@ -505,9 +506,13 @@ $current_student = wp_get_current_user();
     if (current_user_can('administrator') || current_user_can('elevkaren') ){
         // Get all events
         $all_events = $wpdb->get_results('SELECT * FROM vro_events');
+
+        $is_admin = 1;
     } else {
       // Only get events that has been published
       $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a"');
+
+      $is_admin = 0;
     }
 
     $event_type_array = array();
@@ -527,7 +532,7 @@ $current_student = wp_get_current_user();
       var actionLink = "<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>";
       var allEvents = <?php echo $json_events; ?>;
       var allEventTypes = <?php echo $json_event_types; ?>;
-
+      var isAdmin = <?php echo $is_admin; ?>;
     </script>
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
@@ -538,6 +543,11 @@ $current_student = wp_get_current_user();
 
     <script type="text/javascript">
       window.onload = highlightLink('link-kalender');
+
+      function updateEtPreview() {
+        document.getElementById('etPreview').style.backgroundColor = document.getElementById('etBgColor').value;
+        document.getElementById('etPreview').style.color = document.getElementById('etFgColor').value;
+      }
     </script>
 
   </body>

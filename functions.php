@@ -140,6 +140,9 @@ function data_fetch(){
             <p class="member">
               <span><?php echo $nickname; ?></span>
               <span><?php echo $email; ?></span>
+              <?php if (metadata_exists( 'user', $u->ID, 'phonenumber' )) : ?>
+                  <span><?php echo get_user_meta($u->ID, 'phonenumber', true); ?></span>
+              <?php endif; ?>
               <span><?php echo $display_class_name; ?></span>
             </p>
           </a>

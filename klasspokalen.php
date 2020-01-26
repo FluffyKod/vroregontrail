@@ -24,6 +24,7 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY points DESC');
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -85,7 +86,7 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY points DESC');
         </div>
 
         <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
-        <div class="row">
+        <div class="bow">
 
           <div class="box white md toplist">
 
@@ -134,7 +135,7 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY points DESC');
                   <input id="class-name" type="text" name="class-name" value="" placeholder="Klass..." required>
                 </div>
 
-                <input type="number" name="add-points" value="" placeholder="+/-Poäng..." required>
+                <input type="number" name="add-points" value="" placeholder="+/-Poäng..." required min="-1000" max="1000">
                 <input type="text" name="callback" value="/panel/klasspokalen" hidden>
 
                 <button class="btn lg" type="submit" name="give_class_points">Ge poäng</button>
@@ -178,7 +179,7 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY points DESC');
             <h4>Topplista</h4>
 
             <?php for($i = 0; $i < count($classes); $i++){ ?>
-              <a href="/panel/medlemmar?c_id=<?php echo $classes[$i]->id; ?>" class="top-row">
+              <a class="top-row">
                 <p><?php echo $i+1 . '. ' . $classes[$i]->name; ?></p>
                 <div class="points">
                   <p><?php echo $classes[$i]->points; ?>p</p>

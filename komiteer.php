@@ -28,6 +28,7 @@
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -148,11 +149,11 @@
 
         <div class="row">
 
-          <div class="box white sm">
+          <!-- <div class="box white sm">
             <h4>Kommiteeansvarig</h4>
-          </div>
+          </div> -->
 
-          <div class="box green md">
+          <div class="box green lg">
             <h4>Sök kommiteer</h4>
             <form>
 
@@ -232,11 +233,6 @@
           <div class="box white lg">
 
             <h3>Ansök om en ny kommitté</h3>
-
-            <?php if (!is_member(get_current_user_id())) { ?>
-              <p>Du måste vara medlem för att kunna ansöka om en kommitté!</p>
-            <?php } else { ?>
-
 
             <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
@@ -329,11 +325,6 @@
     <script type="text/javascript">
       window.onload = highlightLink('link-kommiteer');
     </script>
-
-    <?php
-    // End if admin
-    }
-    ?>
 
   </body>
 </html>

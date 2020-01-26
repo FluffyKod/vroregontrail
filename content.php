@@ -1,10 +1,6 @@
 <?php
-    if (!is_user_logged_in()){
-      wp_redirect( '/wp-login.php' );
-    }
 
-    $is_chairman = false;
-
+global $edit;
 ?>
 
 <div class="row">
@@ -12,6 +8,18 @@
   <article class="blog-post box white lg">
 
     <?php if ( metadata_exists('post', get_the_ID(), 'kommitte_name') ) : ?>
+
+      <?php
+
+      if (!is_user_logged_in()){
+        wp_redirect( '/wp-login.php' );
+      }
+
+      $is_chairman = false;
+
+      ?>
+
+
       <p class="blog-post-category"><?php echo get_post_meta( get_the_ID(), 'kommitte_name')[0]; ?></p>
 
       <?php
@@ -34,7 +42,12 @@
     <h3 class="blog-post-title"><?php the_title(); ?></h3>
     <p class="blog-post-date">Publicerades: <?php echo get_the_date(); ?></p>
 
-    <p class="text-preview"><?php the_content() ?></p>
+
+
+
+      <p class="text-preview"><?php the_excerpt(); ?></p>
+      <a class="blog-post-link" href="<?php the_permalink() ?>">Läs mer</a>
+
 
     <?php if ($edit) : ?>
     <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ): ?>
@@ -44,7 +57,7 @@
       </form>
 
       <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
-        <button class="description" name="delete_notification" value="<?php echo get_the_ID(); ?>" type="submit">
+        <button class="description" name="delete_notification" value="<?php echo get_the_ID(); ?>" type="submit" onclick="return confirm('Är du säker på att vill ta bort detta inlägg?')">
           <span class="btn-description">Ta bort: </span>
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png">
         </button>

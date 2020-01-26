@@ -112,6 +112,18 @@ section .box.appear {
   z-index: -1;
 }
 
+#single-page-header h1 {
+  text-align: center;
+  margin-top: 25vh;
+  color: #fff;
+  font-size: 60px;
+  text-transform: uppercase;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke-width: 5px;
+  -webkit-text-stroke-color: #fff;
+  letter-spacing: 5px;
+}
+
 .single-page-logo {
   width: 90%;
   position: relative;
@@ -245,12 +257,25 @@ section .box.appear {
   animation: stretcher 3s ease forwards 1s;
 }
 
+#single-page-header #logo-sepparator {
+  animation: stretcher2 3s ease forwards 1s;
+}
+
 @keyframes stretcher {
   from {
     width: 0;
   }
   to {
     width: 90%;
+  }
+}
+
+@keyframes stretcher2 {
+  from {
+    width: 0;
+  }
+  to {
+    width: 50%;
   }
 }
 
@@ -290,12 +315,20 @@ section .box.appear {
 }
 
 /*****************************************
-* Busses
+* Matsedeln
 *****************************************/
 #matsedel .box p {
   text-align: left;
+  margin-right: 5px;
 }
 
+.food .food-item {
+  display: flex;
+}
+
+/*****************************************
+* Busses
+*****************************************/
 .busses .box {
   text-align: left;
 }
@@ -322,12 +355,19 @@ section .box.appear {
   margin-bottom: 15px;
 }
 
+#karbrev article .blog-post-link {
+  color: var(--highlight);
+}
+
+
 /*****************************************
 * Social media
 *****************************************/
 #social-media {
   background-color: var(--secondary);
   color: #fff;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 #social-media h2 {
@@ -336,7 +376,8 @@ section .box.appear {
 
 .social-media-list {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .social-link {
@@ -348,6 +389,9 @@ section .box.appear {
   text-decoration: none;
   color: #fff;
   transition: .2s;
+  margin: 0 4% 15px;
+
+  min-width: 100px;
 }
 
 .social-link:hover {
