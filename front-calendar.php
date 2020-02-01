@@ -65,7 +65,29 @@ get_header();
 
     </div> -->
 
-    <div class="calendar_container">
+    <div class="calendar_container" id="week-calendar-container">
+
+      <div class="calendar_top">
+
+        <button onclick="week_calendar_previous()">&#x02190;</button>
+        <h3 id="week-week">Vecka #</h3>
+        <button onclick="week_calendar_next()" >&#x02192;</button>
+
+      </div>
+
+      <table id="week-calendar">
+
+        <tbody id="week-calendar-body">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+    <div class="calendar_container" id="month-calendar-container">
 
       <div class="calendar_top">
 
@@ -103,7 +125,7 @@ get_header();
 
 <div class="row front-calendar">
 
-  <div class="box green lg">
+  <div class="box green lg event-types-container">
     <h4>Eventtyper</h4>
 
     <div class="event-types">
@@ -186,6 +208,7 @@ $json_event_types = json_encode($all_event_types)
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/modal.js" charset="utf-8"></script>
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/calendar.js" charset="utf-8"></script>
+<script src="<?php echo get_bloginfo('template_directory') ?>/js/week-calendar.js" charset="utf-8"></script>
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
 <script type="text/javascript">
   window.addEventListener('scroll', function() {

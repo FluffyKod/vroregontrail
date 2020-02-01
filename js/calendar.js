@@ -56,6 +56,9 @@ function showCalendar(month, year){
   // Start on day 1
   let date = 1;
 
+  // Februari quick fix
+  let februaryQuickFix = true;
+
   // Do maximum 7 rows
   for(let i = 0; i < 7; i++){
     // Create a new row
@@ -111,6 +114,12 @@ function showCalendar(month, year){
 
       }
       else {
+
+        if (currentMonth == 1 && februaryQuickFix){
+          date--;
+          februaryQuickFix = false;
+        }
+
         // Create a new text element to hold the day
         let cellText = document.createElement('p');
 
@@ -183,7 +192,6 @@ function add_event( ev, allEvents, cell, eventTypeClass = 'elevkaren-event' ){
   if (allDates.includes(cell.id)) {
     // Get the type of event
     let etId = allEvents[ev]['type'];
-
     // console.log(allEvents[ev]);
 
     // Check which type the event belongs to

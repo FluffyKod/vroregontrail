@@ -1204,6 +1204,10 @@ div[class=kommitee] a {
 
 /* ------ Calendar ------ */
 
+#week-calendar-container {
+  display: none;
+}
+
 .calendar_container {
   grid-area: calendar;
   width: 100%;
@@ -1236,14 +1240,18 @@ div[class=kommitee] a {
   margin-bottom: 25px;
 }
 
-.calendar_container #calendar {
+.calendar_container #calendar, .calendar_container #week-calendar {
   width: 100%;
   text-align: center;
   border-spacing: 10px;
   table-layout: fixed;
 }
 
-.calendar_container #calendar td {
+.calendar_container #week-calendar {
+  border-spacing: 10px 35px;
+}
+
+.calendar_container #calendar td, .calendar_container #week-calendar td{
   background-color: var(--background);
   height: 120px;
   width: 100%;
@@ -1261,7 +1269,19 @@ div[class=kommitee] a {
   right: 10px;
 }
 
-.calendar_container #calendar td p.current_day {
+.calendar_container #week-calendar td {
+  overflow: visible;
+}
+
+.calendar_container #week-calendar td p {
+  position: absolute;
+  margin: 0;
+  top: -25px;
+  left: 15px;
+  font-weight: 700;
+}
+
+.calendar_container #calendar td p.current_day, .calendar_container #week-calendar td span.current_day {
   background-color: var(--main);
   border-radius: 100%;
   width: 32px;
@@ -1276,7 +1296,7 @@ div[class=kommitee] a {
   width: 30px;
 }
 
-.calendar_container #calendar td .markings {
+.calendar_container #calendar td .markings, .calendar_container #week-calendar td .markings {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -1284,12 +1304,12 @@ div[class=kommitee] a {
   max-height: 100px;
 }
 
-.calendar_container #calendar td .markings div {
+.calendar_container #calendar td .markings div, .calendar_container #week-calendar td .markings div {
   margin: 4px 0;
   font-size: 14px;
 }
 
-.calendar_container #calendar td .markings div:hover {
+.calendar_container #calendar td .markings div:hover, .calendar_container #week-calendar td .markings div:hover {
   cursor: pointer;
 }
 
@@ -1308,6 +1328,18 @@ div[class=kommitee] a {
 .calendar_container #calendar td:first-child p.current {
   color: #000;
   font-weight: 500;
+}
+
+.week-calendar-date {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+}
+
+.calendar_container .current .week-calendar-date {
+  background: var(--lighter);
+  border-radius: 100%;
+
 }
 
 /* ------ Events ------ */
@@ -2326,6 +2358,25 @@ button .btn-description {
     display: none;
   }
 
+}
+
+@media only screen and (max-width: 600px) {
+  #week-calendar-container {
+    display: block;
+  }
+
+  #week-calendar-container .calendar_checkboxes {
+    text-align: center;
+  }
+
+  #month-calendar-container {
+    display: none;
+  }
+
+  .box.event-types-container {
+    position: relative;
+    top: -40px;
+  }
 }
 
 @media only screen and (max-width: 534px) {

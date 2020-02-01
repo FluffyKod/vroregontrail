@@ -323,7 +323,32 @@ $current_student = wp_get_current_user();
           </div>
           <div id="overlay"></div>
 
-          <div class="calendar_container">
+          <div class="calendar_container" id="week-calendar-container">
+
+            <div class="calendar_checkboxes">
+              <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox" type="checkbox" checked>
+              <label>Kommittéevents: </label><input id="show-kommitte-events-checkbox" type="checkbox" checked>
+            </div>
+
+            <div class="calendar_top">
+
+              <button onclick="week_calendar_previous()">&#x02190;</button>
+              <h3 id="week-week">Vecka #</h3>
+              <button onclick="week_calendar_next()" >&#x02192;</button>
+
+            </div>
+
+            <table id="week-calendar">
+
+              <tbody id="week-calendar-body">
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+          <div class="calendar_container" id="month-calendar-container">
 
             <div class="calendar_checkboxes">
               <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox" type="checkbox" checked>
@@ -697,6 +722,7 @@ $current_student = wp_get_current_user();
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/timepicker.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/modal.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/calendar.js" charset="utf-8"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/week-calendar.js" charset="utf-8"></script>
 
     <script type="text/javascript">
 
