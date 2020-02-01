@@ -35,6 +35,8 @@
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
   </head>
   <body>
 
@@ -122,7 +124,7 @@
                 <h4>Svar</h4>
 
                 <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
-                  <textarea name="name" placeholder="Svar..."></textarea>
+                  <textarea name="komm_answer" placeholder="Svar..."></textarea>
 
                   <button name="accept_kommitee" value="<?php echo $r->id ?>" class="btn" type="submit">Godkänn</button>
                   <button name="deny_kommitee" value="<?php echo $r->id ?>" class="btn red" type="submit">Avböj</button>
@@ -153,15 +155,36 @@
             <h4>Kommiteeansvarig</h4>
           </div> -->
 
-          <div class="box green lg">
+          <div class="box white lg">
             <h4>Sök kommiteer</h4>
-            <form>
+            <input type="search" placeholder="Kommitténamn..." name="keyword" id="keyword" onkeyup="fetch()"></input>
+            <div id="loader" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 
-              <input type="text" name="" value="" placeholder="Kommitée...">
+            <div id="datafetch"></div>
 
-              <button type="submit" name="button" class="btn lg">Sök</button>
+            <script type="text/javascript">
+            function fetch(){
 
-            </form>
+                jQuery.ajax({
+                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                    type: 'post',
+                    data: { action: 'kommitte_data_fetch', keyword: jQuery('#keyword').val() },
+                    beforeSend: function() {
+                      if (document.getElementById('keyword').value.length == 1){
+                        document.getElementById('loader').style.display = 'block';
+                      }
+                    },
+                    success: function(data) {
+                        jQuery('#datafetch').html( data );
+                    },
+                    complete: function() {
+                      document.getElementById('loader').style.display = 'none';
+                    }
+                });
+
+              }
+            </script>
+
 
           </div>
 
@@ -206,11 +229,36 @@
                 <a href="/panel/kommiteer?k_id=<?php echo $k->id; ?>">
                     <!-- Name -->
                     <h4><?php echo $k->name ?></h4>
+                    <?php
+                    // Check if current user is member in this kommitté,
+                        // if they are --> display Jag är medlem,
+                        // If they are chairman --> display Jag är ordförande!
+                        // if they have sent an application, display --> förfrågan skickad,
+                        // if they are not member att all --> display nothing
 
-                    <?php   // Change heading depening on plural or singular members
-                      $member_text = $member_count . ($member_count == 1 ? ' medlem' : ' medlemmar');
+                    $member_check = $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $k->id . ' AND user_id = '. get_current_user_id() );
+                    if ($member_check != NULL && $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id = '. $k->id . ' AND chairman = '. get_current_user_id() ) != NULL ){
+                      echo '<p>Jag är ordförande!</p>';
+
+                      // Check if there are any applications waiting
+                      $application_number = count( $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $k->id . ' AND status = "w"') );
+                      if ( $application_number > 0 ){
+                        if ($application_number == 1) {
+                          echo '<p class="attention">'. $application_number .' ny förfrågan!<p>';
+                        } else {
+                          echo '<p class="attention">'. $application_number .' nya förfrågningar!<p>';
+                        }
+
+                      }
+                    }
+                    elseif ($member_check != NULL && $member_check->status == 'y'){
+                      echo '<p>Jag är medlem!</p>';
+                    } elseif ($member_check != NULL && $member_check->status == 'w'){
+                      echo '<p>Förfrågan skickad!</p>';
+                    }
+
+
                     ?>
-                    <p><?php echo $member_text; ?></p>
                 </a>
 
               </div>
@@ -276,8 +324,6 @@
 
             </form>
 
-          <?php } // End isMember ?>
-
           </div>
 
         </div>
@@ -304,13 +350,17 @@
 
         </div>
 
-      <?php }
+
+
+      <?php } // End is admin
+
+    } // End show single kommitté
 
     }// End if admin ?>
 
 
+    </section>
 
-      </section>
 
       <!-- **************************
         STATUS BAR
@@ -319,6 +369,8 @@
         require_once(get_template_directory() . "/parts/status-bar.php");
       ?>
 
+
+
     </div>
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
@@ -326,5 +378,4 @@
       window.onload = highlightLink('link-kommiteer');
     </script>
 
-  </body>
-</html>
+<?php get_footer(); ?>

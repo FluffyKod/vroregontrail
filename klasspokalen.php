@@ -214,5 +214,4 @@ $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY points DESC');
     }
     ?>
 
-  </body>
-</html>
+<?php get_footer(); ?>

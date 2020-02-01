@@ -133,6 +133,22 @@ function is_member( $u_id ){
 
 }
 
+function is_chairman( $u_id ) {
+
+  global $wpdb;
+
+  $kommitte_names = array();
+
+  $kommittes = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE chairman = ' . $u_id . ' AND status="y"');
+
+  foreach ( $kommittes as $k ) {
+    array_push( $kommitte_names, array('id' => $k->id, 'name' => $k->name) );
+  }
+
+  return $kommitte_names;
+
+}
+
 function get_kommitte_cat_ids( $u_id ) {
 
   global $wpdb;

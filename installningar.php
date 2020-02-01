@@ -74,5 +74,4 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
     }
     ?>
 
-  </body>
-</html>
+<?php get_footer(); ?>

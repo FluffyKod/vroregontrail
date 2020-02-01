@@ -421,5 +421,4 @@ if (metadata_exists('user', $current_student_id, 'status')){
     }
     ?>
 
-  </body>
-</html>
+<?php get_footer(); ?>

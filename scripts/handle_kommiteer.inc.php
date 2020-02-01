@@ -86,7 +86,17 @@
       $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET status = "y" WHERE id = %s', $_POST['accept_kommitee']));
 
       // Send mail
-      $chairman_id = 
+      $chairman_id = $wpdb->get_var('SELECT chairman FROM vro_kommiteer WHERE id = ' . $_POST['accept_kommitee']);
+
+      $chairman = get_user_by( 'ID', $chairman_id );
+      if ($chairman) {
+        $answer = test_input( $_POST['komm_answer'] );
+        if (empty($answer)) {
+          $answer = 'Din kommittéansökan har godkänts.';
+        }
+
+        wp_mail( $chairman->user_email, 'Din kommittéansökan har godkänts!', $answer );
+      }
 
       // Redirect with success message
       header("Location: /panel/kommiteer?change=success");
@@ -99,6 +109,19 @@
 
       // Change the specified kommitée to be denied
       $wpdb->query( $wpdb->prepare('UPDATE vro_kommiteer SET status = "n" WHERE id = %s', $_POST['deny_kommitee']));
+
+      // Send mail
+      $chairman_id = $wpdb->get_var('SELECT chairman FROM vro_kommiteer WHERE id = ' . $_POST['deny_kommitee']);
+
+      $chairman = get_user_by( 'ID', $chairman_id );
+      if ($chairman) {
+        $answer = test_input( $_POST['komm_answer'] );
+        if (empty($answer)) {
+          $answer = 'Din kommittéansökan har nekats.';
+        }
+
+        wp_mail( $chairman->user_email, 'Din kommittéansökan har nekats', $answer );
+      }
 
       // Redirect with success message
       header("Location: /panel/kommiteer?change=success");

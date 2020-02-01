@@ -184,10 +184,11 @@ elseif (isset($_POST['add_event'])) {
 
   global $wpdb;
 
-  $event_type = $_POST['ae_event_type'];
+  $event_type_id = $_POST['ae_event_type'];
   $event_name = $_POST['ae_name'];
   $event_place = emptyToNull( $_POST['ae_place'] );
   $event_host = emptyToNull( $_POST['ae_host'] );
+  $event_kommitte_id = test_input( $_POST['ae_host_kommitte'] );
 
   $event_start_date = $_POST['ae_start_date'];
   $event_start_time = $_POST['ae_start_time'];
@@ -196,6 +197,8 @@ elseif (isset($_POST['add_event'])) {
 
   $event_description = emptyToNull( $_POST['ae_description'] );
   $event_visibility = $_POST['ae_visibility'];
+
+  $is_kommitte_event = False;
 
   if ($event_type == 'none'){
     header("Location: /panel/kalender?add_event=noeventtype");
@@ -207,21 +210,47 @@ elseif (isset($_POST['add_event'])) {
     exit();
   }
 
+  // Get name of event type
+  $event_type = $wpdb->get_row('SELECT * FROM vro_event_types WHERE id = ' . $event_type_id);
+  if ($event_type == NULL) {
+    header("Location: /panel/kalender?add_event=noeventtype");
+    exit();
+  }
+
+  // Get the kommitté
+  if ($event_type->name == 'Kommittéevent') {
+
+    // Check if kommitte_id is correct
+    $kommitte = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id = '. $event_kommitte_id);
+
+    if ($kommitte == NULL) {
+      header("Location: /panel/kalender?add_event=nokommitte");
+      exit();
+    }
+
+    $event_host = $kommitte->name;
+    $is_kommitte_event = True;
+
+  }
+
   // TODO: check if end is before start
 
   // TODO: check if host exists if it is set
 
   // TODO: check if host exists if the visibility is set to utskott only
 
-  // TODO: check if event type exists
-
   // Create a new array that will hold all the arguments to create a new vevent
   $new_event =  array();
 
-  $new_event['type'] = $event_type;
+  $new_event['type'] = $event_type_id;
   $new_event['name'] = $event_name;
   $new_event['place'] = $event_place;
   $new_event['host'] = $event_host;
+
+  if ($is_kommitte_event){
+    $new_event['kommitte_host_id'] = $event_kommitte_id;
+  }
+
   $new_event['start'] = $event_start_date . ' ' . $event_start_time;
   $new_event['end'] = $event_end_date . ' ' . $event_end_time;
   $new_event['description'] = $event_description;
@@ -239,7 +268,6 @@ elseif (isset($_POST['add_event'])) {
 
   header("Location: /panel/kalender?add_event=success");
   exit();
-
 
 }
 

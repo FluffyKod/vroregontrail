@@ -39,7 +39,48 @@ if (isset($_POST['new_visselpipa'])) {
 
   }
 
-} else {
+} elseif (isset($_POST['answerVisselpipa'])) {
+
+  // w - waiting
+  // a - archive
+
+  global $wpdb;
+
+  $visselpipa_id = test_input( $_POST['visselpipaId'] );
+  $answer = test_input( $_POST['visselpipaSvar'] );
+
+  if ( empty($visselpipa_id) or empty($answer)) {
+    header("Location: /panel/visselpipan?respond=empty");
+    exit();
+  }
+
+  if (!is_numeric($visselpipa_id)) {
+    header("Location: /panel/visselpipan?respond=nan");
+    exit();
+  }
+
+  $visselpipa = $wpdb->get_row('SELECT * FROM vro_visselpipan WHERE id='. $visselpipa_id);
+
+  if ($visselpipa){
+
+    // Change the specified visselpipa to go into archives
+    $wpdb->query( $wpdb->prepare('UPDATE vro_visselpipan SET status = "a" WHERE id = %s', $visselpipa_id));
+
+    $sender_user = get_user_by( 'ID', $visselpipa->user_id );
+    if ($sender_user){
+
+      wp_mail( $sender_user->user_email, 'Din visselpipa behandlas!', $answer );
+
+      header("Location: /panel/visselpipan?respond=success");
+      exit();
+
+    }
+
+  }
+
+}
+
+else {
   header("Location: /panel/visselpipan?visselpipa=error");
   exit();
 } // End post

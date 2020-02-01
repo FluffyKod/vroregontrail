@@ -65,15 +65,15 @@
 
   if (current_user_can('administrator') || current_user_can('elevkaren') ){
       // Get all events
-      $all_events = $wpdb->get_results('SELECT * FROM vro_events');
+      $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NULL');
+      $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL');
 
-      // Set is admin
       $is_admin = 1;
   } else {
     // Only get events that has been published
-    $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a"');
+    $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a" AND kommitte_host_id IS NULL');
+    $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL AND visibility="a"');
 
-    // Set is admin
     $is_admin = 0;
   }
 
@@ -86,13 +86,25 @@
     );
   }
 
+  // Get kommittéevents in those kommittées the student is in
+  $allowed_kommitte_events = array();
+
+  foreach( $kommitte_events as $ke ){
+    if ( $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $ke->kommitte_host_id .' AND user_id = ' . get_current_user_id() ) != NULL ){
+      array_push($allowed_kommitte_events, $ke);
+    }
+  }
+
   $json_events = json_encode($all_events);
-  $json_event_types = json_encode($all_event_types);
+  $json_kommitte_events = json_encode($allowed_kommitte_events);
+  $json_event_types = json_encode($all_event_types)
 
   ?>
   <script type="text/javascript">
     var actionLink = "<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>";
     var allEvents = <?php echo $json_events; ?>;
+    var kommitteEvents = <?php echo $json_kommitte_events; ?>;
+    console.log('hello');
     var allEventTypes = <?php echo $json_event_types; ?>;
     var isAdmin = <?php echo $is_admin; ?>;
   </script>

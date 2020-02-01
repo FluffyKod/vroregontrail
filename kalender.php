@@ -264,7 +264,45 @@ $current_student = wp_get_current_user();
         </div>
 
         <?php
-        } // End check if user is admin, elevkår to show event types
+      }  else {
+
+        ?>
+
+
+        <div class="row">
+
+          <div class="box green lg">
+            <h4>Eventtyper</h4>
+
+            <div class="event-types">
+
+              <?php
+
+              global $wpdb;
+
+              $enabled_event_types = $wpdb->get_results('SELECT * FROM vro_event_types WHERE status="y"');
+
+              foreach ($enabled_event_types as $et) {
+                ?>
+
+                <div class="event-type no-click" style="background-color: <?php echo $et->bg_color; ?>" onclick="clickElement('alterEventTypeInput-<?php echo $et->id ?>')">
+                  <p style="color: <?php echo $et->fg_color; ?>"><?php echo $et->name; ?></p>
+                </div>
+
+                <?php
+              }
+
+              ?>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <?php
+
+      }// End check if user is admin, elevkår to show event types
 
         ?>
 
@@ -286,6 +324,11 @@ $current_student = wp_get_current_user();
           <div id="overlay"></div>
 
           <div class="calendar_container">
+
+            <div class="calendar_checkboxes">
+              <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox" type="checkbox" checked>
+              <label>Kommittéevents: </label><input id="show-kommitte-events-checkbox" type="checkbox" checked>
+            </div>
 
             <div class="calendar_top">
 
@@ -318,8 +361,28 @@ $current_student = wp_get_current_user();
 
         </div>
 
+
         <?php
-        if (current_user_can('administrator') || current_user_can('elevkaren') ){
+
+        global $wpdb;
+
+        // Check if student is chairman for a kommitté, the function returns a list of the names of kommittéer the student is chairman at, length of 0 if none
+        $chairman_names = is_chairman( get_current_user_id() );
+
+        // Check if the student is a chairman but not in elevkaren
+        $is_only_chairman = (count($chairman_names) > 0 && ! (current_user_can('administrator') || current_user_can('elevkaren')) );
+
+        // Check that there is an event type called Kommittévents
+        $kommitte_event_type = $wpdb->get_row('SELECT * FROM vro_event_types WHERE name = "Kommittéevent"');
+        if ($kommitte_event_type == NULL) {
+          $kommitte_event_type_exists = False;
+        } else {
+          $kommitte_event_type_exists = True;
+          $kommitte_event_type = $kommitte_event_type->id;
+        }
+
+        // Allow adding of events if admin, elevkåren or just a chairman but there adding Kommittéevents is allowed
+        if ( current_user_can('administrator') || current_user_can('elevkaren') || ($is_only_chairman && $kommitte_event_type_exists) ){
         ?>
 
         <div class="row">
@@ -331,14 +394,14 @@ $current_student = wp_get_current_user();
             <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
 
             <!-- ae stands form add event -->
-            <div class="select-group">
+            <div class="select-group" id="event-type-select-container">
+
 
               <label for="">Eventtyp: </label>
-              <select name="ae_event_type">
+              <select name="ae_event_type" id="event-type-select">
                 <?php
 
                 // Get all events type
-                global $wpdb;
 
                 $event_types = $wpdb->get_results('SELECT * FROM vro_event_types WHERE status="y"');
 
@@ -354,6 +417,19 @@ $current_student = wp_get_current_user();
                 ?>
 
               </select>
+
+              <?php
+              // If only chairman, auto-select kommittéevents and hide the select
+              if ($is_only_chairman) {
+                ?>
+                <script type="text/javascript">
+                  document.getElementById('event-type-select-container').style.display = 'none';
+                  document.getElementById('event-type-select').value = <?php echo $kommitte_event_type; ?>;
+                </script>
+                <?php
+              }
+              ?>
+
             </div>
 
             <input type="text" name="ae_name" value="" placeholder="*Eventnamn..." required>
@@ -446,16 +522,62 @@ $current_student = wp_get_current_user();
 
             </div>
 
-            <input type="text" name="ae_host" value="" placeholder="Utskott...">
+            <input type="text" name="ae_host" id="host-input" placeholder="Arrangör...">
+            <div id="kommitte-name-select">
+
+              <label for="">Kommitté: </label>
+              <select name="ae_host_kommitte">
+                <?php
+
+                foreach ($chairman_names as $c) {
+                  echo '<option value="'. $c['id'] .'">'. $c['name'] .'</option>';
+                }
+
+                ?>
+              </select>
+
+            </div>
+
+            <script type="text/javascript">
+
+              // Check if the user has selected kommittéevent, if so, show an area where they can select which kommitté
+              var select = document.getElementById('event-type-select');
+
+              function showKommitteInput() {
+
+                var selectedValue = select.options[select.selectedIndex].text;
+
+                if (selectedValue == 'Kommittéevent' ) {
+                  document.getElementById('kommitte-name-select').style.display = 'inline-block';
+
+                  // Empty host input and hide it
+                  document.getElementById('host-input').style.display = 'none';
+                  document.getElementById('host-input').value = '';
+                } else {
+                  // Hide kommitte selection
+                  document.getElementById('kommitte-name-select').style.display = 'none';
+
+                  // Show host input
+                  document.getElementById('host-input').style.display = 'block';
+                }
+              }
+
+              showKommitteInput();
+
+              select.addEventListener('change', function() {
+                showKommitteInput();
+              });
+
+            </script>
 
             <div class="text-limited-root">
               <textarea name="ae_description" placeholder="Beskrivning av eventet..." onkeyup="checkForm(this, event_description_char_count, 300)"></textarea>
               <p id="event_description_char_count">300</p>
             </div>
 
-            <div class="select-group">
+            <div class="select-group" id="event-visibility-container">
               <label for="">Syns för: </label>
-              <select class="" name="ae_visibility">
+              <select id="event-visibility-select" name="ae_visibility">
                 <option value="e">Endast elevkåren</option>
                 <!-- <option value="u">Endast aktuella utskottet</option>
                 <option value="m">Alla medlemmar</option>
@@ -463,6 +585,28 @@ $current_student = wp_get_current_user();
                 <option value="a">Alla</option>
               </select>
             </div>
+
+            <?php
+            // Set default to show for everyone if only chairman
+            if ($is_only_chairman) {
+              ?>
+
+              <script type="text/javascript">
+
+                // Hide the select
+                document.getElementById('event-visibility-container').style.display = 'none';
+
+                // Set to a
+                document.getElementById('event-visibility-select').value = 'a';
+
+
+              </script>
+
+              <?php
+            }
+            ?>
+
+
 
             <button class="btn lg" type="submit" name="add_event">Skapa</button>
 
@@ -505,12 +649,14 @@ $current_student = wp_get_current_user();
 
     if (current_user_can('administrator') || current_user_can('elevkaren') ){
         // Get all events
-        $all_events = $wpdb->get_results('SELECT * FROM vro_events');
+        $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NULL');
+        $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL');
 
         $is_admin = 1;
     } else {
       // Only get events that has been published
-      $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a"');
+      $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a" AND kommitte_host_id IS NULL');
+      $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL AND visibility="a"');
 
       $is_admin = 0;
     }
@@ -524,13 +670,24 @@ $current_student = wp_get_current_user();
       );
     }
 
+    // Get kommittéevents in those kommittées the student is in
+    $allowed_kommitte_events = array();
+
+    foreach( $kommitte_events as $ke ){
+      if ( $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $ke->kommitte_host_id .' AND user_id = ' . get_current_user_id() ) != NULL ){
+        array_push($allowed_kommitte_events, $ke);
+      }
+    }
+
     $json_events = json_encode($all_events);
+    $json_kommitte_events = json_encode($allowed_kommitte_events);
     $json_event_types = json_encode($all_event_types)
 
     ?>
     <script type="text/javascript">
       var actionLink = "<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>";
       var allEvents = <?php echo $json_events; ?>;
+      var kommitteEvents = <?php echo $json_kommitte_events; ?>;
       var allEventTypes = <?php echo $json_event_types; ?>;
       var isAdmin = <?php echo $is_admin; ?>;
     </script>
@@ -542,6 +699,29 @@ $current_student = wp_get_current_user();
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/calendar.js" charset="utf-8"></script>
 
     <script type="text/javascript">
+
+      function toggleEvent(allToggleEvents) {
+        for (var i = 0; i < allToggleEvents.length; i++) {
+          allToggleEvents[i].style.display = allToggleEvents[i].style.display == 'none' ? 'block' : 'none';
+        }
+      }
+
+      // Check the checkboxes and hide the events depending on selection
+      var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox');
+      kommitteEventsCheckbox.addEventListener('change', function() {
+        var allKommitteEvents = document.querySelectorAll('.kommitte-event');
+        toggleEvent(allKommitteEvents);
+      });
+
+      var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox');
+      elevkarenEventsCheckbox.addEventListener('change', function() {
+        var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
+        toggleEvent(allElevkarenEvents);
+      });
+
+    </script>
+
+    <script type="text/javascript">
       window.onload = highlightLink('link-kalender');
 
       function updateEtPreview() {
@@ -550,8 +730,7 @@ $current_student = wp_get_current_user();
       }
     </script>
 
-  </body>
-</html>
+<?php get_footer(); ?>
 
 <?php
 

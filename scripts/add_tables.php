@@ -229,8 +229,10 @@ function vro_setup() {
     type INTEGER(10) UNSIGNED NOT NULL,
     description VARCHAR(300),
     host VARCHAR(100),
-    visibility VARCHAR(5) NOT NULL DEFAULT "k",
+    kommitte_host_id INTEGER(10) UNSIGNED,
+    visibility VARCHAR(5) NOT NULL DEFAULT "e",
     FOREIGN KEY (type) REFERENCES vro_event_types(id),
+    FOREIGN KEY (kommitte_host_id) REFERENCES vro_kommiteer(id),
     PRIMARY KEY (id)
   )';
 

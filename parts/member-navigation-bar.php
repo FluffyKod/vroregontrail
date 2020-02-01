@@ -85,6 +85,11 @@ if (count($kommitees) == 0){
       <p>Medlemmar</p>
     </a>
 
+    <a href="/panel/karkortet" class="nav-item" id="link-karkortet">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/karkortet-icon.png" alt="" class="nav-icon">
+      <p>Kårkortet</p>
+    </a>
+
     <a href="/panel/arkiv" class="nav-item" id="link-arkiv">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
       <p>Arkiv</p>

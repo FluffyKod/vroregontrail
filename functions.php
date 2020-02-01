@@ -162,6 +162,33 @@ function data_fetch(){
     die();
 }
 
+add_action('wp_ajax_kommitte_data_fetch' , 'kommitte_data_fetch');
+add_action('wp_ajax_nopriv_kommitte_data_fetch','kommitte_data_fetch');
+function kommitte_data_fetch(){
+
+    global $wpdb;
+
+    $keyword = esc_attr( $_POST['keyword'] );
+
+    // Get the number of all members
+    $kommitter = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "y"');
+
+
+    foreach( $kommitter as $k ) {
+      if (stripos($k->name, $keyword) !== false ) {
+          ?>
+            <a href="/panel/kommiteer/?k_id=<?php echo $k->id; ?>">
+              <p class="member">
+                <span><?php echo $k->name; ?></span>
+              </p>
+            </a>
+         <?php
+      }
+    }
+
+    die();
+}
+
 // the ajax function
 add_action('wp_ajax_fetch_rooms' , 'fetch_rooms');
 add_action('wp_ajax_nopriv_fetch_rooms','fetch_rooms');

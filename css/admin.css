@@ -924,7 +924,7 @@ select:focus {
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 40px;
+  padding: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,.1);
   overflow: hidden;
   transition: 0.5s ease-in-out;
@@ -934,6 +934,15 @@ select:focus {
   color: #000;
   box-sizing: border-box;
   height: 220px;
+}
+
+.kommitee .attention {
+  color: #fff;
+  transition: .5s;
+  padding: 5px 20px;
+  margin: 10px 0;
+  background-color: var(--deny);
+  border-radius: 10px;
 }
 
 /* Only select the kommitees, not the add kommmitee box */
@@ -1156,6 +1165,10 @@ div[class=kommitee] a {
   cursor: pointer;
 }
 
+.event-type.no-click {
+  cursor: default;
+}
+
 .event-type button {
   margin: 0;
 }
@@ -1177,6 +1190,10 @@ div[class=kommitee] a {
 #etPreview {
   margin-bottom: 15px;
   width: 50%;
+}
+
+#kommitte-name-select {
+  display: none;
 }
 
 /* ------ Calendar ------ */
@@ -1541,6 +1558,10 @@ div[class=kommitee] a {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 20px;
+}
+
+.datetime-pickers p {
+  margin: 20px 0 10px;
 }
 
 .datetime-picker {
@@ -2010,6 +2031,63 @@ button .btn-description {
 #datafetch p.not-member {
   background-color: var(--deny);
   color: #fff;
+}
+
+/*****************************************
+* Kårkortet
+*****************************************/
+.karkortet-container {
+  width: 100%;
+  position: relative;
+}
+
+.karkortet {
+  width: 100%;
+}
+
+.karkortet-container p {
+  position: absolute;
+  left: 12%;
+  bottom: 12%;
+  color: #fff;
+  font-size: 19px;
+}
+
+/*****************************************
+* Footer
+*****************************************/
+#footer {
+  background-color: var(--darker);
+  color: #fff;
+  padding: 40px 40px;
+  text-align: center;
+}
+
+#footer h3, p {
+  margin: 0;
+}
+
+#footer p {
+  color: #ccc;
+}
+
+#footer nav {
+  text-align: left;
+}
+
+#footer nav a {
+  text-decoration: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+#footer nav a:hover {
+  color: var(--highlight);
+}
+
+#footer .copyright {
+  font-size: 0.8rem;
+  margin: 20px 0 0px;
 }
 
 /*****************************************

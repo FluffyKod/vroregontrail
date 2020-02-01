@@ -32,7 +32,6 @@ get_header();
 
   <h2>Kalender</h2>
 
-
   <div class="events_view">
 
     <!-- MODAL FOR CLICKED EVENTS -->
@@ -48,6 +47,23 @@ get_header();
       </div>
     </div>
     <div id="overlay"></div>
+
+    <!-- <div class="week_calendar_container">
+
+      <div class="calendar_top">
+
+        <button onclick="calendar_previous()">&#x02190;</button>
+        <h3 id="monthAndYear">Week</h3>
+        <button onclick="calendar_next()" >&#x02192;</button>
+
+      </div>
+
+      <p><b>Mån</b></p>
+      <div class="day">
+        <p>2</p>
+      </div>
+
+    </div> -->
 
     <div class="calendar_container">
 
@@ -82,7 +98,41 @@ get_header();
 
   </div>
 
+
 </section>
+
+<div class="row front-calendar">
+
+  <div class="box green lg">
+    <h4>Eventtyper</h4>
+
+    <div class="event-types">
+
+      <?php
+
+      global $wpdb;
+
+      $enabled_event_types = $wpdb->get_results('SELECT * FROM vro_event_types WHERE status="y"');
+
+      foreach ($enabled_event_types as $et) {
+        ?>
+
+        <div class="event-type" style="background-color: <?php echo $et->bg_color; ?>" onclick="clickElement('alterEventTypeInput-<?php echo $et->id ?>')">
+
+          <p style="color: <?php echo $et->fg_color; ?>"><?php echo $et->name; ?></p>
+
+        </div>
+
+        <?php
+      }
+
+      ?>
+
+    </div>
+
+  </div>
+
+</div>
 
 <?php
 
@@ -91,10 +141,12 @@ global $wpdb;
 
 if (current_user_can('administrator') || current_user_can('elevkaren') ){
     // Get all events
-    $all_events = $wpdb->get_results('SELECT * FROM vro_events');
+    $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NULL');
+    $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL');
 } else {
   // Only get events that has been published
-  $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a"');
+  $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a" AND kommitte_host_id IS NULL');
+  $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL AND visibility="a"');
 }
 
 $event_type_array = array();
@@ -106,13 +158,27 @@ foreach($all_event_types as $et){
   );
 }
 
+// Get kommittéevents in those kommittées the student is in
+$allowed_kommitte_events = array();
+
+if (is_user_logged_in()) {
+  foreach( $kommitte_events as $ke ){
+    if ( $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $ke->kommitte_host_id .' AND user_id = ' . get_current_user_id() ) != NULL ){
+      array_push($allowed_kommitte_events, $ke);
+    }
+  }
+}
+
+
 $json_events = json_encode($all_events);
-$json_event_types = json_encode($all_event_types);
+$json_kommitte_events = json_encode($allowed_kommitte_events);
+$json_event_types = json_encode($all_event_types)
 
 ?>
 <script type="text/javascript">
   var actionLink = "<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>";
   var allEvents = <?php echo $json_events; ?>;
+  var kommitteEvents = <?php echo $json_kommitte_events; ?>;
   var allEventTypes = <?php echo $json_event_types; ?>;
   var isAdmin = false;
 </script>

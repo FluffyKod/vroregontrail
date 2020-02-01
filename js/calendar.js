@@ -138,36 +138,15 @@ function showCalendar(month, year){
 
         // Go through all events
         for (ev in allEvents) {
-          // Get their start date in the format year-month-day to match with the this days date
-          let startDatetimeArray = allEvents[ev]['start'].split(' ');
-          let startDateString = startDatetimeArray[0];
-          let startTimeString = startDatetimeArray[1];
-          startTimeString = startTimeString.substring(0, startTimeString.length - 3);
 
-          let endDatetimeArray = allEvents[ev]['end'].split(' ');
-          let endDateString = endDatetimeArray[0];
-          let endTimeString = endDatetimeArray[1];
-          endTimeString = endTimeString.substring(0, endTimeString.length - 3);
+          add_event(ev, allEvents, cell)
 
-          let allDates = getDaysArray(new Date(startDateString), new Date(endDateString));
+        }
 
-          // If they do match, this event should be shown on this day
-          if (allDates.includes(cell.id)) {
-            // Get the type of event
-            let etId = allEvents[ev]['type'];
+        // Go through all events
+        for (ev in kommitteEvents) {
 
-            // console.log(allEvents[ev]);
-
-            // Check which type the event belongs to
-            for (evType in allEventTypes){
-              // If an event type is found, add the event to the calendar with the correct color codes
-              if (allEventTypes[evType]['id'] == etId){
-                add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startDateString, endDateString, startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description'], allEvents[ev]['visibility'], allEvents[ev]['id']);
-              }
-            }
-
-
-          }
+          add_event(ev, kommitteEvents, cell, 'kommitte-event')
 
         }
 
@@ -180,6 +159,42 @@ function showCalendar(month, year){
 
     // Add the whole row of days
     tbl.appendChild(row);
+  }
+
+}
+
+// Add event
+function add_event( ev, allEvents, cell, eventTypeClass = 'elevkaren-event' ){
+
+  // Get their start date in the format year-month-day to match with the this days date
+  let startDatetimeArray = allEvents[ev]['start'].split(' ');
+  let startDateString = startDatetimeArray[0];
+  let startTimeString = startDatetimeArray[1];
+  startTimeString = startTimeString.substring(0, startTimeString.length - 3);
+
+  let endDatetimeArray = allEvents[ev]['end'].split(' ');
+  let endDateString = endDatetimeArray[0];
+  let endTimeString = endDatetimeArray[1];
+  endTimeString = endTimeString.substring(0, endTimeString.length - 3);
+
+  let allDates = getDaysArray(new Date(startDateString), new Date(endDateString));
+
+  // If they do match, this event should be shown on this day
+  if (allDates.includes(cell.id)) {
+    // Get the type of event
+    let etId = allEvents[ev]['type'];
+
+    // console.log(allEvents[ev]);
+
+    // Check which type the event belongs to
+    for (evType in allEventTypes){
+      // If an event type is found, add the event to the calendar with the correct color codes
+      if (allEventTypes[evType]['id'] == etId){
+        add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startDateString, endDateString, startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description'], allEvents[ev]['visibility'], allEvents[ev]['id'], eventTypeClass);
+      }
+    }
+
+
   }
 
 }
@@ -204,7 +219,7 @@ function calendar_next(){
   showCalendar(currentMonth, currentYear);
 }
 
-function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, endDate, startTime, endTime, place, host, description, visibility, id){
+function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, endDate, startTime, endTime, place, host, description, visibility, id, eventTypeClass){
   // Check if there already is an event on this day, if so -> the markingsContainer has already been created, therefore do not create it again.
   let markingsContainer = (tdElement.childNodes.length == 1) ? document.createElement('div') : tdElement.childNodes[1];
 
@@ -215,6 +230,7 @@ function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, end
 
   // Create a new div element to hold the text for the event
   let newEvent = document.createElement('div');
+  newEvent.classList.add(eventTypeClass)
   newEvent.textContent = text;
 
   // Style it

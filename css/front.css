@@ -135,6 +135,12 @@ section .box.appear {
   text-align: left;
 }
 
+.row.front-calendar {
+  margin-top: -4%;
+  margin-bottom: 4%;
+  padding: 0 8%;
+}
+
 #v-header {
   height: 100vh;
   display: flex;
@@ -326,6 +332,19 @@ section .box.appear {
   display: flex;
 }
 
+
+iframe.matsedeln {
+  width: 100%;
+  background: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+}
+
+
+
 /*****************************************
 * Busses
 *****************************************/
@@ -416,41 +435,6 @@ section .box.appear {
 }
 
 /*****************************************
-* Footer
-*****************************************/
-#footer {
-  background-color: var(--darker);
-  color: #fff;
-}
-
-#footer h3, p {
-  margin: 0;
-}
-
-#footer p {
-  color: #ccc;
-}
-
-#footer nav {
-  text-align: left;
-}
-
-#footer nav a {
-  text-decoration: none;
-  color: #fff;
-  cursor: pointer;
-}
-
-#footer nav a:hover {
-  color: var(--highlight);
-}
-
-#footer .copyright {
-  font-size: 0.8rem;
-  margin: 20px 0 0px;
-}
-
-/*****************************************
 *Meida queries
 *****************************************/
 
@@ -461,6 +445,10 @@ section .box.appear {
 
   .video-container {
     background: url('../img/vrgkampen.png');
+  }
+
+  iframe.matsedeln {
+    height: 350px;
   }
 }
 

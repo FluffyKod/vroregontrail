@@ -1,10 +1,16 @@
 <?php
 
 /**
- * Template Name: Arkiv
+ * Template Name: Karkortet
  */
 
-// Show this page only to admin or Elevkåren
+// Show this page only to logged in members
+// $is_member = get_metadata('user', get_current_user_id(), 'status');
+
+// if (! is_user_logged_in() or $is_member[0] != 'y' ){
+//   wp_redirect( '/' );
+// } else {
+
 if (! is_user_logged_in() ){
   wp_redirect( '/' );
 } else {
@@ -51,52 +57,14 @@ if (! is_user_logged_in() ){
 
         <!-- Display header and current time -->
         <div class="top-bar">
-          <h2>Arkiv</h2>
+          <h2>Kårkortet</h2>
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
 
-        <div class="archive-links">
-          <a class="btn" href="#karbrev">Se alla kårbrev</a>
-          <a class="btn" href="#kommitte">Se alla kommitténotiser</a>
-          <a class="btn" href="#">Se alla bilder</a>
-          <?php   if (current_user_can('administrator') || current_user_can('elevkaren') ): ?>
-            <a class="btn" href="#visselpipor">Se alla visselpipor</a>
-          <?php endif; ?>
+        <div class="karkortet-container">
+          <img class="karkortet" src="<?php echo get_bloginfo('template_directory') . '/img/karkortet.png' ?>" alt="">
+          <p><?php echo get_user_meta(get_current_user_id(),'nickname',true); ?></p>
         </div>
-
-
-        <h2 id="karbrev" class="archive-title">Kårbrev</h2>
-
-        <?php display_karbrev( 0, false, true ); ?>
-
-        <h2 id="kommitte" class="archive-title">Kommittéenotiser</h2>
-
-        <?php
-
-        display_kommitte_notifications( 0, false );
-
-        ?>
-
-        <?php if (current_user_can('administrator') || current_user_can('elevkaren') ): ?>
-        <h2 id="visselpipor" class="archive-title">Visselpipor</h2>
-
-        <?php $results = $wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "a"');
-
-        // Add a new row and box for every suggestion
-        foreach ($results as $r)
-        {
-          echo '<div class="row">';
-            echo '<div class="box white lg">';
-              echo '<div class="see-more">';
-                echo '<h4>' . $r->subject . '</h4>';
-              echo '</div>';
-              echo '<p>' . $r->text . '</p>';
-          echo '</div>';
-
-        } // End foreach
-
-        ?>
-      <?php endif; ?>
 
       </section>
 
@@ -113,7 +81,7 @@ if (! is_user_logged_in() ){
 
   <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
   <script type="text/javascript">
-    window.onload = highlightLink('link-arkiv');
+    window.onload = highlightLink('link-karkortet');
   </script>
 
   <?php

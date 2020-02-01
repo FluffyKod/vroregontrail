@@ -63,24 +63,9 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 <section id="matsedel" class="green">
 
   <div class="box white lg food">
-    <h3>Dagens lunch</h3>
-    <div class="food-item">
-      <p> <b>Huvudrätt: </b> </p>
-      <p id="head-dish">Pannbiff med gräddsås, inlagd gurka och kokt potatis</p>
-    </div>
-
-    <div class="food-item">
-      <p> <b>Vegetarisk: </b> </p>
-      <p id="vegetarian-dish">Tofu- och grönsaker i kokoscurry serveras med basmatiris</p>
-    </div>
+    <h3>Matsedeln</h3>
+    <iframe class="matsedeln" name="matsedeln-iframe" id="matsedeln-iframe" src="https://mpi.mashie.com/public/menu/kk+vrvasastan/4465fa56?country=se" width="" height=""> </iframe>
   </div>
-
-  <iframe src="https://mpi.mashie.com/public/menu/kk+vrvasastan/4465fa56?country=se" width="" height=""></iframe>
-  <script type="text/javascript">
-
-
-
-  </script>
 
   <h2>Bussar</h2>
 

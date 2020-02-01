@@ -355,5 +355,4 @@ if (! is_user_logged_in() ){
     }
     ?>
 
-  </body>
-</html>
+<?php get_footer(); ?>
