@@ -20,6 +20,8 @@ let roomSprites = [];
 let guiBackgroundHidden = false;
 let guiMouseIsOver = false;
 
+let guiParent
+
 function setup(){
   colors =
   {
@@ -28,13 +30,11 @@ function setup(){
     highlight: color(255,255,255,25),
     inactiveFillColor: color(51)
   };
-  badDummyGui = createGui('');
-  badDummyGui.hide()//never to be seen again
 
   createCanvas(canvasSize.width, canvasSize.height);
   createFirstRoom();
 
-  //borde hitta något sätt att parenta guin till den här istället
+  guiParent = document.getElementById('guiBackground');
   guiBackground = createDiv('');
   guiBackground.class('guiBackground');
   guiBackground.hide();
@@ -50,7 +50,8 @@ function draw(){
 
   background(colors.inactiveFillColor);
   drawSprites();
-  highlightOverMouse();
+
+  highlightOverMouse();// borde bara göras där det går
 
 
 
@@ -60,6 +61,7 @@ function draw(){
   }
 
   function highlightOverMouse(){
+
     x = mouseX + (32-(mouseX%64));
     y = mouseY + (32-(mouseY%64));
     fill(colors.highlight);
@@ -81,12 +83,12 @@ function draw(){
         onSprite = true;
       }
     }
-    if(!onSprite && !guiMouseIsOver){
+    if(!onSprite && (event.clientX > 250) && (event.clientY > 300)){ //borde bli en låda
       createRoom(mouseX + (roomBoxSize/2-(mouseX%roomBoxSize)), mouseY + (roomBoxSize/2-(mouseY%roomBoxSize)) ); //modulo skiten gör så att den hamnar på  sitt grid
     }
   }
 
-function createFirstRoom(){ //får en konstig gui som sitter fast (har absolute positioning) EDIT: solved with badDummyGui B)
+function createFirstRoom(){
     drawCoordinate = {x: floor(width/2)+roomBoxSize/2, y: floor(height/2)+roomBoxSize/2};
     createRoom(drawCoordinate.x, drawCoordinate.y);
     roomSprites[0].gui.hide();
@@ -123,8 +125,11 @@ function createRoom(x, y){
     guiBackgroundHidden =false;
 
   }
-  roomSprite.gui = createGui( "Room "+ roomSprite.coordinateString );
-  roomSprite.gui.addObject(this.mainGuiParams);
+  roomSprite.gui =  QuickSettings.create(10, 10, "Room "+ roomSprite.coordinateString, guiParent);
+  roomSprite.gui.addTextArea('yolo', "", draw)
+
+
+
   if (activeRoom === null) {
     activeRoom = roomSprite.gui();
     noLoop();// kanske kan kallas för alla
@@ -152,6 +157,11 @@ function createRoom(x, y){
   print(this.x);
   roomSprite.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
 
+    if (guiBackgroundHidden) {
+      guiBackground.show();
+      guiBackgroundHidden =false;
+
+    }
     if(activeRoom!= null){
       activeRoom.hide();
 
@@ -173,49 +183,7 @@ function createRoom(x, y){
 
 
 }
-//not used---
-function createVisualizationBox(roomObj){
 
-  this.roomObj = roomObj
-
-  this.drawCoordinates = {x: (this.roomObj.x*64-floor(width/2)), y: (this.roomObj.y*64-floor(height/2))};
-  this.roomSprite = createSprite(this.drawCoordinates.x, this.drawCoordinates.y, roomBoxSize, roomBoxSize);
-  this.roomSprite.active = false;
-
-  this.roomSprite.draw = function(){
-    rectMode(CENTER);
-
-    if(this.active){
-      fill(colors.fillColor);
-      stroke(colors.strokeColor);
-    }
-    if(!this.active){
-      fill(colors.inactiveFillColor);
-      noStroke();
-    }
-     rect(0,0, roomBoxSize, roomBoxSize);
-
-  }
-
-  this.roomSprite.onMousePressed = function(){
-
-    this.active = true;
-  }
-
-  this.roomSprite.debug = true;
-
-    //roomSprite.indexX = j;
-    //roomSprite.indexY = i;
-
-
-
-  this.generateGui = function(){
-    this.gui = createGui( "(" + this.roomObj.x + ", " + this.roomObj.y + ")" );
-    this.gui.addGlobals('roomText');
-    noLoop();
-  }
-
-}
 //BRUH GUIN RÄKNAS SOM MOUSE OUT
 function guiMouseOver(){
   guiMouseIsOver = true;
