@@ -42,7 +42,14 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
         </svg>
 
         <hr id="logo-sepparator">
-      <a class="btn" href="/wp-login.php">Logga in</a>
+
+        <?php if (is_user_logged_in()) {
+          echo '<a class="btn" href="'. wp_logout_url( '/' ) .'">Logga ut</a>';
+        } else {
+          echo '<a class="btn" href="/wp-login.php">Logga in</a>';
+        }
+        ?>
+
     </div>
 
 

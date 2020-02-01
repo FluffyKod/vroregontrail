@@ -75,10 +75,9 @@ if (count($classes) > 0){
 
 </div>
 
-<div class="box white sm">
-<h3>Dagens lunch</h3>
-<p><b>Huvudrätt: </b>Pannbiff med gräddsås, inlagd gurka och kokt potatis</p>
-<p><b>Vegetarisk: </b>Tofu- och grönsaker i kokoscurry serveras med basmatiris</p>
+<div class="box white sm matsedeln-dashboard">
+  <h3>Matsedeln</h3>
+  <iframe class="matsedeln" name="matsedeln-iframe" id="matsedeln-iframe" src="https://mpi.mashie.com/public/menu/kk+vrvasastan/4465fa56?country=se" width="" height=""> </iframe>
 </div>
 
 <div class="box white sm classpoints smaller">

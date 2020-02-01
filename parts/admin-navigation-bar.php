@@ -125,7 +125,10 @@
       <p>Inställningar</p>
     </a>
 
-
+    <a href="<?php echo wp_logout_url( '/' ); ?>" class="nav-item" id="link-logout">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/logout-icon.png" alt="" class="nav-icon">
+      <p>Logga ut</p>
+    </a>
 
   </nav>
 
