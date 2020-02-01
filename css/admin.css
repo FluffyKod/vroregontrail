@@ -999,6 +999,11 @@ div[class=kommitee] a {
     "chairman send_message"
     "add_member send_message";
 }
+
+.notis-form .datetime-picker {
+  margin: 20px 0;
+}
+
 #chairman {
   display: flex;
   align-items: center;
@@ -1028,6 +1033,7 @@ div[class=kommitee] a {
   padding: 25px;
   position: relative;
   height: min-height;
+  overflow: visible;
 }
 
 /* .kommitee-row #send_message button {

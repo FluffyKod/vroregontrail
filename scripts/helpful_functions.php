@@ -220,17 +220,33 @@ function display_karbrev( $amount = 0, $header = true, $edit = true ){
 
 }
 
-function display_kommitte_notifications( $amount = 0, $header = true ) {
+// function archive_old_notification() {
+//
+//   global
+//
+// }
+
+function display_kommitte_notifications( $amount = 0, $header = true, $archives = false ) {
   $cat_array = get_kommitte_cat_ids( get_current_user_id() );
 
   if (count($cat_array) > 0) {
 
-    $args = array(
-        'category__in' => $cat_array,
-        'post_status' => 'publish',
-        'post_type' => 'post',
-        'orderby' => 'post_date',
-    );
+    if ($archives == false) {
+      $args = array(
+          'category__in' => $cat_array,
+          'post_status' => 'publish',
+          'post_type' => 'post',
+          'orderby' => 'post_date',
+      );
+    } else {
+      $args = array(
+          'category__in' => $cat_array,
+          'post_status' => 'archive',
+          'post_type' => 'post',
+          'orderby' => 'post_date',
+      );
+    }
+
 
     // The Query
     $the_query = new WP_Query( $args );
@@ -249,7 +265,7 @@ function display_kommitte_notifications( $amount = 0, $header = true ) {
 
         <?php while ( $the_query->have_posts() ) {
             $the_query->the_post();
-
+            global $edit;
             get_template_part( 'content' );
         } ?>
     <?php endif;

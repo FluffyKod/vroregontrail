@@ -247,10 +247,35 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
     </form> -->
 
     <!-- SEND NOTIFICATION -->
-    <form autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
+    <form autocomplete="off" class="notis-form" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
 
       <input type="text" name="title" value="" placeholder="Titel..">
       <textarea name="content" placeholder="Meddelande..."></textarea>
+
+      <div class="datetime-picker">
+
+        <p><b>Datum då notisen går ut:</b></p>
+
+        <div class="date-picker" id="start-datepicker">
+          <div class="selected-date"></div>
+          <input type="hidden" name="expire-date" value="" id="start_hidden_input"/>
+
+          <div class="dates">
+            <div class="month">
+              <div class="arrows prev-mth">&lt;</div>
+              <div class="mth"></div>
+              <div class="arrows next-mth">&gt;</div>
+            </div>
+
+            <div class="days">
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
       <input type="text" name="k_id" value="<?php echo $k_id; ?>" hidden>
 
       <button name="send_notification_kommitte" value="" class="btn lg">Skicka</button>
@@ -438,6 +463,8 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 
   </div>
 </div>
+
+<script src="<?php echo get_bloginfo('template_directory') ?>/js/datepicker.js" charset="utf-8"></script>
 
 <?php } // End check admin ?>
 

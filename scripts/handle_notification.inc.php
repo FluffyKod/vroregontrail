@@ -15,6 +15,7 @@ if (isset($_POST['send_notification_kommitte'])) {
   $title = test_input( $_POST['title'] );
   $content = test_input( $_POST['content'] );
   $k_id = test_input( $_POST['k_id'] );
+  $expire_date = test_input( $_POST['expire-date'] );
 
   if (empty($k_id) || !is_numeric($k_id) ){
     header("Location: /panel/kommiteer?send_notification=badk_id");
@@ -63,8 +64,9 @@ if (isset($_POST['send_notification_kommitte'])) {
       $kom_name = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id=' . $k_id)->name;
 
       add_post_meta( $post_id, 'kommitte_name', $kom_name );
+      add_post_meta( $post_id, 'expire_date', $expire_date );
 
-      // SUccess
+      // Success
       header("Location: /panel/kommiteer?k_id=$k_id&send_notification=success");
       exit();
 

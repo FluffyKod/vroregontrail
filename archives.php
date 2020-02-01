@@ -73,7 +73,8 @@ if (! is_user_logged_in() ){
 
         <?php
 
-        display_kommitte_notifications( 0, false );
+        // Show arhived kommitténotifications
+        display_kommitte_notifications( 0, false, true );
 
         ?>
 

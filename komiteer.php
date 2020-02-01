@@ -145,6 +145,7 @@
 
         <?php
 
+        // archive_old_notifications();
         display_kommitte_notifications();
 
         ?>
