@@ -111,6 +111,8 @@
 
       <p class="notice"><i><b>Notera:</b> En medlemsansökan till kåren kommer att skickas automatiskt vid registrering om du inte redan är medlem.</i></p>
       <label>Jag godkänner <a href="#" target="_blank">medlemsvillkoren</a></label>  <input type="checkbox" required>
+      <br><label>Jag godkänner användadet av cookies för att kunna förbli inloggad</label>  <input type="checkbox" required>
+
 
      <button type="submit" name="register_new_user" class="btn lg" value="/register">Registrera dig</button>
    </form>

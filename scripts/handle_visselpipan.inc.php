@@ -34,6 +34,10 @@ if (isset($_POST['new_visselpipa'])) {
       wp_die('database insertion failed');
     }
 
+    // Logg action
+    $log_description = 'Lade till visselpipan med titeln ' . $subject . ' och texten ' . substr($text, 0, 280);
+    add_log( 'Visselpipan', $log_description, get_current_user_id() );
+
     header("Location: /panel/visselpipan?visselpipa=success");
     exit();
 
@@ -70,6 +74,10 @@ if (isset($_POST['new_visselpipa'])) {
     if ($sender_user){
 
       wp_mail( $sender_user->user_email, 'Din visselpipa behandlas!', $answer );
+
+      // Logg action
+      $log_description = 'Svarade på visselpipan med id ' . $visselpipa_id . ' med svaret ' . substr($answer, 0, 280);
+      add_log( 'Visselpipan', $log_description, get_current_user_id() );
 
       header("Location: /panel/visselpipan?respond=success");
       exit();

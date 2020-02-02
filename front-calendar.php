@@ -10,7 +10,7 @@ get_header();
 
 <header id="single-page-header">
 
-    <img src="<?php echo get_bloginfo('template_directory') . '/img/frontkalender.jpg'; ?>" alt="">
+    <img src="<?php echo get_bloginfo('template_directory') . '/img/frontkalenderOptimized.jpg'; ?>" alt="">
     <div class="img-overlay"></div>
 
       <svg class="single-page-logo" id="calendar-logo" width="665" height="101" viewBox="0 0 665 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,8 +31,6 @@ get_header();
 <section id="front-calendar">
 
   <h2>Kalender</h2>
-
-  <div class="events_view">
 
     <!-- MODAL FOR CLICKED EVENTS -->
     <div class="modal" id="modal">
@@ -65,29 +63,37 @@ get_header();
 
     </div> -->
 
-    <div class="calendar_container" id="week-calendar-container">
+  <div class="calendar_container" id="week-calendar-container">
 
-      <div class="calendar_top">
+    <div class="calendar_checkboxes">
+      <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox-week" type="checkbox" checked>
+      <label>Kommittéevents: </label><input id="show-kommitte-events-checkbox-week" type="checkbox" checked>
+    </div>
 
-        <button onclick="week_calendar_previous()">&#x02190;</button>
-        <h3 id="week-week">Vecka #</h3>
-        <button onclick="week_calendar_next()" >&#x02192;</button>
+    <div class="calendar_top">
 
-      </div>
-
-      <table id="week-calendar">
-
-        <tbody id="week-calendar-body">
-
-        </tbody>
-
-      </table>
+      <button onclick="week_calendar_previous()">&#x02190;</button>
+      <h3 id="week-week">Vecka #</h3>
+      <button onclick="week_calendar_next()" >&#x02192;</button>
 
     </div>
+
+    <table id="week-calendar">
+
+      <tbody id="week-calendar-body">
+
+      </tbody>
+
+    </table>
 
   </div>
 
     <div class="calendar_container" id="month-calendar-container">
+
+      <div class="calendar_checkboxes">
+        <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox" type="checkbox" checked>
+        <label>Kommittéevents: </label><input id="show-kommitte-events-checkbox" type="checkbox" checked>
+      </div>
 
       <div class="calendar_top">
 
@@ -214,6 +220,42 @@ $json_event_types = json_encode($all_event_types)
   window.addEventListener('scroll', function() {
     fillNavigationBar('single-page-header');
   });
+</script>
+
+<script type="text/javascript">
+
+function toggleEvent(allToggleEvents) {
+  for (var i = 0; i < allToggleEvents.length; i++) {
+    allToggleEvents[i].style.display = allToggleEvents[i].style.display == 'none' ? 'block' : 'none';
+  }
+}
+
+// Check the checkboxes and hide the events depending on selection
+var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox');
+kommitteEventsCheckbox.addEventListener('change', function() {
+  var allKommitteEvents = document.querySelectorAll('.kommitte-event');
+  toggleEvent(allKommitteEvents);
+});
+
+var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox');
+elevkarenEventsCheckbox.addEventListener('change', function() {
+  var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
+  toggleEvent(allElevkarenEvents);
+});
+
+var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox-week');
+kommitteEventsCheckbox.addEventListener('change', function() {
+  var allKommitteEvents = document.querySelectorAll('.kommitte-event');
+  toggleEvent(allKommitteEvents);
+});
+
+var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox-week');
+elevkarenEventsCheckbox.addEventListener('change', function() {
+  var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
+  toggleEvent(allElevkarenEvents);
+});
+
+
 </script>
 
 <?php

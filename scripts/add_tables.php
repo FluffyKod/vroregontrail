@@ -239,6 +239,24 @@ function vro_setup() {
   createTable($table_name, $sql_events);
 
   /*****************************************
+  * LOGGING TABLE
+  *****************************************/
+
+  $table_name = 'vro_log';
+
+  $sql_log = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    log_source VARCHAR(100) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    user_id BIGINT(20) UNSIGNED,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES wp_users(ID)
+  )';
+
+  createTable($table_name, $sql_log);
+
+  /*****************************************
   * VROREGON
   *****************************************/
 

@@ -27,7 +27,7 @@ body.login {
   /* background: linear-gradient(214deg, var(--darker), var(--highlight));
   background-size: 400% 400%;
   animation: grady 15s ease infinite; */
-  background-image: url('../img/vrgkampen.png');
+  background-image: url('../img/vrgkampenOptimized.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -134,4 +134,18 @@ body.front .btn {
 }
 body.front input {
   border: 1px solid #888;
+}
+
+@media only screen and (max-width: 800px) {
+
+  #login form {
+    margin: 20px 0;
+  }
+
+  #login {
+    width: 95%;
+    box-sizing: border-box;
+    padding: 10px 20px;
+  }
+
 }

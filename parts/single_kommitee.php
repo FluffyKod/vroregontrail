@@ -174,7 +174,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
 
   <div class="box white" id="chairman">
-      <?php echo get_avatar( $chairman_id ); ?>
+      <!-- <?php echo get_avatar( $chairman_id ); ?> -->
       <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
       <p>Ordförande</p>
 
@@ -216,6 +216,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       // var jsonstudents = getArrayFromColumn(jsonstudents, 'display_name');
 
       autocomplete(document.getElementById("chairman-field"), jsonstudents, 'Inga medlemmar hittades.');
+
       </script>
   </div>
 
@@ -342,7 +343,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
   <div class="row">
 
     <div class="box white sm" id="chairman">
-        <?php echo get_avatar( $user->ID ); ?>
+        <!-- <?php echo get_avatar( $user->ID ); ?> -->
         <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
         <p>Ordförande</p>
     </div>
@@ -448,14 +449,16 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 ?>
 
 <div class="row">
-  <div class="box green lg">
+  <div class="box green lg allow-overflow">
 
-    <h4>Lägg till medlem</h4>
+    <h4>Lägg till elev i kommittén</h4>
 
     <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
-      <input type="text" name="member_name" value="" placeholder="Namn...">
-      <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>">
+      <div class="autocomplete">
+        <input type="text" name="student_name" value="" placeholder="Elevens namn..." id="student-name-field">
+      </div>
+      <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
 
       <button type="submit" class="btn lg" name="add_member">Lägg till</button>
 
@@ -464,6 +467,29 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
   </div>
 </div>
 
+<?php
+
+// Get the number of all members
+$all_students = get_users(array(
+  'meta_key' => 'class_id'
+));
+
+// Get first and last name from every student
+$first_last_array_full = array();
+foreach($all_students as $s){
+  array_push($first_last_array_full, get_user_meta( $s->ID, 'nickname', true));
+}
+
+echo '<script type="text/javascript">';
+echo 'var jsonstudentsall = ' . json_encode($first_last_array_full);
+echo '</script>'
+
+?>
+
+<script type="text/javascript">
+
+  autocomplete(document.getElementById("student-name-field"), jsonstudentsall, 'Inga elever hittades.');
+</script>
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/datepicker.js" charset="utf-8"></script>
 
 <?php } // End check admin ?>

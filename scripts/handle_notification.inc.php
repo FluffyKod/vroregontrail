@@ -66,6 +66,10 @@ if (isset($_POST['send_notification_kommitte'])) {
       add_post_meta( $post_id, 'kommitte_name', $kom_name );
       add_post_meta( $post_id, 'expire_date', $expire_date );
 
+      // Logg action
+      $log_description = 'Lade till kommitténotififaktionen med titeln ' . $title . ', innehåll: ' . substr($content, 0, 200) . ' för kommittén ' . $k_id . ' med självförstöringsdatumet '. $expire_date;
+      add_log( 'Notifikationer', $log_description, get_current_user_id() );
+
       // Success
       header("Location: /panel/kommiteer?k_id=$k_id&send_notification=success");
       exit();
@@ -94,6 +98,10 @@ elseif (isset( $_POST['archive_notification'] )){
 	if (!wp_update_post( $args ) ) {
     wp_die('Update post status to archive failed');
   } else {
+    // Logg action
+    $log_description = 'Arkiverade kommitténotifikationen med id ' . $post_id;
+    add_log( 'Notifikationer', $log_description, get_current_user_id() );
+
     header("Location: /panel/kommiteer?archive_notification=success");
     exit();
   }
@@ -112,6 +120,10 @@ elseif (isset( $_POST['delete_notification'] )){
 	if (!wp_delete_post( $post_id ) ) {
     wp_die('delte post status to archive failed');
   } else {
+    // Logg action
+    $log_description = 'Tog bort kommitténotififaktionen med id ' . $post_id;
+    add_log( 'Notifikationer', $log_description, get_current_user_id() );
+
     header("Location: /panel/arkiv?delete_notification=success");
     exit();
   }

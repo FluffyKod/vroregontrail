@@ -51,6 +51,10 @@ if (isset($_POST['send_message_school'])) {
 
     }
 
+    // Logg action
+    $log_description = 'Skickade mail till ' . $mail_to . ' med ämnet ' . $subject . ' med texten ' . $message[:300];
+    add_log( 'Mail', $log_description, get_current_user_id() );
+
     header("Location: /panel/dashboard?send_message=success");
     exit();
 
@@ -108,6 +112,10 @@ elseif (isset($_POST['send_message_kommitte'])){
 
     }
 
+    // Logg action
+    $log_description = 'Skickade mail till kommittén ' . $k_id . ' med ämnet ' . $subject . ' med texten ' . $message[:300];
+    add_log( 'Mail', $log_description, get_current_user_id() );
+
     // SUccess
     header("Location: /panel/kommiteer?k_id=$k_id&send_message=success");
     exit();
@@ -134,6 +142,10 @@ elseif (isset($_POST['send_mail'])) {
     $headers = array('From: '. '<' . $mail_from . '>');
 
     wp_mail( $mail_to, $subject, $message, $headers );
+
+    // Logg action
+    $log_description = 'Skickade mail till ' . $mail_to . ' från '. $mail_from .' med ämnet ' . $subject . ' med texten ' . $message[:300];
+    add_log( 'Mail', $log_description, get_current_user_id() );
 
     header("Location: ". $callback ."?send_message=success");
     exit();

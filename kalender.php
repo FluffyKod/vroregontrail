@@ -326,8 +326,8 @@ $current_student = wp_get_current_user();
           <div class="calendar_container" id="week-calendar-container">
 
             <div class="calendar_checkboxes">
-              <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox" type="checkbox" checked>
-              <label>Kommittéevents: </label><input id="show-kommitte-events-checkbox" type="checkbox" checked>
+              <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox-week" type="checkbox" checked>
+              <label>Kommittéevents: </label><input id="show-kommitte-events-checkbox-week" type="checkbox" checked>
             </div>
 
             <div class="calendar_top">
@@ -740,6 +740,18 @@ $current_student = wp_get_current_user();
       });
 
       var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox');
+      elevkarenEventsCheckbox.addEventListener('change', function() {
+        var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
+        toggleEvent(allElevkarenEvents);
+      });
+
+      var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox-week');
+      kommitteEventsCheckbox.addEventListener('change', function() {
+        var allKommitteEvents = document.querySelectorAll('.kommitte-event');
+        toggleEvent(allKommitteEvents);
+      });
+
+      var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox-week');
       elevkarenEventsCheckbox.addEventListener('change', function() {
         var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
         toggleEvent(allElevkarenEvents);

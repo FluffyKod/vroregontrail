@@ -72,10 +72,10 @@ if ( get_post_status( get_the_ID() ) != 'archive' && metadata_exists('post', get
     <?php endif; ?> -->
 
 
-      <p class="text-preview"><?php the_excerpt(); ?></p>
+      <p class="text-preview"><?php echo substr(get_the_excerpt(), 0, 349); ?></p>
 
       <!-- only show read more link if there is more content than fits in the notification -->
-      <?php if (get_the_excerpt() != get_the_content() ) : ?>
+    <?php if (get_the_excerpt() != get_the_content() or strlen(get_the_excerpt()) > 350 ) : ?>
       <a class="blog-post-link" href="<?php the_permalink() ?>">Läs mer</a>
     <?php endif; ?>
 

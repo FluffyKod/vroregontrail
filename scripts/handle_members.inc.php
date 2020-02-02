@@ -43,6 +43,11 @@ if (isset($_POST['toggle_member'])) {
     }
     else {
       // Success!
+
+      // Logg action
+      $log_description = 'Ändrade eleven ' . $student_id . ' medlemsstatus till ' . $new_status;
+      add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
       header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=success");
       exit();
     }
@@ -187,6 +192,10 @@ elseif (isset($_POST['add_new_user'])) {
     // wp_mail( $email_address, 'Välkommen till Viktor Rydberg Odenplans hemsida!', 'Ditt lösenord är: ' . $password . '. Logga in för att ändra lösenordet.' );
     wp_mail( $email_address, 'Välkommen till Viktor Rydberg Odenplans hemsida!', 'Hej '. $first_name .'! Välkommen till Viktor Rydbergs Odenplans hemsida! Gå in på vroelevkar.se för att se matsedeln, ansöka till kommittéer och mycket mer!' );
 
+    // Logg action
+    $log_description = 'Lade till eleven ' . $first_name . ' ' . $last_name;
+    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
     //Success!
     header("Location: /panel/medlemmar?c_id=$class->id&add_user=success");
     exit();
@@ -324,6 +333,10 @@ elseif (isset($_POST['register_new_user'])) {
     wp_set_auth_cookie( $user_id );
     do_action( 'wp_login', $user->user_login );
 
+    // Logg action
+    $log_description = 'Registrerade eleven ' . $first_name . ' ' . $last_name;
+    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
     //Success!
     header("Location: /panel/dashboard?register=success");
     exit();
@@ -358,6 +371,10 @@ elseif(isset($_POST['quit_being_member'])) {
       }
     }
 
+    // Logg action
+    $log_description = 'Eleven ' . $u_id . ' skickade en gåuturkåren-ansökan';
+    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
     header("Location: /panel/medlemmar?quitmember=success");
     exit();
   }
@@ -381,6 +398,11 @@ elseif(isset($_POST['apply_for_member'])) {
     header("Location: /panel/medlemmar?applymember=updatefailed");
     exit();
   } else {
+
+    // Logg action
+    $log_description = 'Eleven ' . $u_id . ' skickade en gåMedIKåren-ansökan';
+    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
     header("Location: /panel/medlemmar?applymember=success");
     exit();
   }
@@ -413,6 +435,10 @@ elseif(isset($_POST['accept_member'])) {
         wp_mail( $email_address, 'Din medlemsansökan har godkänts', $member_answer);
       }
     }
+
+    // Logg action
+    $log_description = 'Eleven ' . $u_id . ' medlemsansökan accepterades';
+    add_log( 'Medlemmar', $log_description, get_current_user_id() );
 
     header("Location: /panel/medlemmar?acceptmember=success");
     exit();

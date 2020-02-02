@@ -390,3 +390,49 @@ function update_or_add_meta( $u_id, $key, $value ) {
 
   return true;
 }
+
+// LOGGING FUNCTION
+function add_log( $log_source = NULL, $description = NULL, $user_id = NULL ) {
+
+  // Add a log
+  global $wpdb;
+
+  // Create a new array that will hold all the arguments to create a new log
+  $log = array();
+
+  // Check if a log source has been provided and that it is not to long
+  if ( $log_source == NULL || empty($log_source) || strlen($log_source) > 100 ){
+    $log_source = '';
+  }
+
+  // If all good, add the argument
+  $log['log_source'] = $log_source;
+
+  // Check if a descriptionhas been provided and that it is not to long
+  if ( $description == NULL || empty( $description ) ){
+    $description = '';
+  }
+
+  if ( strlen($description) > 300 ) {
+    $description = substr($description, 0, 280);
+  }
+
+  // If all good, add the argument
+  $log['description'] = $description;
+
+  // Check if an user id has been provided
+  if ( $user_id != NULL && is_numeric($user_id) ){
+    $log['user_id'] = $user_id;
+  }
+
+  if($wpdb->insert(
+        'vro_log',
+        $log
+    ) == false) {
+      wp_die('database insertion failed in logging');
+      return False;
+  } else {
+    return True;
+  }
+
+}

@@ -40,6 +40,10 @@ if (isset($_POST['add_class'])) {
         wp_die('database insertion failed');
       }
 
+      // Logg action
+      $log_description = 'Lade till klassen ' . $new_class['name'];
+      add_log( 'Klass', $log_description, get_current_user_id() );
+
       header("Location: /panel/medlemmar?new_class=success");
       exit();
 
@@ -90,6 +94,10 @@ elseif (isset($_POST['give_class_points'])) {
         wp_die('add class points failed');
       } else {
 
+        // Logg action
+        $log_description = 'Ändrade klassen '. $class_name .' med ' . $class_points . ' poäng.';
+        add_log( 'Klasspokalen', $log_description, get_current_user_id() );
+
         header("Location: $callback?class_points=success");
         exit();
 
@@ -138,6 +146,10 @@ elseif (isset($_POST['give_classpoints_internal'])){
       if ($wpdb->update( 'vro_classes', array( 'points' => $new_points ), array( 'id' => $class_record->id) ) == false){
         wp_die('add class points failed');
       } else {
+
+        // Logg action
+        $log_description = 'Ändrade klassen '. $class_record->name .' med ' . $class_points . ' poäng.';
+        add_log( 'Klasspokalen', $log_description, get_current_user_id() );
 
         header("Location: /panel/medlemmar/?c_id=$class_id&give_classpoints=success");
         exit();

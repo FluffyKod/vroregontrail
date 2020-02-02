@@ -98,7 +98,7 @@ if (! is_user_logged_in() ){
                   echo '<h4>Svar</h4>';
 
                   echo '<form action="'. get_bloginfo('template_directory') . '/scripts/handle_visselpipan.inc.php' . '" method="post">';
-                    echo '<textarea name="visselpipaSvar" placeholder="Svar..."></textarea>';
+                    echo '<textarea name="visselpipaSvar" placeholder="Svar..." required></textarea>';
                     echo '<input name="visselpipaId" value='. $r->id .' hidden>';
 
                     echo '<button class="btn lg" type="submit" name="answerVisselpipa">Skicka</button>';

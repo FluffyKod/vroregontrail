@@ -10,9 +10,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
     <div class="video-container">
 
-      <video id="video-background" autoplay muted loop poster="<?php echo get_bloginfo('template_directory') . '/img/vrgkampen.png'; ?>">
-        <source src="<?php echo get_bloginfo('template_directory') . '/img/vrgkampen.MP4'; ?>" type="video/mp4">
-      </video>
+      <video id="video-background" autoplay muted loop poster="<?php echo get_bloginfo('template_directory') . '/img/vrgkampenOptimized.jpg'; ?>"></video>
 
     </div>
 
@@ -285,6 +283,11 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
 <script type="text/javascript">
   document.getElementById('video-background').playbackRate = 0.7;
+
+  window.onload = function() {
+  if (window.innerWidth > 800)
+    document.querySelector("#video-background").src = "<?php echo get_bloginfo('template_directory') . '/img/vrgkampen.MP4'; ?>";
+  }
 
   window.addEventListener('scroll', function() {
     scrollAppear('about-us-text');

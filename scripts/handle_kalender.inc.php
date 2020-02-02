@@ -45,6 +45,10 @@ if (isset($_POST['add_event_type'])) {
       wp_die('database insertion failed');
     }
 
+    // Logg action
+    $log_description = 'Lade till eventtypen '. $name .' med symbolen ' . $symbol . ' med förgrundsfärgen ' . $fgColor . ' med bakgrundsfärgen ' . $bgColor;
+    add_log( 'Kalender', $log_description, get_current_user_id() );
+
     header("Location: /panel/kalender?event_type=success");
     exit();
 
@@ -77,6 +81,11 @@ elseif (isset($_POST['remove_event_type'])) {
     wp_die('database remove event type failed');
   } else {
     // Success!
+
+    // Logg action
+    $log_description = 'Avaktiverade eventtypen med id '. $etId;
+    add_log( 'Kalender', $log_description, get_current_user_id() );
+
     header("Location: /panel/kalender?remove_event_type=success");
     exit();
   }
@@ -139,6 +148,11 @@ elseif (isset($_POST['alter_event_type'])) {
     wp_die('database alter event type failed');
   } else {
     // Success!
+
+    // Logg action
+    $log_description = 'Ändrade eventtypen med id '. $etId . ' och har nu namnet ' . $name .', symbolen ' . $symbol . ', förgrundsfärgen ' . $fgColor . ' och bakgrundsfärgen ' . $bgColor;
+    add_log( 'Kalender', $log_description, get_current_user_id() );
+
     header("Location: /panel/kalender?alter_event_type=success");
     exit();
   }
@@ -266,6 +280,10 @@ elseif (isset($_POST['add_event'])) {
     wp_die('database insertion failed');
   }
 
+  // Logg action
+  $log_description = 'Lade till eventet ' . $new_event['name'] . ', eventtyp: ' . $new_event['type'] . ', plats: ' . $new_event['place'] . ', host: ' . $new_event['host'] . ', start: ' . $new_event['start'] . ', slut: ' . $new_event['end'] . ', beskrivning: ' . $new_event['description'] . ', synlighet: ' . $new_event['visibility'];
+  add_log( 'Kalender', $log_description, get_current_user_id() );
+
   header("Location: /panel/kalender?add_event=success");
   exit();
 
@@ -290,6 +308,11 @@ elseif (isset($_POST['publish_event'])){
     wp_die('publish event failed');
   } else {
     // Success!
+
+    // Logg action
+    $log_description = 'Publicerade eventet med id ' . $event_id;
+    add_log( 'Kalender', $log_description, get_current_user_id() );
+
     header("Location: /panel/kalender?publish_event=success");
     exit();
   }
@@ -315,6 +338,11 @@ elseif (isset($_POST['unpublish_event'])){
     wp_die('publish event failed');
   } else {
     // Success!
+
+    // Logg action
+    $log_description = 'Avpublicerade eventet med id ' . $event_id;
+    add_log( 'Kalender', $log_description, get_current_user_id() );
+
     header("Location: /panel/kalender?unpublish_event=success");
     exit();
   }
@@ -340,6 +368,11 @@ elseif (isset($_POST['remove_event'])){
     wp_die('remove event failed');
   } else {
     // Success!
+
+    // Logg action
+    $log_description = 'Tog bort eventet med id ' . $event_id;
+    add_log( 'Kalender', $log_description, get_current_user_id() );
+
     header("Location: /panel/kalender?remove_event=success");
     exit();
   }

@@ -92,6 +92,7 @@ if (! is_user_logged_in() ){
                 echo '<h4>' . $r->subject . '</h4>';
               echo '</div>';
               echo '<p>' . $r->text . '</p>';
+            echo '</div>';
           echo '</div>';
 
         } // End foreach

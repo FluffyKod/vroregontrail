@@ -40,6 +40,10 @@ if (isset($_POST['add_new_position_type'])) {
       wp_die('database insertion failed');
     }
 
+    // Logg action
+    $log_description = 'Lade till positionstypen ' . $position_name . ' som är unik; ' . $is_unique . ' och som är länkad till ett utskott: ' . $is_linked_utskott;
+    add_log( 'Kåren', $log_description, get_current_user_id() );
+
     header("Location: /panel/karen?new_position_type=success");
     exit();
 
@@ -91,6 +95,10 @@ elseif (isset($_POST['add_new_styrelse_post'])) {
   ) == false) {
     wp_die('database insertion failed');
   }
+
+  // Logg action
+  $log_description = 'Lade till styrelseposten ' . $styrelse_post . ' med eleven ' . $student_name;
+  add_log( 'Kåren', $log_description, get_current_user_id() );
 
   header("Location: /panel/karen?new_styrelse_poste=success");
   exit();
@@ -146,6 +154,10 @@ elseif (isset($_POST['add_new_utskott'])){
   ) == false) {
     wp_die('database insertion failed');
   }
+
+  // Logg action
+  $log_description = 'Lade till utskottet ' . $utskott_name . ' med eleven ' . $student_name . ' som ordförande och med beskrivningen ' . $description;
+  add_log( 'Kåren', $log_description, get_current_user_id() );
 
   header("Location: /panel/karen?new_utskott=success");
   exit();
@@ -214,6 +226,10 @@ elseif (isset($_POST['update_styrelse_post'])){
   } else{
     //
 
+    // Logg action
+    $log_description = 'Uppdaterade styrelseposten med id ' . $position_id . ' och har nu namnet ' . $styrelse_post . ' och eleven ' . $student_name;
+    add_log( 'Kåren', $log_description, get_current_user_id() );
+
     header("Location: /panel/karen?alter_styrelse_post=success");
     exit();
   }
@@ -238,6 +254,11 @@ elseif (isset($_POST['delete_styrelse_post'])) {
   if (!$wpdb->delete( 'vro_styrelsen', array( 'id' => $position_id ) ) ) {
     wp_die('could not delete styrelse post');
   } else {
+
+    // Logg action
+    $log_description = 'Tog bort styrelseposten med id ' . $position_id;
+    add_log( 'Kåren', $log_description, get_current_user_id() );
+
     header("Location: /panel/karen?remove_styrelse_post=success");
     exit();
   }
@@ -313,7 +334,11 @@ elseif (isset($_POST['edit_utskott'])){
   if ( !$wpdb->update('vro_utskott', array('name' => ''. $utskott['name'] .'', 'description' => ''. $utskott['description'] .'', 'chairman' => $utskott['chairman']), array('id' => $utskott_id)) ){
     wp_die('edit utskott failed');
   } else{
-    //
+    // Success!
+
+    // Logg action
+    $log_description = 'Uppdaterade utskottet med id ' . $utskott_id . ' och har nu namnet ' . $utskott['name'] . ', beskrivningen ' . $utskott['description'] . ', eleven ' . $utskott['chairman'];
+    add_log( 'Kåren', $log_description, get_current_user_id() );
 
     header("Location: /panel/karen?edit_utskott=success");
     exit();
@@ -338,6 +363,11 @@ elseif (isset($_POST['delete_utskott'])){
   if (!$wpdb->delete( 'vro_utskottn', array( 'id' => $utskott_id ) ) ) {
     wp_die('could not delete utskott');
   } else {
+
+    // Logg action
+    $log_description = 'Tog bort utskottet med id ' . $utskott_id;
+    add_log( 'Kåren', $log_description, get_current_user_id() );
+
     header("Location: /panel/karen?remove_utskott=success");
     exit();
   }
@@ -401,6 +431,11 @@ elseif ( isset($_POST['publish_karbrev'])){
     add_post_meta( $post_id, 'month', $current_month );
 
     // SUccess
+
+    // Logg action
+    $log_description = 'Publicerade kårbrev med titeln ' . $letter_title . ' och texten '. substr($letter_content, 0, 280);
+    add_log( 'Kårbrev', $log_description, get_current_user_id() );
+
     header("Location: /panel/karen?publish_karbrev=success");
     exit();
   }
