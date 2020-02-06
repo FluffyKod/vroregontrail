@@ -56,16 +56,25 @@ function showCalendar(month, year){
   // Start on day 1
   let date = 1;
 
-  // Februari quick fix
-  let februaryQuickFix = true;
-
   // Do maximum 7 rows
   for(let i = 0; i < 7; i++){
+
     // Create a new row
     let row = document.createElement('tr');
 
     // Do the 7 weekdays
     for(let j = -1; j < 7; j++){
+
+      if (i == 0 && j == 0){
+        if (firstDay == 0) {
+          date += 1;
+        }
+
+        if (firstDay == 6) {
+          date += 2;
+        }
+      }
+
       // Create a new place for the day in the table
       let cell = document.createElement('td');
 
@@ -99,13 +108,13 @@ function showCalendar(month, year){
       }
 
       // Do not display sundays and saturdays
-      if (j == 0 || j == 6){
+      if (j == 5 || j == 6){
         date++;
         continue;
       }
 
       // Display empty boxes if the first day is not a monday
-      if(i === 0 && j < firstDay + 1){
+      if(i === 0 && j < firstDay - 1 && firstDay != 6 && firstDay != 0){
         let cellText = document.createElement('p');
         cellText.innerText = '';
         cell.appendChild(cellText);
@@ -114,11 +123,6 @@ function showCalendar(month, year){
 
       }
       else {
-
-        if (currentMonth == 1 && februaryQuickFix){
-          date--;
-          februaryQuickFix = false;
-        }
 
         // Create a new text element to hold the day
         let cellText = document.createElement('p');

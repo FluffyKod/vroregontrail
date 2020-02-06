@@ -18,7 +18,7 @@ if (currentDate.getDay() == 6) {
   // Move forward 2 days
   currentDate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate()+2)
 }
-if (currentDate.getDay() == 1) {
+if (currentDate.getDay() == 0) {
   // Move forward 1 day
   currentDate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate()+1)
 }

@@ -65,10 +65,12 @@ get_header();
 
   <div class="calendar_container" id="week-calendar-container">
 
+      <?php if (is_user_logged_in()) : ?>
     <div class="calendar_checkboxes">
       <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox-week" type="checkbox" checked>
       <label>Kommittéevents: </label><input id="show-kommitte-events-checkbox-week" type="checkbox" checked>
     </div>
+  <?php endif; ?>
 
     <div class="calendar_top">
 
@@ -90,10 +92,12 @@ get_header();
 
     <div class="calendar_container" id="month-calendar-container">
 
+      <?php if (is_user_logged_in()) : ?>
       <div class="calendar_checkboxes">
         <label>Elevkårens events: </label><input id="show-elevkaren-events-checkbox" type="checkbox" checked>
         <label>Kommittéevents: </label><input id="show-kommitte-events-checkbox" type="checkbox" checked>
       </div>
+    <?php endif; ?>
 
       <div class="calendar_top">
 
@@ -230,33 +234,41 @@ function toggleEvent(allToggleEvents) {
   }
 }
 
-// Check the checkboxes and hide the events depending on selection
-var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox');
-kommitteEventsCheckbox.addEventListener('change', function() {
-  var allKommitteEvents = document.querySelectorAll('.kommitte-event');
-  toggleEvent(allKommitteEvents);
-});
-
-var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox');
-elevkarenEventsCheckbox.addEventListener('change', function() {
-  var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
-  toggleEvent(allElevkarenEvents);
-});
-
-var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox-week');
-kommitteEventsCheckbox.addEventListener('change', function() {
-  var allKommitteEvents = document.querySelectorAll('.kommitte-event');
-  toggleEvent(allKommitteEvents);
-});
-
-var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox-week');
-elevkarenEventsCheckbox.addEventListener('change', function() {
-  var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
-  toggleEvent(allElevkarenEvents);
-});
-
-
 </script>
+
+<?php if (is_user_logged_in()) : ?>
+  <script type="text/javascript">
+  // Check the checkboxes and hide the events depending on selection
+  if (window.innerWidth > 534) {
+    var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox');
+    kommitteEventsCheckbox.addEventListener('change', function() {
+      var allKommitteEvents = document.querySelectorAll('.kommitte-event');
+      toggleEvent(allKommitteEvents);
+    });
+
+    var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox');
+    elevkarenEventsCheckbox.addEventListener('change', function() {
+      var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
+      toggleEvent(allElevkarenEvents);
+    });
+
+  } else {
+    
+    var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox-week');
+    kommitteEventsCheckbox.addEventListener('change', function() {
+      var allKommitteEvents = document.querySelectorAll('.kommitte-event');
+      toggleEvent(allKommitteEvents);
+    });
+
+    var elevkarenEventsCheckbox = document.getElementById('show-elevkaren-events-checkbox-week');
+    elevkarenEventsCheckbox.addEventListener('change', function() {
+      var allElevkarenEvents = document.querySelectorAll('.elevkaren-event');
+      toggleEvent(allElevkarenEvents);
+    });
+
+  }
+  </script>
+<?php endif; ?>
 
 <?php
 

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Template Name: Test
- */
-
 // Show this page only to admin
 if (! is_user_logged_in() ){
   wp_redirect( '/' );

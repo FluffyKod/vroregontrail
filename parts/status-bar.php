@@ -177,11 +177,20 @@
         $current_event_type = $wpdb->get_row('SELECT * FROM vro_event_types WHERE id=' . $up_event->type);
         $symbol = ($current_event_type) ? $current_event_type->symbol : '';
 
-        if ($up_event->visibility == 'a') {
-          echo '<div class="event">';
+        if (is_event_today( strtotime($up_event->start), strtotime($up_event->end) )) {
+          if ($up_event->visibility == 'a') {
+            echo '<div class="event today">';
+          } else {
+            echo '<div class="event today unpublished">';
+          }
         } else {
-          echo '<div class="event unpublished">';
+          if ($up_event->visibility == 'a') {
+            echo '<div class="event">';
+          } else {
+            echo '<div class="event unpublished">';
+          }
         }
+
         ?>
 
           <div class="icon">

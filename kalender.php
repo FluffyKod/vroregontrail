@@ -414,7 +414,14 @@ $current_student = wp_get_current_user();
 
           <div class="box green lg" id="datetime-box">
 
-            <h4>Lägg till nytt event</h4>
+            <?php
+            if ($is_only_chairman) {
+              echo '<h4>Lägg till nytt kommittéevent</h4>';
+            } else {
+              echo '<h4>Lägg till nytt event</h4>';
+            }
+            ?>
+
 
             <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kalender.inc.php'); ?>" method="post">
 

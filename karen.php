@@ -131,9 +131,17 @@ if (! is_user_logged_in() ){
 
         <div id="overlay"></div>
 
-        <?php display_karen(true); ?>
+        <?php
 
+        // If admin --> able to edit the karen positions
+        if (current_user_can('administrator') || current_user_can('elevkaren') ){
+          display_karen( true );
+        } else {
+          display_karen( false );
+        }
+        ?>
 
+      <?php if (current_user_can('administrator') || current_user_can('elevkaren') ): ?>
         <div class="row">
 
           <div class="box green lg">
@@ -197,6 +205,7 @@ if (! is_user_logged_in() ){
         </div>
 
       </div>
+    <?php endif; //Check if admin ?>
 
 
 

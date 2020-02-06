@@ -79,6 +79,30 @@ function getStudentsInYear($year, $students) {
   return $yearArray;
 }
 
+function is_event_today( $start_time, $end_time ) {
+  $start_dmy = date('d M Y', $start_time);
+  $end_dmy = date('d M Y', $end_time);
+  $today_dmy = date('d M Y', time());
+
+  // Event is only one day
+  if ( $start_dmy == $end_dmy) {
+    // Check if event is today
+    if ($start_dmy == $today_dmy ) {
+      return True;
+    } else {
+      return False;
+    }
+  }
+
+  // Event is during multiple days, check if today is one of the event days
+  if ( $today_dmy >= $start_dmy && $today_dmy <= $end_dmy ) {
+    return True;
+  }
+
+  // Otherwise return false
+  return False;
+}
+
 function check_id( $id, $table_name ) {
   if (empty($id)){
     return array(false, 'empty');
