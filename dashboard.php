@@ -82,6 +82,8 @@ if (! is_user_logged_in() ){
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
 
+
+
         <!-- Display current name, number of visselpipan suggestions and number of kommitée applications -->
         <div class="banner">
           <h3>Välkommen tillbaka <?php echo $user->user_nicename; ?>!</h3>

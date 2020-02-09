@@ -1,4 +1,4 @@
-/* Hello */
+/* Hello CHANGE HERE */
 
 /*****************************************
 * Variables
@@ -98,6 +98,10 @@ html {
   cursor: pointer;
 }
 
+.box.allow-overflow {
+  overflow: visible;
+}
+
 .see-more {
   display: flex;
   justify-content: space-between;
@@ -193,6 +197,9 @@ button.btn.lg {
   font-size: 1.5rem;
   padding: 0 0 2px 2px;
   outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .add-btn.lg {
@@ -375,7 +382,7 @@ select:focus {
 .text-limited-root p {
   position: absolute;
   right: 20px;
-  bottom: 0px;
+  bottom: 10px;
   color: #333;
 }
 
@@ -2441,10 +2448,6 @@ button .btn-description {
 
   .bow .box.sm.matsedeln-dashboard  {
     min-width: 310px;
-  }
-
-  .box.allow-overflow {
-    overflow: visible;
   }
 
   .event-types {

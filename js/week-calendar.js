@@ -49,8 +49,6 @@ function showWeekCalendar() {
     weekName.innerText = dayNames[i];
     cell.appendChild(weekName);
 
-
-
     // Format month 1 --> 01
     let idMonth = displayDate.getMonth() + 1;
     idMonth = (idMonth < 10) ? '0' + idMonth : idMonth;
@@ -76,9 +74,10 @@ function showWeekCalendar() {
     weekDate.classList = 'week-calendar-date';
 
     // Check if the day is the current one, then add class to style it differently
-    if (displayDate == new Date()){
+    if (displayDate.setHours(0,0,0,0) == new Date().setHours(0,0,0,0)){
       weekDate.classList.add('current_day');
     }
+
     cell.appendChild(weekDate)
 
     // Add to the table

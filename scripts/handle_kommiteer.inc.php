@@ -75,6 +75,88 @@
 
   }
 
+  elseif (isset($_POST['add_new_kommitte'])) {
+
+    global $wpdb;
+
+    $kommitte_name = test_input( $_POST['kommitte_name'] );
+    $description = test_input( $_POST['description'] );
+    $chairman_name = test_input( $_POST['chairman_name'] );
+
+    if ( empty($kommitte_name) || empty($description) || empty($chairman_name) ){
+      header("Location: /panel/kommiteer?add_new=empty");
+      exit();
+    } else {
+
+      // Check if there already is a kommitée with that name
+      if ( count($wpdb->get_results('SELECT * FROM vro_kommiteer WHERE name="'. $kommitte_name .'"')) > 0 ) {
+        header("Location: /panel/kommiteer?add_new=nametaken&the_description=$description&chairman=$chairman_name");
+        exit();
+      } else {
+
+        // Get the student with the supplied nickname
+        $args = array(
+            'meta_query' => array(
+                array(
+                    'key' => 'nickname',
+                    'value' => $chairman_name,
+                    'compare' => '=='
+                )
+            )
+        );
+
+        // Get the student
+        $student = get_users($argss);
+
+        if (count($student) < 1) {
+          header("Location: /panel/kommiteer?add_new=nostudentfound");
+          exit();
+        }
+
+        // Create a new array that will hold all the arguments to create a new kommitee
+        $kommitte = array();
+
+        $kommitte['name'] = $kommitte_name;
+        $kommitte['description'] = $description;
+        $kommitte['chairman'] = $student[0]->ID;
+        $kommitte['status'] = 'y';
+
+        if($wpdb->insert('vro_kommiteer', $kommitte) == false) {
+            wp_die('database insertion failed in add new kommitte');
+        } else {
+
+            // Logg action
+            $log_description = 'Lade till kommittén ' . $kommitte['name'] . ' med beskrivningen ' . $kommitte['description'] . ' med ordförande ' . $chairman_name;
+            add_log( 'Kommittéer', $log_description, get_current_user_id() );
+
+            // Set the chairman as a new member
+            $new_kommitee = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE name="'. $kommitte_name .'"');
+
+            $kommitee = array();
+
+            $kommitee['user_id'] = $student[0]->ID;
+            $kommitee['kommitee_id'] = (int)$new_kommitee->id;
+            $kommitee['status'] = 'y';
+
+            // Insert the new suggestion into the database
+            if($wpdb->insert(
+                'vro_kommiteer_members',
+                $kommitee
+            ) == false) {
+              wp_die('database insertion failed in set chairman as kommitte member in add new kommitte');
+            }
+
+            header("Location: /panel/kommiteer?add_new=success");
+            exit();
+
+          } // End wpdb->insert
+
+      }
+
+    }
+
+  }
+
   elseif (isset($_POST['accept_kommitee']) || isset($_POST['deny_kommitee'])) {
 
     /*****************************************

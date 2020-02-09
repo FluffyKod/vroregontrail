@@ -297,8 +297,6 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
   });
 </script>
 
- <script src="http://localhost:35729/livereload.js"></script>
-
 <?php
 
 get_footer();

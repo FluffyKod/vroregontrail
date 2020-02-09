@@ -209,7 +209,7 @@
 
               <!-- Always show the add new kommitée card -->
               <div class="kommitee alert">
-                  <button class="add-btn lg">+</button>
+                  <a href="#new-kommitte" class="add-btn lg">+</a>
                   <h5>Skapa ny kommitée</h5>
               </div>
 
@@ -334,23 +334,51 @@
         if (current_user_can('administrator') || current_user_can('elevkaren') ){
         ?>
 
-        <div class="row">
+        <div class="row" id="new-kommitte">
 
-          <div class="box white lg">
+          <div class="box white lg allow-overflow">
 
-            <h3>Skapa ny kommitée</h3>
-            <form>
-              <input type="text" name="" value="" placeholder="Namn...">
-              <textarea name="name" type=="text" placeholder="Beskrivning..."></textarea>
-              <input type="text" name="" value="" placeholder="Ordförande...">
+            <h3>Skapa ny kommitté</h3>
+            <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post" autocomplete="off">
+              <input type="text" name="kommitte_name" value="" placeholder="Namn på kommittén..." required>
+              <div class="text-limited-root">
+                <textarea name="description" placeholder="Beskrivning av kommittéen..." required onkeyup="checkForm(this, kommitte_description_char_count, 300)"></textarea>
+                <p id="kommitte_description_char_count">300</p>
+              </div>
+              <div class="autocomplete">
+                  <input type="text" name="chairman_name" value="" placeholder="Ordförande..." id="chairman-field" required>
+              </div>
 
-              <button type="submit" name="button" class="btn lg">Skapa</button>
+              <button type="submit" name="add_new_kommitte" class="btn lg">Skapa</button>
             </form>
 
           </div>
 
         </div>
 
+        <?php
+
+        // Get the number of all members
+        $all_students = get_users(array(
+          'meta_key' => 'class_id'
+        ));
+
+        // Get first and last name from every student
+        $first_last_array_full = array();
+        foreach($all_students as $s){
+          array_push($first_last_array_full, get_user_meta( $s->ID, 'nickname', true));
+        }
+
+        echo '<script type="text/javascript">';
+        echo 'var jsonstudentsall = ' . json_encode($first_last_array_full);
+        echo '</script>'
+
+        ?>
+
+        <script type="text/javascript">
+
+          autocomplete(document.getElementById("chairman-field"), jsonstudentsall, 'Inga elever hittades.');
+        </script>
 
 
       <?php } // End is admin

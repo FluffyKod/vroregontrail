@@ -61,7 +61,7 @@ if (count($kommitees) == 0){
         <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
       <?php } ?>
 
-      <p>Kommitéer</p>
+      <p>Kommittéer</p>
     </a>
 
     <a href="/kalender/" class="nav-item" id="link-kalender">
