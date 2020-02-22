@@ -21,9 +21,9 @@ $current_student_id = get_current_user_id();
 // Check if the student is a member in the elevkår
 if (metadata_exists('user', $current_student_id, 'status')){
   $status = get_user_meta($current_student_id, 'status', true);
-  $is_member = $status != 'n' ? True : False;
+  $is_member = $status;
 } else {
-  $is_member = NULL;
+  $is_member = 'n';
 }
 
 
@@ -144,11 +144,12 @@ if (metadata_exists('user', $current_student_id, 'status')){
         <?php
 
         // Add a new row and box for every suggestion
-        echo '<div class="row">';
 
         foreach ($waiting_members as $wm)
         {
           ?>
+          <div class="row">
+
 
             <div class="box white lg">
               <div class="see-more">
@@ -176,10 +177,10 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
             </div>
 
+            </div>
+
         <?php
         } // ENd foreach
-
-        echo '</div>';
 
         ?>
 
@@ -372,9 +373,13 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
 
           <?php
-          if (!$is_member){
+          if ($is_member == 'n'){
             echo '<h4>Ansök om att bli medlem i elevkåren</h4>';
-          } else {
+          }
+          elseif ($is_member == 'w'){
+            echo '<h4>Dra tillbaka din medlemsansökan</h4>';
+          }
+          else {
             echo '<h4>Gå ut ur elevkåren</h4>';
           }
           ?>
@@ -383,8 +388,8 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
             <?php
 
-            if ($is_member){
-              echo '<p>Du behöver skicak ett mail till.... för att gå ut</p>';
+            if ($is_member == 'y' or $is_member == 'w'){
+              echo '<p>Du behöver ta kontakt med styrelsen för att kunna gå ut ur elevkåren.</p>';
             } else {
               echo '<button class="btn lg" type="submit" name="apply_for_member">Klicka för att skicka en medlemsansökan!</button>';
             }

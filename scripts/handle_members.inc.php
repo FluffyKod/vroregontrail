@@ -308,8 +308,8 @@ elseif (isset($_POST['register_new_user'])) {
       )
     );
 
-    // Default to not a member in the elevkår
-    add_user_meta( $user_id, 'status', 'n' );
+    // Default to waiting member in the elevkår
+    add_user_meta( $user_id, 'status', 'w' );
 
     // Set the class for the user
     add_user_meta( $user_id, 'class_id', $class->id );

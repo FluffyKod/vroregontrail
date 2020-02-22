@@ -147,12 +147,15 @@ elseif (isset($_POST['add_new_utskott'])){
     $utskott['description'] = $description;
   }
 
+  // var_dump($utskott);
+  // exit();
+
   // Insert the new suggestion into the database
   if($wpdb->insert(
       'vro_utskott',
       $utskott
   ) == false) {
-    wp_die('database insertion failed');
+    wp_die('database insertion failed in add utskott');
   }
 
   // Logg action

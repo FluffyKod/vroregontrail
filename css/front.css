@@ -1,5 +1,5 @@
 /*****************************************
-* General hej
+* General hejhej
 *****************************************/
 .front .btn.lg {
   max-width: 500px;
@@ -197,6 +197,10 @@ section .box.appear {
   color: #fff; /* old IE */
   background-color: #fff; /* Modern Browsers */
   animation: stretcher 3s ease forwards 1s;
+}
+
+#front-btn {
+  margin-right: 20px;
 }
 
 @media (min-width: 800px) {

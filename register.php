@@ -67,7 +67,7 @@
 
 
        if (!isset($_GET['last_name'])){
-         echo '<input type="text" name="last_name" value="" placeholder="Efernamn..." required>';
+         echo '<input type="text" name="last_name" value="" placeholder="Efternamn..." required>';
        } else {
          echo '<input type="text" name="last_name" value="'. $_GET['last_name'] .'" placeholder="Efternamn..." required>';
        }
@@ -89,9 +89,9 @@
       <?php
 
       if (!isset($_GET['phonenumber'])){
-        echo '<input type="tel" name="phonenumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telefonnummer... (ex: 123-456-7890)" required>';
+        echo '<input type="tel" name="phonenumber" placeholder="Telefonnummer... (ex: 1234567890)" required>';
       } else {
-        echo '<input type="tel" name="phonenumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telefonnummer... (ex: 123-456-7890)" value="'. $_GET['telefonnummer'] .'" required>';
+        echo '<input type="tel" name="phonenumber" placeholder="Telefonnummer... (ex: 1234567890)" value="'. $_GET['telefonnummer'] .'" required>';
       }
      ?>
 

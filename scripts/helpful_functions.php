@@ -316,23 +316,15 @@ function display_karen( $edit = false ){
     foreach ($styrelsen as $s) {
       ?>
 
-      <?php
-        if ($edit) {
-          echo '<div class="box white chairman sm clickable">';
-        } else {
-          echo '<div class="box white chairman sm">';
-        }
-      ?>
+        <div class="box white chairman sm clickable">
 
-        <?php if ($edit) { ?>
         <div class="edit-image">
           <?php echo get_avatar( $s->ID ); ?>
-          <button type="button" name="button" class="edit-styrelse" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+          <?php if ($edit) { ?>
+            <button type="button" name="button" class="edit-styrelse" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+          <?php } ?>
         </div>
-      <?php } else {
-            echo get_avatar( $s->ID );
-          }
-        ?>
+
 
           <h3><?php echo $s->position_name; ?></h3>
           <p><?php echo get_user_meta($s->student, 'nickname', true); ?></p>
@@ -363,7 +355,7 @@ function display_karen( $edit = false ){
         if ($edit) {
           echo '<div class="box white chairman sm clickable">';
         } else {
-          echo '<div class="box white chairman sm">';
+          echo '<div class="box white chairman sm clickable">';
         }
       ?>
 
@@ -459,4 +451,14 @@ function add_log( $log_source = NULL, $description = NULL, $user_id = NULL ) {
     return True;
   }
 
+}
+
+function show_success_alert( $header, $msg ) {
+  echo '<script type="text/javascript">
+  Swal.fire(
+    "'. $header .'",
+    "'. $msg .'",
+    "success"
+    )
+  </script>';
 }

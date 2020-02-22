@@ -76,7 +76,7 @@
       <p>Kommittéer</p>
     </a>
 
-    <a href="/kalender/" class="nav-item" id="link-kalender">
+    <a href="/panel/kalender/" class="nav-item" id="link-kalender">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/calendar.png" alt="" class="nav-icon">
       <p>Kalender</p>
     </a>
@@ -137,7 +137,7 @@
     <img src="<?php echo get_bloginfo('template_directory') ?>/img/protocolfolder.png" alt="">
     <p>Öppna <strong>DRIVE</strong> för att se de senaste protokollen!</p>
 
-    <a href="#" class="btn sm">Drive</a>
+    <a href="https://drive.google.com/drive/folders/0B-UL6CSzT9I0bXUzUXVCRFNVZVk?usp=sharing" target="_blank" class="btn sm">Drive</a>
 
   </div>
 

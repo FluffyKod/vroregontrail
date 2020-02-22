@@ -75,6 +75,8 @@
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
 
+        <p>Här kan man se och gå med i alla kommittéer och ansöka om en ny kommitté!</p>
+
         <?php
         // Show this only to admins and working student in elevkaren
         if (current_user_can('administrator') || current_user_can('elevkaren') ){

@@ -58,7 +58,7 @@ if (! is_user_logged_in() ){
         <div class="modal" id="modal">
           <div class="modal-header">
             <div class="title">
-              Exempeltitel
+              Titel
             </div>
             <button data-close-button class="close-button" type="button" name="button">&times;</button>
           </div>
@@ -139,6 +139,7 @@ if (! is_user_logged_in() ){
         } else {
           display_karen( false );
         }
+
         ?>
 
       <?php if (current_user_can('administrator') || current_user_can('elevkaren') ): ?>
@@ -256,36 +257,21 @@ if (! is_user_logged_in() ){
       window.onload = function() {
         highlightLink('link-karen');
 
+        // Check if admin
+        <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
+          var isAdmin = true;
+        <?php } else {?>
+          var isAdmin = false;
+        <?php } ?>
+
         // make one able to click every one in styrelsen to change them
         var styrelsenRoot = document.getElementById('styrelsen');
-        var styrelsePositions = styrelsenRoot.querySelectorAll('div');
+        var styrelsePositions = styrelsenRoot.querySelectorAll('.chairman');
 
-        for(const position of styrelsePositions){
-
-          position.querySelector('.edit-image button').addEventListener('click', function() {
-            let modal = document.querySelector('#modal');
-            let position_name = position.querySelector('h3').innerText;
-            let student_name = position.querySelector('p').innerText;
-            let position_id = position.querySelector('input').value;
-
-            // Change the modal header
-            document.querySelector('#modal .modal-header .title').textContent = 'Ändra styrelsepositionen ' + position_name;
-
-            document.querySelector('#modal .modal-body form #position-name-field').value = position_name;
-
-            document.querySelector('#modal .modal-body form #position-id').value = position_id;
-
-            document.querySelector('#modal .modal-body form .autocomplete #student-name-field').value = student_name;
-
-            document.querySelector('#modal .modal-body form .button-group #submit-button').name = 'update_styrelse_post';
-
-            document.querySelector('#modal .modal-body form .button-group #delete-button').name = 'delete_styrelse_post';
-
-            // OPen the modal
-            openModal(modal);
-          });
+        styrelsePositions.forEach( (position) => {
 
           position.addEventListener('click', function() {
+
             let modal = document.querySelector('#modal-moreinfo');
             let position_name = position.querySelector('h3').innerText;
             // Also remove the Ordförande: part
@@ -303,11 +289,61 @@ if (! is_user_logged_in() ){
             openModal(modal);
           });
 
-          var utskottRoot = document.getElementById('utskotten');
-          var utskotten = utskottRoot.querySelectorAll('.chairman');
+          if (isAdmin){
 
-          for(const utskott of utskotten){
-            // console.log(utskott);
+            position.querySelector('.edit-image button').addEventListener('click', function() {
+              let modal = document.querySelector('#modal');
+              let position_name = position.querySelector('h3').innerText;
+              let student_name = position.querySelector('p').innerText;
+              let position_id = position.querySelector('input').value;
+
+              // Change the modal header
+              document.querySelector('#modal .modal-header .title').textContent = 'Ändra styrelsepositionen ' + position_name;
+
+              document.querySelector('#modal .modal-body form #position-name-field').value = position_name;
+
+              document.querySelector('#modal .modal-body form #position-id').value = position_id;
+
+              document.querySelector('#modal .modal-body form .autocomplete #student-name-field').value = student_name;
+
+              document.querySelector('#modal .modal-body form .button-group #submit-button').name = 'update_styrelse_post';
+
+              document.querySelector('#modal .modal-body form .button-group #delete-button').name = 'delete_styrelse_post';
+
+              // OPen the modal
+              openModal(modal);
+            });
+
+          }
+
+        });
+
+        var utskottRoot = document.getElementById('utskotten');
+        var utskotten = utskottRoot.querySelectorAll('.chairman');
+
+        for(const utskott of utskotten){
+
+          utskott.addEventListener('click', function() {
+
+            let modal = document.querySelector('#modal-moreinfo');
+            let utskott_name = utskott.querySelector('h3').innerText;
+            // Also remove the Ordförande: part
+            let chairman_name = utskott.querySelector('p').innerText.replace('Ordförande:', '');
+            let utskott_description = utskott.querySelector('input.utskott-description').value;
+            let chairman_mail = utskott.querySelector('input.utskott-chairman-email').value;
+
+            // Change the modal header
+            document.querySelector('#modal-moreinfo .modal-header .title').textContent = utskott_name;
+
+            document.querySelector('#modal-moreinfo .modal-body #description-field').innerHTML = '<b>Beskrivning: </b>' + utskott_description + '<br>';
+
+            document.querySelector('#modal-moreinfo .modal-body #chairman-field').innerHTML = '<b>Ordförande: </b>' + chairman_name + ' - ' + chairman_mail;
+
+            // OPen the modal
+            openModal(modal);
+          });
+
+          if (isAdmin) {
 
             utskott.querySelector('.edit-image button').addEventListener('click', function() {
               let modal = document.querySelector('#modal-change-utskott');
@@ -335,25 +371,8 @@ if (! is_user_logged_in() ){
               event.stopPropagation();
             });
 
-            utskott.addEventListener('click', function() {
-              let modal = document.querySelector('#modal-moreinfo');
-              let utskott_name = utskott.querySelector('h3').innerText;
-              // Also remove the Ordförande: part
-              let chairman_name = utskott.querySelector('p').innerText;
-              let utskott_description = utskott.querySelector('input.utskott-description').value;
-              let chairman_mail = utskott.querySelector('input.utskott-chairman-email').value;
-
-              // Change the modal header
-              document.querySelector('#modal-moreinfo .modal-header .title').textContent = utskott_name;
-
-              document.querySelector('#modal-moreinfo .modal-body #description-field').innerText = utskott_description;
-
-              document.querySelector('#modal-moreinfo .modal-body #chairman-field').innerText = chairman_name + ' - ' + chairman_mail;
-
-              // OPen the modal
-              openModal(modal);
-            });
           }
+
         }
       }
 

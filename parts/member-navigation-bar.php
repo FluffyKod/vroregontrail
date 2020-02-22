@@ -43,6 +43,11 @@ if (count($kommitees) == 0){
       <p>Dashboard</p>
     </a>
 
+    <a href="/panel/karkortet" class="nav-item" id="link-karkortet">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/karkortet-icon.png" alt="" class="nav-icon">
+      <p>Kårkortet</p>
+    </a>
+
     <a href="/panel/visselpipan/" class="nav-item" id="link-visselpipan">
 
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/chat.png" alt="" class="nav-icon ">
@@ -64,7 +69,7 @@ if (count($kommitees) == 0){
       <p>Kommittéer</p>
     </a>
 
-    <a href="/kalender/" class="nav-item" id="link-kalender">
+    <a href="/panel/kalender/" class="nav-item" id="link-kalender">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/calendar.png" alt="" class="nav-icon">
       <p>Kalender</p>
     </a>
@@ -83,11 +88,6 @@ if (count($kommitees) == 0){
       <!-- Check if there are any new memebr suggestions, if so -> add a notification circle -->
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/members.png" alt="" class="nav-icon">
       <p>Medlemmar</p>
-    </a>
-
-    <a href="/panel/karkortet" class="nav-item" id="link-karkortet">
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/karkortet-icon.png" alt="" class="nav-icon">
-      <p>Kårkortet</p>
     </a>
 
     <a href="/panel/arkiv" class="nav-item" id="link-arkiv">

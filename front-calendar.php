@@ -173,12 +173,12 @@ global $wpdb;
 
 if (current_user_can('administrator') || current_user_can('elevkaren') ){
     // Get all events
-    $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NULL');
-    $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL');
+    $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NULL ORDER BY start, name');
+    $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL ORDER BY start, name');
 } else {
   // Only get events that has been published
-  $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a" AND kommitte_host_id IS NULL');
-  $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL AND visibility="a"');
+  $all_events = $wpdb->get_results('SELECT * FROM vro_events WHERE visibility="a" AND kommitte_host_id IS NULL ORDER BY start, name');
+  $kommitte_events = $wpdb->get_results('SELECT * FROM vro_events WHERE kommitte_host_id IS NOT NULL AND visibility="a" ORDER BY start, name');
 }
 
 $event_type_array = array();
@@ -253,7 +253,7 @@ function toggleEvent(allToggleEvents) {
     });
 
   } else {
-    
+
     var kommitteEventsCheckbox = document.getElementById('show-kommitte-events-checkbox-week');
     kommitteEventsCheckbox.addEventListener('change', function() {
       var allKommitteEvents = document.querySelectorAll('.kommitte-event');

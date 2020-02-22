@@ -22,10 +22,13 @@
     </a>
 
     <div class="profile">
-      <div class="profile-img">
-        <?php echo get_avatar( $user->ID ); ?>
-        <button class="add-btn extra-btn">+</button>
-      </div>
+
+      <?php if (current_user_can('administrator') || current_user_can('elevkaren') ):  ?>
+        <div class="profile-img">
+          <?php echo get_avatar( $user->ID ); ?>
+          <a href="https://vroelevkar.se/wp-admin/profile.php#wpua-add-button-existing" class="add-btn extra-btn">+</a>
+        </div>
+      <?php endif; ?>
 
       <p><b><?php echo get_user_meta($user->ID,'nickname',true); ?></b></p>
 

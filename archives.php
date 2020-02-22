@@ -58,7 +58,7 @@ if (! is_user_logged_in() ){
         <div class="archive-links">
           <a class="btn" href="#karbrev">Se alla kårbrev</a>
           <a class="btn" href="#kommitte">Se alla kommitténotiser</a>
-          <a class="btn" href="#">Se alla bilder</a>
+          <a class="btn" href="https://drive.google.com/drive/folders/1NKwQTcbvxk_5yNe1PL0u5hBrrOjCNQbY" target="_blank">Se alla bilder</a>
           <?php   if (current_user_can('administrator') || current_user_can('elevkaren') ): ?>
             <a class="btn" href="#visselpipor">Se alla visselpipor</a>
           <?php endif; ?>

@@ -82,11 +82,9 @@ if (! is_user_logged_in() ){
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
 
-
-
         <!-- Display current name, number of visselpipan suggestions and number of kommitée applications -->
         <div class="banner">
-          <h3>Välkommen tillbaka <?php echo $user->user_nicename; ?>!</h3>
+          <h3>Välkommen tillbaka <?php echo get_user_meta($user->ID,'nickname',true); ?>!</h3>
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
           <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
         </div>

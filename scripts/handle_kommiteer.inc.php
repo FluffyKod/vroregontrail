@@ -106,8 +106,8 @@
         );
 
         // Get the student
-        $student = get_users($argss);
-
+        $student = get_users($args);
+    
         if (count($student) < 1) {
           header("Location: /panel/kommiteer?add_new=nostudentfound");
           exit();

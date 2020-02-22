@@ -49,6 +49,8 @@ if (! is_user_logged_in() ){
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
 
+          <p>Här kan du skicka förslag till elevkåren på saker som du vill förändra!</p>
+
 
         <?php
 
@@ -115,7 +117,6 @@ if (! is_user_logged_in() ){
 
           ?>
 
-      <!-- TODO: send visselpipan suggestion -->
       <div class="row">
 
         <div class="box lg green">
