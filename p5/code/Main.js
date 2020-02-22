@@ -293,7 +293,7 @@ function option(ref){
       }
 
       // Move player to new location
-      if(this.cmd == 'tp'){
+      if(this.cmd == 'move'){
 
         // Check that there are enough values
         if (this.values.length >= 2) {
@@ -301,7 +301,7 @@ function option(ref){
           player.x = this.values[0];
           player.y = this.values[1];
         } else {
-          console.log('ERROR: Not enough values supplied to tp command');
+          console.log('ERROR: Not enough values supplied to move command');
         }
 
       }

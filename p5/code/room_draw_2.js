@@ -20,6 +20,9 @@ let guiParent
 let maxCommandValues = 4;
 let maxOptionAmount = 5;
 
+let connectionColors;
+
+
 function setup(){
   colors =
   {
@@ -28,6 +31,8 @@ function setup(){
     highlight: color(255,255,255,25),
     inactiveFillColor: color(51)
   };
+
+  connectionColors = [color(255, 0, 0), color(255, 255, 0), color(0, 255, 0), color(0, 255, 255), color(0, 0, 255)];
 
   createCanvas(canvasSize.width, canvasSize.height);
 
@@ -38,14 +43,17 @@ function setup(){
   createFirstRoom();
 
 
+
   print(roomSprites);
-  Camera(floor(width/2),floor(height/2))
 }
 
 function draw(){
 
+
+
   background(colors.inactiveFillColor);
   drawSprites();
+  drawConnections();
 
   highlightOverMouse();// borde bara göras där det går
 
@@ -68,6 +76,9 @@ function keyPressed(){
 }
 
 function mousePressed(){
+  showValueAmountControl();
+  optionShowControl(); //lite spray and pray måste nog inte kallas här
+
   onSprite = false;
   for (var i = 0; i < roomSprites.length; i++) { // borde göras bättre
     if(roomSprites[i].mouseIsOver){
@@ -82,29 +93,8 @@ function mousePressed(){
 }
 
 function mouseReleased(){
-  //snuskigaste koden jag har skrivit på ett tag men den får va här tills jag fattar hur quicksettings divvarna går att ändra på.
-  if (activeRoom) {
-    for (var i = 0; i < activeRoom.optionGuis.length; i++) {
-      showAmount = 0;
-      switch (activeRoom.optionGuis[i].getValue('option_command').value) {
-
-        case '':
-          break;
-        case 'tp':
-          showAmount = 2;
-          break;
-        case 'info':
-          showAmount = 1;
-          break;
-      }
-      for (var j = 0; j < maxCommandValues; j++) {
-        activeRoom.optionGuis[i].hideControl('command_value_'+j);
-      }
-      for (var j = 0; j < showAmount; j++) {
-        activeRoom.optionGuis[i].showControl('command_value_'+j);
-      }
-    }
-  }
+  showValueAmountControl();
+  optionShowControl(); //lite spray and pray måste nog inte kallas här
 
 }
 
@@ -116,6 +106,12 @@ function createFirstRoom(){
 
 
 function createRoom(x, y){
+  //ser till att den aktiva guin blir gömd när ett nytt rum skapas
+  if(activeRoom && activeRoom.gui){
+    showValueAmountControl();//kallas för den borde det och kommer typ kalla den på en massa ställen bara yolo
+    optionShowControl(); //lite spray and pray måste nog inte kallas här
+    activeRoom.gui.hide();}
+
   this.x = x;
   this.y = y;
 
@@ -123,13 +119,15 @@ function createRoom(x, y){
   roomSprite.active = true;
   roomSprite.indexX = (this.x-floor(width/2)-roomBoxSize/2)/roomBoxSize;
   roomSprite.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
+
+
   roomSprite.exportRoom;
 
   roomSprite.optionObjs = [];
   for (var i = 0; i < maxOptionAmount; i++) {
     roomSprite.optionObjs.push({option_text: '', option_command: '', values: [] })
   }
-  roomSprite.roomObj = {x: roomSprite.indexX , y: roomSprite.indexY , main_text: "", options: roomSprite.optionObjs }
+
 
   roomSprite.coordinateString = "(" + roomSprite.indexX + ", " + roomSprite.indexY + ")";
 
@@ -139,7 +137,9 @@ function createRoom(x, y){
 
   }
   roomSprite.gui =  QuickSettings.create(10, 10, "Room "+ roomSprite.coordinateString, guiParent);
-  roomSprite.gui.bindTextArea('main_text', "", roomSprite.roomObj);
+  roomSprite.gui.setDraggable(false);
+  roomSprite.gui.setWidth(250);
+  roomSprite.gui.addTextArea('main_text', "");
   roomSprite.gui.addNumber('option_amount', 0,maxOptionAmount,0,1, function(value)
   {
     for (var i = 0; i < maxOptionAmount; i++) {
@@ -154,9 +154,10 @@ function createRoom(x, y){
   roomSprite.optionGuis = [];
 
   for (var i = 1; i <= maxOptionAmount; i++) {
-    roomSprite.optionGui = QuickSettings.create( 210*i+10,10,'option_'+i, guiParent).hide(); //borde parenta till en egen.
-    roomSprite.optionGui.bindText('option_text', '' , roomSprite.roomObj);
-    roomSprite.optionGui.addDropDown('option_command', ['','tp', 'info']);
+    roomSprite.optionGui = QuickSettings.create( 210*i+60,10,'option_'+i, guiParent).hide();//borde parenta till en egen.
+    roomSprite.optionGui.setDraggable(false);
+    roomSprite.optionGui.addText('option_text', '' );
+    roomSprite.optionGui.addDropDown('option_command', ['','move', 'info']);
 
     for (var j = 0; j < maxCommandValues; j++) {
       roomSprite.optionGui.addText('command_value_'+j);
@@ -190,7 +191,7 @@ function createRoom(x, y){
       activeRoom.gui.hide();
 
     }
-
+    // TODO: Måste kallas på fler ställen
     if (activeOptionGui!=null) {
       for (var i = 0; i < maxOptionAmount; i++) {
         activeOptionGui[i].hide();
@@ -213,7 +214,7 @@ function createRoom(x, y){
 
   //roomSprite.indexX = j;
   //roomSprite.indexY = i;
-
+  activeRoom = roomSprite;
   roomSprites.push(roomSprite);
 
 
@@ -268,7 +269,97 @@ function saveRoom(){
 
 }
 
-function loadRoom(){
-  //borde kunna ladda in en room.js dokument och visualisera den.
-  
+// TODO: make littlebit nicer looking
+function drawConnections(){
+  for (var i = 0; i < roomSprites.length; i++) {
+    for (var j = 0; j < roomSprites[i].optionGuis.length; j++) {
+      if(roomSprites[i].optionGuis[j].getValue('option_command').value == "move"){
+        stroke(connectionColors[j]);
+        //tar in koordinaterna från values delen
+        connection = indexToScreenCoordinates(
+          Number(roomSprites[i].optionGuis[j].getValue('command_value_'+0)), Number(roomSprites[i].optionGuis[j].getValue('command_value_'+1))
+        );
+        if(connection.x!=null && connection.y != null
+        ){
+
+          line(roomSprites[i].position.x-10+j*4, roomSprites[i].position.y-10+j*4, connection.x-10+j*4, connection.y-10+j*4)
+
+        }
+      }
+    }
+  }
 }
+
+
+function indexToScreenCoordinates(indexX, indexY){
+  x = indexX*roomBoxSize+floor(width/2)+roomBoxSize/2
+  y = indexY*roomBoxSize+floor(height/2)+roomBoxSize/2
+  return {x: x, y: y};
+}
+
+function screenToIndexCoordinates(screenX, screenY){
+  x = (screenX-floor(width/2)-roomBoxSize/2)/roomBoxSize
+  y = (sceenY-floor(height/2)-roomBoxSize/2)/roomBoxSize
+  return {x: x, y: y};
+}
+
+//kollar hur många values som ska visas för det aktiva rummet
+
+function optionShowControl(){
+  for (var i = 0; i < maxOptionAmount; i++) {
+    activeRoom.optionGuis[i].hide();
+  }
+  for (var i = 0; i < activeRoom.gui.getValue('option_amount'); i++) {
+    activeRoom.optionGuis[i].show();
+  }
+}
+
+function showValueAmountControl(){
+  //snuskigaste koden jag har skrivit på ett tag men den får va här tills jag fattar hur quicksettings divvarna går att ändra på.
+  if (activeRoom) {
+    for (var i = 0; i < activeRoom.optionGuis.length; i++) {
+      showAmount = 0;
+      switch (activeRoom.optionGuis[i].getValue('option_command').value) {
+
+        case '':
+          break;
+        case 'move':
+          showAmount = 2;
+          break;
+        case 'info':
+          showAmount = 1;
+          break;
+      }
+      for (var j = 0; j < maxCommandValues; j++) {
+        activeRoom.optionGuis[i].hideControl('command_value_'+j);
+      }
+      for (var j = 0; j < showAmount; j++) {
+        activeRoom.optionGuis[i].showControl('command_value_'+j);
+      }
+    }
+  }
+}
+
+
+
+//SKREP
+
+/*
+function loadRooms(roomArray){ //tar in en rooms array
+  rooms = roomArray;
+  roomSprites = [];
+  for (var i = 0; i < roomArray.length; i++) {
+    x = roomArray[i].x *roomBoxSize+floor(width/2)+roomBoxSize/2;
+    y = roomArray[i].y *roomBoxSize+floor(height/2)+roomBoxSize/2;
+    createRoom(x,y)
+    roomSprites[i].setValue('main_text', roomArray[i].mainText);
+    for (var j = 0; j < roomSprites[i].optionGuis.length; j++) {
+      roomSprites[i].optionGuis[j].setValue('option_text', roomArray[i].options[j].text);
+      roomSprites[i].optionGuis[j].setValue('option_command',);
+
+    }
+    roomArray[i]
+  }
+
+}
+*/
