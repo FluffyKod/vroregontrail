@@ -8,92 +8,7 @@
 
   global $wpdb;
 
-  /*****************************************
-  * Helper functions
-  *****************************************/
-  function send_header( $location ){
-    header("Location: " . $location);
-    exit();
-  }
 
-  function get_student_from_nickname( $student_name, $errLocation ) {
-    // Get the student with the supplied nickname
-    $args = array(
-        'meta_query' => array(
-            array(
-                'key' => 'nickname',
-                'value' => $student_name,
-                'compare' => '=='
-            )
-        )
-    );
-
-    // Get the student
-    $student = get_users($args, 0);
-
-    // If no student found, exit with error msh, otherwise return the student
-    if (count($student) < 1) {
-      send_header( $errLocation );
-    } else {
-      return $student;
-    }
-
-  }
-
-  function check_if_entry_exists( $table, $field, $value, $errLocation ) {
-    global $wpdb;
-
-    if ( count($wpdb->get_results("SELECT * FROM $table WHERE $field = '$value'")) > 0 ) {
-      send_header( $errLocation );
-    } else {
-      return true;
-    }
-
-  }
-
-  function insert_record( $table, $record, $errMsg ) {
-
-    global $wpdb;
-
-    if( $wpdb->insert($table, $record) == false){
-      wp_die( $errMsg );
-    }
-
-  }
-
-  function check_if_empty( $values, $errLocation = false ) {
-
-    foreach( $values as $v ){
-      if (empty($v)){
-        if ($errLocation) {
-          send_header( $errLocation );
-        } else {
-          return false;
-        }
-      }
-    }
-
-    return true;
-
-  }
-
-  function check_number_value ( $value, $errLocation ) {
-    check_if_empty( array($value), $errLocation . '=empty' );
-
-    if (!is_numeric($value)) {
-      send_header( $errLocation . '=nan' );
-    } else {
-      return (int)$value;
-    }
-  }
-
-  function update_record( $table, $field, $new_value, $check_field, $check_value, $errLocation ) {
-    if (!$wpdb->query( $wpdb->prepare('UPDATE '. $table .' SET '. $field .' = %s WHERE '. $check_field .' = %s', $new_value, $check_value))) {
-      send_header( $errLocation );
-    } else {
-      return true;
-    }
-  }
 
   /*****************************************
   * Create new kommitee application
@@ -485,7 +400,19 @@
   }
 
   elseif ( isset($_POST['remove_kommitte']) ){
-    
+
+    $k_id = $_POST['k_id'];
+    $k_id = check_number_value( $k_id, '"/panel/kommiteer?remove_kommitte' );
+
+    // Remoe all student records in the kommitt+r
+    remove_record( 'vro_kommiteer_members', 'kommitee_id', $k_id, 'DB deletion failed: failed to remove member in remove_kommitte' );
+
+    // Remove the actual kommitt+e
+    remove_record( 'vro_kommiteer', 'id', $k_id, 'DB deletion failed: failed to remove kommitte in remove_kommitte' );
+
+    // Duccess!
+    send_header("/panel/kommiteer?remove_kommitte=success");
+
   }
 
   else {

@@ -84,12 +84,6 @@ if (count($kommitees) == 0){
       <p>Kåren</p>
     </a>
 
-    <a href="/panel/medlemmar/" class="nav-item" id="link-medlemmar">
-      <!-- Check if there are any new memebr suggestions, if so -> add a notification circle -->
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/members.png" alt="" class="nav-icon">
-      <p>Medlemmar</p>
-    </a>
-
     <a href="/panel/arkiv" class="nav-item" id="link-arkiv">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
       <p>Arkiv</p>

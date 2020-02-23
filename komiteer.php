@@ -6,7 +6,7 @@
 
  // Show this page to all logged in users
  if (! is_user_logged_in() ){
-   wp_redirect( '/' );
+   wp_redirect( '/wp-login.php' );
  } else {
 
   // Get access to all wordpress database funcitonality
@@ -37,6 +37,7 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
 
@@ -68,6 +69,16 @@
         } else {
 
         ?>
+
+        <!-- <?php if (isset($_GET['remove_kommitte']) && $_GET['remove_kommitte'] == 'success') : ?>
+          <script type="text/javascript">
+          Swal.fire(
+            'Succée!',
+            'Kommittén är nu borttagen.',
+            'success'
+            )
+          </script>
+        <?php endif; ?> -->
 
         <!-- Show page title and current date -->
         <div class="top-bar">

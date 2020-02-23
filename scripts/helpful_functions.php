@@ -11,6 +11,110 @@ function test_input( $data ){
   return $data;
 }
 
+/*****************************************
+* Helper functions
+*****************************************/
+function send_header( $location ){
+  header("Location: " . $location);
+  exit();
+}
+
+function get_student_from_nickname( $student_name, $errLocation ) {
+  // Get the student with the supplied nickname
+  $args = array(
+      'meta_query' => array(
+          array(
+              'key' => 'nickname',
+              'value' => $student_name,
+              'compare' => '=='
+          )
+      )
+  );
+
+  // Get the student
+  $student = get_users($args, 0);
+
+  // If no student found, exit with error msh, otherwise return the student
+  if (count($student) < 1) {
+    send_header( $errLocation );
+  } else {
+    return $student;
+  }
+
+}
+
+function check_if_entry_exists( $table, $field, $value, $errLocation = false ) {
+  global $wpdb;
+
+  if ( count($wpdb->get_results("SELECT * FROM $table WHERE $field = '$value'")) > 0 ) {
+    if ($errLocation){
+      send_header( $errLocation );
+    } else {
+      return false;
+    }
+  } else {
+    return true;
+  }
+
+}
+
+function insert_record( $table, $record, $errMsg ) {
+
+  global $wpdb;
+
+  if( $wpdb->insert($table, $record) == false){
+    wp_die( $errMsg );
+  }
+
+}
+
+function check_if_empty( $values, $errLocation = false ) {
+
+  foreach( $values as $v ){
+    if (empty($v)){
+      if ($errLocation) {
+        send_header( $errLocation );
+      } else {
+        return false;
+      }
+    }
+  }
+
+  return true;
+
+}
+
+function check_number_value ( $value, $errLocation ) {
+  check_if_empty( array($value), $errLocation . '=empty' );
+
+  if (!is_numeric($value)) {
+    send_header( $errLocation . '=nan' );
+  } else {
+    return (int)$value;
+  }
+}
+
+function update_record( $table, $field, $new_value, $check_field, $check_value, $errLocation ) {
+  if (!$wpdb->query( $wpdb->prepare('UPDATE '. $table .' SET '. $field .' = %s WHERE '. $check_field .' = %s', $new_value, $check_value))) {
+    send_header( $errLocation );
+  } else {
+    return true;
+  }
+}
+
+function remove_record( $table, $field, $value, $errMsg ){
+  global $wpdb;
+
+  // check if there are any records
+  if (check_if_entry_exists($table, $field, $value)){
+    if (!$wpdb->delete( $table, array( $field => $value ) ) ) {
+      wp_die( $errMsg );
+    } else {
+      return true;
+    }
+  }
+}
+
 function emptyToNull( $data ){
   if ($data == '') {
     return null;
@@ -454,11 +558,5 @@ function add_log( $log_source = NULL, $description = NULL, $user_id = NULL ) {
 }
 
 function show_success_alert( $header, $msg ) {
-  echo '<script type="text/javascript">
-  Swal.fire(
-    "'. $header .'",
-    "'. $msg .'",
-    "success"
-    )
-  </script>';
+  echo '<script type="text/javascript">Swal.fire("'. $header .'","'. $msg .'","success")</script>';
 }
