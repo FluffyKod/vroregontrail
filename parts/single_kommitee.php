@@ -222,7 +222,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
   <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
   <div class="box white alert" id="add_member">
-    <button class="add-btn lg">+</button>
+    <a href="#addNewMember" class="add-btn lg">+</a>
     <h5>Lägg till medlem</h5>
   </div>
 <?php } ?>
@@ -449,7 +449,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 ?>
 
 <div class="row">
-  <div class="box green lg allow-overflow">
+  <div class="box green lg allow-overflow" id="addNewMember">
 
     <h4>Lägg till elev i kommittén</h4>
 
@@ -465,6 +465,13 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
     </form>
 
   </div>
+</div>
+
+<div class="row">
+  <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+    <input type="text" name="k_id" value=<?php echo $k_id; ?> hidden>
+    <button class="btn lg red" type="submit" name="remove_kommitte" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill ta bort denna kommitté?');">Ta bort denna kommitté</button>
+  </form>
 </div>
 
 <?php
