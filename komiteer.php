@@ -211,7 +211,7 @@
         <div class="row">
 
           <div class="box green lg">
-            <h4>Alla kommiteer</h4>
+            <h4>Alla kommittéer</h4>
 
             <div class="kommiteer">
 

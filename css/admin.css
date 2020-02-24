@@ -332,6 +332,10 @@ form .yes-no input[type="radio"] {
   margin: 0 10px 0 15px;
 }
 
+form.expand {
+  width: 100%;
+}
+
 .choose-et-colors {
   display: flex;
   justify-content: flex-start;

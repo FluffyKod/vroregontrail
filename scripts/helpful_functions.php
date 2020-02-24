@@ -50,10 +50,10 @@ function check_if_entry_exists( $table, $field, $value, $errLocation = false ) {
     if ($errLocation){
       send_header( $errLocation );
     } else {
-      return false;
+      return true;
     }
   } else {
-    return true;
+    return false;
   }
 
 }
@@ -115,12 +115,38 @@ function remove_record( $table, $field, $value, $errMsg ){
   }
 }
 
+function delete_record( $table, $options, $errMsg ) {
+  global $wpdb;
+
+  // Delete the student from the record
+  if ($wpdb->delete( $table, $options) == false){
+    wp_die( $errMsg );
+  } else {
+    return true;
+  }
+
+}
+
 function emptyToNull( $data ){
   if ($data == '') {
     return null;
   } else {
     return $data;
   }
+}
+
+function got_post( $post_name ){
+  if (isset($_POST[$post_name])){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function check_post( $post, $errMsg ) {
+  check_if_empty( array($post), $errMsg );
+
+  return test_input($post);
 }
 
 function translateWeekday($day){

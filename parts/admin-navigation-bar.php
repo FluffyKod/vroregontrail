@@ -105,6 +105,11 @@
         <p>Medlemmar</p>
     </a>
 
+    <a href="/panel/projektgrupper/" class="nav-item" id="link-projektgrupper">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
+      <p>Projektgrupper</p>
+    </a>
+
     <a href="/panel/karkortet" class="nav-item" id="link-karkortet">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/karkortet-icon.png" alt="" class="nav-icon">
       <p>Kårkortet</p>
@@ -113,11 +118,6 @@
     <a href="/panel/arkiv" class="nav-item" id="link-arkiv">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
       <p>Arkiv</p>
-    </a>
-
-    <a href="/panel/hemsidan/" class="nav-item" id="link-hemsidan">
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
-      <p>Hemsidan</p>
     </a>
 
     <a href="/panel/installningar/" class="nav-item" id="link-installningar">

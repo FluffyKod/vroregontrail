@@ -468,7 +468,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 </div>
 
 <div class="row">
-  <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+  <form class="expand" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
     <input type="text" name="k_id" value=<?php echo $k_id; ?> hidden>
     <button class="btn lg red" type="submit" name="remove_kommitte" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill ta bort denna kommitté?');">Ta bort denna kommitté</button>
   </form>

@@ -368,7 +368,7 @@
     $k_id = check_number_value( $k_id, "/panel/kommiteer?add_member");
 
     // CHeck if a student name was supplied
-    check_if_empty( arrau($student_name), "/panel/kommiteer?k_id=$k_id&add_member=nostudent" );
+    check_if_empty( array($student_name), "/panel/kommiteer?k_id=$k_id&add_member=nostudent" );
 
     check_if_entry_exists('vro_kommiteer', 'id', $k_id, "/panel/kommiteer?k_id=$k_id&add_member=nokommittefound");
 
