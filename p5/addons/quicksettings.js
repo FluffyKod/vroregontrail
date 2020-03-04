@@ -1634,3 +1634,6 @@
     else {
         window.QuickSettings = QuickSettings;
     }
+
+
+}());

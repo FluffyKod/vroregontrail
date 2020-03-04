@@ -10,26 +10,51 @@ let activeOptionGui;
 
 let colors = {};
 
-let rooms = [];
-let roomSprites = [];
+
+
+
+let roomArrays;
+let activeArea;
+let activeRoomArray;
+let activeRoomSpriteArray;
 
 let guiBackgroundHidden = false;
 let guiMouseIsOver = false;
+
+let showCoordinatesHighlight = false;
 
 let guiParent
 let maxCommandValues = 4;
 let maxOptionAmount = 5;
 
+let generalGui;
+let generalGuiParent;
+
 let connectionColors;
 
 
 function setup(){
+
+  roomArrays = {//kanske konstigt att kalla det sprites
+    test: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
+    intro: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
+    highlands: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
+    bog: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
+    wasp: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
+    mountain: {rooms: [], sprites: [], lightColor: color(135,222,224), darkColor: color(64,106,107)},
+    core: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)}
+  }
+  activeArea = roomArrays.test;
+  activeRoomArray = activeArea.rooms;
+  activeRoomSpriteArray = activeArea.sprites;
+
   colors =
   {
-    fillColor: color(51),
-    strokeColor: color(255),
+    activeFillColor: color(255),
+    activeStrokeColor: color(51),
     highlight: color(255,255,255,25),
-    inactiveFillColor: color(51)
+    inactiveFillColor: color(51),
+    inactiveStrokeColor: color(255)
   };
 
   connectionColors = [color(255, 0, 0), color(255, 255, 0), color(0, 255, 0), color(0, 255, 255), color(0, 0, 255)];
@@ -40,18 +65,24 @@ function setup(){
   guiParent.onmouseenter = function(){guiMouseIsOver = true;}
   guiParent.onmouseleave = function(){guiMouseIsOver = false;}
 
-  createFirstRoom();
+  generalGuiParent = document.getElementById('generalGuiBackground');
+  generalGuiParent.onmouseenter = function(){guiMouseIsOver = true;}
+  generalGuiParent.onmouseleave = function(){guiMouseIsOver = false;}
+
+  createGeneralGui();
 
 
 
-  print(roomSprites);
+
+  print(activeRoomSpriteArray);
 }
 
 function draw(){
 
 
 
-  background(colors.inactiveFillColor);
+  background(activeArea.darkColor);
+  drawZeroIndicator();
   drawSprites();
   drawConnections();
 
@@ -60,13 +91,21 @@ function draw(){
 }
 
 function highlightOverMouse(){
-
-  x = mouseX + (32-(mouseX%64));
-  y = mouseY + (32-(mouseY%64));
-  fill(colors.highlight);
-  noStroke();
-  rectMode(CENTER);
-  rect(x,y,roomBoxSize, roomBoxSize);
+  if(!guiMouseIsOver){
+    hx = mouseX + (32-(mouseX%64));
+    hy = mouseY + (32-(mouseY%64));
+    fill(colors.highlight);
+    noStroke();
+    rectMode(CENTER);
+    rect(hx,hy,roomBoxSize, roomBoxSize);
+    if(showCoordinatesHighlight){
+      indexCoordinates = screenToIndexCoordinates(hx,hy);
+      fill(activeArea.darkColor);
+      coordinateStr= "(" + indexCoordinates.x + ", " + indexCoordinates.y + ")"
+      textSize(15);
+      text(coordinateStr, hx-roomBoxSize/2+10,hy-roomBoxSize/2+25);
+    };
+  }
 }
 
 function keyPressed(){
@@ -76,12 +115,14 @@ function keyPressed(){
 }
 
 function mousePressed(){
-  showValueAmountControl();
-  optionShowControl(); //lite spray and pray måste nog inte kallas här
+  if(activeRoom){ //kollar om något rum ens finns
+    showValueAmountControl();
+    optionShowControl();
+  } //lite spray and pray måste nog inte kallas här
 
   onSprite = false;
-  for (var i = 0; i < roomSprites.length; i++) { // borde göras bättre
-    if(roomSprites[i].mouseIsOver){
+  for (var i = 0; i < activeRoomSpriteArray.length; i++) { // borde göras bättre
+    if(activeRoomSpriteArray[i].mouseIsOver){
       onSprite = true;
     }
   }
@@ -98,12 +139,20 @@ function mouseReleased(){
 
 }
 
-function createFirstRoom(){
-    drawCoordinate = {x: floor(width/2)+roomBoxSize/2, y: floor(height/2)+roomBoxSize/2};
-    createRoom(drawCoordinate.x, drawCoordinate.y);
-    roomSprites[0].gui.hide();
-}
+function drawZeroIndicator(){
+  frX = floor(width/2) + (32-(floor(width/2)%64));
+  frY = floor(height/2) + (32-(floor(height/2)%64));
+  noFill();
+  stroke(colors.highlight)
+  rectMode(CENTER);
+  rect(frX,frY,roomBoxSize, roomBoxSize);
+  indexCoordinates = screenToIndexCoordinates(frX,frY);
 
+  fill(colors.highlight);
+  coordinateStr= "(" + indexCoordinates.x + ", " + indexCoordinates.y + ")"
+  textSize(15);
+  text(coordinateStr, frX-roomBoxSize/2+10,frY-roomBoxSize/2+25);
+}
 
 function createRoom(x, y){
   //ser till att den aktiva guin blir gömd när ett nytt rum skapas
@@ -116,12 +165,16 @@ function createRoom(x, y){
   this.y = y;
 
   roomSprite = createSprite(this.x, this.y, roomBoxSize, roomBoxSize);
-  roomSprite.active = true;
+  roomSprite.active = false;
   roomSprite.indexX = (this.x-floor(width/2)-roomBoxSize/2)/roomBoxSize;
   roomSprite.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
 
+  roomSprite.depth = 1;
 
   roomSprite.exportRoom;
+
+  roomSprite.optionGuis = [];
+
 
   roomSprite.optionObjs = [];
   for (var i = 0; i < maxOptionAmount; i++) {
@@ -149,9 +202,9 @@ function createRoom(x, y){
       roomSprite.optionGuis[i].show()
     }
   });
-  roomSprite.gui.addButton('save',function(){saveRoom();});
+  roomSprite.gui.addButton('save',function(){saveRoom()});
+  roomSprite.gui.addButton('delete',function(){deleteRoom()});
 
-  roomSprite.optionGuis = [];
 
   for (var i = 1; i <= maxOptionAmount; i++) {
     roomSprite.optionGui = QuickSettings.create( 210*i+60,10,'option_'+i, guiParent).hide();//borde parenta till en egen.
@@ -170,21 +223,23 @@ function createRoom(x, y){
     rectMode(CENTER);
 
     if(this.active){
-      fill(colors.fillColor);
-      stroke(colors.strokeColor);
+      fillColor = activeArea.lightColor
+      strokeColor = activeArea.darkColor
     }
     if(!this.active){
-      fill(colors.inactiveFillColor);
-      noStroke();
+      fillColor = activeArea.darkColor
+      strokeColor = activeArea.lightColor
     }
+    fill(fillColor);
+    stroke(strokeColor);
     rect(0,0, roomBoxSize, roomBoxSize);
     textSize(15);
     noStroke();
-    fill(colors.strokeColor)
+    fill(strokeColor);
     text(this.coordinateString, -roomBoxSize/2+10,-roomBoxSize/2+25)
 
+
   }
-  print(this.x);
   roomSprite.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
 
     if(activeRoom){
@@ -203,7 +258,9 @@ function createRoom(x, y){
 
 
     this.gui.show();
+    activeRoom.active = false;
     activeRoom = this;
+    activeRoom.active = true;
     activeOptionGui = this.optionGuis;//väldigt slarvigt borde sättas ihop m activeRoom
     //if(this.roomObj === null){
     //  this.roomObj = new room(this.indexX, this.indexY, this.mainText, this.options);
@@ -214,18 +271,20 @@ function createRoom(x, y){
 
   //roomSprite.indexX = j;
   //roomSprite.indexY = i;
+  if(activeRoom){activeRoom.active = false;}
   activeRoom = roomSprite;
-  roomSprites.push(roomSprite);
+  activeRoom.active = true;
+  activeRoomSpriteArray.push(roomSprite);
 
 
 }
+
 function addOptionGuis(roomSprite){
   print(roomSprite.gui.getValue('option_amount'));
 }
 
-
 function saveRoom(){
-  print(rooms);
+  print(activeRoomArray);
   if (!activeRoom.exportRoom) {
     activeRoom.exportRoom = new room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [
 
@@ -244,23 +303,20 @@ function saveRoom(){
       activeRoom.exportRoom.options.push(option);
     }
     print(activeRoom.exportRoom);
-    rooms.push(activeRoom.exportRoom);
+    activeRoomArray.push(activeRoom.exportRoom);
 
   }else if(activeRoom.exportRoom){ //uppdaterar objektet om det redan finns
 
-    for (var i = 0; i < rooms.length; i++) {
-      if (rooms[i].x == activeRoom.indexX && rooms[i].y == activeRoom.indexY) {
-        print(rooms[i]);
-        rooms[i].mainText = activeRoom.gui.getValue('main_text');
+    for (var i = 0; i < activeRoomArray.length; i++) {
+      if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
+        activeRoomArray[i].mainText = activeRoom.gui.getValue('main_text');
         for (var j = 0; j < activeRoom.optionGuis.length; j++) {
-          rooms[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
-          rooms[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command').value
+          activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
+          activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command').value
           for (var k = 0; k < maxCommandValues; k++) {
-            rooms[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
+            activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
           }
         }
-        print("new")
-        print(rooms[i]);
 
         break;
       }
@@ -269,26 +325,89 @@ function saveRoom(){
 
 }
 
+function deleteRoom(){
+  for (var i = 0; i < activeRoomArray.length; i++) {
+    if(activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY){
+      print('bakugan')
+      activeRoomArray.splice(i,1);
+      print(activeRoomArray);
+      break;
+    }
+  }
+  for (var i = 0; i < activeRoomSpriteArray.length; i++) {
+    if(activeRoomSpriteArray[i].indexX == activeRoom.indexX && activeRoomSpriteArray[i].indexY == activeRoom.indexY){
+      print('peepe')
+      activeRoom.remove();
+      activeRoomSpriteArray.splice(i,1);
+      print(activeRoomSpriteArray);
+      break;
+    }
+  }
+
+}
 // TODO: make littlebit nicer looking
 function drawConnections(){
-  for (var i = 0; i < roomSprites.length; i++) {
-    for (var j = 0; j < roomSprites[i].optionGuis.length; j++) {
-      if(roomSprites[i].optionGuis[j].getValue('option_command').value == "move"){
+  for (var i = 0; i < activeRoomSpriteArray.length; i++) {
+    for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
+      if(activeRoomSpriteArray[i].optionGuis[j].getValue('option_command').value == "move"){
         stroke(connectionColors[j]);
         //tar in koordinaterna från values delen
         connection = indexToScreenCoordinates(
-          Number(roomSprites[i].optionGuis[j].getValue('command_value_'+0)), Number(roomSprites[i].optionGuis[j].getValue('command_value_'+1))
+          Number(activeRoomSpriteArray[i].optionGuis[j].getValue('command_value_'+0)), Number(activeRoomSpriteArray[i].optionGuis[j].getValue('command_value_'+1))
         );
         if(connection.x!=null && connection.y != null
         ){
 
-          line(roomSprites[i].position.x-10+j*4, roomSprites[i].position.y-10+j*4, connection.x-10+j*4, connection.y-10+j*4)
+          line(activeRoomSpriteArray[i].position.x-10+j*4, activeRoomSpriteArray[i].position.y-10+j*4, connection.x-10+j*4, connection.y-10+j*4)
 
         }
       }
     }
   }
 }
+
+function createGeneralGui(){
+  generalGui = QuickSettings.create( 0,0,'Settings', generalGuiParent);
+  generalGui.setDraggable(false);
+  generalGui.addButton('center (tab)', function(){window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));});
+  generalGui.addDropDown('area' ,['test','intro', 'highlands', 'bog', 'city', 'mountain', 'core'], function(value){
+      for (var i = 0; i < 7; i++) { //om det går borde man hämta antal värden i objektet istället för att hårdkoda 7
+        if (i == value.index){
+
+          for (var j= 0; j < activeRoomSpriteArray.length; j++) {
+            activeRoomSpriteArray[j].depth = 0; //allt det här är dåligt gjort kommer finnas en massa sprites som är osynliga hela tiden
+            activeRoomSpriteArray[j].mouseActive = false;
+            activeRoomSpriteArray[j].visible = false;
+          }
+          activeArea = roomArrays[value.value];
+          activeRoomArray = activeArea.rooms;
+          activeRoomSpriteArray = activeArea.sprites;
+
+          for (var j= 0; j < activeRoomSpriteArray.length; j++) {
+            activeRoomSpriteArray[j].depth = 1;
+            activeRoomSpriteArray[j].mouseActive = true;
+            activeRoomSpriteArray[j].visible = true;
+          }
+
+        }
+      }
+
+
+
+  } );
+  generalGui.addBoolean('show_all_connections',false, function(value){
+    // TODO: toggla mellan att visa alla rumskopplingar och bara visa för de som är selected.
+  });
+  generalGui.addBoolean('highlight_coordinates',false,  function(value){
+    showCoordinatesHighlight = value;
+  });
+  generalGui.addButton('upload', function(){
+    // TODO: spara nuvarande arrays till servern
+  })
+
+}
+
+
 
 
 function indexToScreenCoordinates(indexX, indexY){
@@ -299,7 +418,7 @@ function indexToScreenCoordinates(indexX, indexY){
 
 function screenToIndexCoordinates(screenX, screenY){
   x = (screenX-floor(width/2)-roomBoxSize/2)/roomBoxSize
-  y = (sceenY-floor(height/2)-roomBoxSize/2)/roomBoxSize
+  y = (screenY-floor(height/2)-roomBoxSize/2)/roomBoxSize
   return {x: x, y: y};
 }
 
@@ -339,6 +458,9 @@ function showValueAmountControl(){
     }
   }
 }
+
+
+
 
 
 
