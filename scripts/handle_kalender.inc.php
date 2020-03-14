@@ -16,12 +16,9 @@ if (isset($_POST['add_event_type'])) {
   $bgColor = test_input( $_POST['etBgColor'] );
   $fgColor = test_input( $_POST['etFgColor'] );
 
-  if ( empty($name) ){
-    header("Location: /panel/kalender?event_type=empty");
-    exit();
-  } else {
+  check_if_empty(array($name), '/panel/kalender?event_type=empty')
 
-    if ( count($wpdb->get_results('SELECT * FROM vro_event_types WHERE name="'. $name .'"')) > 0 ) {
+  if check_if_entry_exists('vro_event_types', 'name', $name){
       // Replace the # to %23 so it is safe to send in the url
       $bgColor = '%23' . substr($bgColor, 1);
       $fgColor = '%23' . substr($fgColor, 1);
@@ -38,12 +35,7 @@ if (isset($_POST['add_event_type'])) {
     $new_et['fg_color'] = $fgColor;
 
     // Insert the new suggestion into the database
-    if($wpdb->insert(
-        'vro_event_types',
-        $new_et
-    ) == false) {
-      wp_die('database insertion failed');
-    }
+    insert_record('vro_event_types', $new_et, 'Db insertion failed in add_event_type');
 
     // Logg action
     $log_description = 'Lade till eventtypen '. $name .' med symbolen ' . $symbol . ' med förgrundsfärgen ' . $fgColor . ' med bakgrundsfärgen ' . $bgColor;
@@ -51,8 +43,6 @@ if (isset($_POST['add_event_type'])) {
 
     header("Location: /panel/kalender?event_type=success");
     exit();
-
-    }
 
 }
 elseif (isset($_POST['show_add_event_type'])) {
@@ -64,17 +54,7 @@ elseif (isset($_POST['remove_event_type'])) {
 
   global $wpdb;
 
-  $etId = $_POST['remove_event_type'];
-
-  if (empty($etId)) {
-    header("Location: /panel/kalender?remove_event_type=empty");
-    exit();
-  }
-
-  if (!is_numeric($etId)) {
-    header("Location: /panel/kalender?remove_event_type=nan");
-    exit();
-  }
+  $etId = check_number_value( test_input( $_POST['remove_event_type'] ), '/panel/kalender?remove_event_type');
 
   // disable the specified event type
   if ($wpdb->update( 'vro_event_types', array( 'status' => 'n' ), array( 'id' => $etId ) ) == false){
@@ -104,27 +84,14 @@ elseif (isset($_POST['alter_event_type'])) {
 
   global $wpdb;
 
-  $etId = $_POST['alter_event_type'];
-
-  if (empty($etId)) {
-    header("Location: /panel/kalender?alter_event_type=noid");
-    exit();
-  }
-
-  if (!is_numeric($etId)) {
-    header("Location: /panel/kalender?alter_event_type=nan");
-    exit();
-  }
+  $etId = check_number_value( test_input( $_POST['alter_event_type'] ), '/panel/kalender?alter_event_type');
 
   $name = test_input( $_POST['etName'] );
   $symbol = test_input( $_POST['etSymbol'] );
   $bgColor = test_input( $_POST['etBgColor'] );
   $fgColor = test_input( $_POST['etFgColor'] );
 
-  if ( empty($name) ){
-    header("Location: /panel/kalender?alter_event_type=empty");
-    exit();
-  }
+  check_if_empty(array($name), '/panel/kalender?alter_event_type=empty');
 
   // Check that no other event type has the same name
   if ( count($wpdb->get_results('SELECT * FROM vro_event_types WHERE name="'. $name .'" AND id != '. $etId .' ')) > 0 ) {
@@ -163,19 +130,7 @@ elseif (isset($_POST['show_alter_event_type'])) {
 
   global $wpdb;
 
-  $et_id = $_POST['show_alter_event_type'];
-
-  // Check if there is an event type id
-  if (empty($et_id)){
-    header("Location: /panel/kalender?show_alter_event_type=noetid");
-    exit();
-  }
-
-  // Check if the event type id is a number
-  if (!is_numeric($et_id)) {
-    header("Location: /panel/kalender?show_alter_event_type=nan");
-    exit();
-  }
+  $etId = check_number_value( test_input( $_POST['show_alter_event_type'] ), '/panel/kalender?show_alter_event_type');
 
   // Safe to use it in db call
   $selected_et = $wpdb->get_row('SELECT * FROM vro_event_types WHERE id=' . $et_id);

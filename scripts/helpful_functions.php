@@ -95,6 +95,8 @@ function check_number_value ( $value, $errLocation ) {
 }
 
 function update_record( $table, $field, $new_value, $check_field, $check_value, $errLocation ) {
+  global $wpdb;
+
   if (!$wpdb->query( $wpdb->prepare('UPDATE '. $table .' SET '. $field .' = %s WHERE '. $check_field .' = %s', $new_value, $check_value))) {
     send_header( $errLocation );
   } else {

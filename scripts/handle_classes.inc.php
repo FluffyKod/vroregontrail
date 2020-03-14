@@ -11,47 +11,32 @@ if (isset($_POST['add_class'])) {
 
   global $wpdb;
 
-  $class_name = test_input( $_POST['class-name'] );
+  $return = '/panel/medlemmar?new_class';
 
-  if ( empty($class_name) ){
-    header("Location: /panel/medlemmar?new_class=noname");
-    exit();
-  } else {
+  // Get and check the class name from the submitet form
+  $class_name = check_post( $_POST['class-name'], $return . '=empty' );
 
-    // Capitalise first letter
-    $class_name = ucfirst($class_name);
+  // Capitalise first letter
+  $class_name = ucfirst($class_name);
 
-    // Check if there already is a class with that name
-    if ( count($wpdb->get_results('SELECT * FROM vro_classes WHERE name="'. $class_name .'"')) > 0 ) {
-      header("Location: /panel/medlemmar?=new_class=nametaken");
-      exit();
-    } else {
+  // Check if the class name already exits
+  check_if_entry_exists('vro_classes', 'name', $class_name, $return . '=nametaken' );
 
-    // Create a new array that will hold all the arguments to create a new visselpipan suggestion
-      $new_class = array();
+  // Create a new array that will hold all the arguments to create a new visselpipan suggestion
+  $new_class = array();
+  $new_class['name'] = $class_name;
 
-      $new_class['name'] = $class_name;
+  // Insert the new class into the database
+  insert_record('vro_classes', $new_class, 'DB insertion failed in add_class');
 
-      // Insert the new suggestion into the database
-      if($wpdb->insert(
-          'vro_classes',
-          $new_class
-      ) == false) {
-        wp_die('database insertion failed');
-      }
+  // Logg action
+  $log_description = 'Lade till klassen ' . $new_class['name'];
+  add_log( 'Klass', $log_description, get_current_user_id() );
 
-      // Logg action
-      $log_description = 'Lade till klassen ' . $new_class['name'];
-      add_log( 'Klass', $log_description, get_current_user_id() );
-
-      header("Location: /panel/medlemmar?new_class=success");
-      exit();
-
-    }
-
-  }
+  send_header($return . '=success');
 
 }
+
 elseif (isset($_POST['give_class_points'])) {
 
   global $wpdb;
@@ -110,27 +95,10 @@ elseif (isset($_POST['give_class_points'])) {
 elseif (isset($_POST['give_classpoints_internal'])){
   global $wpdb;
 
-  $class_id = test_input( $_POST['c_id'] );
-  $class_points = test_input( $_POST['add-points'] );
+  $class_id = check_number_value(test_input( $_POST['c_id'] ), '/panel/medlemmar?give_classpoints');
+  $class_points = check_number_value(test_input( $_POST['add-points'] ). '/panel/medlemmar/?c_id=$class_id&give_classpoints');
 
-  if (empty( $class_id ) or !is_numeric( $class_id )){
-    header("Location: /panel/medlemmar?give_classpoints=noclassid");
-    exit();
-  }
-
-  if ( empty($class_points)){
-    header("Location: /panel/medlemmar/?c_id=$class_id&give_classpoints=empty");
-    exit();
-  } else {
-
-    if (!is_numeric($class_points)) {
-      header("Location: /panel/medlemmar/?c_id=$class_id&give_classpoints=nan");
-      exit();
-    }
-
-    // Capitalise first letter
-
-    $class_record = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $class_id);
+  $class_record = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $class_id);
 
     // Check if there already is a class with that name
     if ( !$class_record ) {
