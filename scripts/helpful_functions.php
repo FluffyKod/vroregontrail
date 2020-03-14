@@ -11,12 +11,144 @@ function test_input( $data ){
   return $data;
 }
 
+/*****************************************
+* Helper functions
+*****************************************/
+function send_header( $location ){
+  header("Location: " . $location);
+  exit();
+}
+
+function get_student_from_nickname( $student_name, $errLocation ) {
+  // Get the student with the supplied nickname
+  $args = array(
+      'meta_query' => array(
+          array(
+              'key' => 'nickname',
+              'value' => $student_name,
+              'compare' => '=='
+          )
+      )
+  );
+
+  // Get the student
+  $student = get_users($args, 0);
+
+  // If no student found, exit with error msh, otherwise return the student
+  if (count($student) < 1) {
+    send_header( $errLocation );
+  } else {
+    return $student;
+  }
+
+}
+
+function check_if_entry_exists( $table, $field, $value, $errLocation = false ) {
+  global $wpdb;
+
+  if ( count($wpdb->get_results("SELECT * FROM $table WHERE $field = '$value'")) > 0 ) {
+    if ($errLocation){
+      send_header( $errLocation );
+    } else {
+      return true;
+    }
+  } else {
+    return false;
+  }
+
+}
+
+function insert_record( $table, $record, $errMsg ) {
+
+  global $wpdb;
+
+  if( $wpdb->insert($table, $record) == false){
+    wp_die( $errMsg );
+  }
+
+}
+
+function check_if_empty( $values, $errLocation = false ) {
+
+  foreach( $values as $v ){
+    if (empty($v)){
+      if ($errLocation) {
+        send_header( $errLocation );
+      } else {
+        return false;
+      }
+    }
+  }
+
+  return true;
+
+}
+
+function check_number_value ( $value, $errLocation ) {
+  check_if_empty( array($value), $errLocation . '=empty' );
+
+  if (!is_numeric($value)) {
+    send_header( $errLocation . '=nan' );
+  } else {
+    return (int)$value;
+  }
+}
+
+function update_record( $table, $field, $new_value, $check_field, $check_value, $errLocation ) {
+  global $wpdb;
+
+  if (!$wpdb->query( $wpdb->prepare('UPDATE '. $table .' SET '. $field .' = %s WHERE '. $check_field .' = %s', $new_value, $check_value))) {
+    send_header( $errLocation );
+  } else {
+    return true;
+  }
+}
+
+function remove_record( $table, $field, $value, $errMsg ){
+  global $wpdb;
+
+  // check if there are any records
+  if (check_if_entry_exists($table, $field, $value)){
+    if (!$wpdb->delete( $table, array( $field => $value ) ) ) {
+      wp_die( $errMsg );
+    } else {
+      return true;
+    }
+  }
+}
+
+function delete_record( $table, $options, $errMsg ) {
+  global $wpdb;
+
+  // Delete the student from the record
+  if ($wpdb->delete( $table, $options) == false){
+    wp_die( $errMsg );
+  } else {
+    return true;
+  }
+
+}
+
 function emptyToNull( $data ){
   if ($data == '') {
     return null;
   } else {
     return $data;
   }
+}
+
+function got_post( $post_name ){
+  if (isset($_POST[$post_name])){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function check_post( $post, $errMsg ) {
+  check_if_empty( array($post), $errMsg );
+
+  return test_input($post);
 }
 
 function translateWeekday($day){
@@ -79,6 +211,30 @@ function getStudentsInYear($year, $students) {
   return $yearArray;
 }
 
+function is_event_today( $start_time, $end_time ) {
+  $start_dmy = date('d M Y', $start_time);
+  $end_dmy = date('d M Y', $end_time);
+  $today_dmy = date('d M Y', time());
+
+  // Event is only one day
+  if ( $start_dmy == $end_dmy) {
+    // Check if event is today
+    if ($start_dmy == $today_dmy ) {
+      return True;
+    } else {
+      return False;
+    }
+  }
+
+  // Event is during multiple days, check if today is one of the event days
+  if ( $today_dmy >= $start_dmy && $today_dmy <= $end_dmy ) {
+    return True;
+  }
+
+  // Otherwise return false
+  return False;
+}
+
 function check_id( $id, $table_name ) {
   if (empty($id)){
     return array(false, 'empty');
@@ -130,6 +286,22 @@ function is_member( $u_id ){
   $status = get_metadata('user', $u_id, 'status');
 
   return ($status[0] == 'y') ? true : false;
+
+}
+
+function is_chairman( $u_id ) {
+
+  global $wpdb;
+
+  $kommitte_names = array();
+
+  $kommittes = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE chairman = ' . $u_id . ' AND status="y"');
+
+  foreach ( $kommittes as $k ) {
+    array_push( $kommitte_names, array('id' => $k->id, 'name' => $k->name) );
+  }
+
+  return $kommitte_names;
 
 }
 
@@ -193,7 +365,7 @@ function display_karbrev( $amount = 0, $header = true, $edit = true ){
 
           <?php while ( $the_query->have_posts() ) {
               $the_query->the_post();
-
+              global $edit;
               get_template_part( 'content' );
           } ?>
       <?php endif;
@@ -204,17 +376,33 @@ function display_karbrev( $amount = 0, $header = true, $edit = true ){
 
 }
 
-function display_kommitte_notifications( $amount = 0, $header = true ) {
+// function archive_old_notification() {
+//
+//   global
+//
+// }
+
+function display_kommitte_notifications( $amount = 0, $header = true, $archives = false ) {
   $cat_array = get_kommitte_cat_ids( get_current_user_id() );
 
   if (count($cat_array) > 0) {
 
-    $args = array(
-        'category__in' => $cat_array,
-        'post_status' => 'publish',
-        'post_type' => 'post',
-        'orderby' => 'post_date',
-    );
+    if ($archives == false) {
+      $args = array(
+          'category__in' => $cat_array,
+          'post_status' => 'publish',
+          'post_type' => 'post',
+          'orderby' => 'post_date',
+      );
+    } else {
+      $args = array(
+          'category__in' => $cat_array,
+          'post_status' => 'archive',
+          'post_type' => 'post',
+          'orderby' => 'post_date',
+      );
+    }
+
 
     // The Query
     $the_query = new WP_Query( $args );
@@ -233,7 +421,7 @@ function display_kommitte_notifications( $amount = 0, $header = true ) {
 
         <?php while ( $the_query->have_posts() ) {
             $the_query->the_post();
-
+            global $edit;
             get_template_part( 'content' );
         } ?>
     <?php endif;
@@ -260,23 +448,15 @@ function display_karen( $edit = false ){
     foreach ($styrelsen as $s) {
       ?>
 
-      <?php
-        if ($edit) {
-          echo '<div class="box white chairman sm clickable">';
-        } else {
-          echo '<div class="box white chairman sm">';
-        }
-      ?>
+        <div class="box white chairman sm clickable">
 
-        <?php if ($edit) { ?>
         <div class="edit-image">
           <?php echo get_avatar( $s->ID ); ?>
-          <button type="button" name="button" class="edit-styrelse"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+          <?php if ($edit) { ?>
+            <button type="button" name="button" class="edit-styrelse" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+          <?php } ?>
         </div>
-      <?php } else {
-            echo get_avatar( $s->ID );
-          }
-        ?>
+
 
           <h3><?php echo $s->position_name; ?></h3>
           <p><?php echo get_user_meta($s->student, 'nickname', true); ?></p>
@@ -307,7 +487,7 @@ function display_karen( $edit = false ){
         if ($edit) {
           echo '<div class="box white chairman sm clickable">';
         } else {
-          echo '<div class="box white chairman sm">';
+          echo '<div class="box white chairman sm clickable">';
         }
       ?>
 
@@ -357,4 +537,54 @@ function update_or_add_meta( $u_id, $key, $value ) {
   }
 
   return true;
+}
+
+// LOGGING FUNCTION
+function add_log( $log_source = NULL, $description = NULL, $user_id = NULL ) {
+
+  // Add a log
+  global $wpdb;
+
+  // Create a new array that will hold all the arguments to create a new log
+  $log = array();
+
+  // Check if a log source has been provided and that it is not to long
+  if ( $log_source == NULL || empty($log_source) || strlen($log_source) > 100 ){
+    $log_source = '';
+  }
+
+  // If all good, add the argument
+  $log['log_source'] = $log_source;
+
+  // Check if a descriptionhas been provided and that it is not to long
+  if ( $description == NULL || empty( $description ) ){
+    $description = '';
+  }
+
+  if ( strlen($description) > 300 ) {
+    $description = substr($description, 0, 280);
+  }
+
+  // If all good, add the argument
+  $log['description'] = $description;
+
+  // Check if an user id has been provided
+  if ( $user_id != NULL && is_numeric($user_id) ){
+    $log['user_id'] = $user_id;
+  }
+
+  if($wpdb->insert(
+        'vro_log',
+        $log
+    ) == false) {
+      wp_die('database insertion failed in logging');
+      return False;
+  } else {
+    return True;
+  }
+
+}
+
+function show_success_alert( $header, $msg ) {
+  echo '<script type="text/javascript">Swal.fire("'. $header .'","'. $msg .'","success")</script>';
 }

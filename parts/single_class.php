@@ -1,5 +1,10 @@
 <?php
 
+// Check if admin
+if (!current_user_can('administrator') and !current_user_can('elevkaren') ){
+  wp_redirect('/panel/medlemmar');
+}
+
 // Check if this page has been called
 if (!isset($_GET['c_id'])) {
   wp_redirect('/panel/medlemmar');
@@ -71,6 +76,11 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
             <div class="student no-member" id="student_<?php echo $student->ID; ?>">
               <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
               <p><?php echo $student->user_email; ?></p>
+
+              <?php if (metadata_exists( 'user', $student->ID, 'phonenumber' )) : ?>
+                <p><?php echo get_user_meta($student->ID, 'phonenumber', true); ?></p>
+              <?php endif; ?>
+
               <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
                 <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
                 <input class="student-email" name="" value="<?php echo get_userdata($c_id)->user_email; ?>" hidden>
@@ -84,6 +94,11 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
             <div class="student waiting" id="student_<?php echo $student->ID; ?>">
               <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
               <p><?php echo $student->user_email; ?></p>
+
+              <?php if (metadata_exists( 'user', $student->ID, 'phonenumber' )) : ?>
+                <p><?php echo get_user_meta($student->ID, 'phonenumber', true); ?></p>
+              <?php endif; ?>
+
               <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
                 <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
                 <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
@@ -97,6 +112,11 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
             <div class="student" id="student_<?php echo $student->ID; ?>">
               <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
               <p><?php echo $student->user_email; ?></p>
+
+              <?php if (metadata_exists( 'user', $student->ID, 'phonenumber' )) : ?>
+                <p><?php echo get_user_meta($student->ID, 'phonenumber', true); ?></p>
+              <?php endif; ?>
+
               <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
                 <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
                 <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
@@ -182,9 +202,15 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
        }
 
        if (!isset($_GET['email'])){
-         echo '<input type="email" name="email_address" value="" placeholder="Skolmail..." required>';
+         echo '<input type="email" name="email_address" value="" placeholder="Skolmail..." pattern="(.+?)vrg.se$" oninvalid="this.setCustomValidity(\'Använd din skolmail!\')" oninput="this.setCustomValidity(\'\')" required>';
        } else {
          echo '<input type="email" name="email_address" value="'. $_GET['email'] .'" placeholder="Skolmail..." required>';
+       }
+
+       if (!isset($_GET['phonenumber'])){
+         echo '<input type="tel" name="phonenumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telefonnummer... (ex: 123-456-7890)" required>';
+       } else {
+         echo '<input type="tel" name="phonenumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telefonnummer... (ex: 123-456-7890)" value="'. $_GET['telefonnummer'] .'" required>';
        }
       ?>
 

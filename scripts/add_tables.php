@@ -93,6 +93,42 @@ function vro_setup() {
   createTable($table_name, $sql_komiteer_members);
 
   /*****************************************
+  * PROJEKTGRUPPER
+  *****************************************/
+
+  // Main Kommitee table
+  $table_name = $prefix . 'projektgrupper';
+
+  // Set fields
+  $sql_projektgrupper = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    PRIMARY KEY (id)
+  )';
+
+  createTable($table_name, $sql_projektgrupper);
+
+  // Kommitee + users junction table
+  $table_name = $prefix . 'projektgrupper_members';
+
+  // Set fields
+  $sql_projektgrupper_members = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
+    projektgrupp_id INTEGER(10) UNSIGNED NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES wp_users(ID),
+    FOREIGN KEY (projektgrupp_id) REFERENCES vro_projektgrupper(id)
+  )';
+
+  createTable($table_name, $sql_projektgrupper_members);
+
+  /*****************************************
   * CLASSES
   *****************************************/
 
@@ -229,12 +265,32 @@ function vro_setup() {
     type INTEGER(10) UNSIGNED NOT NULL,
     description VARCHAR(300),
     host VARCHAR(100),
-    visibility VARCHAR(5) NOT NULL DEFAULT "k",
+    kommitte_host_id INTEGER(10) UNSIGNED,
+    visibility VARCHAR(5) NOT NULL DEFAULT "e",
     FOREIGN KEY (type) REFERENCES vro_event_types(id),
+    FOREIGN KEY (kommitte_host_id) REFERENCES vro_kommiteer(id),
     PRIMARY KEY (id)
   )';
 
   createTable($table_name, $sql_events);
+
+  /*****************************************
+  * LOGGING TABLE
+  *****************************************/
+
+  $table_name = 'vro_log';
+
+  $sql_log = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    log_source VARCHAR(100) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    user_id BIGINT(20) UNSIGNED,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES wp_users(ID)
+  )';
+
+  createTable($table_name, $sql_log);
 
   /*****************************************
   * VROREGON

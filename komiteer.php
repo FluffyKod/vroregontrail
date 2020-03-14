@@ -6,7 +6,7 @@
 
  // Show this page to all logged in users
  if (! is_user_logged_in() ){
-   wp_redirect( '/' );
+   wp_redirect( '/wp-login.php' );
  } else {
 
   // Get access to all wordpress database funcitonality
@@ -28,12 +28,16 @@
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
 
@@ -66,11 +70,23 @@
 
         ?>
 
+        <!-- <?php if (isset($_GET['remove_kommitte']) && $_GET['remove_kommitte'] == 'success') : ?>
+          <script type="text/javascript">
+          Swal.fire(
+            'Succée!',
+            'Kommittén är nu borttagen.',
+            'success'
+            )
+          </script>
+        <?php endif; ?> -->
+
         <!-- Show page title and current date -->
         <div class="top-bar">
           <h2>Kommittéer</h2>
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
+
+        <p>Här kan man se och gå med i alla kommittéer och ansöka om en ny kommitté!</p>
 
         <?php
         // Show this only to admins and working student in elevkaren
@@ -121,7 +137,7 @@
                 <h4>Svar</h4>
 
                 <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
-                  <textarea name="name" placeholder="Svar..."></textarea>
+                  <textarea name="komm_answer" placeholder="Svar..."></textarea>
 
                   <button name="accept_kommitee" value="<?php echo $r->id ?>" class="btn" type="submit">Godkänn</button>
                   <button name="deny_kommitee" value="<?php echo $r->id ?>" class="btn red" type="submit">Avböj</button>
@@ -142,25 +158,47 @@
 
         <?php
 
+        // archive_old_notifications();
         display_kommitte_notifications();
 
         ?>
 
         <div class="row">
 
-          <div class="box white sm">
+          <!-- <div class="box white sm">
             <h4>Kommiteeansvarig</h4>
-          </div>
+          </div> -->
 
-          <div class="box green md">
+          <div class="box white lg">
             <h4>Sök kommiteer</h4>
-            <form>
+            <input type="search" placeholder="Kommitténamn..." name="keyword" id="keyword" onkeyup="fetch()"></input>
+            <div id="loader" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 
-              <input type="text" name="" value="" placeholder="Kommitée...">
+            <div id="datafetch"></div>
 
-              <button type="submit" name="button" class="btn lg">Sök</button>
+            <script type="text/javascript">
+            function fetch(){
 
-            </form>
+                jQuery.ajax({
+                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                    type: 'post',
+                    data: { action: 'kommitte_data_fetch', keyword: jQuery('#keyword').val() },
+                    beforeSend: function() {
+                      if (document.getElementById('keyword').value.length == 1){
+                        document.getElementById('loader').style.display = 'block';
+                      }
+                    },
+                    success: function(data) {
+                        jQuery('#datafetch').html( data );
+                    },
+                    complete: function() {
+                      document.getElementById('loader').style.display = 'none';
+                    }
+                });
+
+              }
+            </script>
+
 
           </div>
 
@@ -173,7 +211,7 @@
         <div class="row">
 
           <div class="box green lg">
-            <h4>Alla kommiteer</h4>
+            <h4>Alla kommittéer</h4>
 
             <div class="kommiteer">
 
@@ -184,7 +222,7 @@
 
               <!-- Always show the add new kommitée card -->
               <div class="kommitee alert">
-                  <button class="add-btn lg">+</button>
+                  <a href="#new-kommitte" class="add-btn lg">+</a>
                   <h5>Skapa ny kommitée</h5>
               </div>
 
@@ -205,11 +243,36 @@
                 <a href="/panel/kommiteer?k_id=<?php echo $k->id; ?>">
                     <!-- Name -->
                     <h4><?php echo $k->name ?></h4>
+                    <?php
+                    // Check if current user is member in this kommitté,
+                        // if they are --> display Jag är medlem,
+                        // If they are chairman --> display Jag är ordförande!
+                        // if they have sent an application, display --> förfrågan skickad,
+                        // if they are not member att all --> display nothing
 
-                    <?php   // Change heading depening on plural or singular members
-                      $member_text = $member_count . ($member_count == 1 ? ' medlem' : ' medlemmar');
+                    $member_check = $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $k->id . ' AND user_id = '. get_current_user_id() );
+                    if ($member_check != NULL && $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id = '. $k->id . ' AND chairman = '. get_current_user_id() ) != NULL ){
+                      echo '<p>Jag är ordförande!</p>';
+
+                      // Check if there are any applications waiting
+                      $application_number = count( $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $k->id . ' AND status = "w"') );
+                      if ( $application_number > 0 ){
+                        if ($application_number == 1) {
+                          echo '<p class="attention">'. $application_number .' ny förfrågan!<p>';
+                        } else {
+                          echo '<p class="attention">'. $application_number .' nya förfrågningar!<p>';
+                        }
+
+                      }
+                    }
+                    elseif ($member_check != NULL && $member_check->status == 'y'){
+                      echo '<p>Jag är medlem!</p>';
+                    } elseif ($member_check != NULL && $member_check->status == 'w'){
+                      echo '<p>Förfrågan skickad!</p>';
+                    }
+
+
                     ?>
-                    <p><?php echo $member_text; ?></p>
                 </a>
 
               </div>
@@ -232,11 +295,6 @@
           <div class="box white lg">
 
             <h3>Ansök om en ny kommitté</h3>
-
-            <?php if (!is_member(get_current_user_id())) { ?>
-              <p>Du måste vara medlem för att kunna ansöka om en kommitté!</p>
-            <?php } else { ?>
-
 
             <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
@@ -280,8 +338,6 @@
 
             </form>
 
-          <?php } // End isMember ?>
-
           </div>
 
         </div>
@@ -291,30 +347,62 @@
         if (current_user_can('administrator') || current_user_can('elevkaren') ){
         ?>
 
-        <div class="row">
+        <div class="row" id="new-kommitte">
 
-          <div class="box white lg">
+          <div class="box white lg allow-overflow">
 
-            <h3>Skapa ny kommitée</h3>
-            <form>
-              <input type="text" name="" value="" placeholder="Namn...">
-              <textarea name="name" type=="text" placeholder="Beskrivning..."></textarea>
-              <input type="text" name="" value="" placeholder="Ordförande...">
+            <h3>Skapa ny kommitté</h3>
+            <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post" autocomplete="off">
+              <input type="text" name="kommitte_name" value="" placeholder="Namn på kommittén..." required>
+              <div class="text-limited-root">
+                <textarea name="description" placeholder="Beskrivning av kommittéen..." required onkeyup="checkForm(this, kommitte_description_char_count, 300)"></textarea>
+                <p id="kommitte_description_char_count">300</p>
+              </div>
+              <div class="autocomplete">
+                  <input type="text" name="chairman_name" value="" placeholder="Ordförande..." id="chairman-field" required>
+              </div>
 
-              <button type="submit" name="button" class="btn lg">Skapa</button>
+              <button type="submit" name="add_new_kommitte" class="btn lg">Skapa</button>
             </form>
 
           </div>
 
         </div>
 
-      <?php }
+        <?php
+
+        // Get the number of all members
+        $all_students = get_users(array(
+          'meta_key' => 'class_id'
+        ));
+
+        // Get first and last name from every student
+        $first_last_array_full = array();
+        foreach($all_students as $s){
+          array_push($first_last_array_full, get_user_meta( $s->ID, 'nickname', true));
+        }
+
+        echo '<script type="text/javascript">';
+        echo 'var jsonstudentsall = ' . json_encode($first_last_array_full);
+        echo '</script>'
+
+        ?>
+
+        <script type="text/javascript">
+
+          autocomplete(document.getElementById("chairman-field"), jsonstudentsall, 'Inga elever hittades.');
+        </script>
+
+
+      <?php } // End is admin
+
+    } // End show single kommitté
 
     }// End if admin ?>
 
 
+    </section>
 
-      </section>
 
       <!-- **************************
         STATUS BAR
@@ -323,6 +411,8 @@
         require_once(get_template_directory() . "/parts/status-bar.php");
       ?>
 
+
+
     </div>
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
@@ -330,10 +420,4 @@
       window.onload = highlightLink('link-kommiteer');
     </script>
 
-    <?php
-    // End if admin
-    }
-    ?>
-
-  </body>
-</html>
+<?php get_footer(); ?>

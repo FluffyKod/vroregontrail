@@ -22,10 +22,13 @@
     </a>
 
     <div class="profile">
-      <div class="profile-img">
-        <?php echo get_avatar( $user->ID ); ?>
-        <button class="add-btn extra-btn">+</button>
-      </div>
+
+      <?php if (current_user_can('administrator') || current_user_can('elevkaren') ):  ?>
+        <div class="profile-img">
+          <?php echo get_avatar( $user->ID ); ?>
+          <a href="https://vroelevkar.se/wp-admin/profile.php#wpua-add-button-existing" class="add-btn extra-btn">+</a>
+        </div>
+      <?php endif; ?>
 
       <p><b><?php echo get_user_meta($user->ID,'nickname',true); ?></b></p>
 
@@ -57,7 +60,7 @@
     <div class="see-more">
       <h4>Kommande</h4>
       <div>
-        <a href="/panel/kalender">Se alla events &#8594;</a>
+        <a href="/panel/kalender">Se alla event &#8594;</a>
       </div>
     </div>
 
@@ -140,36 +143,50 @@
       // }
 
       // DEFAULT WEEK
-      // Get all events for the current day
+      // Get all events for the current week
       if (current_user_can('administrator') || current_user_can('elevkaren') ){
-        $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE YEAR(start) = ' . $currentYear . ' AND WEEK(start, 3) = ' . $currentWeek . ' ORDER BY start ASC');
+        // Get all kommittéevents that the user is member in + all events this week
+        $upcoming_events = $wpdb->get_results('SELECT E.name, E.start, E.end, E.visibility, E.type FROM vro_events AS E INNER JOIN vro_kommiteer_members K ON E.kommitte_host_id = K.kommitee_id WHERE K.status = "y" AND K.user_id = ' . get_current_user_id() . ' AND YEAR(E.start) = ' . $currentYear . ' AND WEEK(E.start, 3) = ' . $currentWeek . ' UNION SELECT B.name, B.start, B.end, B.visibility, B.type FROM vro_events AS B WHERE B.kommitte_host_id IS NULL AND YEAR(B.start) = ' . $currentYear . ' AND WEEK(B.start, 3) = ' . $currentWeek . ' ORDER BY start ASC');
       } else {
-        $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE YEAR(start) = ' . $currentYear . ' AND WEEK(start, 3) = ' . $currentWeek . ' AND visibility="a" ORDER BY start ASC');
+        // Get all kommittéevents that the user is member in + all visibile events this week
+        $upcoming_events = $wpdb->get_results('SELECT E.name, E.start, E.end, E.visibility, E.type FROM vro_events AS E INNER JOIN vro_kommiteer_members K ON E.kommitte_host_id = K.kommitee_id WHERE K.status = "y" AND K.user_id = ' . get_current_user_id() . ' AND E.visibility = "a" AND YEAR(E.start) = ' . $currentYear . ' AND WEEK(E.start, 3) = ' . $currentWeek . ' UNION SELECT B.name, B.start, B.end, B.visibility, B.type FROM vro_events AS B WHERE B.visibility = "a" AND B.kommitte_host_id IS NULL AND YEAR(B.start) = ' . $currentYear . ' AND WEEK(B.start, 3) = ' . $currentWeek . ' ORDER BY start ASC');
       }
 
       if (isset($_POST['day-event-btn'])){
         if ($_POST['day-event-btn'] == 'month'){
-          // Get all events for the current day
+          // Get all kommittéevents that the user is member in + all events this month
           if (current_user_can('administrator') || current_user_can('elevkaren') ){
-            $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' ORDER BY start ASC');
+            $upcoming_events = $wpdb->get_results('SELECT E.name, E.start, E.end, E.visibility, E.type FROM vro_events AS E INNER JOIN vro_kommiteer_members K ON E.kommitte_host_id = K.kommitee_id WHERE K.status = "y" AND K.user_id = ' . get_current_user_id() . ' AND YEAR(E.start) = ' . $currentYear . ' AND MONTH(E.start) = ' . $currentMonth . ' UNION SELECT B.name, B.start, B.end, B.visibility, B.type FROM vro_events AS B WHERE B.kommitte_host_id IS NULL AND YEAR(B.start) = ' . $currentYear . ' AND MONTH(B.start) = ' . $currentMonth . ' ORDER BY start ASC');
           } else {
-            $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' AND visibility="a" ORDER BY start ASC');
+            // Get all kommittéevents that the user is member in + all visible events this month
+            $upcoming_events = $wpdb->get_results('SELECT E.name, E.start, E.end, E.visibility, E.type FROM vro_events AS E INNER JOIN vro_kommiteer_members K ON E.kommitte_host_id = K.kommitee_id WHERE K.status = "y" AND K.user_id = ' . get_current_user_id() . ' AND E.visibility = "a" AND YEAR(E.start) = ' . $currentYear . ' AND MONTH(E.start) = ' . $currentMonth . ' UNION SELECT B.name, B.start, B.end, B.visibility, B.type FROM vro_events AS B WHERE B.kommitte_host_id IS NULL AND B.visibility = "a" AND YEAR(B.start) = ' . $currentYear . ' AND MONTH(B.start) = ' . $currentMonth . ' ORDER BY start ASC');
           }
 
           updateEventBtnLinks('month-event-btn');
         }
         elseif ($_POST['day-event-btn'] == 'today'){
-          // Get all events for the current day
-
+          // Get all kommittéevents that the user is member in + all events that occur this day
           if (current_user_can('administrator') || current_user_can('elevkaren') ){
-            $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' AND DAY(start) = ' . $currentDay . ' ORDER BY start ASC');
+            $upcoming_events = $wpdb->get_results('SELECT E.name, E.start, E.end, E.visibility, E.type FROM vro_events AS E INNER JOIN vro_kommiteer_members K ON E.kommitte_host_id = K.kommitee_id WHERE K.status = "y" AND K.user_id = ' . get_current_user_id() . ' AND MONTH(E.start) = ' . $currentMonth . ' AND YEAR(E.start) = ' . $currentYear . ' AND ' . $currentDay . ' BETWEEN DAY(E.start) AND DAY(E.end) UNION SELECT B.name, B.start, B.end, B.visibility, B.type FROM vro_events AS B WHERE B.kommitte_host_id IS NULL AND MONTH(B.start) = ' . $currentMonth . ' AND YEAR(B.start) = ' . $currentYear . ' AND ' . $currentDay . ' BETWEEN DAY(B.start) AND DAY(B.end) ORDER BY start ASC');
           } else {
-            $upcoming_events = $wpdb->get_results('SELECT * FROM vro_events WHERE MONTH(start) = ' . $currentMonth . ' AND YEAR(start) = ' . $currentYear . ' AND DAY(start) = ' . $currentDay . ' AND visibility="a" ORDER BY start ASC');
+            // Get all kommittéevents that the user is member in + all visible events that occur this day
+            $upcoming_events = $wpdb->get_results('SELECT E.name, E.start, E.end, E.visibility, E.type FROM vro_events AS E INNER JOIN vro_kommiteer_members K ON E.kommitte_host_id = K.kommitee_id WHERE K.status = "y" AND K.user_id = ' . get_current_user_id() . ' AND E.visibility = "a" AND MONTH(E.start) = ' . $currentMonth . ' AND YEAR(E.start) = ' . $currentYear . ' AND ' . $currentDay . ' BETWEEN DAY(E.start) AND DAY(E.end) UNION SELECT B.name, B.start, B.end, B.visibility, B.type FROM vro_events AS B WHERE B.kommitte_host_id IS NULL AND B.visibility = "a" AND MONTH(B.start) = ' . $currentMonth . ' AND YEAR(B.start) = ' . $currentYear . ' AND ' . $currentDay . ' BETWEEN DAY(B.start) AND DAY(B.end) ORDER BY start ASC');
           }
 
           updateEventBtnLinks('today-event-btn');
         }
       }
+
+      // Get kommittéevents in those kommittées the student is in
+      // $allowed_kommitte_events = array();
+      //
+      // foreach( $kommitte_events as $ke ){
+      //   if ( $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $ke->kommitte_host_id .' AND user_id = ' . get_current_user_id() ) != NULL ){
+      //     array_push($allowed_kommitte_events, $ke);
+      //   }
+      // }
+
+
 
       $i = 0;
       foreach ($upcoming_events as $up_event) {
@@ -177,11 +194,20 @@
         $current_event_type = $wpdb->get_row('SELECT * FROM vro_event_types WHERE id=' . $up_event->type);
         $symbol = ($current_event_type) ? $current_event_type->symbol : '';
 
-        if ($up_event->visibility == 'a') {
-          echo '<div class="event">';
+        if (is_event_today( strtotime($up_event->start), strtotime($up_event->end) )) {
+          if ($up_event->visibility == 'a') {
+            echo '<div class="event today">';
+          } else {
+            echo '<div class="event today unpublished">';
+          }
         } else {
-          echo '<div class="event unpublished">';
+          if ($up_event->visibility == 'a') {
+            echo '<div class="event">';
+          } else {
+            echo '<div class="event unpublished">';
+          }
         }
+
         ?>
 
           <div class="icon">

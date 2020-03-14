@@ -36,6 +36,8 @@ let monthAndYear = document.getElementById('monthAndYear');
 showCalendar(currentMonth, currentYear);
 
 function showCalendar(month, year){
+
+
   // Get the weekday that the month starts on
   let firstDay = new Date(year, month).getDay();
 
@@ -56,11 +58,23 @@ function showCalendar(month, year){
 
   // Do maximum 7 rows
   for(let i = 0; i < 7; i++){
+
     // Create a new row
     let row = document.createElement('tr');
 
     // Do the 7 weekdays
     for(let j = -1; j < 7; j++){
+
+      if (i == 0 && j == 0){
+        if (firstDay == 0) {
+          date += 1;
+        }
+
+        if (firstDay == 6) {
+          date += 2;
+        }
+      }
+
       // Create a new place for the day in the table
       let cell = document.createElement('td');
 
@@ -94,13 +108,13 @@ function showCalendar(month, year){
       }
 
       // Do not display sundays and saturdays
-      if (j == 0 || j == 6){
+      if (j == 5 || j == 6){
         date++;
         continue;
       }
 
       // Display empty boxes if the first day is not a monday
-      if(i === 0 && j < firstDay + 1){
+      if(i === 0 && j < firstDay - 1 && firstDay != 6 && firstDay != 0){
         let cellText = document.createElement('p');
         cellText.innerText = '';
         cell.appendChild(cellText);
@@ -109,6 +123,7 @@ function showCalendar(month, year){
 
       }
       else {
+
         // Create a new text element to hold the day
         let cellText = document.createElement('p');
 
@@ -136,36 +151,15 @@ function showCalendar(month, year){
 
         // Go through all events
         for (ev in allEvents) {
-          // Get their start date in the format year-month-day to match with the this days date
-          let startDatetimeArray = allEvents[ev]['start'].split(' ');
-          let startDateString = startDatetimeArray[0];
-          let startTimeString = startDatetimeArray[1];
-          startTimeString = startTimeString.substring(0, startTimeString.length - 3);
 
-          let endDatetimeArray = allEvents[ev]['end'].split(' ');
-          let endDateString = endDatetimeArray[0];
-          let endTimeString = endDatetimeArray[1];
-          endTimeString = endTimeString.substring(0, endTimeString.length - 3);
+          add_event(ev, allEvents, cell)
 
-          let allDates = getDaysArray(new Date(startDateString), new Date(endDateString));
+        }
 
-          // If they do match, this event should be shown on this day
-          if (allDates.includes(cell.id)) {
-            // Get the type of event
-            let etId = allEvents[ev]['type'];
+        // Go through all events
+        for (ev in kommitteEvents) {
 
-            // console.log(allEvents[ev]);
-
-            // Check which type the event belongs to
-            for (evType in allEventTypes){
-              // If an event type is found, add the event to the calendar with the correct color codes
-              if (allEventTypes[evType]['id'] == etId){
-                add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startDateString, endDateString, startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description'], allEvents[ev]['visibility'], allEvents[ev]['id']);
-              }
-            }
-
-
-          }
+          add_event(ev, kommitteEvents, cell, 'kommitte-event')
 
         }
 
@@ -178,6 +172,41 @@ function showCalendar(month, year){
 
     // Add the whole row of days
     tbl.appendChild(row);
+  }
+
+}
+
+// Add event
+function add_event( ev, allEvents, cell, eventTypeClass = 'elevkaren-event' ){
+
+  // Get their start date in the format year-month-day to match with the this days date
+  let startDatetimeArray = allEvents[ev]['start'].split(' ');
+  let startDateString = startDatetimeArray[0];
+  let startTimeString = startDatetimeArray[1];
+  startTimeString = startTimeString.substring(0, startTimeString.length - 3);
+
+  let endDatetimeArray = allEvents[ev]['end'].split(' ');
+  let endDateString = endDatetimeArray[0];
+  let endTimeString = endDatetimeArray[1];
+  endTimeString = endTimeString.substring(0, endTimeString.length - 3);
+
+  let allDates = getDaysArray(new Date(startDateString), new Date(endDateString));
+
+  // If they do match, this event should be shown on this day
+  if (allDates.includes(cell.id)) {
+    // Get the type of event
+    let etId = allEvents[ev]['type'];
+    // console.log(allEvents[ev]);
+
+    // Check which type the event belongs to
+    for (evType in allEventTypes){
+      // If an event type is found, add the event to the calendar with the correct color codes
+      if (allEventTypes[evType]['id'] == etId){
+        add_event_to_calendar(cell, allEvents[ev]['name'], allEventTypes[evType]['bg_color'], allEventTypes[evType]['fg_color'], startDateString, endDateString, startTimeString, endTimeString, allEvents[ev]['place'], allEvents[ev]['host'], allEvents[ev]['description'], allEvents[ev]['visibility'], allEvents[ev]['id'], eventTypeClass);
+      }
+    }
+
+
   }
 
 }
@@ -202,7 +231,7 @@ function calendar_next(){
   showCalendar(currentMonth, currentYear);
 }
 
-function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, endDate, startTime, endTime, place, host, description, visibility, id){
+function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, endDate, startTime, endTime, place, host, description, visibility, id, eventTypeClass){
   // Check if there already is an event on this day, if so -> the markingsContainer has already been created, therefore do not create it again.
   let markingsContainer = (tdElement.childNodes.length == 1) ? document.createElement('div') : tdElement.childNodes[1];
 
@@ -213,6 +242,7 @@ function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, end
 
   // Create a new div element to hold the text for the event
   let newEvent = document.createElement('div');
+  newEvent.classList.add(eventTypeClass)
   newEvent.textContent = text;
 
   // Style it
@@ -252,11 +282,14 @@ function add_event_to_calendar(tdElement, text, bgColor, fgColor, startDate, end
       modalText += '<span class="modal-description">' + description + '</span><br>';
     }
     // Add publish/unpublish buttons depending if the event is only accesible to elevkaren or all members
-    if (visibility != 'a'){
-      modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="publish_event" value='+ id +'>Publicera event</button><button class="btn lg red" type="submit" name="remove_event" value='+ id +'>-</button></div></form>';
-    } else {
-      modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="unpublish_event" value='+ id +'>Avpublicera event</button><button class="btn lg red" type="submit" name="remove_event" value='+ id +'>-</button></div></form>';
+    if (isAdmin){
+      if (visibility != 'a'){
+        modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="publish_event" value='+ id +'>Publicera event</button><button class="btn lg red" type="submit" name="remove_event" onclick="return confirm(\'Är du säker på att du vill publicera detta event?\');" value='+ id +'>-</button></div></form>';
+      } else {
+        modalText += '<form method="post" action="'+ actionLink +'"><div class="button-group"><button class="btn lg" type="submit" name="unpublish_event" value='+ id +'>Avpublicera event</button><button class="btn lg red" type="submit" name="remove_event" onclick="return confirm(\'Är du säker på att du vill avpublicera detta event?\');" value='+ id +'>-</button></div></form>';
+      }
     }
+
 
     // Add a remove button
     modalText += '';

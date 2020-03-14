@@ -35,6 +35,7 @@ $is_chairman = ($current_student_id == $chairman_id);
 
 // Check if user already has applied / is in
 $is_related_to_kommitte = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id='. $current_student_id .' AND kommitee_id='. $k_id .''));
+$is_waiting = count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE user_id='. $current_student_id .' AND kommitee_id='. $k_id .' AND status="w"'));
 
 // get all kommitee members
 $all_members = $wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id=' . $k_id . ' AND status="y"');
@@ -173,7 +174,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
 
   <div class="box white" id="chairman">
-      <?php echo get_avatar( $chairman_id ); ?>
+      <!-- <?php echo get_avatar( $chairman_id ); ?> -->
       <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
       <p>Ordförande</p>
 
@@ -215,12 +216,13 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       // var jsonstudents = getArrayFromColumn(jsonstudents, 'display_name');
 
       autocomplete(document.getElementById("chairman-field"), jsonstudents, 'Inga medlemmar hittades.');
+
       </script>
   </div>
 
   <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
   <div class="box white alert" id="add_member">
-    <button class="add-btn lg">+</button>
+    <a href="#addNewMember" class="add-btn lg">+</a>
     <h5>Lägg till medlem</h5>
   </div>
 <?php } ?>
@@ -246,10 +248,35 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
     </form> -->
 
     <!-- SEND NOTIFICATION -->
-    <form autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
+    <form autocomplete="off" class="notis-form" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
 
       <input type="text" name="title" value="" placeholder="Titel..">
       <textarea name="content" placeholder="Meddelande..."></textarea>
+
+      <div class="datetime-picker">
+
+        <p><b>Datum då notisen går ut:</b></p>
+
+        <div class="date-picker" id="start-datepicker">
+          <div class="selected-date"></div>
+          <input type="hidden" name="expire-date" value="" id="start_hidden_input"/>
+
+          <div class="dates">
+            <div class="month">
+              <div class="arrows prev-mth">&lt;</div>
+              <div class="mth"></div>
+              <div class="arrows next-mth">&gt;</div>
+            </div>
+
+            <div class="days">
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
       <input type="text" name="k_id" value="<?php echo $k_id; ?>" hidden>
 
       <button name="send_notification_kommitte" value="" class="btn lg">Skicka</button>
@@ -265,7 +292,10 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
   <div class="box green lg">
 
     <?php
-    if ($is_related_to_kommitte){
+    if ($is_waiting) {
+      echo '<h4>Dra tillbaka din kommittéförfrågan</h4>';
+    }
+    elseif ($is_related_to_kommitte){
       echo '<h4>Gå ut ur denna kommitté</h4>';
     } else {
       echo '<h4>Ansök till denna kommitté</h4>';
@@ -291,9 +321,11 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
 
       <?php
-
-      if ($is_related_to_kommitte){
-        echo '<button class="btn lg red" type="submit" name="leave_kommitte">Klicka för att gå ut ur kommittén</button>';
+      if ($is_waiting) {
+        echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill dra tillbaka din förfrågan?\');">Klicka för att dra tillbaka din ansökan</button>';
+      }
+      elseif ($is_related_to_kommitte){
+        echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill gå ut ur kommittén?\');">Klicka för att gå ut ur kommittén</button>';
       } else {
         echo '<button class="btn lg" type="submit" name="apply_for_kommitte">Klicka för att skicka en ansökan!</button>';
       }
@@ -311,14 +343,17 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
   <div class="row">
 
     <div class="box white sm" id="chairman">
-        <?php echo get_avatar( $user->ID ); ?>
+        <!-- <?php echo get_avatar( $user->ID ); ?> -->
         <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
         <p>Ordförande</p>
     </div>
 
     <div class="box green md">
       <?php
-      if ($is_related_to_kommitte){
+      if ($is_waiting){
+        echo '<h4>Dra tillbaka din kommittéansökan</h4>';
+      }
+      elseif ($is_related_to_kommitte){
         echo '<h4>Gå ut ur denna kommitté</h4>';
       } else {
         echo '<h4>Ansök till denna kommitté</h4>';
@@ -331,8 +366,11 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
         <?php
 
-        if ($is_related_to_kommitte){
-          echo '<button class="btn lg red" type="submit" name="leave_kommitte">Klicka för att gå ut ur kommittén</button>';
+        if ($is_waiting) {
+          echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill dra tillbaka din förfrågan?\');">Klicka för att dra tillbaka din ansökan</button>';
+        }
+        elseif ($is_related_to_kommitte){
+          echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill gå ut ur kommittén?\');">Klicka för att gå ut ur kommittén</button>';
         } else {
           echo '<button class="btn lg" type="submit" name="apply_for_kommitte">Klicka för att skicka en ansökan!</button>';
         }
@@ -389,7 +427,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
                 <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
                 <input type="text" name="student_id" value="<?php echo $member->ID; ?>" hidden>
 
-                <button type="submit" name="leave_kommitte" class="add-btn extra-btn deny">-</button>
+                <button type="submit" name="leave_kommitte" class="add-btn extra-btn deny" onclick="return confirm('Är du säker på att du vill ta bort denna medlem?');">-</button>
               </form>
             <?php } ?>
           </div>
@@ -411,14 +449,16 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 ?>
 
 <div class="row">
-  <div class="box green lg">
+  <div class="box green lg allow-overflow" id="addNewMember">
 
-    <h4>Lägg till medlem</h4>
+    <h4>Lägg till elev i kommittén</h4>
 
     <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
-      <input type="text" name="member_name" value="" placeholder="Namn...">
-      <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>">
+      <div class="autocomplete">
+        <input type="text" name="student_name" value="" placeholder="Elevens namn..." id="student-name-field">
+      </div>
+      <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
 
       <button type="submit" class="btn lg" name="add_member">Lägg till</button>
 
@@ -426,6 +466,38 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 
   </div>
 </div>
+
+<div class="row">
+  <form class="expand" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+    <input type="text" name="k_id" value=<?php echo $k_id; ?> hidden>
+    <button class="btn lg red" type="submit" name="remove_kommitte" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill ta bort denna kommitté?');">Ta bort denna kommitté</button>
+  </form>
+</div>
+
+<?php
+
+// Get the number of all members
+$all_students = get_users(array(
+  'meta_key' => 'class_id'
+));
+
+// Get first and last name from every student
+$first_last_array_full = array();
+foreach($all_students as $s){
+  array_push($first_last_array_full, get_user_meta( $s->ID, 'nickname', true));
+}
+
+echo '<script type="text/javascript">';
+echo 'var jsonstudentsall = ' . json_encode($first_last_array_full);
+echo '</script>'
+
+?>
+
+<script type="text/javascript">
+
+  autocomplete(document.getElementById("student-name-field"), jsonstudentsall, 'Inga elever hittades.');
+</script>
+<script src="<?php echo get_bloginfo('template_directory') ?>/js/datepicker.js" charset="utf-8"></script>
 
 <?php } // End check admin ?>
 

@@ -6,7 +6,7 @@
 
 // CHECK IF LOGGED IN
 if (! is_user_logged_in() ){
-  wp_redirect( '/' );
+  wp_redirect( '/wp-login.php' );
 } else {
 ?>
 
@@ -15,6 +15,7 @@ if (! is_user_logged_in() ){
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -47,6 +48,8 @@ if (! is_user_logged_in() ){
           <h2>Visselpipan</h2>
           <p><?php echo current_time('d M Y, D'); ?></p>
         </div>
+
+          <p>Här kan du skicka förslag till elevkåren på saker som du vill förändra!</p>
 
 
         <?php
@@ -96,10 +99,11 @@ if (! is_user_logged_in() ){
 
                   echo '<h4>Svar</h4>';
 
-                  echo '<form>';
-                    echo '<textarea name="name" placeholder="Svar..."></textarea>';
+                  echo '<form action="'. get_bloginfo('template_directory') . '/scripts/handle_visselpipan.inc.php' . '" method="post">';
+                    echo '<textarea name="visselpipaSvar" placeholder="Svar..." required></textarea>';
+                    echo '<input name="visselpipaId" value='. $r->id .' hidden>';
 
-                    echo '<button class="btn lg" type="submit">Skicka</button>';
+                    echo '<button class="btn lg" type="submit" name="answerVisselpipa">Skicka</button>';
                   echo '</form>';
 
                 echo '</div>';
@@ -113,7 +117,6 @@ if (! is_user_logged_in() ){
 
           ?>
 
-      <!-- TODO: send visselpipan suggestion -->
       <div class="row">
 
         <div class="box lg green">
@@ -171,5 +174,4 @@ if (! is_user_logged_in() ){
     }
     ?>
 
-  </body>
-</html>
+<?php get_footer(); ?>

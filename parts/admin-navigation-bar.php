@@ -31,7 +31,7 @@
 
   <div class="nav-header">
     <a href="/"><img src="<?php echo get_bloginfo('template_directory') ?>/img/vitfluga.png" alt=""></a>
-    <h2>Admin</h2>
+    <a href="/panel/dashboard"><h2>Admin</h2></a>
 
     <button class="icon" onclick="toggleNavbar('navigation-bar')">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/menu.png" alt="">
@@ -73,10 +73,10 @@
         <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
       <?php } ?>
 
-      <p>Kommitéer</p>
+      <p>Kommittéer</p>
     </a>
 
-    <a href="/kalender/" class="nav-item" id="link-kalender">
+    <a href="/panel/kalender/" class="nav-item" id="link-kalender">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/calendar.png" alt="" class="nav-icon">
       <p>Kalender</p>
     </a>
@@ -105,14 +105,19 @@
         <p>Medlemmar</p>
     </a>
 
+    <a href="/panel/projektgrupper/" class="nav-item" id="link-projektgrupper">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
+      <p>Projektgrupper</p>
+    </a>
+
+    <a href="/panel/karkortet" class="nav-item" id="link-karkortet">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/karkortet-icon.png" alt="" class="nav-icon">
+      <p>Kårkortet</p>
+    </a>
+
     <a href="/panel/arkiv" class="nav-item" id="link-arkiv">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
       <p>Arkiv</p>
-    </a>
-
-    <a href="/panel/hemsidan/" class="nav-item" id="link-hemsidan">
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
-      <p>Hemsidan</p>
     </a>
 
     <a href="/panel/installningar/" class="nav-item" id="link-installningar">
@@ -120,7 +125,10 @@
       <p>Inställningar</p>
     </a>
 
-
+    <a href="<?php echo wp_logout_url( '/' ); ?>" class="nav-item" id="link-logout">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/logout-icon.png" alt="" class="nav-icon">
+      <p>Logga ut</p>
+    </a>
 
   </nav>
 
@@ -129,7 +137,7 @@
     <img src="<?php echo get_bloginfo('template_directory') ?>/img/protocolfolder.png" alt="">
     <p>Öppna <strong>DRIVE</strong> för att se de senaste protokollen!</p>
 
-    <a href="#" class="btn sm">Drive</a>
+    <a href="https://drive.google.com/drive/folders/0B-UL6CSzT9I0bXUzUXVCRFNVZVk?usp=sharing" target="_blank" class="btn sm">Drive</a>
 
   </div>
 

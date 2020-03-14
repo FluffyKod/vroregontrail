@@ -28,7 +28,7 @@ if (count($kommitees) == 0){
 
   <div class="nav-header">
     <a href="/"><img src="<?php echo get_bloginfo('template_directory') ?>/img/vitfluga.png" alt=""></a>
-    <h2>Admin</h2>
+    <a href="/panel/dashboard"><h2>Panel</h2></a>
 
     <button class="icon" onclick="toggleNavbar('navigation-bar')">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/menu.png" alt="">
@@ -41,6 +41,11 @@ if (count($kommitees) == 0){
     <a href="/panel/dashboard/" class="nav-item active" id="link-dashboard">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/hemsida.png" alt="" class="nav-icon">
       <p>Dashboard</p>
+    </a>
+
+    <a href="/panel/karkortet" class="nav-item" id="link-karkortet">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/karkortet-icon.png" alt="" class="nav-icon">
+      <p>Kårkortet</p>
     </a>
 
     <a href="/panel/visselpipan/" class="nav-item" id="link-visselpipan">
@@ -61,10 +66,10 @@ if (count($kommitees) == 0){
         <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
       <?php } ?>
 
-      <p>Kommitéer</p>
+      <p>Kommittéer</p>
     </a>
 
-    <a href="/kalender/" class="nav-item" id="link-kalender">
+    <a href="/panel/kalender/" class="nav-item" id="link-kalender">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/calendar.png" alt="" class="nav-icon">
       <p>Kalender</p>
     </a>
@@ -77,12 +82,6 @@ if (count($kommitees) == 0){
     <a href="/panel/karen/" class="nav-item" id="link-karen">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/bowtie.png" alt="" class="nav-icon">
       <p>Kåren</p>
-    </a>
-
-    <a href="/panel/medlemmar/" class="nav-item" id="link-medlemmar">
-      <!-- Check if there are any new memebr suggestions, if so -> add a notification circle -->
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/members.png" alt="" class="nav-icon">
-      <p>Medlemmar</p>
     </a>
 
     <a href="/panel/arkiv" class="nav-item" id="link-arkiv">

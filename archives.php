@@ -16,6 +16,7 @@ if (! is_user_logged_in() ){
   <head>
     <meta charset="utf-8">
     <meta lang="sv">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
 
     <title>VRO Elevkår</title>
 
@@ -57,21 +58,47 @@ if (! is_user_logged_in() ){
         <div class="archive-links">
           <a class="btn" href="#karbrev">Se alla kårbrev</a>
           <a class="btn" href="#kommitte">Se alla kommitténotiser</a>
-          <a class="btn" href="#">Se alla bilder</a>
+          <a class="btn" href="https://drive.google.com/drive/folders/1NKwQTcbvxk_5yNe1PL0u5hBrrOjCNQbY" target="_blank">Se alla bilder</a>
+          <?php   if (current_user_can('administrator') || current_user_can('elevkaren') ): ?>
+            <a class="btn" href="#visselpipor">Se alla visselpipor</a>
+          <?php endif; ?>
         </div>
 
 
         <h2 id="karbrev" class="archive-title">Kårbrev</h2>
 
-        <?php display_karbrev( 0, false ); ?>
+        <?php display_karbrev( 0, false, true ); ?>
 
         <h2 id="kommitte" class="archive-title">Kommittéenotiser</h2>
 
         <?php
 
-        display_kommitte_notifications( 0, false );
+        // Show arhived kommitténotifications
+        display_kommitte_notifications( 0, false, true );
 
         ?>
+
+        <?php if (current_user_can('administrator') || current_user_can('elevkaren') ): ?>
+        <h2 id="visselpipor" class="archive-title">Visselpipor</h2>
+
+        <?php $results = $wpdb->get_results('SELECT * FROM vro_visselpipan WHERE status = "a"');
+
+        // Add a new row and box for every suggestion
+        foreach ($results as $r)
+        {
+          echo '<div class="row">';
+            echo '<div class="box white lg">';
+              echo '<div class="see-more">';
+                echo '<h4>' . $r->subject . '</h4>';
+              echo '</div>';
+              echo '<p>' . $r->text . '</p>';
+            echo '</div>';
+          echo '</div>';
+
+        } // End foreach
+
+        ?>
+      <?php endif; ?>
 
       </section>
 
@@ -88,7 +115,7 @@ if (! is_user_logged_in() ){
 
   <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
   <script type="text/javascript">
-    window.onload = highlightLink('link-dashboard');
+    window.onload = highlightLink('link-arkiv');
   </script>
 
   <?php
@@ -96,5 +123,4 @@ if (! is_user_logged_in() ){
   }
   ?>
 
-  </body>
-</html>
+<?php get_footer(); ?>

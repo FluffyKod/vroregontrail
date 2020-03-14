@@ -140,6 +140,9 @@ function data_fetch(){
             <p class="member">
               <span><?php echo $nickname; ?></span>
               <span><?php echo $email; ?></span>
+              <?php if (metadata_exists( 'user', $u->ID, 'phonenumber' )) : ?>
+                  <span><?php echo get_user_meta($u->ID, 'phonenumber', true); ?></span>
+              <?php endif; ?>
               <span><?php echo $display_class_name; ?></span>
             </p>
           </a>
@@ -153,6 +156,33 @@ function data_fetch(){
           </a>
         <?php }
 
+      }
+    }
+
+    die();
+}
+
+add_action('wp_ajax_kommitte_data_fetch' , 'kommitte_data_fetch');
+add_action('wp_ajax_nopriv_kommitte_data_fetch','kommitte_data_fetch');
+function kommitte_data_fetch(){
+
+    global $wpdb;
+
+    $keyword = esc_attr( $_POST['keyword'] );
+
+    // Get the number of all members
+    $kommitter = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "y"');
+
+
+    foreach( $kommitter as $k ) {
+      if (stripos($k->name, $keyword) !== false ) {
+          ?>
+            <a href="/panel/kommiteer/?k_id=<?php echo $k->id; ?>">
+              <p class="member">
+                <span><?php echo $k->name; ?></span>
+              </p>
+            </a>
+         <?php
       }
     }
 
