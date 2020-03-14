@@ -223,18 +223,18 @@ function save_rooms(){
   $str_json = $_POST['rooms_string'];
   $str_json = stripslashes($str_json);
 
-  $room = array();
-  $room['rooms'] = $str_json;
-  $room['id'] = 1;
-  $wpdb->insert('vroregon_testrooms', $room);
+  // $room = array();
+  // $room['rooms'] = $str_json;
+  // $room['id'] = 1;
+  // $wpdb->insert('vroregon_testrooms', $room);
 
-  // Create a new array that will hold all the arguments to create a new visselpipan suggestion
-  // if ($wpdb->update( 'vroregon_testrooms', array( 'rooms' => $str_json ), array( 'id' => 1 ) ) == false){
-  //   echo json_encode(array('msg' => 'failed'));
-  // } else {
-  //   // Enconde the array into json and return it to the js
-  //   echo json_encode(array('msg' => 'success'));
-  // }
+  //Create a new array that will hold all the arguments to create a new visselpipan suggestion
+  if ($wpdb->update( 'vroregon_testrooms', array( 'rooms' => $str_json ), array( 'id' => 1 ) ) == false){
+    echo json_encode(array('msg' => 'failed'));
+  } else {
+    // Enconde the array into json and return it to the js
+    echo json_encode(array('msg' => 'success'));
+  }
 
   //Quit the function
   die();
