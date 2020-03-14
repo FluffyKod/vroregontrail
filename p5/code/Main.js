@@ -90,7 +90,7 @@ function draw(){
   }
   if(drawCanvas){
 
-    // Check which encounter is chosen
+    // TODO: Borde lagras i en "aktiv encounter"
     switch (current_encounter) {
       case 'flappy_river':
         if(define){fr_defineVar(); define= false;}

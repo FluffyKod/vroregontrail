@@ -37,12 +37,12 @@ function setup(){
 
   roomArrays = {//kanske konstigt att kalla det sprites
     test: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
-    intro: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
-    highlands: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
-    bog: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
-    wasp: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
+    intro: {rooms: [], sprites: [], lightColor: color(214), darkColor: color(51)},
+    highlands: {rooms: [], sprites: [], lightColor: color(208, 240, 156), darkColor: color(73, 117, 52)},
+    bog: {rooms: [], sprites: [], lightColor: color(189, 172, 157), darkColor: color(66, 46, 33)},
+    city: {rooms: [], sprites: [], lightColor: color(212, 207, 178), darkColor: color(120, 108, 41)},
     mountain: {rooms: [], sprites: [], lightColor: color(135,222,224), darkColor: color(64,106,107)},
-    core: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)}
+    core: {rooms: [], sprites: [], lightColor: color(145, 42, 42), darkColor: color(36, 35, 35)}
   }
   activeArea = roomArrays.test;
   activeRoomArray = activeArea.rooms;
