@@ -46,7 +46,6 @@ function setup(){
     defineCanvas();
     grandparent = select('#grandparent');
 
-    currentRoom = findRoomWithPlayer();
     drawText = true;
     soundEnabled = false;
     optionlength = 1;
@@ -57,6 +56,8 @@ function setup(){
 
     // Create the player
     player = new player();
+    currentRoom = findRoomWithPlayer();
+    
 
     // Set id for the displayed options
     displayedOptions.push(new option('#option-1'));
