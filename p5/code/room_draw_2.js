@@ -74,7 +74,6 @@ function setup(){
 
 
 
-  print(activeRoomSpriteArray);
 }
 
 function draw(){
@@ -280,11 +279,9 @@ function createRoom(x, y){
 }
 
 function addOptionGuis(roomSprite){
-  print(roomSprite.gui.getValue('option_amount'));
 }
 
 function saveRoom(){
-  print(activeRoomArray);
   if (!activeRoom.exportRoom) {
     activeRoom.exportRoom = new room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [
 
@@ -302,7 +299,6 @@ function saveRoom(){
       }
       activeRoom.exportRoom.options.push(option);
     }
-    print(activeRoom.exportRoom);
     activeRoomArray.push(activeRoom.exportRoom);
 
   }else if(activeRoom.exportRoom){ //uppdaterar objektet om det redan finns
@@ -328,18 +324,14 @@ function saveRoom(){
 function deleteRoom(){
   for (var i = 0; i < activeRoomArray.length; i++) {
     if(activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY){
-      print('bakugan')
       activeRoomArray.splice(i,1);
-      print(activeRoomArray);
       break;
     }
   }
   for (var i = 0; i < activeRoomSpriteArray.length; i++) {
     if(activeRoomSpriteArray[i].indexX == activeRoom.indexX && activeRoomSpriteArray[i].indexY == activeRoom.indexY){
-      print('peepe')
       activeRoom.remove();
       activeRoomSpriteArray.splice(i,1);
-      print(activeRoomSpriteArray);
       break;
     }
   }
