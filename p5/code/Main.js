@@ -1,36 +1,38 @@
 
-var displayedOptions = [];
-var currentoption;
-var optionlength;
-var maxOptionLength = 5;
-var rooms = [];
-var load;
-var grandparent;
-var canvas;
-var write = true; //kontrollerar om det som står i rummet ska skrivas eller inte
-var player;
-var gameOver;
-var startSc;
-var drawText;
-var drawCanvas;
+let displayedOptions = [];
+let currentoption;
+let optionlength;
+let maxOptionLength = 5;
+let rooms = [];
+let load;
+let grandparent;
+let canvas;
+let write = true; //kontrollerar om det som står i rummet ska skrivas eller inte
+let player;
+let gameOver;
+let startSc;
+let drawText;
+let drawCanvas;
 
-var define = true;
-var clearVar = false;
+let currentRoom;
 
-var texttest;
-var counter;
+let define = true;
+let clearVar = false;
 
-var textbox;
+let texttest;
+let counter;
+
+let textbox;
 
 //minigame-switch variables;
-var current_encounter;
+let current_encounter;
 
 //ljud
-var blip;
-var soundEnabled;
+let blip;
+let soundEnabled;
 
-var keypressed = false;
-var timer;
+let keypressed = false;
+let timer;
 
 ////////////////////////////////////////////
 // SETUP
@@ -44,6 +46,7 @@ function setup(){
     defineCanvas();
     grandparent = select('#grandparent');
 
+    currentRoom = findRoomWithPlayer();
     drawText = true;
     soundEnabled = false;
     optionlength = 1;
@@ -109,6 +112,27 @@ function getSavedPlayerState() {
         // Update text box
         // write = true;
         // drawTextbox();
+      }
+  });
+
+}
+
+function savePlayer() {
+
+  console.log('in save player');
+  var playerString = JSON.stringify(player);
+  console.log('saveRooms string: ', roomsString);
+
+  console.log('in save player');
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      dataType: 'json',
+      data: { action: 'save_player', player_string: playerString },
+      success: function(data) {
+
+        console.log(data);
+
       }
   });
 
@@ -300,6 +324,8 @@ function option(ref){
           write = true;
           player.x = this.values[0];
           player.y = this.values[1];
+          currentRoom = findRoomWithPlayer();
+
         } else {
           console.log('ERROR: Not enough values supplied to move command');
         }
@@ -408,18 +434,25 @@ function drawTextbox(){
     displayedOptions[currentoption].highlight();
   }
 
-  // Goes through every room to find the room the current player is in
+
   for (var i = 0; i < rooms.length; i++) {
-    if(player.x == rooms[i].x && player.y == rooms[i].y){
-      if(write){
-        typing("textbox", rooms[i].mainText);
-      }
-      if(!load){
-        rooms[i].load();// borde kanske inte uppdateras
-        load = true;
-      }
+    if(write){
+      typing("textbox", rooms[i].mainText);
+    }
+    if(!load && currentRoom){
+      currentRoom.load();
+      load = true;
     }
 
   }
 
+}
+
+function findRoomWithPlayer(){
+  for (var i = 0; i < rooms.length; i++) {
+    if(player.x == rooms[i].x && player.y == rooms[i].y){
+      return rooms[i];
+      break;
+    }
+  }
 }
