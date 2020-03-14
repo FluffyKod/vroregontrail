@@ -450,30 +450,3 @@ function showValueAmountControl(){
     }
   }
 }
-
-
-
-
-
-
-//SKREP
-
-/*
-function loadRooms(roomArray){ //tar in en rooms array
-  rooms = roomArray;
-  roomSprites = [];
-  for (var i = 0; i < roomArray.length; i++) {
-    x = roomArray[i].x *roomBoxSize+floor(width/2)+roomBoxSize/2;
-    y = roomArray[i].y *roomBoxSize+floor(height/2)+roomBoxSize/2;
-    createRoom(x,y)
-    roomSprites[i].setValue('main_text', roomArray[i].mainText);
-    for (var j = 0; j < roomSprites[i].optionGuis.length; j++) {
-      roomSprites[i].optionGuis[j].setValue('option_text', roomArray[i].options[j].text);
-      roomSprites[i].optionGuis[j].setValue('option_command',);
-
-    }
-    roomArray[i]
-  }
-
-}
-*/
