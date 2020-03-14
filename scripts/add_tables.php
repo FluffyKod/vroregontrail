@@ -308,6 +308,20 @@ function vro_setup() {
 
   createTable($table_name, $sql_regon);
 
+  $table_name = 'vroregon_players';
+
+  $sql_player = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    user_id BIGINT(20) UNSIGNED,
+    player JSON,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES wp_users(ID)
+  )';
+
+  createTable($table_name, $sql_player);
+
 
 
 } // End vro_setup()

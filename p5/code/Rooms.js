@@ -108,10 +108,12 @@ jQuery.ajax({
     success: function(data) {
 
       // rooms = []
-      data.forEach(r => {
+      if(data){
+        data.forEach(r => {
         var newRoom = new Room(r.x, r.y, r.mainText, r.options);
         rooms.push( newRoom );
       });
+      }
 
       callback(rooms);
 
