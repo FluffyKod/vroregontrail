@@ -8,12 +8,12 @@ let load;
 let grandparent;
 let canvas;
 let write = true; //kontrollerar om det som står i rummet ska skrivas eller inte
-let player;
-let gameOver;
-let startSc;
-let drawText;
+var gameOver;
+var startSc;
+var drawText;
 let drawCanvas;
 
+var player;
 let currentRoom;
 
 let define = true;
@@ -78,65 +78,6 @@ function setup(){
 ////////////////////////////////////////////
 
 // Call saveRooms() to update the database with the new rooms, this functionality lies in rooms.js file
-
-////////////////////////////////////////////
-// SAVE PLAYER OPTIONS TO DATABASE
-////////////////////////////////////////////
-function savePlayerSate() {
-
-  jQuery.ajax({
-      url: '/wp-admin/admin-ajax.php',
-      type: 'post',
-      data: { action: 'save_player_state', x: player.x, y: player.y },
-      success: function(data) {
-
-        console.log(data);
-
-      }
-  });
-}
-
-function getSavedPlayerState() {
-
-  jQuery.ajax({
-      url: '/wp-admin/admin-ajax.php',
-      type: 'post',
-      dataType: 'json',
-      data: { action: 'get_saved_player_state' },
-      success: function(data) {
-
-        // Update player data
-        player.x = data.x;
-        player.y = data.y;
-
-        // Update text box
-        // write = true;
-        // drawTextbox();
-      }
-  });
-
-}
-
-function savePlayer() {
-
-  console.log('in save player');
-  var playerString = JSON.stringify(player);
-  console.log('saveRooms string: ', roomsString);
-
-  console.log('in save player');
-  jQuery.ajax({
-      url: '/wp-admin/admin-ajax.php',
-      type: 'post',
-      dataType: 'json',
-      data: { action: 'save_player', player_string: playerString },
-      success: function(data) {
-
-        console.log(data);
-
-      }
-  });
-
-}
 
 ////////////////////////////////////////////
 // MAIN GAME LOOP
@@ -455,4 +396,47 @@ function findRoomWithPlayer(){
       break;
     }
   }
+}
+
+////////////////////////////////////////////
+// SAVE PLAYER OPTIONS TO DATABASE
+////////////////////////////////////////////
+function savePlayer() {
+
+  console.log('in save player');
+  var playerString = JSON.stringify(player);
+  console.log('savePlayers string: ', playerString);
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      dataType: 'json',
+      data: { action: 'save_player', player_string: playerString },
+      success: function(data) {
+
+        console.log(data);
+
+      }
+  });
+
+}
+
+function getPlayer() {
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      dataType: 'json',
+      data: { action: 'get_saved_player' },
+      success: function(data) {
+
+        // Update player data
+        print(data);
+
+        // Update text box
+        // write = true;
+        // drawTextbox();
+      }
+  });
+
 }

@@ -224,7 +224,7 @@ function save_rooms(){
   $str_json = stripslashes($str_json);
 
   // Create a new array that will hold all the arguments to create a new visselpipan suggestion
-  if ($wpdb->update( 'vroregon_testrooms', array( 'rooms' => $str_json ), array( 'id' => 1 ) ) == false){
+  if ($wpdb->update( 'vroregon_testrooms', array( 'rooms' => $str_json ), array( 'id' => get_current_user_id() ) ) == false){
     echo json_encode(array('msg' => 'failed'));
   } else {
     // Enconde the array into json and return it to the js
@@ -236,80 +236,49 @@ function save_rooms(){
 
 }
 
-// SAVE OPTIONS
-add_action('wp_ajax_save_player_state' , 'save_player_state');
-add_action('wp_ajax_nopriv_save_player_state','save_player_state');
-function save_player_state(){
+
+// the ajax function
+add_action('wp_ajax_save_player' , 'save_player');
+add_action('wp_ajax_nopriv_fetch_player','save_player');
+function save_player(){
 
   // Access the wordpress database functions
   global $wpdb;
 
-  // Get current user id and check if one was found
-  $u_id = get_current_user_id();
-  if ( $u_id == 0){
-    echo 'Error: no user id found';
+  // Get the rooms stored in the database in a long string
+  $str_json = $_POST['player_string'];
+  $str_json = stripslashes($str_json);
+
+  // Create a new array that will hold all the arguments to create a new visselpipan suggestion
+  if ($wpdb->update( 'vroregon_players', array( 'player' => $str_json ), array( 'id' => get_current_user_id() ) ) == false){
+    echo json_encode(array('msg' => 'failed'));
   } else {
-
-    // Get the values to save
-    $x = $_POST['x'];
-    $y = $_POST['y'];
-
-    //Check if coordinates are int
-    if ( !is_numeric( $x ) or !is_numeric($y) ) {
-      echo 'Error: coor are not numbers!';
-    } else {
-
-      // Convert into int
-      $x = (int)$x;
-      $y = (int)$y;
-
-      //Update the meta values
-      // if ( update_or_add_meta( $u_id, 'x', $x ) == false or update_or_add_meta( $u_id, 'y', $y ) == false ){
-      //
-      //   echo 'Error: could not add x or y';
-      //
-      // } else {
-      //   // Success!
-      //   echo 'Success: Saved the user x and y!';
-      // }
-
-      update_user_meta( $u_id, 'x', $x );
-      update_user_meta( $u_id, 'y', $y );
-
-
-      echo 'Success: Updated x and y coordinate';
-
-    }
-
+    // Enconde the array into json and return it to the js
+    echo json_encode(array('msg' => 'success'));
   }
+
   // Quit the function
   die();
 
 }
 
-add_action('wp_ajax_get_saved_player_state' , 'get_saved_player_state');
-add_action('wp_ajax_nopriv_get_saved_player_state','get_saved_player_state');
-function get_saved_player_state() {
+add_action('wp_ajax_get_saved_player' , 'get_saved_player');
+add_action('wp_ajax_nopriv_get_saved_player','get_saved_player');
+function get_saved_player() {
 
-  $x = 0;
-  $y = 0;
+  global $wpdb;
 
   $u_id = get_current_user_id();
   if ( $u_id == 0){
     echo json_encode( array('error' => 'no user id') );
   } else {
 
-    if ( metadata_exists( 'user', $u_id, 'x' ) ){
-      $x = (int)get_metadata( 'user', $u_id, 'x', true );
-    }
-
-    if ( metadata_exists( 'user', $u_id, 'y' ) ){
-      $y = (int)get_metadata( 'user', $u_id, 'y', true );
-    }
+    // Get
+    $test = 'test';
 
   }
 
-  echo json_encode( array('x' => $x, 'y' => $y) );
+  echo json_encode( array('player' => 'hejhej') );
 
   die();
 
