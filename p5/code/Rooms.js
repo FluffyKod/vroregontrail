@@ -107,14 +107,17 @@ jQuery.ajax({
     data: { action: 'fetch_rooms' },
     success: function(data) {
 
-      // rooms = []
-      if(data){
+      console.log('back!');
+
+      rooms = []
+      // if(data){
         data.forEach(r => {
           var newRoom = new Room(r.x, r.y, r.mainText, r.options);
           rooms.push( newRoom );
         });
-      }
 
+      console.log(rooms);
+      //
       callback(rooms);
 
     }
