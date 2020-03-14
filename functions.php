@@ -251,18 +251,18 @@ function save_player(){
 
   $current_uid = get_current_user_id();
 
-  // IF player already exists, update record, else create a new one
-  if ( count($wpdb->get_results("SELECT * FROM vroregon_players WHERE user_id = $current_uid")) > 0 ) {
-
-    // Create a new array that will hold all the arguments to create a new visselpipan suggestion
-    if ($wpdb->update( 'vroregon_players', array( 'player' => $str_json ), array( 'user_id' => $current_uid ) ) == false){
-      echo json_encode(array('msg' => 'failed in save player'));
-    } else {
-      // Enconde the array into json and return it to the js
-      echo json_encode(array('msg' => 'success'));
-    }
-
-  } else {
+  // // IF player already exists, update record, else create a new one
+  // if ( count($wpdb->get_results("SELECT * FROM vroregon_players WHERE user_id = " . $current_uid)) > 0 ) {
+  //
+  //   //Create a new array that will hold all the arguments to create a new visselpipan suggestion
+  //   if ($wpdb->update( 'vroregon_players', array( 'player' => $str_json ), array( 'user_id' => $current_uid ) ) == false){
+  //     echo json_encode(array('msg' => 'failed in save player'));
+  //   } else {
+  //     // Enconde the array into json and return it to the js
+  //     echo json_encode(array('msg' => 'success'));
+  //   }
+  //
+  // } else {
 
     $newPlayer = array();
     $newPlayer['user_id'] = $current_uid;
@@ -274,7 +274,7 @@ function save_player(){
       echo json_encode(array('msg' => 'success!'));
     }
 
-  }
+  // }
 
   // Quit the function
   die();

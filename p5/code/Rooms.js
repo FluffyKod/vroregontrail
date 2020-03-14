@@ -110,9 +110,9 @@ jQuery.ajax({
       // rooms = []
       if(data){
         data.forEach(r => {
-        var newRoom = new Room(r.x, r.y, r.mainText, r.options);
-        rooms.push( newRoom );
-      });
+          var newRoom = new Room(r.x, r.y, r.mainText, r.options);
+          rooms.push( newRoom );
+        });
       }
 
       callback(rooms);
