@@ -1,26 +1,43 @@
-function loadRooms(callback){
+function saveRooms(roomsToSave) {
 
-  // function reqListener () {
-  //     console.log(this.responseText);
-  //   }
+  // console.log(roomsToSave);
+  var roomsString = JSON.stringify(roomsToSave);
+  console.log('saveRooms string: ', roomsString);
+
+  // jQuery.ajax({
+  //     url: '/wp-admin/admin-ajax.php',
+  //     type: 'post',
+  //     dataType: 'json',
+  //     data: { action: 'save_rooms', roomsString: roomsString },
+  //     success: function(response) {
+  //       console.log('in success');
+  //       console.log(response);
   //
-  //   var oReq = new XMLHttpRequest(); // New request object
-  //   oReq.onload = function() {
-  //       // This is where you handle what to do with the response.
-  //       // The actual data is found on this.responseText
-  //       alert(this.responseText); // Will alert: 42
-  //   };
-  //   oReq.open("get", "rooms.php", true);
-  //   //                               ^ Don't block the rest of the execution.
-  //   //                                 Don't wait until the request finishes to
-  //   //                                 continue.
-  //   oReq.send();
+  //     }
+  // });
+
+  jQuery.ajax({
+      url: '/wp-admin/admin-ajax.php',
+      type: 'post',
+      dataType: 'json',
+      data: { action: 'save_rooms', rooms_string: roomsString },
+      success: function(data) {
+
+        // rooms = []
+        console.log(data);
+
+      }
+  });
+
+}
+
+function loadRooms(callback){
 
 testRooms = [
 
   new Room(0, 0, 'you wake up on a... TEST ROOMS', [
     {
-      text: 'option 1 herre',
+      text: 'option 1 is here',
       cmd: 'tp',
       values: [12, 40]
     },
@@ -85,17 +102,7 @@ testRooms = [
   ])
 ]  //slut på rooms arrayn
 
-// var roomsString = JSON.stringify(rooms);
-//
-// request= new XMLHttpRequest()
-// request.open("POST", "/game", true)
-// request.setRequestHeader("Content-type", "application/json")
-// request.send(roomsString)
-
-// console.log(roomsString);
-// roomsString_parsed = JSON.parse(roomsString);
-// console.log(roomsString_parsed);
-
+saveRooms(testRooms);
 var rooms = new Array();
 
 // callback(testRooms)
@@ -107,54 +114,15 @@ jQuery.ajax({
     data: { action: 'fetch_rooms' },
     success: function(data) {
 
-      console.log('back!');
-
       rooms = []
-      // if(data){
-        data.forEach(r => {
-          var newRoom = new Room(r.x, r.y, r.mainText, r.options);
-          rooms.push( newRoom );
-        });
+      data.forEach(r => {
+        var newRoom = new Room(r.x, r.y, r.mainText, r.options);
+        rooms.push( newRoom );
+      });
 
-      console.log(rooms);
-      //
       callback(rooms);
 
     }
 });
-
-}
-
-function saveRooms(roomsToSave) {
-  console.log('in save rooms');
-
-  // console.log(roomsToSave);
-  var roomsString = JSON.stringify(roomsToSave);
-  console.log('saveRooms string: ', roomsString);
-
-  // jQuery.ajax({
-  //     url: '/wp-admin/admin-ajax.php',
-  //     type: 'post',
-  //     dataType: 'json',
-  //     data: { action: 'save_rooms', roomsString: roomsString },
-  //     success: function(response) {
-  //       console.log('in success');
-  //       console.log(response);
-  //
-  //     }
-  // });
-
-  jQuery.ajax({
-      url: '/wp-admin/admin-ajax.php',
-      type: 'post',
-      dataType: 'json',
-      data: { action: 'save_rooms', rooms_string: roomsString },
-      success: function(data) {
-
-        // rooms = []
-        console.log(data);
-
-      }
-  });
 
 }
