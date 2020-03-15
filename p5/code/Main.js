@@ -57,7 +57,7 @@ function setup(){
     // Create the player
     player = new player();
     currentRoom = findRoomWithPlayer();
-    
+
 
     // Set id for the displayed options
     displayedOptions.push(new option('#option-1'));
@@ -264,8 +264,8 @@ function option(ref){
         // Check that there are enough values
         if (this.values.length >= 2) {
           write = true;
-          player.x = this.values[0];
-          player.y = this.values[1];
+          player.x = Number(this.values[0]);
+          player.y = Number(this.values[1]);
           currentRoom = findRoomWithPlayer();
 
         } else {
