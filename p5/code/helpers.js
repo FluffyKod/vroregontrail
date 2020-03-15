@@ -70,14 +70,14 @@ function saveRooms(roomsToSave) {
 
 }
 
-function loadRooms(callback){
+function loadRooms(area, callback){
 
     sampleRooms = [
 
       new Room(0, 0, 'You wake up on a sandy beach', [
         {
           text: 'Go right',
-          cmd: 'tp',
+          cmd: 'move',
           values: [0, 1]
         },
         {
@@ -116,11 +116,14 @@ function loadRooms(callback){
     if (response.rooms == false){
       // Save the test rooms instead
       //saveRooms(sampleRooms);
-      return false
+
     }
 
     rooms = []
     parsedRooms = JSON.parse(response.rooms);
+
+    // ONly get the rooms for the specified area
+    //areaRooms = getAreaRooms(parsedRooms, area);
 
     parsedRooms.forEach(room => {
       var newRoom = new Room(room.x, room.y, room.mainText, room.options);
@@ -131,4 +134,37 @@ function loadRooms(callback){
 
   })
 
+}
+
+////////////////////////////////////////////
+// GET CORRECT AREA
+////////////////////////////////////////////
+function getAreaRooms(allRooms, area) {
+  switch (area) {
+
+    case 'test':
+      return allRooms.test
+
+    case 'intro':
+      return allRooms.intro
+
+    case 'highlands':
+      return allRooms.highlands
+
+    case 'bog':
+      return allRooms.bog
+
+    case 'city':
+      return allRooms.city
+
+    case 'mountain':
+      return allRooms.mountain
+
+    case 'core':
+      return allRooms.core
+
+    default:
+      return Array()
+
+  }
 }

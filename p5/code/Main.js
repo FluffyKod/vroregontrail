@@ -15,6 +15,7 @@ let drawCanvas;
 
 var player;
 let currentRoom;
+let currentArea = 'test';
 
 let define = true;
 let clearVar = false;
@@ -40,7 +41,8 @@ let timer;
 
 function setup(){
 
-  loadRooms(function(returnedRooms) {
+  // Get all saved rooms from the database
+  loadRooms(currentArea, function(returnedRooms) {
     rooms = returnedRooms;
 
     defineCanvas();
@@ -58,7 +60,6 @@ function setup(){
     player = new player();
     currentRoom = findRoomWithPlayer();
 
-
     // Set id for the displayed options
     displayedOptions.push(new option('#option-1'));
     displayedOptions.push(new option('#option-2'));
@@ -66,19 +67,12 @@ function setup(){
     displayedOptions.push(new option('#option-4'));
     displayedOptions.push(new option('#option-5'));
 
-
     textbox = select('#textbox');
     textbox.html("")
 
   });
 
 }
-
-////////////////////////////////////////////
-// ROOMS TO DATABASE FUNCTIONALITY
-////////////////////////////////////////////
-
-// Call saveRooms() to update the database with the new rooms, this functionality lies in rooms.js file
 
 ////////////////////////////////////////////
 // MAIN GAME LOOP
