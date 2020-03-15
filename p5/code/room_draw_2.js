@@ -36,6 +36,7 @@ let connectionColors;
 
 function setup(){
 
+  // Get rooms array
   roomArrays = {//kanske konstigt att kalla det sprites
     test: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
     intro: {rooms: [], sprites: [], lightColor: color(214), darkColor: color(51)},
@@ -45,6 +46,7 @@ function setup(){
     mountain: {rooms: [], sprites: [], lightColor: color(135,222,224), darkColor: color(64,106,107)},
     core: {rooms: [], sprites: [], lightColor: color(145, 42, 42), darkColor: color(36, 35, 35)}
   }
+
   activeArea = roomArrays.test;
   activeRoomArray = activeArea.rooms;
   activeRoomSpriteArray = activeArea.sprites;
@@ -71,9 +73,6 @@ function setup(){
   generalGuiParent.onmouseleave = function(){guiMouseIsOver = false;}
 
   createGeneralGui();
-
-
-
 
 }
 
@@ -422,7 +421,8 @@ function createGeneralGui(){
     showCoordinatesHighlight = value;
   });
   generalGui.addButton('upload', function(){
-    // TODO: spara nuvarande arrays till servern
+    // TODO: spara nuvarande arrays till databasen
+    saveRooms(roomArrays.test.rooms);
   })
 
 }
