@@ -197,14 +197,19 @@ function fetch_rooms(){
   // Access the wordpress database functions
   global $wpdb;
 
+  $room_amount = count( $wpdb->get_results("SELECT * FROM vroregon_rooms") );
+
+  // Check if there is a record saved
+  if ( $room_amount == 0 ) {
+    echo json_encode( array('rooms' => false) );
+    die();
+  }
+
   // Get the rooms stored in the database in a long string
-  $rooms_string = $wpdb->get_var('SELECT rooms FROM vroregon_testrooms');
+  $rooms_string = $wpdb->get_var('SELECT rooms FROM vroregon_rooms');
 
-  // Create an array by decoding the string
-  $rooms_array = json_decode($rooms_string, true);
-
-  // Enconde the array into json and return it to the js
-  echo json_encode($rooms_array);
+  // Send the array back
+  echo json_encode( array('rooms' => $rooms_string) );
 
   // Quit the function
   die();
@@ -220,20 +225,30 @@ function save_rooms(){
   global $wpdb;
 
   // Get the rooms stored in the database in a long string
-  $str_json = $_POST['rooms_string'];
-  $str_json = stripslashes($str_json);
+  $rooms_string = $_POST['rooms_string'];
+  $rooms_string = stripslashes($rooms_string);
 
-  // $room = array();
-  // $room['rooms'] = $str_json;
-  // $room['id'] = 1;
-  // $wpdb->insert('vroregon_testrooms', $room);
+  // Check if some rooms have been saved
+  $room_amount = count( $wpdb->get_results("SELECT * FROM vroregon_rooms") );
 
-  //Create a new array that will hold all the arguments to create a new visselpipan suggestion
-  if ($wpdb->update( 'vroregon_testrooms', array( 'rooms' => $str_json ), array( 'id' => 1 ) ) == false){
-    echo json_encode(array('msg' => 'failed'));
+  // Check if there is a record saved
+  if ( $room_amount == 0 ) {
+    // Create a new record and insert the room string
+    $newRooms = array();
+    $newRooms['id'] = 1;
+    $newRooms['rooms'] = $rooms_string;
+
+    insert_record( 'vroregon_rooms', $newRooms, 'Failed to insert a new rooms row in save_rooms() in functions.php' );
+
+    echo json_encode( array('message' => 'Inserted a new rooms row') );
+
   } else {
-    // Enconde the array into json and return it to the js
-    echo json_encode(array('msg' => 'success'));
+
+    // Update the existing rooms row
+    update_record( 'vroregon_rooms', 'rooms', $rooms_string, 'id', 1 );
+
+    echo json_encode( array('message' => 'Updated rooms row') );
+
   }
 
   //Quit the function
@@ -251,35 +266,31 @@ function save_player(){
   global $wpdb;
 
   // Get the rooms stored in the database in a long string
-  $str_json = $_POST['player_string'];
-  $str_json = stripslashes($str_json);
+  $player_string = $_POST['player_string'];
+  $player_string = stripslashes($player_string);
 
+  // Get the current user id
   $current_uid = get_current_user_id();
 
-  // // IF player already exists, update record, else create a new one
-  // if ( count($wpdb->get_results("SELECT * FROM vroregon_players WHERE user_id = " . $current_uid)) > 0 ) {
-  //
-    //Create a new array that will hold all the arguments to create a new visselpipan suggestion
-    if ($wpdb->update( 'vroregon_players', array( 'player' => $str_json ), array( 'user_id' => $current_uid ) ) == false){
-      echo json_encode(array('msg' => 'failed in save player'));
-    } else {
-      // Enconde the array into json and return it to the js
-      echo json_encode(array('msg' => 'success'));
-    }
-  //
-  // } else {
+  // Check if a player object already exists
+  if ( !check_if_entry_exists( 'vroregon_players', 'user_id', $current_uid ) ) {
 
-    // $newPlayer = array();
-    // $newPlayer['user_id'] = $current_uid;
-    // $newPlayer['player'] = $str_json;
-    //
-    // if ($wpdb->insert( 'vroregon_players', $newPlayer ) == false ){
-    //   echo json_encode(array('msg' => 'failed in save player add instert new record'));
-    // } else {
-    //   echo json_encode(array('msg' => 'success!'));
-    // }
+    // Create new player entry
+    $savedPlayer = array();
+    $savedPlayer['user_id'] = $current_uid;
+    $savedPlayer['player'] = $player_string;
 
-  // }
+    // Insert it into the database
+    insert_record( 'vroregon_players', $savedPlayer, 'Failed to insert a new saved player in functions.php save_player()' );
+    echo json_encode( array('message' => 'inserted a new player record') );
+
+  } else {
+
+    // Update the player class
+    update_record( 'vroregon_players', 'player', $player_string, 'user_id', $current_uid );
+    echo json_encode( array('message' => 'updated the record') );
+
+  }
 
   // Quit the function
   die();
@@ -292,17 +303,25 @@ function get_saved_player() {
 
   global $wpdb;
 
-  $u_id = get_current_user_id();
-  if ( $u_id == 0){
+  $current_uid = get_current_user_id();
+  if ( $current_uid == 0){
     echo json_encode( array('error' => 'no user id') );
   } else {
 
-    // Get
-    $test = 'test';
+    // Check if there is a saved player
+    if (check_if_entry_exists( 'vroregon_players', 'user_id', $current_uid )) {
+        // Get the player
+        $saved_player = $wpdb->get_var('SELECT player FROM vroregon_players WHERE user_id = '. $current_uid);
+
+        // Return it
+        echo json_encode( array('player' => $saved_player) );
+    } else {
+
+      echo json_encode( array('player' => false) );
+
+    }
 
   }
-
-  echo json_encode( array('player' => 'hejhej') );
 
   die();
 

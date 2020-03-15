@@ -57,7 +57,7 @@ function setup(){
     // Create the player
     player = new player();
     currentRoom = findRoomWithPlayer();
-    
+
 
     // Set id for the displayed options
     displayedOptions.push(new option('#option-1'));
@@ -397,47 +397,4 @@ function findRoomWithPlayer(){
       break;
     }
   }
-}
-
-////////////////////////////////////////////
-// SAVE PLAYER OPTIONS TO DATABASE
-////////////////////////////////////////////
-function savePlayer() {
-
-  console.log('in save player');
-  var playerString = JSON.stringify(player);
-  console.log('savePlayers string: ', playerString);
-
-  jQuery.ajax({
-      url: '/wp-admin/admin-ajax.php',
-      type: 'post',
-      dataType: 'json',
-      data: { action: 'save_player', player_string: playerString },
-      success: function(data) {
-
-        console.log(data);
-
-      }
-  });
-
-}
-
-function getPlayer() {
-
-  jQuery.ajax({
-      url: '/wp-admin/admin-ajax.php',
-      type: 'post',
-      dataType: 'json',
-      data: { action: 'get_saved_player' },
-      success: function(data) {
-
-        // Update player data
-        print(data);
-
-        // Update text box
-        // write = true;
-        // drawTextbox();
-      }
-  });
-
 }

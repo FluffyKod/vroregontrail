@@ -23,9 +23,9 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.sound.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.play.js"></script>
 
+    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/rooms.php"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Rooms.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ernst-running.js"></script>
@@ -41,6 +41,7 @@
   <body>
 
       <button type="button" name="button" onclick="savePlayer()">Save player</button>
+      <button type="button" name="button" onclick="getPlayer()">Get player</button>
 
       <div id="grandparent">
         <img src="<?php echo get_bloginfo('template_directory') ?>/p5/code/test.png" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">

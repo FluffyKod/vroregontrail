@@ -296,7 +296,7 @@ function vro_setup() {
   * VROREGON
   *****************************************/
 
-  $table_name = 'vroregon_testrooms';
+  $table_name = 'vroregon_rooms';
 
   $sql_regon = 'CREATE TABLE ' . $table_name . '(
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
