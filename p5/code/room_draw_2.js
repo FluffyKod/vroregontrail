@@ -10,13 +10,10 @@ let activeOptionGui;
 
 let colors = {};
 
-<<<<<<< HEAD
-=======
 let ableToCreateRoom;
 
 
 
->>>>>>> 358c90fdb6539c60a5065ee56281bfb2a481b9f2
 let roomArrays;
 let activeArea;
 let activeRoomArray;
