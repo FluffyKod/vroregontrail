@@ -84,7 +84,6 @@ function draw(){
   drawZeroIndicator();
   drawSprites();
   drawConnections();
-
   highlightOverMouse();// borde bara göras där det går
 
 }
