@@ -71,16 +71,16 @@ function saveRooms(roomsToSave) {
 }
 
 function saveSprites(spritesToSave) {
-  console.log(spritesToSave)
-  // var spritesString = JSON.stringify(spritesToSave);
-  // parameters = {
-  //   action: 'save_sprites',
-  //   rooms_string: spritesString
-  // }
-  //
-  // sendAjax(parameters, function(response) {
-  //   console.log(response);
-  // })
+  
+  var spritesString = JSON.stringify(spritesToSave);
+  parameters = {
+    action: 'save_sprites',
+    rooms_string: spritesString
+  }
+
+  sendAjax(parameters, function(response) {
+    console.log(response);
+  })
 }
 
 function loadRooms(area, callback){

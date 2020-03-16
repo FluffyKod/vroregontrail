@@ -26,7 +26,7 @@
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/p5.min.js"></script>
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.dom.min.js"></script>
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.sound.min.js"></script>
-        <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.play.js"></script>
+        <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.play_room_draw.js"></script>
 
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/quicksettings.js"></script>
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.gui.js"></script>

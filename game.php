@@ -24,7 +24,6 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.play.js"></script>
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/rooms.php"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>

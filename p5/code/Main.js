@@ -162,10 +162,9 @@ function keyPressed(){
     textbox = select('#textbox');
     textbox.html("")
     counter = 0;
-    displayedOptions[currentoption].command();
+    displayedOptions[currentoption].runCommand();
     currentoption = 0;
     load = false;
-
 
     }
   if(keyCode == SHIFT && !soundEnabled){
@@ -203,7 +202,7 @@ function option(ref){
   this.text = 'test';
   this.ref.html(this.text);
 
-  this.cmd;
+  this.command;
   this.values;
 
   this.highlight = function(){
@@ -219,10 +218,10 @@ function option(ref){
       this.ref.style('color','#fff');
 
   }
-  this.command = function() {
+  this.runCommand = function() {
 
       // Give player an item
-      if(this.cmd == 'item'){
+      if(this.command == 'item'){
         // Check that there are enough values
         if (this.values.length >= 1) {
           player.invertory.push(this.values[0]);
@@ -233,7 +232,7 @@ function option(ref){
       }
 
       // Start a new game
-      if(this.cmd == 'encounter'){
+      if(this.command == 'encounter'){
 
         // Check that there are enough values
         if (this.values.length >= 2) {
@@ -253,7 +252,7 @@ function option(ref){
       }
 
       // Move player to new location
-      if(this.cmd == 'move'){
+      if(this.command == 'move'){
 
         // Check that there are enough values
         if (this.values.length >= 2) {
@@ -261,17 +260,16 @@ function option(ref){
           player.x = Number(this.values[0]);
           player.y = Number(this.values[1]);
           currentRoom = findRoomWithPlayer();
-
         } else {
           console.log('ERROR: Not enough values supplied to move command');
         }
 
       }
 
-      // if(this.cmd == 'stat'){
+      // if(this.command == 'stat'){
       //
       // }
-      if(this.cmd == 'info'){
+      if(this.command == 'info'){
 
         // Check that there are enough values
         if (this.values.length >= 1) {
@@ -313,7 +311,7 @@ function Room( x, y, mainText, options ){
       // Set the displayed text on option
       displayedOptions[i].ref.html(this.options[i].text);
 
-      displayedOptions[i].cmd = this.options[i].cmd;
+      displayedOptions[i].command = this.options[i].command;
 
       displayedOptions[i].values = this.options[i].values;
 
@@ -323,12 +321,14 @@ function Room( x, y, mainText, options ){
 }
 
   function typing(divId, inputtext){
+
     this.divId = divId;
 
     if (counter < inputtext.length) {
       document.getElementById(this.divId).innerHTML += inputtext.charAt(counter);
       counter++
-
+    } else {
+      write = false;
     }
 
   }
@@ -362,25 +362,39 @@ function defineCanvas(){
 
 
 function drawTextbox(){
+
+  // ALL OF THIS IS CALLED SEVERAL TIMES A SECOND: NEED FOR LOOPS EVERY TIME??
+
   for (var i = 0; i < displayedOptions.length; i++) {
     displayedOptions[i].unhighlight();
   }
+  
   if(keypressed && timer < 600){
     timer++;
     displayedOptions[currentoption].highlight();
   }
 
+  // IT WORKS WITHOUT THE CODE BELOW
+  // for (var i = 0; i < rooms.length; i++) {
+  //   if(write){
+  //     typing("textbox", rooms[i].mainText);
+  //   }
+  //   if(!load && currentRoom){
+  //     currentRoom.load();
+  //     load = true;
+  //   }
+  //
+  // }
 
-  for (var i = 0; i < rooms.length; i++) {
-    if(write){
-      typing("textbox", rooms[i].mainText);
-    }
-    if(!load && currentRoom){
-      currentRoom.load();
-      load = true;
-    }
-
+  if (write) {
+    typing('textbox', currentRoom.mainText);
   }
+
+  if(!load && currentRoom){
+    currentRoom.load();
+    load = true;
+  }
+
 
 }
 
