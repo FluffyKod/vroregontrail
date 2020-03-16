@@ -12,8 +12,6 @@ let colors = {};
 
 let ableToCreateRoom;
 
-
-
 let roomArrays;
 let activeArea;
 let activeRoomArray;
@@ -37,50 +35,69 @@ let connectionColors;
 function setup(){
 
   // Get rooms array
-  roomArrays = {//kanske konstigt att kalla det sprites
-    test: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
-    intro: {rooms: [], sprites: [], lightColor: color(214), darkColor: color(51)},
-    highlands: {rooms: [], sprites: [], lightColor: color(208, 240, 156), darkColor: color(73, 117, 52)},
-    bog: {rooms: [], sprites: [], lightColor: color(189, 172, 157), darkColor: color(66, 46, 33)},
-    city: {rooms: [], sprites: [], lightColor: color(212, 207, 178), darkColor: color(120, 108, 41)},
-    mountain: {rooms: [], sprites: [], lightColor: color(135,222,224), darkColor: color(64,106,107)},
-    core: {rooms: [], sprites: [], lightColor: color(145, 42, 42), darkColor: color(36, 35, 35)}
-  }
+  loadRooms('all', function(returnedRooms) {
+    // No rooms were found, set a default blank
+    if (returnedRooms.length == 0){
+      roomArrays = {//kanske konstigt att kalla det sprites
+        test: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
+        intro: {rooms: [], sprites: [], lightColor: color(214), darkColor: color(51)},
+        highlands: {rooms: [], sprites: [], lightColor: color(208, 240, 156), darkColor: color(73, 117, 52)},
+        bog: {rooms: [], sprites: [], lightColor: color(189, 172, 157), darkColor: color(66, 46, 33)},
+        city: {rooms: [], sprites: [], lightColor: color(212, 207, 178), darkColor: color(120, 108, 41)},
+        mountain: {rooms: [], sprites: [], lightColor: color(135,222,224), darkColor: color(64,106,107)},
+        core: {rooms: [], sprites: [], lightColor: color(145, 42, 42), darkColor: color(36, 35, 35)}
+      }
+    } else {
+      // Set the roomsArray to the returned rooms
+      // roomsArray = returnedRooms
+      roomArrays = {//kanske konstigt att kalla det sprites
+        test: {rooms: returnedRooms, sprites: [], lightColor: color(255), darkColor: color(51)},
+        intro: {rooms: [], sprites: [], lightColor: color(214), darkColor: color(51)},
+        highlands: {rooms: [], sprites: [], lightColor: color(208, 240, 156), darkColor: color(73, 117, 52)},
+        bog: {rooms: [], sprites: [], lightColor: color(189, 172, 157), darkColor: color(66, 46, 33)},
+        city: {rooms: [], sprites: [], lightColor: color(212, 207, 178), darkColor: color(120, 108, 41)},
+        mountain: {rooms: [], sprites: [], lightColor: color(135,222,224), darkColor: color(64,106,107)},
+        core: {rooms: [], sprites: [], lightColor: color(145, 42, 42), darkColor: color(36, 35, 35)}
+      }
+    }
 
-  activeArea = roomArrays.test;
-  activeRoomArray = activeArea.rooms;
-  activeRoomSpriteArray = activeArea.sprites;
+    activeArea = roomArrays.test;
+    activeRoomArray = activeArea.rooms;
+    activeRoomSpriteArray = activeArea.sprites;
 
-  colors =
-  {
-    activeFillColor: color(255),
-    activeStrokeColor: color(51),
-    highlight: color(255,255,255,25),
-    inactiveFillColor: color(51),
-    inactiveStrokeColor: color(255)
-  };
+    colors =
+    {
+      activeFillColor: color(255),
+      activeStrokeColor: color(51),
+      highlight: color(255,255,255,25),
+      inactiveFillColor: color(51),
+      inactiveStrokeColor: color(255)
+    };
 
-  connectionColors = [color(255, 0, 0), color(255, 255, 0), color(0, 255, 0), color(0, 255, 255), color(0, 0, 255)];
+    connectionColors = [color(255, 0, 0), color(255, 255, 0), color(0, 255, 0), color(0, 255, 255), color(0, 0, 255)];
 
-  createCanvas(canvasSize.width, canvasSize.height);
+    createCanvas(canvasSize.width, canvasSize.height);
 
-  guiParent = document.getElementById('guiBackground');
-  guiParent.onmouseenter = function(){guiMouseIsOver = true;}
-  guiParent.onmouseleave = function(){guiMouseIsOver = false;}
+    guiParent = document.getElementById('guiBackground');
+    guiParent.onmouseenter = function(){guiMouseIsOver = true;}
+    guiParent.onmouseleave = function(){guiMouseIsOver = false;}
 
-  generalGuiParent = document.getElementById('generalGuiBackground');
-  generalGuiParent.onmouseenter = function(){guiMouseIsOver = true;}
-  generalGuiParent.onmouseleave = function(){guiMouseIsOver = false;}
+    generalGuiParent = document.getElementById('generalGuiBackground');
+    generalGuiParent.onmouseenter = function(){guiMouseIsOver = true;}
+    generalGuiParent.onmouseleave = function(){guiMouseIsOver = false;}
 
-  createGeneralGui();
+    createGeneralGui();
+
+    draw();
+
+  }); // End load rooms
 
 }
 
 function draw(){
 
-
-
   background(activeArea.darkColor);
+
   drawZeroIndicator();
   drawSprites();
   drawConnections();
