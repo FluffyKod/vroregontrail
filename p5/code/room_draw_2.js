@@ -353,12 +353,14 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
       roomSprite.optionGuis[j].setValue("option_text", this.inputRoomArray.options[j].text);
       roomSprite.optionGuis[j].setValue("option_command", this.inputRoomArray.options[j].command);
       for (var k = 0; k < this.inputRoomArray.options[j].length; k++) {
-        this.inputRoomArray.options[j].commands[k]
+        roomSprite.gui.setValue("command_value_"+k, String(this.inputRoomArray.options[j].values[k]));
+
       }
     }
     this.SpriteArray.push(roomSprite);
 
   }
+  return this.SpriteArray;
 
 
 }
