@@ -89,7 +89,6 @@ function draw(){
   drawZeroIndicator();
   drawSprites();
   drawConnections();
-
   highlightOverMouse();// borde bara göras där det går
 
 }
@@ -308,7 +307,7 @@ function saveRoom(){
 
     ])
     //save option object
-    for (var i = 0; i < activeRoom.optionGuis.length; i++) {
+    for (var i = 0; i < activeRoom.gui.getValue('option_amount'); i++) {
       option = {
         text: activeRoom.optionGuis[i].getValue('option_text'),
         command: activeRoom.optionGuis[i].getValue('option_command').value,
