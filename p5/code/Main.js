@@ -317,7 +317,7 @@ function Room( x, y, mainText, options ){
 
       displayedOptions[i].values = this.options[i].values;
 
-  }
+    }
 
   }
 }

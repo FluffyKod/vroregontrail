@@ -206,10 +206,17 @@ function fetch_rooms(){
   }
 
   // Get the rooms stored in the database in a long string
-  $rooms_string = $wpdb->get_var('SELECT rooms FROM vroregon_rooms');
+  $rooms_string = $wpdb->get_var('SELECT rooms FROM vroregon_rooms WHERE id = 1');
+
+  $sprite_string = false;
+
+  // Check if there is a record saved
+  if ( $room_amount == 2 ) {
+    $sprite_string = $wpdb->get_var('SELECT rooms FROM vroregon_rooms WHERE id = 2');
+  }
 
   // Send the array back
-  echo json_encode( array('rooms' => $rooms_string) );
+  echo json_encode( array('rooms' => $rooms_string, 'sprites' => $sprite_string) );
 
   // Quit the function
   die();
@@ -218,7 +225,7 @@ function fetch_rooms(){
 
 // the ajax function
 add_action('wp_ajax_save_rooms' , 'save_rooms');
-add_action('wp_ajax_nopriv_fetch_rooms','save_rooms');
+add_action('wp_ajax_nopriv_save_rooms','save_rooms');
 function save_rooms(){
 
   // Access the wordpress database functions
@@ -229,7 +236,7 @@ function save_rooms(){
   $rooms_string = stripslashes($rooms_string);
 
   // Check if some rooms have been saved
-  $room_amount = count( $wpdb->get_results("SELECT * FROM vroregon_rooms") );
+  $room_amount = count( $wpdb->get_results("SELECT * FROM vroregon_rooms WHERE id = 1") );
 
   // Check if there is a record saved
   if ( $room_amount == 0 ) {
@@ -248,6 +255,46 @@ function save_rooms(){
     update_record( 'vroregon_rooms', 'rooms', $rooms_string, 'id', 1 );
 
     echo json_encode( array('message' => 'Updated rooms row') );
+
+  }
+
+  //Quit the function
+  die();
+
+}
+
+// the ajax function
+add_action('wp_ajax_save_sprites' , 'save_sprites');
+add_action('wp_ajax_nopriv_save_sprites','save_sprites');
+function save_sprites(){
+
+  // Access the wordpress database functions
+  global $wpdb;
+
+  // Get the rooms stored in the database in a long string
+  $sprite_string = $_POST['sprite_string'];
+  $sprite_string = stripslashes($sprite_string);
+
+  // Check if some rooms have been saved
+  $sprite_amount = count( $wpdb->get_results("SELECT * FROM vroregon_rooms WHERE id = 2") );
+
+  // Check if there is a record saved
+  if ( $sprite_amount == 0 ) {
+    // Create a new record and insert the room string
+    $newSprite = array();
+    $newSprite['id'] = 2;
+    $newSprite['rooms'] = $sprite_string;
+
+    insert_record( 'vroregon_rooms', $newSprite, 'Failed to insert a new sprite row in save_sprites() in functions.php' );
+
+    echo json_encode( array('message' => 'Inserted a new sprite row') );
+
+  } else {
+
+    // Update the existing rooms row
+    update_record( 'vroregon_rooms', 'rooms', $sprite_string, 'id', 2 );
+
+    echo json_encode( array('message' => 'Updated sprite row') );
 
   }
 

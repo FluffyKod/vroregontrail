@@ -70,6 +70,19 @@ function saveRooms(roomsToSave) {
 
 }
 
+function saveSprites(spritesToSave) {
+  console.log(spritesToSave)
+  // var spritesString = JSON.stringify(spritesToSave);
+  // parameters = {
+  //   action: 'save_sprites',
+  //   rooms_string: spritesString
+  // }
+  //
+  // sendAjax(parameters, function(response) {
+  //   console.log(response);
+  // })
+}
+
 function loadRooms(area, callback){
 
     sampleRooms = [
@@ -115,8 +128,7 @@ function loadRooms(area, callback){
   sendAjax(parameters, function(response) {
     if (response.rooms == false){
       // Save the test rooms instead
-      //saveRooms(sampleRooms);
-
+      //saveRooms(sampleRooms)
     }
 
     rooms = []
@@ -130,7 +142,12 @@ function loadRooms(area, callback){
       rooms.push( newRoom );
     });
 
-    callback(rooms);
+    if (response.sprites != false){
+      sprites = JSON.parse(response.sprites);
+      callback(rooms, sprites)
+    } else {
+      callback(rooms);
+    }
 
   })
 

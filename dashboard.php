@@ -103,7 +103,7 @@ if (! is_user_logged_in() ){
 
           <!-- show kommitée info -->
           <a href="/panel/kommiteer/" class="box green sm update">
-            <h4>Kommitéer</h4>
+            <h4>Kommittéer</h4>
             <div class="content">
               <img src="<?php echo get_bloginfo('template_directory') ?>/img/folderalert.png" alt="" class="folder">
               <p class="amount" data-content="Nya förfrågningar"><b><?php echo $kommiteer_amount ?></b></p>
