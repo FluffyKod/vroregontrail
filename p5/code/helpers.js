@@ -73,8 +73,8 @@ function saveRooms(roomsToSave) {
 function saveSprites(spriteArrayToSave) {
 
   for (var i = 0; i < spriteArrayToSave.length; i++) {
-    let spriteGuis;
-    console.log(spriteArrayToSave[i].gui);
+    let spriteGuis = {gui: "", optionGuis: []};
+    console.log(spriteArrayToSave[i]);
     spriteGuis.gui = spriteArrayToSave[i].gui.getValuesAsJSON(true);
     spriteArrayToSave[i].gui = spriteGuis.gui;
 

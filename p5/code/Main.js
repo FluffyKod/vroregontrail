@@ -220,18 +220,18 @@ function option(ref){
 
   this.addItemToInventory = function(suppliedValues) {
     // Check if there is enough values
-    if (this.values.length >= 1) {
-      player.invertory.push(this.values[0]);
+    if (suppliedValues.length >= 1) {
+      player.invertory.push(suppliedValues[0]);
     } else {
       console.log('ERROR: Not enough values supplied to item command');
     }
   }
-  this.moveToNewPlace = function() {
+  this.moveToNewPlace = function(suppliedValues) {
     // Check that there are enough values
-    if (this.values.length >= 2) {
+    if (suppliedValues.length >= 2) {
       write = true;
-      player.x = Number(this.values[0]);
-      player.y = Number(this.values[1]);
+      player.x = Number(suppliedValues[0]);
+      player.y = Number(suppliedValues[1]);
       currentRoom = findRoomWithPlayer();
     } else {
       console.log('ERROR: Not enough values supplied to move command');
@@ -276,12 +276,12 @@ function option(ref){
 
       // Give player an item
       if(this.command == 'item'){
-        this.addItemToInventory()
+        this.addItemToInventory(this.values)
       }
 
       // Move player to new location
       if(this.command == 'move'){
-        this.moveToNewPlace()
+        this.moveToNewPlace(this.values)
       }
 
       // Write out info
@@ -300,7 +300,7 @@ function option(ref){
       }
 
       // DOUBLE COMMANDS
-    
+
   }
 
 }
