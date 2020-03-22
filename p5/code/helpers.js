@@ -70,17 +70,33 @@ function saveRooms(roomsToSave) {
 
 }
 
-function saveSprites(spritesToSave) {
-  
-  var spritesString = JSON.stringify(spritesToSave);
-  parameters = {
-    action: 'save_sprites',
-    rooms_string: spritesString
-  }
+function saveSprites(spriteArrayToSave) {
 
-  sendAjax(parameters, function(response) {
-    console.log(response);
-  })
+  for (var i = 0; i < spriteArrayToSave.length; i++) {
+    let spriteGuis;
+    console.log(spriteArrayToSave[i].gui);
+    spriteGuis.gui = spriteArrayToSave[i].gui.getValuesAsJSON(true);
+    spriteArrayToSave[i].gui = spriteGuis.gui;
+
+    spriteGuis.optionGuis = [];
+    for (var j = 0; j < spriteArrayToSave[i].optionGuis.length; j++) {
+      spriteGuis.optionGuis.push(spriteArrayToSave[i].optionGuis[j].getValuesAsJSON(true));
+      spriteArrayToSave[i].optionGuis[j] = spriteGuis.optionGuis[j];
+    }
+  }
+  let spriteString = JSON.stringify(spriteArrayToSave);
+
+  console.log(spriteArrayToSave);
+  console.log(spriteString);
+
+  // parameters = {
+  //   action: 'save_sprites',
+  //   rooms_string: spritesString
+  // }
+  //
+  // sendAjax(parameters, function(response) {
+  //   console.log(response);
+  // })
 }
 
 function loadRooms(area, callback){
