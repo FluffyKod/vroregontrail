@@ -216,70 +216,91 @@ function option(ref){
       this.ref.style('background-color','#80a4b2');
       this.ref.style('padding-color', '#80a4b2');
       this.ref.style('color','#fff');
-
   }
+
+  this.addItemToInventory = function(suppliedValues) {
+    // Check if there is enough values
+    if (suppliedValues.length >= 1) {
+      player.invertory.push(suppliedValues[0]);
+    } else {
+      console.log('ERROR: Not enough values supplied to item command');
+    }
+  }
+  this.moveToNewPlace = function(suppliedValues) {
+    // Check that there are enough values
+    if (suppliedValues.length >= 2) {
+      write = true;
+      player.x = Number(suppliedValues[0]);
+      player.y = Number(suppliedValues[1]);
+      currentRoom = findRoomWithPlayer();
+    } else {
+      console.log('ERROR: Not enough values supplied to move command');
+    }
+  }
+  this.writeInfo = function() {
+    // Check that there are enough values
+    if (this.values.length >= 1) {
+      textbox.html(this.values[0]);
+      write = false;
+    } else {
+      console.log('ERROR: Not enough values supplied to info command');
+    }
+  }
+  this.switchToArea = function() {
+    if (this.values.length >= 1) {
+      currentArea = this.values[0];
+    } else {
+      console.log('ERROR: Not enough values supplied to switcharea command');
+    }
+  }
+  this.doEncounter = function() {
+    // Check that there are enough values
+    if (this.values.length >= 2) {
+      current_encounter = this.values[0]
+      define = true;
+      clearVar = false;
+      startSc = true;
+      gameOver = true;
+      score = 0;
+      if(this.values[1]){fr_hard = true;}//slarvigt måste ändras
+      if(!this.values[1]){er_hard = true;}
+      switchToEncounter();
+    } else {
+      console.log('ERROR: Not enough values supplied to encounter command');
+    }
+  }
+
   this.runCommand = function() {
+
+      // SINGLE COMMANDS
 
       // Give player an item
       if(this.command == 'item'){
-        // Check that there are enough values
-        if (this.values.length >= 1) {
-          player.invertory.push(this.values[0]);
-        } else {
-          console.log('ERROR: Not enough values supplied to item command');
-        }
-
-      }
-
-      // Start a new game
-      if(this.command == 'encounter'){
-
-        // Check that there are enough values
-        if (this.values.length >= 2) {
-          current_encounter = this.values[0]
-          define = true;
-          clearVar = false;
-          startSc = true;
-          gameOver = true;
-          score = 0;
-          if(this.values[1]){fr_hard = true;}//slarvigt måste ändras
-          if(!this.values[1]){er_hard = true;}
-          switchToEncounter();
-        } else {
-          console.log('ERROR: Not enough values supplied to encounter command');
-        }
-
+        this.addItemToInventory(this.values)
       }
 
       // Move player to new location
       if(this.command == 'move'){
-
-        // Check that there are enough values
-        if (this.values.length >= 2) {
-          write = true;
-          player.x = Number(this.values[0]);
-          player.y = Number(this.values[1]);
-          currentRoom = findRoomWithPlayer();
-        } else {
-          console.log('ERROR: Not enough values supplied to move command');
-        }
-
+        this.moveToNewPlace(this.values)
       }
 
-      // if(this.command == 'stat'){
-      //
-      // }
+      // Write out info
       if(this.command == 'info'){
-
-        // Check that there are enough values
-        if (this.values.length >= 1) {
-          textbox.html(this.values[0]);
-          write = false;
-        } else {
-          console.log('ERROR: Not enough values supplied to info command');
-        }
-
+        this.writeInfo()
       }
+
+      // Switch to a new area
+      if (this.command == 'switchArea'){
+        this.switchToArea()
+      }
+
+      // Start a new game
+      if(this.command == 'encounter'){
+        this.doEncounter()
+      }
+
+      // DOUBLE COMMANDS
+
   }
 
 }
@@ -368,7 +389,7 @@ function drawTextbox(){
   for (var i = 0; i < displayedOptions.length; i++) {
     displayedOptions[i].unhighlight();
   }
-  
+
   if(keypressed && timer < 600){
     timer++;
     displayedOptions[currentoption].highlight();
