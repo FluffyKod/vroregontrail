@@ -221,7 +221,7 @@ function option(ref){
   this.addItemToInventory = function(suppliedValues) {
     // Check if there is enough values
     if (suppliedValues.length >= 1) {
-      player.invertory.push(suppliedValues[0]);
+      player.inventory.push(suppliedValues[0]);
     } else {
       console.log('ERROR: Not enough values supplied to item command');
     }
@@ -237,36 +237,55 @@ function option(ref){
       console.log('ERROR: Not enough values supplied to move command');
     }
   }
-  this.writeInfo = function() {
+  this.writeInfo = function(suppliedValues) {
     // Check that there are enough values
-    if (this.values.length >= 1) {
-      textbox.html(this.values[0]);
+    if (suppliedValues.length >= 1) {
+      textbox.html(suppliedValues[0]);
       write = false;
     } else {
       console.log('ERROR: Not enough values supplied to info command');
     }
   }
-  this.switchToArea = function() {
-    if (this.values.length >= 1) {
-      currentArea = this.values[0];
+  this.switchToArea = function(suppliedValues) {
+    if (suppliedValues.length >= 1) {
+      currentArea = suppliedValues[0];
     } else {
       console.log('ERROR: Not enough values supplied to switcharea command');
     }
   }
-  this.doEncounter = function() {
+  this.doEncounter = function(suppliedValues) {
     // Check that there are enough values
-    if (this.values.length >= 2) {
-      current_encounter = this.values[0]
+    if (suppliedValues.length >= 2) {
+      current_encounter = suppliedValues[0]
       define = true;
       clearVar = false;
       startSc = true;
       gameOver = true;
       score = 0;
-      if(this.values[1]){fr_hard = true;}//slarvigt måste ändras
-      if(!this.values[1]){er_hard = true;}
+      if(suppliedValues[1]){fr_hard = true;}//slarvigt måste ändras
+      if(!suppliedValues[1]){er_hard = true;}
       switchToEncounter();
     } else {
       console.log('ERROR: Not enough values supplied to encounter command');
+    }
+  }
+  this.giveStat = function(suppliedValues) {
+    if (suppliedValues.length >= 2) {
+      if (suppliedValues[0] == 'intelligence') {
+        player.intellegence += Number(suppliedValues[1])
+      }
+      if (suppliedValues[0] == 'charisma') {
+        player.charisma += Number(suppliedValues[1])
+      }
+      if (suppliedValues[0] == 'grit') {
+        player.grit += Number(suppliedValues[1])
+      }
+      if (suppliedValues[0] == 'kindness') {
+        player.kindness += Number(suppliedValues[1])
+      }
+
+    } else {
+      console.log('ERROR: Not enough values supplied to giveIntelligence command');
     }
   }
 
@@ -286,21 +305,39 @@ function option(ref){
 
       // Write out info
       if(this.command == 'info'){
-        this.writeInfo()
+        this.writeInfo(this.values)
       }
 
       // Switch to a new area
       if (this.command == 'switchArea'){
-        this.switchToArea()
+        this.switchToArea(this.values)
       }
 
       // Start a new game
       if(this.command == 'encounter'){
-        this.doEncounter()
+        this.doEncounter(this.values)
+      }
+
+      // Give stats
+      if(this.command == 'giveStat'){
+        this.giveIntelligence(this.values);
       }
 
       // DOUBLE COMMANDS
+      if(this.command == 'item-move'){
+        this.addItemToInventory(this.values.slice(0, 1));
+        this.moveToNewPlace(this.values.slice(1));
+      }
 
+      if(this.command == 'item-switchArea'){
+        this.addItemToInventory(this.values.slice(0, 1));
+        this.switchToArea(this.values.slice(1));
+      }
+
+      if(this.command == 'stat-move'){
+        this.giveStat(this.values.slice(0, 2));
+        this.switchToArea(this.values.slice(2));
+      }
   }
 
 }
