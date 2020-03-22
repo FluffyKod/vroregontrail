@@ -71,20 +71,23 @@ function saveRooms(roomsToSave) {
 }
 
 function saveSprites(spriteArrayToSave) {
+  console.log('In the function saveSprites');
 
-  for (var i = 0; i < spriteArrayToSave.length; i++) {
+  let spriteArray = spriteArrayToSave;
+
+  for (var i = 0; i < spriteArray.length; i++) {
     let spriteGuis = {gui: "", optionGuis: []};
-    console.log(spriteArrayToSave[i]);
-    spriteGuis.gui = spriteArrayToSave[i].gui.getValuesAsJSON(true);
-    spriteArrayToSave[i].gui = spriteGuis.gui;
+    console.log(spriteArray[i]);
+    spriteGuis.gui = spriteArray[i].gui.getValuesAsJSON(true);
+    spriteArray[i].gui = spriteGuis.gui;
 
     spriteGuis.optionGuis = [];
-    for (var j = 0; j < spriteArrayToSave[i].optionGuis.length; j++) {
-      spriteGuis.optionGuis.push(spriteArrayToSave[i].optionGuis[j].getValuesAsJSON(true));
-      spriteArrayToSave[i].optionGuis[j] = spriteGuis.optionGuis[j];
+    for (var j = 0; j < spriteArray[i].optionGuis.length; j++) {
+      spriteGuis.optionGuis.push(spriteArray[i].optionGuis[j].getValuesAsJSON(true));
+      spriteArray[i].optionGuis[j] = spriteGuis.optionGuis[j];
     }
   }
-  let spriteString = JSON.stringify(spriteArrayToSave);
+  let spriteString = JSON.stringify(spriteArray);
 
   console.log(spriteArrayToSave);
   console.log(spriteString);
