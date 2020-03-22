@@ -295,6 +295,7 @@ function createRoom(x, y){
     activeRoom = roomSprite;
     activeRoom.active = true;
     activeRoomSpriteArray.push(roomSprite);
+    
 
   }
 }
@@ -346,19 +347,22 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
   this.inputRoomArray = inputRoomArray
   this.SpriteArray = [];
   for (var i = 0; i < this.inputRoomArray.length; i++) {
-    createCoordinate = indexToScreenCoordinates(this.inputRoomArray.x, this.inputRoomArray.y);
-    roomSprite = createRoom(createCoordinate.x, createCoordinate.y);
-    roomSprite.gui.setValue("main_text", this.inputRoomArray.mainText);
-    roomSprite.gui.setValue("option_amount", this.inputRoomArray.options.length);
-    for (var j = 0; j < roomSprite.optionGuis.length; j++) {
-      roomSprite.optionGuis[j].setValue("option_text", this.inputRoomArray.options[j].text);
-      roomSprite.optionGuis[j].setValue("option_command", this.inputRoomArray.options[j].command);
+    createCoordinate = indexToScreenCoordinates(this.inputRoomArray[i].x, this.inputRoomArray[i].y);
+    print(createCoordinate);
+    rs = createRoom(createCoordinate.x, createCoordinate.y);
+
+
+    rs.gui.setValue("main_text", this.inputRoomArray.mainText);
+    rs.gui.setValue("option_amount", this.inputRoomArray.options.length);
+    for (var j = 0; j < rs.optionGuis.length; j++) {
+      rs.optionGuis[j].setValue("option_text", this.inputRoomArray.options[j].text);
+      rs.optionGuis[j].setValue("option_command", this.inputRoomArray.options[j].command);
       for (var k = 0; k < this.inputRoomArray.options[j].length; k++) {
-        roomSprite.gui.setValue("command_value_"+k, String(this.inputRoomArray.options[j].values[k]));
+        rs.gui.setValue("command_value_"+k, String(this.inputRoomArray.options[j].values[k]));
 
       }
     }
-    this.SpriteArray.push(roomSprite);
+    this.SpriteArray.push(rs);
 
   }
   return this.SpriteArray;
