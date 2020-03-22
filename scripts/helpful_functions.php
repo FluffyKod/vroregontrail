@@ -457,7 +457,7 @@ function display_karen( $edit = false ){
         <div class="box white chairman sm clickable">
 
         <div class="edit-image">
-          <?php echo get_avatar( $s->ID ); ?>
+          <?php echo get_avatar( $s->student ); ?>
           <?php if ($edit) { ?>
             <button type="button" name="button" class="edit-styrelse" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
           <?php } ?>
@@ -499,11 +499,11 @@ function display_karen( $edit = false ){
 
           <?php if ($edit) { ?>
             <div class="edit-image">
-              <?php echo get_avatar( $u->ID ); ?>
+              <?php echo get_avatar( $u->chairman ); ?>
               <button type="button" name="button" class="edit"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
             </div>
           <?php } else {
-            echo get_avatar( $u->ID );
+            echo get_avatar( $u->chairman );
           } ?>
 
           <h3><?php echo $u->name; ?></h3>
