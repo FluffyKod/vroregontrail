@@ -76,6 +76,7 @@ function setup(){
     // No rooms were found, set a default blank
     if (returnedRooms.length > 0){
       roomArrays.test.rooms = returnedRooms;
+      roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
     }
 
   }); // End load rooms
