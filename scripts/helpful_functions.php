@@ -232,10 +232,10 @@ function getStudentsInYear($year, $students) {
 
   foreach ($students as $s) {
     // check if end year meta data exists
-    if (metadata_exists( 'user', $s->ID, 'end_year' )){
+    if ($s->end_year){
 
       // Get the difference, a.k.a the number of years left for this student
-      $years_left =  get_user_meta($s->ID, 'end_year', true) - $current_year;
+      $years_left =  $s->end_year - $current_year;
 
       // Get the grade they are in. ex. 3 years left means you are a 1:st grader, therefore 4 - 3 = 1, 4 - 2 years left = 2 etc.
       $grade = 4 - $years_left;

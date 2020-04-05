@@ -108,24 +108,23 @@ function data_fetch(){
 
     $keyword = esc_attr( $_POST['keyword'] );
 
-    // Get the number of all members
-    $users = get_users(array(
-      'meta_key' => 'class_id',
-    ));
-
+    // Get all students in vro_users
+    $users = $wpdb->get_results('SELECT * FROM vro_users');
 
     foreach( $users as $u ) {
-      $nickname = get_user_meta($u->ID,'nickname',true);
+      $nickname = $u->first_name . ' ' . $u->last_name;
+
       if (stripos($nickname, $keyword) !== false ) {
 
-        $email = $u->user_email;
+        $email = $u->email;
+
         // Get class name
         $display_class_name = '';
 
         // Check if a class has been set for this student
-        if (metadata_exists('user', $u->ID, 'class_id')){
+        if ($u->class_id){
           // Get the class id
-          $user_class_id = get_user_meta($u->ID, 'class_id', true);
+          $user_class_id = $u->class_id;
 
           // Check if there is a class with that class id
           if ($user_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id='. $user_class_id)) {
@@ -135,19 +134,19 @@ function data_fetch(){
 
         }
 
-        if (get_user_meta($u->ID, 'status', true) == 'y'){ ?>
-          <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#student_<?php echo $u->ID; ?>">
+        if ($u->status == 'y'){ ?>
+          <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#student_<?php echo $u->id; ?>">
             <p class="member">
               <span><?php echo $nickname; ?></span>
               <span><?php echo $email; ?></span>
-              <?php if (metadata_exists( 'user', $u->ID, 'phonenumber' )) : ?>
-                  <span><?php echo get_user_meta($u->ID, 'phonenumber', true); ?></span>
+              <?php if ($u->phonenumber) : ?>
+                  <span><?php echo $u->phonenumber; ?></span>
               <?php endif; ?>
               <span><?php echo $display_class_name; ?></span>
             </p>
           </a>
         <?php } else { ?>
-          <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#student_<?php echo $u->ID; ?>">
+          <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#student_<?php echo $u->id; ?>">
             <p class="not-member">
               <span><?php echo $nickname; ?></span>
               <span><?php echo $email; ?></span>

@@ -82,6 +82,7 @@ if (! is_user_logged_in() ){
           // Add a new row and box for every suggestion
           foreach ($results as $r)
           {
+
             echo '<div class="row">';
               echo '<div class="box white lg">';
                 echo '<div class="see-more">';
@@ -91,6 +92,7 @@ if (! is_user_logged_in() ){
                   echo '</div>';
                 echo '</div>';
 
+                echo '<p><i>Från: '. get_user_meta($r->user_id, 'nickname',true) .'</i></p>';
                 echo '<p>' . $r->text . '</p>';
 
                 echo '<div class="answer" id="' . $r->id .'">';

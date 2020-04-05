@@ -21,9 +21,7 @@ if (isset($_POST['send_message_school'])) {
   } else {
 
     // Get all students
-    $students = get_users(array(
-      'meta_key' => 'class_id'
-    ));
+    $students = $wpdb->get_results('SELECT * FROM vro_users');
 
     // Check if a year has been specified
     if (is_numeric($mail_to)){
@@ -41,7 +39,7 @@ if (isset($_POST['send_message_school'])) {
     // Mail all students the message
     foreach ($students as $s) {
       // Get the students email
-      $email_address = $s->user_email;
+      $email_address = $s->email;
 
       // Check that there is a valid email
       if (filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
@@ -52,7 +50,7 @@ if (isset($_POST['send_message_school'])) {
     }
 
     // Logg action
-    $log_description = 'Skickade mail till ' . $mail_to . ' med ämnet ' . $subject . ' med texten ' . $message[:300];
+    $log_description = 'Skickade mail till ' . $mail_to . ' med ämnet ' . $subject . ' med texten ' . substr($message, 0, 300);
     add_log( 'Mail', $log_description, get_current_user_id() );
 
     header("Location: /panel/dashboard?send_message=success");
@@ -113,7 +111,7 @@ elseif (isset($_POST['send_message_kommitte'])){
     }
 
     // Logg action
-    $log_description = 'Skickade mail till kommittén ' . $k_id . ' med ämnet ' . $subject . ' med texten ' . $message[:300];
+    $log_description = 'Skickade mail till kommittén ' . $k_id . ' med ämnet ' . $subject . ' med texten ' . substr($message, 0, 300);
     add_log( 'Mail', $log_description, get_current_user_id() );
 
     // SUccess
@@ -144,7 +142,7 @@ elseif (isset($_POST['send_mail'])) {
     wp_mail( $mail_to, $subject, $message, $headers );
 
     // Logg action
-    $log_description = 'Skickade mail till ' . $mail_to . ' från '. $mail_from .' med ämnet ' . $subject . ' med texten ' . $message[:300];
+    $log_description = 'Skickade mail till ' . $mail_to . ' från '. $mail_from .' med ämnet ' . $subject . ' med texten ' . substr($message, 0, 300);
     add_log( 'Mail', $log_description, get_current_user_id() );
 
     header("Location: ". $callback ."?send_message=success");
