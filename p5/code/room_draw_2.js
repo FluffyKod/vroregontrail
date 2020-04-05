@@ -76,7 +76,7 @@ function setup(){
     // No rooms were found, set a default blank
     if (returnedRooms.length > 0){
       roomArrays.test.rooms = returnedRooms;
-      roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
+      //roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
     }
 
   }); // End load rooms
@@ -295,7 +295,7 @@ function createRoom(x, y){
     activeRoom = roomSprite;
     activeRoom.active = true;
     activeRoomSpriteArray.push(roomSprite);
-    
+
 
   }
 }
@@ -460,9 +460,6 @@ function createGeneralGui(){
   })
 
 }
-
-
-
 
 function indexToScreenCoordinates(indexX, indexY){
   x = indexX*roomBoxSize+floor(width/2)+roomBoxSize/2
