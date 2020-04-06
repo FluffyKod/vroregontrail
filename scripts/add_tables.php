@@ -33,6 +33,55 @@ function vro_setup() {
   */
 
   /*****************************************
+  * CLASSES
+  *****************************************/
+
+  // Main Kommitee table
+  $table_name = $prefix . 'classes';
+
+  // Set fields
+  $sql_classes = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    points INTEGER(10) UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (id)
+  )';
+
+  createTable($table_name, $sql_classes);
+
+  /*****************************************
+  * vrousers
+  *****************************************/
+
+  $table_name = $prefix . 'users';
+
+  $sql_users = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    birthyear INTEGER(10) UNSIGNED,
+    gender VARCHAR(20) DEFAULT "Annat",
+    registered_city VARCHAR(100) DEFAULT "Stockholm",
+    date_member DATETIME,
+    phonenumber VARCHAR(30),
+    email VARCHAR(50) NOT NULL,
+    program VARCHAR(100),
+    end_year INTEGER(10) UNSIGNED,
+    status VARCHAR(5) NOT NULL DEFAULT "n",
+    class_id INTEGER(10) UNSIGNED NOT NULL,
+    wpuser_id BIGINT(20) UNSIGNED,
+    PRIMARY KEY (id),
+    FOREIGN KEY (wpuser_id) REFERENCES wp_users(ID),
+    FOREIGN KEY (class_id) REFERENCES vro_classes(id)
+  )';
+
+  createTable($table_name, $sql_users);
+
+  /*****************************************
   * VISSELPIPAN
   *****************************************/
 
@@ -42,12 +91,12 @@ function vro_setup() {
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    user_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id INTEGER(10) UNSIGNED NOT NULL,
     subject VARCHAR(100) NOT NULL,
     text VARCHAR(300) NOT NULL,
     status VARCHAR(5) NOT NULL DEFAULT "w",
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES wp_users(ID)
+    FOREIGN KEY (user_id) REFERENCES vro_users(id)
   )';
 
   createTable($table_name, $sql_visselpipan);
@@ -66,10 +115,10 @@ function vro_setup() {
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name VARCHAR(100) NOT NULL,
     description VARCHAR(300) NOT NULL,
-    chairman BIGINT(20) UNSIGNED NOT NULL,
+    chairman INTEGER(10) UNSIGNED NOT NULL,
     status VARCHAR(5) NOT NULL DEFAULT "w",
     PRIMARY KEY (id),
-    FOREIGN KEY (chairman) REFERENCES wp_users(ID)
+    FOREIGN KEY (chairman) REFERENCES vro_users(id)
   )';
 
   createTable($table_name, $sql_kommiteer);
@@ -82,11 +131,11 @@ function vro_setup() {
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    user_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id INTEGER(10) UNSIGNED NOT NULL,
     kommitee_id INTEGER(10) UNSIGNED NOT NULL,
     status VARCHAR(5) NOT NULL DEFAULT "w",
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES wp_users(ID),
+    FOREIGN KEY (user_id) REFERENCES vro_users(id),
     FOREIGN KEY (kommitee_id) REFERENCES vro_kommiteer(id)
   )';
 
@@ -119,33 +168,14 @@ function vro_setup() {
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    user_id BIGINT(20) UNSIGNED NOT NULL,
+    user_id INTEGER(10) UNSIGNED NOT NULL,
     projektgrupp_id INTEGER(10) UNSIGNED NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES wp_users(ID),
+    FOREIGN KEY (user_id) REFERENCES vro_users(id),
     FOREIGN KEY (projektgrupp_id) REFERENCES vro_projektgrupper(id)
   )';
 
   createTable($table_name, $sql_projektgrupper_members);
-
-  /*****************************************
-  * CLASSES
-  *****************************************/
-
-  // Main Kommitee table
-  $table_name = $prefix . 'classes';
-
-  // Set fields
-  $sql_classes = 'CREATE TABLE ' . $table_name . '(
-    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    points INTEGER(10) UNSIGNED NOT NULL DEFAULT 0,
-    PRIMARY KEY (id)
-  )';
-
-  createTable($table_name, $sql_classes);
 
   /*****************************************
   * ELEVKÅREN
@@ -161,9 +191,9 @@ function vro_setup() {
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name VARCHAR(100) NOT NULL,
     description VARCHAR(300),
-    chairman BIGINT(20) UNSIGNED,
+    chairman INTEGER(10) UNSIGNED,
     PRIMARY KEY (id),
-    FOREIGN KEY (chairman) REFERENCES wp_users(ID)
+    FOREIGN KEY (chairman) REFERENCES vro_users(id)
   )';
 
   createTable($table_name, $sql_utskott);
@@ -175,8 +205,9 @@ function vro_setup() {
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     position_name VARCHAR(100) NOT NULL,
-    student BIGINT(20) UNSIGNED,
-    PRIMARY KEY (id)
+    student INTEGER(10) UNSIGNED,
+    PRIMARY KEY (id),
+    FOREIGN KEY (student) REFERENCES vro_users(id)
   )';
 
   createTable($table_name, $sql_karen);
@@ -241,35 +272,7 @@ function vro_setup() {
 
   createTable($table_name, $sql_events);
 
-  /*****************************************
-  * vrousers
-  *****************************************/
 
-  $table_name = $prefix . 'users';
-
-  $sql_users = 'CREATE TABLE ' . $table_name . '(
-    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    birthyear INTEGER(10) UNSIGNED,
-    gender VARCHAR(20) DEFAULT "Annat",
-    registered_city VARCHAR(100) DEFAULT "Stockholm",
-    date_member DATETIME,
-    phonenumber VARCHAR(30),
-    email VARCHAR(50) NOT NULL,
-    program VARCHAR(100),
-    end_year INTEGER(10) UNSIGNED,
-    status VARCHAR(5) NOT NULL DEFAULT "n",
-    class_id INTEGER(10) UNSIGNED NOT NULL,
-    wpuser_id BIGINT(20) UNSIGNED,
-    PRIMARY KEY (id),
-    FOREIGN KEY (wpuser_id) REFERENCES wp_users(ID),
-    FOREIGN KEY (class_id) REFERENCES vro_classes(id)
-  )';
-
-  createTable($table_name, $sql_users);
 
   /*****************************************
   * LOGGING TABLE
@@ -284,7 +287,7 @@ function vro_setup() {
     description VARCHAR(300) NOT NULL,
     user_id BIGINT(20) UNSIGNED,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES wp_users(ID)
+    FOREIGN KEY (user_id) REFERENCES vro_users(id)
   )';
 
   createTable($table_name, $sql_log);

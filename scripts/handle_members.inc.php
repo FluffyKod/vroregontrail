@@ -11,48 +11,29 @@ if (isset($_POST['toggle_member'])) {
 
   global $wpdb;
 
-  $student_id = test_input( $_POST['toggle_member'] );
-  $class_id = test_input( $_POST['c_id'] );
+  $return = 'Location: /panel/medlemmar?toggle_member=';
 
-  if (empty( $class_id ) or !is_numeric( $class_id )){
-    header("Location: /panel/medlemmar?toggle_member=noclassid");
-    exit();
+  $class_id = check_number_value( test_input( $_POST['c_id'] ), $return . 'badClassId');
+  $student_id = check_number_value( test_input( $_POST['toggle_member'] ), $return . "badStudentId&c_id=$class_id");
+
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $student_id");
+
+  if ($student == NULL) {
+    send_header( $return . 'nouser' );
   }
 
-  if ( empty($student_id) ){
-    header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=empty");
-    exit();
-  } else {
+  $new_status = ($student->status == 'y') ? 'n' : 'y';
 
-    if(!is_numeric($student_id)){
-      header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=empty");
-      exit();
-    }
+  update_record( 'vro_users', 'status', $new_status, 'id', $student->id, $return . 'failedChangeStatus' );
 
-    $status = get_user_meta($student_id, 'status');
+  // Success!
 
-    if (!$status[0]){
-      header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=nouser");
-      exit();
-    }
+  // Logg action
+  $log_description = 'Ändrade eleven ' . $student_id . ' medlemsstatus till ' . $new_status;
+  add_log( 'Medlemmar', $log_description, get_current_user_id() );
 
-    $new_status = ($status[0] == 'y') ? 'n' : 'y';
-
-    if (!update_user_meta($student_id, 'status', $new_status)){
-      wp_die('meta could not be changed');
-    }
-    else {
-      // Success!
-
-      // Logg action
-      $log_description = 'Ändrade eleven ' . $student_id . ' medlemsstatus till ' . $new_status;
-      add_log( 'Medlemmar', $log_description, get_current_user_id() );
-
-      header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=success");
-      exit();
-    }
-
-  }
+  header("Location: /panel/medlemmar/?c_id=$class_id&toggle_member=success");
+  exit();
 
 }
 // ADD NEW USER
@@ -349,6 +330,7 @@ elseif (isset($_POST['link_new_user'])) {
   global $wpdb;
 
   $return = '/register?add_user';
+  $success_return = '/panel/dashboard?register=success';
 
   // Get the values
   $email_address = check_post( $_POST['email_address'], $return . '=empty' );
@@ -375,49 +357,74 @@ elseif (isset($_POST['link_new_user'])) {
     // Update studentshell with current timestamp
     $date = date("Y-m-d H:i:s");
     update_record( 'vro_users', 'date_member', $date, 'id', $studentshell->id, $return . '=studentshelldateerror'  );
+
+    // Set status to waiting
+    update_record( 'vro_users', 'status', 'w', 'id', $studentshell->id, $return . '=studentShellFailedSetStatus' );
+
   } else {
-    $mail_subject = 'Ditt medlemsskap i VRO elevkår är uppdaterat!';
-    $mail_text = 'Hej '. $studentshell->first_name .'! Tack för att du uppdaterade ditt medlemsskap! Glöm inte att gå in på hemsidan för att se matsedeln, ansöka till kommittéer och projektgrupper, se klasspokalenpoän och mycket mer!';
+
+    // NOTE:
+    // Set status to waiting OR YES HERE
+    update_record( 'vro_users', 'status', 'y', 'id', $studentshell->id, $return . '=studentShellFailedSetStatus' );
   }
 
-  // Create a new wp_user
-  $user_id = wp_create_user($email_address, $password, $email_address);
+  // CHeck if there already exists a user with the student wpuser_id
+  if ($studentshell->wpuser_id == NULL) {
 
-  wp_update_user(
-    array(
-      'ID'       => $user_id,
-      'nickname' => $studentshell->first_name. ' ' . $studentshell->last_name
-    )
-  );
+    // Create a new wp_user
+    $user_id = wp_create_user($email_address, $password, $email_address);
 
-  // Add studentshell_id as meta
-  add_user_meta( $user_id, 'studentshell_id', $studentshell->id );
+    wp_update_user(
+      array(
+        'ID'       => $user_id,
+        'nickname' => $studentshell->first_name. ' ' . $studentshell->last_name
+      )
+    );
 
-  // Set user role
-  $user = new WP_User( $user_id );
-  $user->set_role( 'subscriber' );
+    // Add studentshell_id as meta
+    add_user_meta( $user_id, 'studentshell_id', $studentshell->id );
+
+    // Set user role
+    $user = new WP_User( $user_id );
+    $user->set_role( 'subscriber' );
+
+    // Log them in
+    wp_set_current_user( $user_id, $user->user_login );
+    wp_set_auth_cookie( $user_id );
+    do_action( 'wp_login', $user->user_login );
+
+    // Logg action
+    $log_description = 'Registrerade eleven ' . $first_name . ' ' . $last_name;
+    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
+    // Set studentshell wpuser_id
+    update_record( 'vro_users', 'wpuser_id', $user_id, 'id', $studentshell->id, $return . '=studentshellwpiderror'  );
+
+  }
+  else {
+    // Updated instead of registered
+    $mail_subject = 'Ditt medlemsskap i VRO elevkår är uppdaterat!';
+    $mail_text = 'Hej '. $studentshell->first_name .'! Tack för att du uppdaterade ditt medlemsskap! Glöm inte att gå in på hemsidan för att se matsedeln, ansöka till kommittéer och projektgrupper, se klasspokalenpoän och mycket mer!';
+
+    // Logg action
+    $log_description = 'Återregistrerade eleven ' . $first_name . ' ' . $last_name;
+    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
+    // Change successreturn to updated
+    $success_return = '/panel/dashboard?register=resuccess';
+  }
 
   // Send mail
   wp_mail( $email_address, $mail_subject, $mail_text );
 
-  // Set studentshell wpuser_id
-  update_record( 'vro_users', 'wpuser_id', $user_id, 'id', $studentshell->id, $return . '=studentshellwpiderror'  );
-
-  // Log them in
-  wp_set_current_user( $user_id, $user->user_login );
-  wp_set_auth_cookie( $user_id );
-  do_action( 'wp_login', $user->user_login );
-
-  // Logg action
-  $log_description = 'Registrerade eleven ' . $first_name . ' ' . $last_name;
-  add_log( 'Medlemmar', $log_description, get_current_user_id() );
-
   // Send to dashboard. Success!
-  send_header('/panel/dashboard?register=success');
+  send_header( $success_return );
 
 }
 
 elseif(isset($_POST['quit_being_member'])) {
+
+  $return = 'Location: /panel/medlemmar?quitmember=';
 
   // Get the user id
   $u_id = test_input( $_POST['student_id'] );
@@ -432,24 +439,19 @@ elseif(isset($_POST['quit_being_member'])) {
   $member_answer = test_input( $_POST['member_answer'] );
 
   // Update their status to n, so they are not part of elevkåren any longer
-  if (!update_user_meta($u_id, 'status', 'n')) {
-    header("Location: /panel/medlemmar?quitmember=updatefailed");
-    exit();
-  } else {
-    if (!empty($member_answer)){
-      if ($student = get_user_by('id', $u_id)) {
-        // Send the mail
-        $email_address = $student->user_email;
-        wp_mail( $email_address, 'Din medlemsansökan har nekats', $member_answer);
-      }
-    }
+  update_record('vro_users', 'status', 'n', 'id', $u_id, $return . 'updateFailed');
 
-    // Logg action
-    $log_description = 'Eleven ' . $u_id . ' skickade en gåuturkåren-ansökan';
-    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $u_id");
+  if ($student->email) {
+    wp_mail( $student->email, 'Din medlemsansökan har nekats', $member_answer);
+  }
 
-    header("Location: /panel/medlemmar?quitmember=success");
-    exit();
+  // Logg action
+  $log_description = 'Eleven ' . $u_id . ' skickade en gåuturkåren-ansökan';
+  add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
+  header("Location: /panel/medlemmar?quitmember=success");
+  exit();
   }
 
 }

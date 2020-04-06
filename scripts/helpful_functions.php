@@ -19,6 +19,31 @@ function send_header( $location ){
   exit();
 }
 
+function get_studentshell_id( $wpuser_id ) {
+  global $wpdb;
+
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE wpuser_id = '$wpuser_id'");
+  if ($student == NULL) {
+    return NULL;
+  } else {
+    return $student->id;
+  }
+}
+
+function check_studentshell( $wpuser_id, $errLocation = false ) {
+  $shell_id = get_studentshell_id( $wpuser_id );
+
+  if ($shell_id == NULL) {
+    if ($errLocation != false) {
+      send_header( $errLocation );
+    } else {
+      return NULL;
+    }
+  } else {
+    return $shell_id;
+  }
+}
+
 function get_student_from_nickname( $student_name, $errLocation ) {
   // Get the student with the supplied nickname
   $args = array(
@@ -41,6 +66,10 @@ function get_student_from_nickname( $student_name, $errLocation ) {
     return $student;
   }
 
+}
+
+function get_student_name( $student ) {
+  return $student->first_name . ' ' . $last_name;
 }
 
 function check_if_entry_exists( $table, $field, $value, $errLocation = false ) {

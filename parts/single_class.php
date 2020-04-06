@@ -51,81 +51,57 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
     <?php
 
     // Setup to get all students for this class
-    $args = array(
-        'meta_query' => array(
-            array(
-                'key' => 'class_id',
-                'value' => $c_id,
-                'compare' => '=='
-            )
-        )
-    );
 
       // Get all students for that class
-      $student_arr = get_users($args);
+      $student_arr = $wpdb->get_results("SELECT * FROM vro_users WHERE class_id = $c_id");
       if ($student_arr) {
         // Go throught every student
         foreach ($student_arr as $student) {
 
-          // Check if each student is member in the elevkår
-          $s_status = get_metadata('user', $student->ID, 'status');
+          $student_classes = 'student';
 
-          // Check if status not set
-          if ($s_status[0] == 'n'){
+          $student_classes .= ($student->status == 'n') ? ' no-member' : '';
+          $student_classes .= ($student->status == 'w') ? ' waiting' : '';
+
           ?>
-            <div class="student no-member" id="student_<?php echo $student->ID; ?>">
-              <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
-              <p><?php echo $student->user_email; ?></p>
+          <div class="<?php echo $student_classes; ?>" id="student_<?php echo $student->id; ?>">
+            <p><?php echo $student->first_name . ' ' . $student->last_name; ?></p>
+            <p><?php echo $student->email; ?></p>
 
-              <?php if (metadata_exists( 'user', $student->ID, 'phonenumber' )) : ?>
-                <p><?php echo get_user_meta($student->ID, 'phonenumber', true); ?></p>
-              <?php endif; ?>
-
-              <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
-                <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
-                <input class="student-email" name="" value="<?php echo get_userdata($c_id)->user_email; ?>" hidden>
-                <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
-              </form>
-            </div>
+            <?php if ($student->phonenumber) : ?>
+              <p><?php echo $student->phonenumber; ?></p>
+            <?php endif; ?>
           <?php
-        } elseif ($s_status[0] == 'w'){
-          // Check if student is waiting to become a member
-          ?>
-            <div class="student waiting" id="student_<?php echo $student->ID; ?>">
-              <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
-              <p><?php echo $student->user_email; ?></p>
 
-              <?php if (metadata_exists( 'user', $student->ID, 'phonenumber' )) : ?>
-                <p><?php echo get_user_meta($student->ID, 'phonenumber', true); ?></p>
-              <?php endif; ?>
+          if ($student->status == 'n') {
+            ?>
+            <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
+              <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
+              <input class="student-email" name="" value="<?php echo $student->email; ?>" hidden>
+              <button name="toggle_member" value="<?php echo $student->id; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
+            </form>
+            <?php
+          }
+          elseif ($student->status == 'w') {
+            ?>
+            <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
+              <button name="toggle_member" value="<?php echo $student->id; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
+              <button name="toggle_member" value="<?php echo $student->id; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
+              <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
+            </form>
+            <?php
+          }
+          elseif ($student->status == 'y') {
+            ?>
+            <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
+              <button name="toggle_member" value="<?php echo $student->id; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
+              <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
+            </form>
+            <?php
 
-              <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
-                <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png"></button>
-                <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
-                <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
-              </form>
-            </div>
-          <?php
-        } elseif ($s_status[0] == 'y' ){
-          // Check if student is a member
-          ?>
-            <div class="student" id="student_<?php echo $student->ID; ?>">
-              <p><?php echo get_user_meta($student->ID,'nickname',true); ?></p>
-              <p><?php echo $student->user_email; ?></p>
+          }
 
-              <?php if (metadata_exists( 'user', $student->ID, 'phonenumber' )) : ?>
-                <p><?php echo get_user_meta($student->ID, 'phonenumber', true); ?></p>
-              <?php endif; ?>
-
-              <form class="student_actions" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="post">
-                <button name="toggle_member" value="<?php echo $student->ID; ?>" type="submit"><img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png"></button>
-                <input hidden type="text" name="c_id" value="<?php echo $c_id; ?>">
-              </form>
-            </div>
-          <?php
-        }
-
-
+          echo '</div>';
 
       }
     }

@@ -38,6 +38,16 @@ if (! is_user_logged_in() ){
       </script>
     <?php endif; ?>
 
+    <?php if (isset($_GET['register']) && $_GET['register'] == 'resuccess') : ?>
+      <script type="text/javascript">
+      Swal.fire(
+        'Succée!',
+        'Du har nu uppdaterat ditt medlemsskap och kan fortsätta använda hemsidan!',
+        'success'
+        )
+      </script>
+    <?php endif; ?>
+
     <div class="container">
 
       <!-- ***********************************

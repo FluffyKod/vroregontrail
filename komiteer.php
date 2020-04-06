@@ -249,9 +249,9 @@
                         // If they are chairman --> display Jag är ordförande!
                         // if they have sent an application, display --> förfrågan skickad,
                         // if they are not member att all --> display nothing
-
-                    $member_check = $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $k->id . ' AND user_id = '. get_current_user_id() );
-                    if ($member_check != NULL && $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id = '. $k->id . ' AND chairman = '. get_current_user_id() ) != NULL ){
+                    $studentshell_id = get_studentshell_id( get_current_user_id() );
+                    $member_check = $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $k->id . ' AND user_id = '. $studentshell_id );
+                    if ($member_check != NULL && $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id = '. $k->id . ' AND chairman = '. $studentshell_id ) != NULL ){
                       echo '<p>Jag är ordförande!</p>';
 
                       // Check if there are any applications waiting

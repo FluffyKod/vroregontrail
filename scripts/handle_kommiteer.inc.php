@@ -28,12 +28,15 @@
     // Check if there already is a kommitée with that name
     check_if_entry_exists('vro_kommiteer', 'name', $new_name, "/panel/kommiteer?application=nametaken&the_description=$new_description");
 
+    // Check if studentshell exists
+    $studentshell_id = check_studentshell( get_current_user_id(), '/panel/kommiteer?application=nostudentshell' );
+
     // Create a new array that will hold all the arguments to create a new kommitee
     $kommitee = array();
 
     $kommitee['name'] = $new_name;
     $kommitee['description'] = $new_description;
-    $kommitee['chairman'] = get_current_user_id();
+    $kommitee['chairman'] = $studentshell_id;
 
     insert_record( 'vro_kommiteer', $kommitee, 'DB insertion failed: failed to add new kommitte in new_kommittee' );
 
@@ -46,7 +49,7 @@
 
     $kommitee = array();
 
-    $kommitee['user_id'] = get_current_user_id();
+    $kommitee['user_id'] = $studentshell_id;
     $kommitee['kommitee_id'] = $new_kommitee[0]->id;
     $kommitee['status'] = 'y';
 

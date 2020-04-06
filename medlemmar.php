@@ -16,16 +16,11 @@ global $wpdb;
 $classes = $wpdb->get_results('SELECT * FROM vro_classes ORDER BY SUBSTRING(name , 3, 2)');
 
 // Get the current student
-$current_student_id = get_current_user_id();
+$current_student_id = $wpdb->get_var("SELECT id FROM vro_users WHERE wpuser_id = ". get_current_user_id() );
 
-// Check if the student is a member in the elevkår
-if (metadata_exists('user', $current_student_id, 'status')){
-  $status = get_user_meta($current_student_id, 'status', true);
-  $is_member = $status;
-} else {
-  $is_member = 'n';
-}
-
+// Set if member
+$is_member = $wpdb->get_var("SELECT status FROM vro_users WHERE id = $current_student_id");
+$is_member = ($is_member == NULL) ? 'n' : $is_member;
 
 ?>
 
@@ -81,24 +76,8 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
         global $wpdb;
 
-        // Get the number of all members
-        $user_amount = count(get_users(array(
-          'meta_key' => 'class_id'
-        )));
-
-        // Get all users that are members in kåren
-        $args = array(
-            'meta_query' => array(
-                array(
-                    'key' => 'status',
-                    'value' => 'y',
-                    'compare' => '=='
-                )
-            )
-        );
-
-        // Get all members
-        $member_amount = count(get_users($args));
+        $user_amount = count($wpdb->get_results('SELECT * FROM vro_users WHERE class_id IS NOT NULL'));
+        $member_amount = count($wpdb->get_results("SELECT * FROM vro_users WHERE status = 'y'"));
 
         // Only do the calculation if there are any students
         if ($user_amount != 0){
@@ -113,19 +92,8 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
           <?php
 
-          // Get all users that are waiting to become members of kåren
-          $args = array(
-              'meta_query' => array(
-                  array(
-                      'key' => 'status',
-                      'value' => 'w',
-                      'compare' => '=='
-                  )
-              )
-          );
-
           // Get all members
-          $waiting_members = get_users($args);
+          $waiting_members = $wpdb->get_results("SELECT * FROM vro_users WHERE status = 'w'");
           ?>
 
         <div class="banner">
@@ -154,13 +122,13 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
             <div class="box white lg">
               <div class="see-more">
-                <h4><?php echo get_user_meta($wm->ID, 'nickname', true); ?></h4>
+                <h4><?php echo get_student_name( $wm ); ?></h4>
                   <div>
-                  <button onclick="showAnswerForm(<?php echo $wm->ID ?>)">Svara &#8594;</button>
+                  <button onclick="showAnswerForm(<?php echo $wm->id ?>)">Svara &#8594;</button>
                 </div>
               </div>
 
-              <div class="answer" id="<?php echo $wm->ID; ?>">
+              <div class="answer" id="<?php echo $wm->id; ?>">
 
                 <hr>
 
@@ -168,7 +136,7 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
                 <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="POST">
                   <textarea name="member_answer" placeholder="Svar..."></textarea>
-                  <input name="student_id" value="<?php echo $wm->ID; ?>" hidden>
+                  <input name="student_id" value="<?php echo $wm->id; ?>" hidden>
 
                   <button name="accept_member" class="btn" type="submit">Godkänn</button>
                   <button name="quit_being_member" class="btn red" type="submit">Avböj</button>
@@ -269,42 +237,8 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
             foreach($classes as $c){
               // Setup counters for all members and non-members
-              $student_members = 0;
-              $student_non_members = 0;
-
-              // Setup to get all students for that class
-              $args = array(
-                  'meta_query' => array(
-                      array(
-                          'key' => 'class_id',
-                          'value' => $c->id,
-                          'compare' => '=='
-                      )
-                  )
-              );
-
-              // Get all students for that class
-              $member_arr = get_users($args);
-              if ($member_arr) {
-                // Go throught every student
-                foreach ($member_arr as $user) {
-
-                  // Check if each student is member in the elevkår
-                  $status = get_metadata('user', $user->ID, 'status');
-
-                  // check if the status meta data is set
-                  if (empty($status)) {
-                    continue;
-                  }
-
-                  // Count the members
-                  if ($status[0] == 'y'){
-                    $student_members += 1;
-                  } else {
-                    $student_non_members += 1;
-                  }
-                }
-              }
+              $student_members = count($wpdb->get_results("SELECT * FROM vro_users WHERE class_id = $c->id AND status = 'y'"));
+              $student_non_members = count($wpdb->get_results("SELECT * FROM vro_users WHERE class_id = $c->id AND status <> 'y'"));
 
             ?>
 
