@@ -164,6 +164,39 @@ function translateWeekday($day){
   return $swedish[array_search($day, $english)];
 }
 
+// Return class id from class name
+function get_classid_from( $class_name ) {
+
+  global $wpdb;
+
+  // Make sure the first letter i capitilized
+  $class_name = ucfirst( strtolower( $class_name ) );
+
+  // Get class with name
+  $class = $wpdb->get_row('SELECT * FROM vro_classes WHERE name="' . $class_name . '"');
+
+  // No class was found
+  if ($class == NULL) {
+    return NULL;
+  } else {
+    return (int)$class->id;
+  }
+
+}
+
+// Return end_year from class name
+function get_endyear_from( $class_name ) {
+  // Get the end year from the class name
+  $yearFromClassName = substr($class_name, 2, 2);
+
+  // Get the year in 4-digit form
+  $yearFromClassName = date_create_from_format('y', $yearFromClassName);
+  $yearFromClassName = $yearFromClassName->format('Y');
+
+  $end_year = (int)$yearFromClassName;
+  return $end_year;
+}
+
 function getStudentsInYear($year, $students) {
   // Check if the year is numeric
   if (!is_numeric($year)){

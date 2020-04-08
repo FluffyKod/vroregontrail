@@ -44,6 +44,7 @@ if (metadata_exists('user', $current_student_id, 'status')){
   </head>
   <body>
 
+
     <div class="container">
 
       <!--
@@ -345,6 +346,37 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
         </div>
 
+        <div class="row">
+
+          <div class="box green lg">
+
+            <h4>Skapa nytt elevskal</h4>
+            <form autocomplete="off" method="post" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>">
+              <input type="text" name="first-name" value="" placeholder="*Förnamn..." required>
+              <input type="text" name="last-name" value="" placeholder="*Efternamn..." required>
+              <input type="email" name="email" value="" placeholder="*Skolmail..." required>
+              <div class="autocomplete">
+                <input id="class-name-field" type="text" name="class-name" value="" placeholder="*Klass..." required oninput="fillProgramName('class-name-field', 'program-name-field')">
+              </div>
+              <input id="program-name-field" type="text" name="program" value="" placeholder="*Utbildningsprogram..." required>
+              <input type="text" name="phonenumber" value="" placeholder="Telefonnummer...">
+              <input type="text" name="birthyear" value="" placeholder="Födelseår...">
+              <input type="text" name="registered-city" value="Stockholm" placeholder="Folkbokförd stad...">
+
+              <select class="form-select" name="gender">
+                <option value="">- Kön -</option>
+                <option value="Kvinna">Kvinna</option>
+                <option value="Man">Man</option>
+                <option value="Annat">Annat</option>
+              </select>
+
+              <button class="btn lg" type="submit" name="add_studentshell">Skapa elevskal</button>
+            </form>
+
+          </div>
+
+        </div>
+
       <?php } // end check admin to add new class ?>
 
       <?php } else { // End check admin ?>
@@ -416,9 +448,30 @@ if (metadata_exists('user', $current_student_id, 'status')){
 
     </div>
 
+
+
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
+     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
     <script type="text/javascript">
       window.onload = highlightLink('link-medlemmar');
+    </script>
+
+    <?php
+
+    global $wpdb;
+
+    $results = $wpdb->get_results('SELECT name FROM vro_classes');
+    echo '<script type="text/javascript">';
+    echo 'var jsonclasses = ' . json_encode($results);
+    echo '</script>'
+
+    ?>
+
+    <script>
+    var classes = getArrayFromColumn(jsonclasses, 'name');
+
+    autocomplete(document.getElementById("class-name-field"), classes, 'Denna klass är ännu inte skapad');
+
     </script>
 
     <?php

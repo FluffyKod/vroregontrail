@@ -375,6 +375,12 @@ select:focus {
     outline: none;
 }
 
+select.form-select {
+  display: block;
+  margin: 13px 0;
+  width: 100%;
+}
+
 .select-group {
   margin: 10px 0;
 }

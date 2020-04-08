@@ -60,7 +60,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
     <h2>Om Oss</h2>
     <p>Viktor Rydberg Odenplans Elevkår är Viktor Rydberg Gymnasium Odenplans största förening, till vilken nästan 100 % av skolans elever aktivt valt att ansluta sig. Elevkåren samlar och engagerar elever från alla årskurser, program och klasser för att tillsammans förgylla skoltiden för kårens medlemmar. För oss i kåren är målet enkelt: medlemmarna ska leva sin gymnasietid, inte bara överleva den.</p>
     <p>Vår vision är kort och konkret: Viktor Rydberg Odenplans Elevkår ska vara den bästa elevkåren för kårens medlemmar. Detta åstadkommer vi genom flertalet aktiviteter och arrangemang inom kategorierna service, event, bildning och lobbying.</p>
-    <p>Vår elevkår startades år 2012 av Hedda Tingskog. Kårens nuvarande ordförande är Max Kenning.</p>
+    <p>Vår elevkår startades år 2012 av Hedda Tingskog. Kårens nuvarande ordförande är Alexander Storgårds.</p>
   </div>
 
   <a href="/om-karen" class="btn lg">Se elevkåren</a>

@@ -275,6 +275,36 @@ function vro_setup() {
   createTable($table_name, $sql_events);
 
   /*****************************************
+  * vrousers
+  *****************************************/
+
+  $table_name = $prefix . 'users';
+
+  $sql_users = 'CREATE TABLE ' . $table_name . '(
+    id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    birthyear INTEGER(10) UNSIGNED,
+    gender VARCHAR(20) DEFAULT "Annat",
+    registered_city VARCHAR(100) DEFAULT "Stockholm",
+    date_member DATETIME,
+    phonenumber VARCHAR(30),
+    email VARCHAR(50) NOT NULL,
+    program VARCHAR(100),
+    end_year INTEGER(10) UNSIGNED,
+    status VARCHAR(5) NOT NULL DEFAULT "n",
+    class_id INTEGER(10) UNSIGNED NOT NULL,
+    wpuser_id BIGINT(20) UNSIGNED,
+    PRIMARY KEY (id),
+    FOREIGN KEY (wpuser_id) REFERENCES wp_users(ID),
+    FOREIGN KEY (class_id) REFERENCES vro_classes(id)
+  )';
+
+  createTable($table_name, $sql_users);
+
+  /*****************************************
   * LOGGING TABLE
   *****************************************/
 

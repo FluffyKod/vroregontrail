@@ -60,3 +60,31 @@ function toggleClass(id, classOn, classOff){
   var element = document.getElementById(id);
   element.classList = (element.classList.contains(classOn)) ? classOff : classOn;
 }
+
+// Fill program name from class name
+
+function fillProgramName( classNameInputId, programNameInputId ) {
+
+  var classInput = document.getElementById(classNameInputId);
+  var programInput = document.getElementById(programNameInputId);
+
+  var classname = classInput.value;
+  var classPrefix = classname.substring(0,2).toLowerCase();
+
+  let programName = '';
+
+  if (classPrefix == 'na') {
+    programName = 'Naturvetenskapsprogrammet';
+  }
+  else if (classPrefix == 'ek') {
+    programName = 'Ekonomiprogrammet';
+  }
+  else if (classPrefix == 'sb') {
+    programName = 'Samhällsvetenskapsprogrammet inriktning beteendevetenskap';
+  }
+
+  if (programName != '') {
+    programInput.value = programName;
+  }
+
+}
