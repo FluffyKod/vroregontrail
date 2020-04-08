@@ -375,11 +375,12 @@ function saveRoom(){
     activeRoomArray.push(activeRoom.exportRoom);
 
   }else if(activeRoom.exportRoom){ //uppdaterar objektet om det redan finns
-
+    //hittar vilket rum activeRoom är
     for (var i = 0; i < activeRoomArray.length; i++) {
       if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
         activeRoomArray[i].text = activeRoom.gui.getValue('main_text');
         for (var j = 0; j < activeRoom.optionGuis.length; j++) {
+          //kollar om det optionet finns
           if(activeRoomArray[i].options[j]){
             activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
             activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
@@ -399,6 +400,7 @@ function saveRoom(){
           }
           //tar bort om det finns options utöver option amount
           if(j > activeRoomArray[i].gui.getValue("option_amount")){
+            console.log("pop");
             activeRoomArray[i].options.pop()
           }
 
