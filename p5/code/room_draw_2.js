@@ -56,13 +56,26 @@ function loadRoomArraysFromAreaRooms( areaRoomsArray ) {
   // Go through areaRooms and set the rooms parameter on each area
 
   // Check that there are enough rooms in each
-  roomArrays.test.rooms = (areaRoomsArrays.length >= 0) ? areaRoomsArray[0] : [];
-  roomArrays.intro.rooms = (areaRoomsArrays.length >= 1) ? areaRoomsArray[1] : [];
-  roomArrays.highlands.rooms = (areaRoomsArrays.length >= 2) ? areaRoomsArray[2] : [];
-  roomArrays.bog.rooms = (areaRoomsArrays.length >= 3) ? areaRoomsArray[3] : [];
-  roomArrays.city.rooms = (areaRoomsArrays.length >= 4) ? areaRoomsArray[4] : [];
-  roomArrays.mountain.rooms = (areaRoomsArrays.length >= 5) ? areaRoomsArray[5] : [];
-  roomArrays.core.rooms = (areaRoomsArrays.length >= 6) ? areaRoomsArray[6] : [];
+  roomArrays.test.rooms = (areaRoomsArray.length >= 0) ? areaRoomsArray[0] : [];
+  roomArrays.intro.rooms = (areaRoomsArray.length >= 1) ? areaRoomsArray[1] : [];
+  roomArrays.highlands.rooms = (areaRoomsArray.length >= 2) ? areaRoomsArray[2] : [];
+  roomArrays.bog.rooms = (areaRoomsArray.length >= 3) ? areaRoomsArray[3] : [];
+  roomArrays.city.rooms = (areaRoomsArray.length >= 4) ? areaRoomsArray[4] : [];
+  roomArrays.mountain.rooms = (areaRoomsArray.length >= 5) ? areaRoomsArray[5] : [];
+  roomArrays.core.rooms = (areaRoomsArray.length >= 6) ? areaRoomsArray[6] : [];
+
+  roomArrays.test.sprites = (areaRoomsArray.length >= 0) ? createSpriteArrayFromRoomArray(areaRoomsArray[0]) : [];
+  roomArrays.intro.sprites = (areaRoomsArray.length >= 1) ? createSpriteArrayFromRoomArray(areaRoomsArray[1]) : [];
+  roomArrays.highlands.sprites = (areaRoomsArray.length >= 2) ? createSpriteArrayFromRoomArray(areaRoomsArray[2]) : [];
+  roomArrays.bog.sprites = (areaRoomsArray.length >= 3) ? createSpriteArrayFromRoomArray(areaRoomsArray[3]) : [];
+  roomArrays.city.sprites = (areaRoomsArray.length >= 4) ? createSpriteArrayFromRoomArray(areaRoomsArray[4]) : [];
+  roomArrays.mountain.sprites = (areaRoomsArray.length >= 5) ? createSpriteArrayFromRoomArray(areaRoomsArray[5]) : [];
+  roomArrays.core.sprites = (areaRoomsArray.length >= 6) ? createSpriteArrayFromRoomArray(areaRoomsArray[6]) : [];
+
+  //
+  activeArea = roomArrays.test;
+  activeRoomArray = activeArea.rooms;
+  activeRoomSpriteArray = activeArea.sprites;
 
   // DEBUG
   console.log('LOADED ROOM ARRAYS: ', roomArrays);
@@ -116,20 +129,16 @@ function setup(){
 
       // BELOW IS FOR MULITPLE AREAS
 
-      // Parse all area rooms
-      // loadRoomArraysFromAreaRooms( returnedRooms );
-      //
-      // // Go through all area rooms and set all sprites
-      // roomArrays.test.sprites = (returnedRooms.length >= 0) ? createSpriteArrayFromRoomArray(returnedRooms[0]) : [];
-      // roomArrays.intro.sprites = (returnedRooms.length >= 1) ? createSpriteArrayFromRoomArray(returnedRooms[1]) : [];
-      // roomArrays.highlands.sprites = (returnedRooms.length >= 2) ? createSpriteArrayFromRoomArray(returnedRooms[2]) : [];
-      // roomArrays.bog.sprites = (returnedRooms.length >= 3) ? createSpriteArrayFromRoomArray(returnedRooms[3]) : [];
-      // roomArrays.city.sprites = (returnedRooms.length >= 4) ? createSpriteArrayFromRoomArray(returnedRooms[4]) : [];
-      // roomArrays.mountain.sprites = (returnedRooms.length >= 5) ? createSpriteArrayFromRoomArray(returnedRooms[5]) : [];
-      // roomArrays.core.sprites = (returnedRooms.length >= 6) ? createSpriteArrayFromRoomArray(returnedRooms[6]) : [];
+      console.log('RETURNED ROOMS:', returnedRooms);
 
-      roomArrays.test.rooms = returnedRooms;
-      roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
+      // Parse all area rooms
+      loadRoomArraysFromAreaRooms( returnedRooms );
+
+      // Go through all area rooms and set all sprites
+
+
+      // roomArrays.test.rooms = returnedRooms;
+      // roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
     }
 
   }); // End load rooms
@@ -553,10 +562,10 @@ function createGeneralGui(){
     // Get all areas rooms
     let areaRoomsToSave = getAreaRoomsFromRoomArrays();
     console.log('AREA ARRAY TO BE SAVED TO DATABASE: ', areaRoomsToSave);
-    // saveRoomsToDatabase(areaRoomsToSave);
+    saveRoomsToDatabase(areaRoomsToSave);
 
-    console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
-    saveRoomsToDatabase(roomArrays.test.rooms);
+    // console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
+    // saveRoomsToDatabase(roomArrays.test.rooms);
   })
 
 }

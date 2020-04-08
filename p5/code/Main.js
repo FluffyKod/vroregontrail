@@ -39,11 +39,14 @@ let timer;
 // SETUP
 ////////////////////////////////////////////
 
+
+
 function setup(){
 
   // Get all saved rooms from the database
   loadRoomsFromDatabase(currentArea, function(returnedRooms) {
-    rooms = returnedRooms;
+
+    rooms = getRoomsFromArea( returnedRooms, currentArea );
 
     defineCanvas();
     grandparent = select('#grandparent');
