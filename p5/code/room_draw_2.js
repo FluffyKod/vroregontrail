@@ -36,13 +36,13 @@ let connectionColors;
 function setup(){
 
   roomArrays = {//kanske konstigt att kalla det sprites
-    test: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
-    intro: {rooms: [], sprites: [], lightColor: color(214), darkColor: color(51)},
-    highlands: {rooms: [], sprites: [], lightColor: color(208, 240, 156), darkColor: color(73, 117, 52)},
-    bog: {rooms: [], sprites: [], lightColor: color(189, 172, 157), darkColor: color(66, 46, 33)},
-    city: {rooms: [], sprites: [], lightColor: color(212, 207, 178), darkColor: color(120, 108, 41)},
-    mountain: {rooms: [], sprites: [], lightColor: color(135,222,224), darkColor: color(64,106,107)},
-    core: {rooms: [], sprites: [], lightColor: color(145, 42, 42), darkColor: color(36, 35, 35)}
+    test:      {rooms: [], sprites: [], lightColor: color(255, 255, 255), darkColor: color( 51,  51,  51)},
+    intro:     {rooms: [], sprites: [], lightColor: color(214, 214, 214), darkColor: color( 51,  51,  51)},
+    highlands: {rooms: [], sprites: [], lightColor: color(208, 240, 156), darkColor: color( 73, 117,  52)},
+    bog:       {rooms: [], sprites: [], lightColor: color(189, 172, 157), darkColor: color( 66,  46,  33)},
+    city:      {rooms: [], sprites: [], lightColor: color(212, 207, 178), darkColor: color(120, 108,  41)},
+    mountain:  {rooms: [], sprites: [], lightColor: color(135, 222, 224), darkColor: color( 64, 106, 107)},
+    core:      {rooms: [], sprites: [], lightColor: color(145,  42,  42), darkColor: color( 36,  35,  35)}
   }
 
   activeArea = roomArrays.test;
@@ -466,6 +466,18 @@ function createGeneralGui(){
   });
   generalGui.addBoolean('highlight_coordinates',false,  function(value){
     showCoordinatesHighlight = value;
+  });
+  generalGui.addBoolean('show_command_descriptions', true,  function(value){
+    //borde egentligen loopa alla areas
+    for (var i = 0; i < activeRoomSpriteArray.length; i++) {
+      for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
+        if(value){
+          activeRoomSpriteArray[i].optionGuis[j].showControl("command_description");
+        }else {
+          activeRoomSpriteArray[i].optionGuis[j].hideControl("command_description");
+        }
+      }
+    }
   });
   generalGui.addButton('upload', function(){
     // TODO: spara nuvarande arrays till databasen
