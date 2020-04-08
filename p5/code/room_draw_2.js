@@ -21,6 +21,7 @@ let guiBackgroundHidden = false;
 let guiMouseIsOver = false;
 
 let showCoordinatesHighlight = false;
+let showAllConnections = false;
 
 let guiParent
 let maxCommandValues = 4;
@@ -189,11 +190,8 @@ function createRoom(x, y){
     roomSprite.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
 
     roomSprite.depth = 1;
-
     roomSprite.exportRoom;
-
     roomSprite.optionGuis = [];
-
 
     roomSprite.optionObjs = [];
     for (var i = 0; i < maxOptionAmount; i++) {
@@ -229,7 +227,8 @@ function createRoom(x, y){
       roomSprite.optionGui = QuickSettings.create( 210*i+60,10,'option_'+i, guiParent).hide();//borde parenta till en egen.
       roomSprite.optionGui.setDraggable(false);
       roomSprite.optionGui.addText('option_text', '' );
-      roomSprite.optionGui.addDropDown('option_command', ['','move', 'info']);
+      roomSprite.optionGui.addText('option_command', ['','move', 'info']);
+      roomSprite.optionGui.addHTML('command_description', 'test');
 
       for (var j = 0; j < maxCommandValues; j++) {
         roomSprite.optionGui.addText('command_value_'+j);
@@ -312,7 +311,7 @@ function saveRoom(){
     for (var i = 0; i < activeRoom.gui.getValue('option_amount'); i++) {
       option = {
         text: activeRoom.optionGuis[i].getValue('option_text'),
-        command: activeRoom.optionGuis[i].getValue('option_command').value,
+        command: activeRoom.optionGuis[i].getValue('option_command'),
         values: []
         }
       for (var j = 0; j < maxCommandValues; j++) {
@@ -330,7 +329,7 @@ function saveRoom(){
         activeRoomArray[i].mainText = activeRoom.gui.getValue('main_text');
         for (var j = 0; j < activeRoom.optionGuis.length; j++) {
           activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
-          activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command').value
+          activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
           for (var k = 0; k < maxCommandValues; k++) {
             activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
           }
@@ -350,15 +349,25 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
   for (var i = 0; i < this.inputRoomArray.length; i++) {
     createCoordinate = indexToScreenCoordinates(this.inputRoomArray[i].x, this.inputRoomArray[i].y);
     print(createCoordinate);
-    rs = createRoom(createCoordinate.x, createCoordinate.y);
-
+    //creates a room and pushes it to the activeRoomSpriteArray
+    createRoom(createCoordinate.x, createCoordinate.y);
+    //hides all guis created
+    activeRoomSpriteArray[i].gui.hide();
+    for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
+      activeRoomSpriteArray[i].optionGuis[j].hide();
+    }
+    //set values
     activeRoomSpriteArray[i].gui.setValue("main_text", this.inputRoomArray[i].mainText);
     activeRoomSpriteArray[i].gui.setValue("option_amount", this.inputRoomArray[i].options.length);
-    for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
+
+    for (var j = 0; j < this.inputRoomArray[i].options.length; j++) {
+
+
+
       activeRoomSpriteArray[i].optionGuis[j].setValue("option_text", this.inputRoomArray[i].options[j].text);
       activeRoomSpriteArray[i].optionGuis[j].setValue("option_command", this.inputRoomArray[i].options[j].command);
-      for (var k = 0; k < this.inputRoomArray[i].options[j].length; k++) {
-        activeRoomSpriteArray[i].gui.setValue("command_value_"+k, String(this.inputRoomArray[i].options[j].values[k]));
+      for (var k = 0; k < this.inputRoomArray[i].options[j].values.length; k++) {
+        activeRoomSpriteArray[i].optionGuis[j].setValue("command_value_"+k, String(this.inputRoomArray[i].options[j].values[k]));
 
       }
     }
@@ -387,31 +396,36 @@ function deleteRoom(){
       for (var j = 0; j < activeRoom.optionGuis.length; j++) {
         activeRoom.optionGuis[j].hide();
       }
-      print("presplice sprite: "+activeRoomSpriteArray.length)
-
       activeRoom.remove();
       activeRoomSpriteArray.splice(i,1);
-      print("postsplice sprite: "+activeRoomSpriteArray.length)
       break;
     }
   }
 
 }
-// TODO: make littlebit nicer looking
+
 function drawConnections(){
-  for (var i = 0; i < activeRoomSpriteArray.length; i++) {
-    for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
-      if(activeRoomSpriteArray[i].optionGuis[j].getValue('option_command').value == "move"){
-        stroke(connectionColors[j]);
-        //tar in koordinaterna från values delen
-        connection = indexToScreenCoordinates(
-          Number(activeRoomSpriteArray[i].optionGuis[j].getValue('command_value_'+0)), Number(activeRoomSpriteArray[i].optionGuis[j].getValue('command_value_'+1))
-        );
-        if(connection.x!=null && connection.y != null
-        ){
+  if(showAllConnections){
+    for (var i = 0; i < activeRoomSpriteArray.length; i++) {
+      drawConnectionsFromRoom(activeRoomSpriteArray[i]);
+    }
+  }else{
+    drawConnectionsFromRoom(activeRoom);
+  }
+}
 
-          line(activeRoomSpriteArray[i].position.x-10+j*4, activeRoomSpriteArray[i].position.y-10+j*4, connection.x-10+j*4, connection.y-10+j*4)
+function drawConnectionsFromRoom(roomSprite){
+  if(roomSprite){
+    for (var z = 0; z < roomSprite.optionGuis.length; z++) {
+      if(roomSprite.optionGuis[z].getValue('option_command') == "move"){
+        stroke(connectionColors[z]);
+        //ta koordinaterna från values delen
+        let connection = indexToScreenCoordinates(
+          Number(roomSprite.optionGuis[z].getValue('command_value_'+0)),
+          Number(roomSprite.optionGuis[z].getValue('command_value_'+1)))
 
+        if(connection.x!=null && connection.y != null){
+          line(roomSprite.position.x-10+z*4, roomSprite.position.y-10+z*4, connection.x-10+z*4, connection.y-10+z*4)
         }
       }
     }
@@ -448,7 +462,7 @@ function createGeneralGui(){
 
   } );
   generalGui.addBoolean('show_all_connections',false, function(value){
-    // TODO: toggla mellan att visa alla rumskopplingar och bara visa för de som är selected.
+    showAllConnections = value;
   });
   generalGui.addBoolean('highlight_coordinates',false,  function(value){
     showCoordinatesHighlight = value;
@@ -489,15 +503,21 @@ function showValueAmountControl(){
   if (activeRoom) {
     for (var i = 0; i < activeRoom.optionGuis.length; i++) {
       showAmount = 0;
-      switch (activeRoom.optionGuis[i].getValue('option_command').value) {
+      switch (activeRoom.optionGuis[i].getValue('option_command')) {
 
         case '':
           break;
         case 'move':
+          activeRoom.optionGuis[i].setValue('command_description', 'move player to room with coordinates (value 0, value 1)')
           showAmount = 2;
           break;
         case 'info':
+          activeRoom.optionGuis[i].setValue('command_description', 'sets new main text but does not change options or move player')
           showAmount = 1;
+          break;
+        default:
+          activeRoom.optionGuis[i].setValue('command_description', 'ERROR: command not found')
+          showAmount = 0;
           break;
       }
       for (var j = 0; j < maxCommandValues; j++) {
