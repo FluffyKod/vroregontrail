@@ -120,13 +120,13 @@ function setup(){
       // loadRoomArraysFromAreaRooms( returnedRooms );
       //
       // // Go through all area rooms and set all sprites
-      // roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms[0]);
-      // roomArrays.intro.sprites = createSpriteArrayFromRoomArray(returnedRooms[1]);
-      // roomArrays.highlands.sprites = createSpriteArrayFromRoomArray(returnedRooms[2]);
-      // roomArrays.bog.sprites = createSpriteArrayFromRoomArray(returnedRooms[3]);
-      // roomArrays.city.sprites = createSpriteArrayFromRoomArray(returnedRooms[4]);
-      // roomArrays.mountain.sprites = createSpriteArrayFromRoomArray(returnedRooms[5]);
-      // roomArrays.core.sprites = createSpriteArrayFromRoomArray(returnedRooms[6]);
+      // roomArrays.test.sprites = (returnedRooms.length >= 0) ? createSpriteArrayFromRoomArray(returnedRooms[0]) : [];
+      // roomArrays.intro.sprites = (returnedRooms.length >= 1) ? createSpriteArrayFromRoomArray(returnedRooms[1]) : [];
+      // roomArrays.highlands.sprites = (returnedRooms.length >= 2) ? createSpriteArrayFromRoomArray(returnedRooms[2]) : [];
+      // roomArrays.bog.sprites = (returnedRooms.length >= 3) ? createSpriteArrayFromRoomArray(returnedRooms[3]) : [];
+      // roomArrays.city.sprites = (returnedRooms.length >= 4) ? createSpriteArrayFromRoomArray(returnedRooms[4]) : [];
+      // roomArrays.mountain.sprites = (returnedRooms.length >= 5) ? createSpriteArrayFromRoomArray(returnedRooms[5]) : [];
+      // roomArrays.core.sprites = (returnedRooms.length >= 6) ? createSpriteArrayFromRoomArray(returnedRooms[6]) : [];
 
       roomArrays.test.rooms = returnedRooms;
       roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
