@@ -365,7 +365,14 @@ elseif (isset($_POST['link_new_user'])) {
 
     // NOTE:
     // Set status to waiting OR YES HERE
-    update_record( 'vro_users', 'status', 'y', 'id', $studentshell->id, $return . '=studentShellFailedSetStatus' );
+    $new_register_status = 'w';
+
+    // Check if already correct status
+    if ($studentshell->status != $new_register_status) {
+      update_record( 'vro_users', 'status', $new_register_status, 'id', $studentshell->id, $return . '=studentShellFailedSetStatus' );
+    }
+
+
   }
 
   // CHeck if there already exists a user with the student wpuser_id
@@ -402,16 +409,32 @@ elseif (isset($_POST['link_new_user'])) {
 
   }
   else {
+    // NOTE: UPDATE OR CHECK PASSWORD?
+
+    // CHECK PASSWORD
+    var_dump(user_pass_ok( $email_address, $password ));
+    exit();
+
+    // NEW PASSWORD
+    wp_set_password( $password, $studentshell->wpuser_id );
+    exit();
+
     // Updated instead of registered
     $mail_subject = 'Ditt medlemsskap i VRO elevkår är uppdaterat!';
     $mail_text = 'Hej '. $studentshell->first_name .'! Tack för att du uppdaterade ditt medlemsskap! Glöm inte att gå in på hemsidan för att se matsedeln, ansöka till kommittéer och projektgrupper, se klasspokalenpoän och mycket mer!';
+
+    // Log em in
+    $wp_user = get_user_by('id', $studentshell->wpuser_id);
+    wp_set_current_user( $studentshell->wpuser_id, $wp_user->user_login );
+    wp_set_auth_cookie( $user_id );
+    do_action( 'wp_login', $wp_user->user_login );
 
     // Logg action
     $log_description = 'Återregistrerade eleven ' . $first_name . ' ' . $last_name;
     add_log( 'Medlemmar', $log_description, get_current_user_id() );
 
     // Change successreturn to updated
-    $success_return = '/panel/dashboard?register=resuccess';
+    $success_return = '/panel/dashboard?reregister=resuccess';
   }
 
   // Send mail

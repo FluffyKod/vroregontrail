@@ -682,7 +682,8 @@ function display_karen( $edit = false ){
 
           <h3><?php echo $u->name; ?></h3>
           <p>Ordförande: <?php echo get_full_studentname( $vro_student ); ?></p>
-          <input class="utskott-id" type="text" name="" value="<?php echo $u->id; ?>" hidden>
+          <input class="utskott-id" type="text" name="utskott-id" value="<?php echo $u->id; ?>" hidden>
+          <input type="text" name="chairman-id" value="<?php echo $u->chairman; ?>" hidden>
           <input class="utskott-description" type="text" name="" value="<?php echo $u->description; ?>" hidden>
           <input class="utskott-chairman-email" name="" value="<?php echo $vro_student->email; ?>" hidden>
           <button class="btn" type="button" name="button">Info</button>

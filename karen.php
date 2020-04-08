@@ -104,7 +104,7 @@ if (! is_user_logged_in() ){
               <label><b>Ordförande för detta utskottt</b></label>
               <div class="autocomplete">
                 <input type="text" name="chairman_name" value="" placeholder="Elevens namn..." id="chairman-name-field">
-                <input type="text" name="chairman_id" value="" id="chariman-id-field">
+                <input type="text" name="chairman_id" value="" id="chairman-id-field" hidden>
               </div>
 
               <input type="text" name="utskott_id" value="" id="utskott-id" hidden>
@@ -235,7 +235,7 @@ if (! is_user_logged_in() ){
       autocompleteFull(document.getElementById("student_name"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('student_id_field'));
       autocompleteFull(document.getElementById("chairman_name"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('chairman_id_field'));
       autocompleteFull(document.getElementById("student-name-field"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('student-id-field'));
-      autocompleteFull(document.getElementById("chairman-name-field"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('chariman-id-field'));
+      autocompleteFull(document.getElementById("chairman-name-field"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('chairman-id-field'));
       </script>
 
       </section>
@@ -350,6 +350,7 @@ if (! is_user_logged_in() ){
               let utskott_name = utskott.querySelector('h3').innerText;
               // Also remove the Ordförande: part
               let chairman_name = utskott.querySelector('p').innerText.substring(12);
+              let chairman_id = utskott.querySelector('input[name=chairman-id]').value;
               let utskott_id = utskott.querySelector('input.utskott-id').value;
               let utskott_description = utskott.querySelector('input.utskott-description').value;
 
@@ -360,6 +361,7 @@ if (! is_user_logged_in() ){
               document.querySelector('#modal-change-utskott .modal-body form #utskott-name-field').value = utskott_name;
 
               document.querySelector('#modal-change-utskott .modal-body form #utskott-id').value = utskott_id;
+              document.querySelector('#modal-change-utskott .modal-body form #chairman-id-field').value = chairman_id;
 
               document.querySelector('#modal-change-utskott .modal-body form #utskott-description-field').value = utskott_description;
 

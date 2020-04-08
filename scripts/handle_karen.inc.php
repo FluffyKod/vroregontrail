@@ -142,8 +142,10 @@ elseif (isset($_POST['add_new_utskott'])){
 
 elseif (isset($_POST['update_styrelse_post'])){
 
+  $return = '/panel/karen?alter_styrelse_post';
+
   $styrelse_post = test_input( $_POST['position_name'] );
-  $student_name = test_input( $_POST['student_name'] );
+  $student_id = check_number_value( test_input( $_POST['student_id'] ), $return);
   $position_id = test_input( $_POST['position_id'] );
 
   if (empty($styrelse_post)){
@@ -170,32 +172,12 @@ elseif (isset($_POST['update_styrelse_post'])){
 
   $styrelse['position_name'] = $styrelse_post;
 
-  if (!empty($student_name)){
-
-    // Get the student with the supplied nickname
-    $args = array(
-        'meta_query' => array(
-            array(
-                'key' => 'nickname',
-                'value' => $student_name,
-                'compare' => '=='
-            )
-        )
-    );
-
-    // Get the student
-    $student = get_users($args);
-
-    // If there is a student
-    if (count($student) > 0){
-      $styrelse['student'] = $student[0]->ID;
-    } else {
-      $styrelse['student'] = NULL;
-    }
-
-  } else {
-    $styrelse['student'] = NULL;
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $student_id");
+  if (!$student) {
+    send_header( $return . '=noStudentFound' );
   }
+
+  $styrelse['student'] = $student_id;
 
   // Insert the new suggestion into the database
   if ( !$wpdb->query( $wpdb->prepare('UPDATE vro_styrelsen SET position_name = %s, student = %s WHERE id = %s', $styrelse['position_name'], $styrelse['student'], $position_id) ) ){
@@ -204,7 +186,7 @@ elseif (isset($_POST['update_styrelse_post'])){
     //
 
     // Logg action
-    $log_description = 'Uppdaterade styrelseposten med id ' . $position_id . ' och har nu namnet ' . $styrelse_post . ' och eleven ' . $student_name;
+    $log_description = 'Uppdaterade styrelseposten med id ' . $position_id . ' och har nu namnet ' . $styrelse_post . ' och eleven ' . get_full_studentname($student->id);
     add_log( 'Kåren', $log_description, get_current_user_id() );
 
     header("Location: /panel/karen?alter_styrelse_post=success");
@@ -244,8 +226,10 @@ elseif (isset($_POST['delete_styrelse_post'])) {
 
 elseif (isset($_POST['edit_utskott'])){
 
+  $return = '/panel/karen?edit_utskott';
+
   $utskott_name = test_input( $_POST['utskott_name'] );
-  $chairman_name = test_input( $_POST['chairman_name'] );
+  $chairman_id = check_number_value( test_input( $_POST['chairman_id'] ), $return );
   $utskott_id = test_input( $_POST['utskott_id'] );
   $utskott_description = test_input( $_POST['utskott_description'] );
 
@@ -269,36 +253,19 @@ elseif (isset($_POST['edit_utskott'])){
     exit();
   }
 
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $chairman_id");
+
+
   $utskott = array();
 
   $utskott['name'] = $utskott_name;
-
-  if (!empty($chairman_name)){
-
-    // Get the student with the supplied nickname
-    $args = array(
-        'meta_query' => array(
-            array(
-                'key' => 'nickname',
-                'value' => $chairman_name,
-                'compare' => '=='
-            )
-        )
-    );
-
-    // Get the student
-    $chairman = get_users($args);
-
-    // If there is a student
-    if (count($chairman) > 0){
-      $utskott['chairman'] = $chairman[0]->ID;
-    } else {
-      $utskott['chairman'] = NULL;
-    }
-
-  } else {
+  if (!$student) {
     $utskott['chairman'] = NULL;
+  } else {
+    $utskott['chairman'] = $student->id;
   }
+
+
 
   if (empty($utskott_description)){
     $utskott['description'] = '';
