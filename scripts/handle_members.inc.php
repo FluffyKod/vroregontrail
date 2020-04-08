@@ -412,8 +412,10 @@ elseif (isset($_POST['link_new_user'])) {
     // NOTE: UPDATE OR CHECK PASSWORD?
 
     // CHECK PASSWORD
-    var_dump(user_pass_ok( $email_address, $password ));
-    exit();
+    if (user_pass_ok( $email_address, $password ) == false) {
+      echo 'test';
+    }
+
 
     // NEW PASSWORD
     wp_set_password( $password, $studentshell->wpuser_id );
