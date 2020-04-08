@@ -6,7 +6,7 @@ function setup(){
   scaleFactor = 100;
   createCanvas(2000,2000);
 
-  loadRooms();
+  loadRoomsFromDatabase();
 
   //createRoomSprites();
 

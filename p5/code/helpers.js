@@ -55,7 +55,7 @@ function getPlayer() {
 ////////////////////////////////////////////
 // SAVE ROOMS OPTIONS TO DATABASE
 ////////////////////////////////////////////
-function saveRooms(roomsToSave) {
+function saveRoomsToDatabase(roomsToSave) {
 
   // console.log(roomsToSave);
   var roomsString = JSON.stringify(roomsToSave);
@@ -102,7 +102,7 @@ function saveSprites(spriteArrayToSave) {
   // })
 }
 
-function loadRooms(area, callback){
+function loadRoomsFromDatabase(area, callback){
 
     sampleRooms = [
 
@@ -179,25 +179,25 @@ function getAreaRooms(allRooms, area) {
   switch (area) {
 
     case 'test':
-      return allRooms.test
+      return allRooms.test.rooms
 
     case 'intro':
-      return allRooms.intro
+      return allRooms.intro.rooms
 
     case 'highlands':
-      return allRooms.highlands
+      return allRooms.highlands.rooms
 
     case 'bog':
-      return allRooms.bog
+      return allRooms.bog.rooms
 
     case 'city':
-      return allRooms.city
+      return allRooms.city.rooms
 
     case 'mountain':
-      return allRooms.mountain
+      return allRooms.mountain.rooms
 
     case 'core':
-      return allRooms.core
+      return allRooms.core.rooms
 
     default:
       return Array()

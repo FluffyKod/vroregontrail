@@ -37,9 +37,13 @@ function getAreaRoomsFromRoomArrays() {
   // Go through roomArrays and extract only the rooms from each area.
   let areaRooms = [];
 
-  for (roomData of roomArrays) {
-    areaRooms.push(roomData.rooms);
-  }
+  areaRooms.push(roomArrays.test.rooms);
+  areaRooms.push(roomArrays.intro.rooms);
+  areaRooms.push(roomArrays.highlands.rooms);
+  areaRooms.push(roomArrays.bog.rooms);
+  areaRooms.push(roomArrays.city.rooms);
+  areaRooms.push(roomArrays.mountain.rooms);
+  areaRooms.push(roomArrays.core.rooms);
 
   // DEBUG:
   console.log('GET AREA ROOMS: ', areaRooms);
@@ -48,14 +52,17 @@ function getAreaRoomsFromRoomArrays() {
 
 }
 
-function loadRoomArraysFrom( areaRoomsArray ) {
+function loadRoomArraysFromAreaRooms( areaRoomsArray ) {
   // Go through areaRooms and set the rooms parameter on each area
-  let areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
 
-  for (let i = 0; i < areaRoomsArray.count; i++) {
-    // Get the area rooms for each area above
-    getAreaRooms( roomArrays, areas[i] ).rooms = areaRoomsArray[i];
-  }
+  // Check that there are enough rooms in each
+  roomArrays.test.rooms = (areaRoomsArrays.length >= 0) ? areaRoomsArray[0] : [];
+  roomArrays.intro.rooms = (areaRoomsArrays.length >= 1) ? areaRoomsArray[1] : [];
+  roomArrays.highlands.rooms = (areaRoomsArrays.length >= 2) ? areaRoomsArray[2] : [];
+  roomArrays.bog.rooms = (areaRoomsArrays.length >= 3) ? areaRoomsArray[3] : [];
+  roomArrays.city.rooms = (areaRoomsArrays.length >= 4) ? areaRoomsArray[4] : [];
+  roomArrays.mountain.rooms = (areaRoomsArrays.length >= 5) ? areaRoomsArray[5] : [];
+  roomArrays.core.rooms = (areaRoomsArrays.length >= 6) ? areaRoomsArray[6] : [];
 
   // DEBUG
   console.log('LOADED ROOM ARRAYS: ', roomArrays);
@@ -103,9 +110,24 @@ function setup(){
   createGeneralGui();
 
   // Get rooms array
-  loadRooms('all', function(returnedRooms) {
+  loadRoomsFromDatabase('all', function(returnedRooms) {
     // No rooms were found, set a default blank
     if (returnedRooms.length > 0){
+
+      // BELOW IS FOR MULITPLE AREAS
+
+      // Parse all area rooms
+      // loadRoomArraysFromAreaRooms( returnedRooms );
+      //
+      // // Go through all area rooms and set all sprites
+      // roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms[0]);
+      // roomArrays.intro.sprites = createSpriteArrayFromRoomArray(returnedRooms[1]);
+      // roomArrays.highlands.sprites = createSpriteArrayFromRoomArray(returnedRooms[2]);
+      // roomArrays.bog.sprites = createSpriteArrayFromRoomArray(returnedRooms[3]);
+      // roomArrays.city.sprites = createSpriteArrayFromRoomArray(returnedRooms[4]);
+      // roomArrays.mountain.sprites = createSpriteArrayFromRoomArray(returnedRooms[5]);
+      // roomArrays.core.sprites = createSpriteArrayFromRoomArray(returnedRooms[6]);
+
       roomArrays.test.rooms = returnedRooms;
       roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
     }
@@ -510,10 +532,13 @@ function createGeneralGui(){
     }
   });
   generalGui.addButton('upload', function(){
-    // TODO: spara nuvarande arrays till databasen
-    console.log(roomArrays.test.rooms);
-    saveRooms(roomArrays.test.rooms);
-    //saveSprites(roomArrays.test.sprites);
+    // Get all areas rooms
+    let areaRoomsToSave = getAreaRoomsFromRoomArrays();
+    console.log('AREA ARRAY TO BE SAVED TO DATABASE: ', areaRoomsToSave);
+    // saveRoomsToDatabase(areaRoomsToSave);
+
+    console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
+    saveRoomsToDatabase(roomArrays.test.rooms);
   })
 
 }
