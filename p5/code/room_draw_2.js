@@ -33,6 +33,43 @@ let generalGuiParent;
 let connectionColors;
 
 
+function getAreaRoomsFromRoomArrays() {
+  // Go through roomArrays and extract only the rooms from each area.
+  let areaRooms = [];
+
+  areaRooms.push(roomArrays.test.rooms);
+  areaRooms.push(roomArrays.intro.rooms);
+  areaRooms.push(roomArrays.highlands.rooms);
+  areaRooms.push(roomArrays.bog.rooms);
+  areaRooms.push(roomArrays.city.rooms);
+  areaRooms.push(roomArrays.mountain.rooms);
+  areaRooms.push(roomArrays.core.rooms);
+
+  // DEBUG:
+  console.log('GET AREA ROOMS: ', areaRooms);
+
+  return areaRooms;
+
+}
+
+function loadRoomArraysFromAreaRooms( areaRoomsArray ) {
+  // Go through areaRooms and set the rooms parameter on each area
+
+  // Check that there are enough rooms in each
+  roomArrays.test.rooms = (areaRoomsArrays.length >= 0) ? areaRoomsArray[0] : [];
+  roomArrays.intro.rooms = (areaRoomsArrays.length >= 1) ? areaRoomsArray[1] : [];
+  roomArrays.highlands.rooms = (areaRoomsArrays.length >= 2) ? areaRoomsArray[2] : [];
+  roomArrays.bog.rooms = (areaRoomsArrays.length >= 3) ? areaRoomsArray[3] : [];
+  roomArrays.city.rooms = (areaRoomsArrays.length >= 4) ? areaRoomsArray[4] : [];
+  roomArrays.mountain.rooms = (areaRoomsArrays.length >= 5) ? areaRoomsArray[5] : [];
+  roomArrays.core.rooms = (areaRoomsArrays.length >= 6) ? areaRoomsArray[6] : [];
+
+  // DEBUG
+  console.log('LOADED ROOM ARRAYS: ', roomArrays);
+
+}
+
+
 function setup(){
 
   roomArrays = {//kanske konstigt att kalla det sprites
@@ -73,9 +110,24 @@ function setup(){
   createGeneralGui();
 
   // Get rooms array
-  loadRooms('all', function(returnedRooms) {
+  loadRoomsFromDatabase('all', function(returnedRooms) {
     // No rooms were found, set a default blank
     if (returnedRooms.length > 0){
+
+      // BELOW IS FOR MULITPLE AREAS
+
+      // Parse all area rooms
+      // loadRoomArraysFromAreaRooms( returnedRooms );
+      //
+      // // Go through all area rooms and set all sprites
+      // roomArrays.test.sprites = (returnedRooms.length >= 0) ? createSpriteArrayFromRoomArray(returnedRooms[0]) : [];
+      // roomArrays.intro.sprites = (returnedRooms.length >= 1) ? createSpriteArrayFromRoomArray(returnedRooms[1]) : [];
+      // roomArrays.highlands.sprites = (returnedRooms.length >= 2) ? createSpriteArrayFromRoomArray(returnedRooms[2]) : [];
+      // roomArrays.bog.sprites = (returnedRooms.length >= 3) ? createSpriteArrayFromRoomArray(returnedRooms[3]) : [];
+      // roomArrays.city.sprites = (returnedRooms.length >= 4) ? createSpriteArrayFromRoomArray(returnedRooms[4]) : [];
+      // roomArrays.mountain.sprites = (returnedRooms.length >= 5) ? createSpriteArrayFromRoomArray(returnedRooms[5]) : [];
+      // roomArrays.core.sprites = (returnedRooms.length >= 6) ? createSpriteArrayFromRoomArray(returnedRooms[6]) : [];
+
       roomArrays.test.rooms = returnedRooms;
       roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
     }
@@ -315,7 +367,7 @@ function saveRoom(){
         values: []
         }
       for (var j = 0; j < maxCommandValues; j++) {
-        option.values.push(activeRoom.optionGuis[i].getValue('command_value_'+j))
+        option.values.push(activeRoom.optionGuis[i].getValue('command_value_'+j)) //sparar onödigt många värden men yolo
 
       }
       activeRoom.exportRoom.options.push(option);
@@ -326,28 +378,12 @@ function saveRoom(){
 
     for (var i = 0; i < activeRoomArray.length; i++) {
       if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
-        activeRoomArray[i].text = activeRoom.gui.getValue('main_text');
+        activeRoomArray[i].mainText = activeRoom.gui.getValue('main_text');
         for (var j = 0; j < activeRoom.optionGuis.length; j++) {
-          if(activeRoomArray[i].options[j]){
-            activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
-            activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
-            for (var k = 0; k < maxCommandValues; k++) {
-              activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
-            }
-          }else{//lägger till nya options om den gamla hade färre
-            let option = {
-              text: activeRoom.optionGuis[j].getValue('option_text'),
-              command: activeRoom.optionGuis[j].getValue('option_command'),
-              values: []
-              }
-            for (var k = 0; k < maxCommandValues; k++) {
-              option.values.push(activeRoom.optionGuis[j].getValue('command_value_'+k))
-            }
-            activeRoomArray[i].options.push(option);
-          }
-          //tar bort ett option för varje som existerar över option_amount gränsen
-          if( j > activeRoom.gui.getValue("option_amount")){
-            activeRoomArray[i].options.pop();
+          activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
+          activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
+          for (var k = 0; k < maxCommandValues; k++) {
+            activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
           }
         }
 
@@ -496,11 +532,13 @@ function createGeneralGui(){
     }
   });
   generalGui.addButton('upload', function(){
-    // TODO: spara nuvarande arrays till databasen
-    console.log(roomArrays.test.rooms);
-    roomArrays.test.rooms = activeRoomArray;
-    saveRooms(roomArrays.test.rooms);
-    //saveSprites(roomArrays.test.sprites);
+    // Get all areas rooms
+    let areaRoomsToSave = getAreaRoomsFromRoomArrays();
+    console.log('AREA ARRAY TO BE SAVED TO DATABASE: ', areaRoomsToSave);
+    // saveRoomsToDatabase(areaRoomsToSave);
+
+    console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
+    saveRoomsToDatabase(roomArrays.test.rooms);
   })
 
 }

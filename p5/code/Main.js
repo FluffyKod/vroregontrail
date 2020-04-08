@@ -42,7 +42,7 @@ let timer;
 function setup(){
 
   // Get all saved rooms from the database
-  loadRooms(currentArea, function(returnedRooms) {
+  loadRoomsFromDatabase(currentArea, function(returnedRooms) {
     rooms = returnedRooms;
 
     defineCanvas();
