@@ -365,9 +365,7 @@ function addOptionGuis(roomSprite){
 
 function saveRoom(){
   if (!activeRoom.exportRoom) {
-    activeRoom.exportRoom = new room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [
-
-    ])
+    activeRoom.exportRoom = new room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [])
     //save option object
     for (var i = 0; i < activeRoom.gui.getValue('option_amount'); i++) {
       option = {
@@ -383,11 +381,11 @@ function saveRoom(){
     }
     activeRoomArray.push(activeRoom.exportRoom);
 
-  }else if(activeRoom.exportRoom){ //uppdaterar objektet om det redan finns
+  }else { //uppdaterar objektet om det redan finns
     //hittar vilket rum activeRoom är
     for (var i = 0; i < activeRoomArray.length; i++) {
       if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
-        activeRoomArray[i].text = activeRoom.gui.getValue('main_text');
+        activeRoomArray[i].mainText = activeRoom.gui.getValue('main_text');
         for (var j = 0; j < activeRoom.optionGuis.length; j++) {
           //kollar om det optionet finns
           if(activeRoomArray[i].options[j]){
