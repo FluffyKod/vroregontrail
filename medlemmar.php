@@ -40,6 +40,9 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
   <body>
 
 
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
+
     <div class="container">
 
       <!--
@@ -122,7 +125,7 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
             <div class="box white lg">
               <div class="see-more">
-                <h4><?php echo get_student_name( $wm ); ?></h4>
+                <h4><?php echo get_full_studentname( $wm ); ?></h4>
                   <div>
                   <button onclick="showAnswerForm(<?php echo $wm->id ?>)">Svara &#8594;</button>
                 </div>
@@ -311,6 +314,20 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
         </div>
 
+        <div class="row">
+
+          <div class="box green lg">
+
+            <h4>Ladda ned medlemsregister till Ebas</h4>
+            <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/file_functions.inc.php') ?>" method="post">
+              <button class="btn lg" type="submit" name="download-member-list" value="/panel/medlemmar">Ladda ned medlemsregister</button>
+            </form>
+
+
+          </div>
+
+        </div>
+
       <?php } // end check admin to add new class ?>
 
       <?php } else { // End check admin ?>
@@ -382,10 +399,6 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
     </div>
 
-
-
-    <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
-     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
     <script type="text/javascript">
       window.onload = highlightLink('link-medlemmar');
     </script>

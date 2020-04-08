@@ -134,26 +134,23 @@ function data_fetch(){
 
         }
 
-        if ($u->status == 'y'){ ?>
-          <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#student_<?php echo $u->id; ?>">
-            <p class="member">
-              <span><?php echo $nickname; ?></span>
-              <span><?php echo $email; ?></span>
-              <?php if ($u->phonenumber) : ?>
-                  <span><?php echo $u->phonenumber; ?></span>
-              <?php endif; ?>
-              <span><?php echo $display_class_name; ?></span>
-            </p>
-          </a>
-        <?php } else { ?>
-          <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#student_<?php echo $u->id; ?>">
-            <p class="not-member">
-              <span><?php echo $nickname; ?></span>
-              <span><?php echo $email; ?></span>
-              <span><?php echo $display_class_name; ?></span>
-            </p>
-          </a>
-        <?php }
+        // Check if student is member, waiting member or not to color code
+        $div_class = ($u->status == 'y') ? 'member' : 'not-member';
+        $div_class = ($u->status == 'w') ? 'waiting-member' : $div_class;
+
+        // Check if student has registered or not
+        $div_class .= ($u->wpuser_id == NULL) ? ' not-registered' : '';
+
+        ?>
+        <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#student_<?php echo $u->id; ?>">
+          <p class="<?php echo $div_class ?>">
+            <span><?php echo $nickname; ?></span>
+            <span><?php echo $email; ?></span>
+            <span><?php echo $u->phonenumber; ?></span>
+            <span><?php echo $display_class_name; ?></span>
+          </p>
+        </a>
+        <?php
 
       }
     }

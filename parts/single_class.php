@@ -132,80 +132,38 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
 
   <div class="box green lg">
 
-    <h4>Lägg till ny elev</h4>
-    <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="POST">
-      <?php
+      <h4>Skapa nytt elevskal</h4>
+      <form autocomplete="off" method="post" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>">
+        <input type="text" name="first-name" value="" placeholder="*Förnamn..." required>
+        <input type="text" name="last-name" value="" placeholder="*Efternamn..." required>
+        <input type="email" name="email" value="" placeholder="*Skolmail..." required>
+        <input id="class-name-field2" hidden type="text" name="class-name" value="<?php echo $wpdb->get_var("SELECT name FROM vro_classes WHERE id = $c_id"); ?>">
+        <input id="program-name-field2" type="text" name="program" value="" placeholder="*Utbildningsprogram..." required>
+        <input type="text" name="phonenumber" value="" placeholder="Telefonnummer...">
+        <input type="text" name="birthyear" value="" placeholder="Födelseår...">
+        <input type="text" name="registered-city" value="Stockholm" placeholder="Folkbokförd stad...">
 
-      // Check if form has been submited
-      if (isset($_GET['add_user'])) {
+        <select class="form-select" name="gender">
+          <option value="">- Kön -</option>
+          <option value="Kvinna">Kvinna</option>
+          <option value="Man">Man</option>
+          <option value="Annat">Annat</option>
+        </select>
 
-        // Get the msg from the form
-        $user_check = $_GET['add_user'];
-
-        // Then check if there has been an error
-        if ($user_check == 'empty'){
-          echo '<p class="error">Du måste fylla i alla värden!</p>';
-        }
-        elseif ($user_check == 'noclassfound'){
-          echo '<p class="error">Klassen hittades inte!</p>';
-        }
-        elseif ($user_check == 'invalidemail'){
-          echo '<p class="error">Mailaddresesn är inte godtagbar!</p>';
-        }
-        elseif ($user_check == 'emailexists'){
-          echo '<p class="error">Mailaddressen är redan använd!</p>';
-        }
-        elseif ($user_check == 'invalidyear'){
-          echo '<p class="error">Avångsåret stämmer inte!</p>';
-        }
-
-      }
-
-      ?>
-
-      <?php
-       if (!isset($_GET['first_name'])){
-         echo '<input type="text" name="first_name" value="" placeholder="Förnamn..." required>';
-       } else {
-         echo '<input type="text" name="first_name" value="'. $_GET['first_name'] .'" placeholder="Förnamn..." required>';
-       }
-
-
-       if (!isset($_GET['last_name'])){
-         echo '<input type="text" name="last_name" value="" placeholder="Efernamn..." required>';
-       } else {
-         echo '<input type="text" name="last_name" value="'. $_GET['last_name'] .'" placeholder="Efternamn..." required>';
-       }
-
-       if (!isset($_GET['email'])){
-         echo '<input type="email" name="email_address" value="" placeholder="Skolmail..." pattern="(.+?)vrg.se$" oninvalid="this.setCustomValidity(\'Använd din skolmail!\')" oninput="this.setCustomValidity(\'\')" required>';
-       } else {
-         echo '<input type="email" name="email_address" value="'. $_GET['email'] .'" placeholder="Skolmail..." required>';
-       }
-
-       if (!isset($_GET['phonenumber'])){
-         echo '<input type="tel" name="phonenumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telefonnummer... (ex: 123-456-7890)" required>';
-       } else {
-         echo '<input type="tel" name="phonenumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Telefonnummer... (ex: 123-456-7890)" value="'. $_GET['telefonnummer'] .'" required>';
-       }
-      ?>
-
-
-      <!-- <input type="number" name="end_year" value="" placeholder="Avgångsår (ex. 2022)..." list="end_years">
-
-      <datalist id="end_years">
-        <option value="<?php echo date('Y', strtotime('+3 years')); ?>" />
-        <option value="<?php echo date('Y', strtotime('+2 years')); ?>" />
-        <option value="<?php echo date('Y', strtotime('+1 years')); ?>" />
-        <option value="<?php echo date('Y'); ?>" />
-      </datalist> -->
-
-      <input type="password" name="password" value="" placeholder="Lösenord..." required>
-
-      <input id="class" hidden type="text" name="class_id" value="<?php echo $c_id; ?>">
-     <button type="submit" name="add_new_user" class="btn lg" value="/panel/medlemmar">Skapa ny elev</button>
-   </form>
+        <button class="btn lg" type="submit" name="add_studentshell">Skapa elevskal</button>
+      </form>
 
   </div>
 
 </div>
+
+<div class="row">
+  <form class="expand" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_classes.inc.php'); ?>" method="post">
+    <input type="text" name="c_id" value=<?php echo $c_id; ?> hidden>
+    <button class="btn lg red" type="submit" name="remove_class" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill ta bort denna klass?');">Ta bort denna klass</button>
+  </form>
+</div>
+
+<script type="text/javascript">
+  fillProgramName('class-name-field2', 'program-name-field2')
+</script>

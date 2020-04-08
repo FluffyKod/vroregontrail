@@ -452,11 +452,12 @@ elseif(isset($_POST['quit_being_member'])) {
 
   header("Location: /panel/medlemmar?quitmember=success");
   exit();
-  }
 
 }
 
 elseif(isset($_POST['apply_for_member'])) {
+
+  $return = '/panel/medlemmar?applymember=';
 
   // Get the user id
   $u_id = test_input( $_POST['student_id'] );
@@ -468,23 +469,20 @@ elseif(isset($_POST['apply_for_member'])) {
 
   $u_id = (int)$u_id;
 
-  // Update their status to n, so they are not part of elevkåren any longer
-  if (!update_user_meta($u_id, 'status', 'w')) {
-    header("Location: /panel/medlemmar?applymember=updatefailed");
-    exit();
-  } else {
+  update_record('vro_users', 'status', 'w', 'id', $u_id, $return . 'updateFailed');
 
-    // Logg action
-    $log_description = 'Eleven ' . $u_id . ' skickade en gåMedIKåren-ansökan';
-    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+  // Logg action
+  $log_description = 'Eleven ' . $u_id . ' skickade en gåMedIKåren-ansökan';
+  add_log( 'Medlemmar', $log_description, get_current_user_id() );
 
-    header("Location: /panel/medlemmar?applymember=success");
-    exit();
-  }
+  header("Location: /panel/medlemmar?applymember=success");
+  exit();
 
 }
 
 elseif(isset($_POST['accept_member'])) {
+
+  $return = '/panel/medlemmar?acceptmember=';
 
   // Get the user id
   $u_id = test_input( $_POST['student_id'] );
@@ -498,18 +496,16 @@ elseif(isset($_POST['accept_member'])) {
 
   $member_answer = test_input( $_POST['member_answer'] );
 
-  // Update their status to n, so they are not part of elevkåren any longer
-  if (!update_user_meta($u_id, 'status', 'y')) {
-    header("Location: /panel/medlemmar?acceptmember=acceptfailed");
-    exit();
-  } else {
-    if (!empty($member_answer)){
-      if ($student = get_user_by('id', $u_id)) {
-        // Send the mail
-        $email_address = $student->user_email;
-        wp_mail( $email_address, 'Din medlemsansökan har godkänts', $member_answer);
+  update_record('vro_users', 'status', 'w', 'id', $u_id, $return . 'acceptFailed');
+
+  if (!empty($member_answer)){
+    if ($student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $u_id")) {
+      // Send the mail
+      if ($student->email) {
+        wp_mail( $student->email, 'Din medlemsansökan har godkänts', $member_answer);
       }
     }
+  }
 
     // Logg action
     $log_description = 'Eleven ' . $u_id . ' medlemsansökan accepterades';
@@ -517,7 +513,6 @@ elseif(isset($_POST['accept_member'])) {
 
     header("Location: /panel/medlemmar?acceptmember=success");
     exit();
-  }
 
 }
 

@@ -24,11 +24,11 @@ $k_id = (int)$_GET['k_id'];
 
 $current_kommitee = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id=' . $k_id);
 
-$current_student_id = wp_get_current_user()->ID;
+$current_student_id = get_studentshell_id( get_current_user_id() );
 
 // Get chairman
 $chairman_id = $wpdb->get_var('SELECT chairman FROM vro_kommiteer WHERE id = ' . $k_id);
-$chairman = $wpdb->get_row('SELECT * FROM wp_users WHERE ID = ' . $chairman_id);
+$chairman = $wpdb->get_row('SELECT * FROM vro_users WHERE id = ' . $chairman_id);
 
 // Check if the logged in user is the chairman
 $is_chairman = ($current_student_id == $chairman_id);
@@ -83,31 +83,31 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
 foreach ($waiting_members as $wait_member)
 {
-  $wm = $wpdb->get_row('SELECT * FROM wp_users WHERE ID = ' . $wait_member->user_id);
+  $wm = $wpdb->get_row('SELECT * FROM vro_users WHERE id = ' . $wait_member->user_id);
 
   ?>
   <div class="row">
 
     <div class="box white lg">
       <div class="see-more">
-        <h4><?php echo get_user_meta($wm->ID, 'nickname', true); ?></h4>
+        <h4><?php echo get_full_studentname( $wm ); ?></h4>
           <div>
-          <button onclick="showAnswerForm(<?php echo $wm->ID ?>)">Svara &#8594;</button>
+          <button onclick="showAnswerForm(<?php echo $wm->id ?>)">Svara &#8594;</button>
         </div>
       </div>
 
-      <div class="answer" id="<?php echo $wm->ID; ?>">
+      <div class="answer" id="<?php echo $wm->id; ?>">
 
         <hr>
 
         <h4>Svar</h4>
 
-        <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
+        <form autocomplete="off"  autocomplete="off"  action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
           <textarea name="kommitee_member_answer" placeholder="Svar..."></textarea>
           <input name="kid" value="<?php echo $k_id; ?>" hidden>
 
-          <button name="accept_kommitee_member" value="<?php echo $wm->ID ?>" class="btn" type="submit">Godkänn</button>
-          <button name="deny_kommitee_member" value="<?php echo $wm->ID ?>" class="btn red" type="submit">Avböj</button>
+          <button name="accept_kommitee_member" value="<?php echo $wm->id ?>" class="btn" type="submit">Godkänn</button>
+          <button name="deny_kommitee_member" value="<?php echo $wm->id ?>" class="btn red" type="submit">Avböj</button>
         </form>
 
       </div>
@@ -144,7 +144,7 @@ foreach ($waiting_members as $wait_member)
 
           <hr>
 
-          <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
+          <form autocomplete="off"  action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
             <div class="text-limited-root">
               <textarea name="kommitee_description" placeholder="Ny beskrivning..." required onkeyup="checkForm(this, event_description_char_count, 300)"></textarea>
               <p id="event_description_char_count">300</p>
@@ -175,7 +175,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
   <div class="box white" id="chairman">
       <!-- <?php echo get_avatar( $chairman_id ); ?> -->
-      <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
+      <h4><?php echo get_full_studentname( $chairman ); ?></h4>
       <p>Ordförande</p>
 
       <button onclick="showAnswerForm('change_chairman')">Ändra ordförande &#8594;</button>
@@ -184,9 +184,10 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
         <hr>
 
-        <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
+        <form autocomplete="off"  action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
           <div class="autocomplete">
               <input type="text" name="new_chairman_name" value="" placeholder="Ny ordförande..." id="chairman-field">
+              <input type="text"  name="chairman_id" id="chairman-id-field" hidden>
           </div>
 
           <input name="k_id" value="<?php echo $k_id; ?>" hidden>
@@ -196,28 +197,6 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
       </div>
 
-      <?php
-
-      global $wpdb;
-
-      // Get first and last name from every student
-      $first_last_array = array();
-      foreach($all_members as $s){
-        array_push($first_last_array, get_user_meta( $s->user_id, 'nickname', true));
-      }
-
-      echo '<script type="text/javascript">';
-      echo 'var jsonstudents = ' . json_encode($first_last_array);
-      echo '</script>'
-
-      ?>
-
-      <script>
-      // var jsonstudents = getArrayFromColumn(jsonstudents, 'display_name');
-
-      autocomplete(document.getElementById("chairman-field"), jsonstudents, 'Inga medlemmar hittades.');
-
-      </script>
   </div>
 
   <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
@@ -232,7 +211,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
     <h4>Skicka Notis</h4>
 
     <!-- SEND MAIL -->
-    <!-- <form autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_mail.inc.php'); ?>" method="post">
+    <!-- <form autocomplete="off"  autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_mail.inc.php'); ?>" method="post">
 
       <input type="text" name="subject" value="" placeholder="Ämne...">
       <textarea name="message" placeholder="Meddelande..."></textarea>
@@ -248,7 +227,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
     </form> -->
 
     <!-- SEND NOTIFICATION -->
-    <form autocomplete="off" class="notis-form" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
+    <form autocomplete="off"  autocomplete="off" class="notis-form" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
 
       <input type="text" name="title" value="" placeholder="Titel..">
       <textarea name="content" placeholder="Meddelande..."></textarea>
@@ -302,20 +281,8 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
     }
     ?>
 
-    <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
-      <?php // Show error messages
+    <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
-      if (isset($_GET['leave_kommitte'])) {
-
-        $kom_check = $_GET['leave_kommitte'];
-
-        if ($kom_check == 'ischairman') {
-          echo '<p class="error">Du måste göra någon annan till ordförande innan du kan lämna kommittéen!</p>';
-        }
-
-      }
-
-     ?>
 
       <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
       <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
@@ -343,7 +310,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
   <div class="row">
 
     <div class="box white sm" id="chairman">
-        <!-- <?php echo get_avatar( $user->ID ); ?> -->
+        <!-- <?php echo get_avatar( $user->id ); ?> -->
         <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
         <p>Ordförande</p>
     </div>
@@ -360,7 +327,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       }
       ?>
 
-      <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+      <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
         <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
         <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
 
@@ -391,6 +358,21 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
   <div class="box white lg">
     <h4>Medlemmar</h4>
+
+    <?php // Show error messages
+
+    if (isset($_GET['leave_kommitte'])) {
+
+      $kom_check = $_GET['leave_kommitte'];
+
+      if ($kom_check == 'ischairman') {
+        echo '<p class="error">Du måste göra någon annan till ordförande innan du kan lämna kommittéen!</p>';
+      }
+
+    }
+
+   ?>
+
     <input type="search" placeholder="Medlem...">
 
     <div class="kommitee_members">
@@ -400,7 +382,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       foreach($all_members as $m)
       {
 
-        $member = $wpdb->get_row('SELECT * FROM wp_users WHERE ID = ' . $m->user_id);
+        $member = $wpdb->get_row('SELECT * FROM vro_users WHERE id = ' . $m->user_id);
       ?>
 
         <div class="kommitee_member">
@@ -408,7 +390,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
             <?php echo get_avatar( $member->ID ); ?>
 
             <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){ ?>
-              <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+              <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
                 <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
                 <input type="text" name="student_id" value="<?php echo $member->ID; ?>" hidden>
 
@@ -419,13 +401,13 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
           </div> -->
 
           <div>
-            <p><b><?php echo get_user_meta($member->ID, 'nickname', true); ?></b></p>
-            <p><?php echo ($wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . get_user_meta($member->ID, 'class_id', true)))->name; ?></p>
+            <p><b><?php echo get_full_studentname( $member ); ?></b></p>
+            <p><?php echo ($wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $member->class_id ))->name; ?></p>
 
             <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){ ?>
-              <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+              <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
                 <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
-                <input type="text" name="student_id" value="<?php echo $member->ID; ?>" hidden>
+                <input type="text" name="student_id" value="<?php echo $member->id; ?>" hidden>
 
                 <button type="submit" name="leave_kommitte" class="add-btn extra-btn deny" onclick="return confirm('Är du säker på att du vill ta bort denna medlem?');">-</button>
               </form>
@@ -453,10 +435,11 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 
     <h4>Lägg till elev i kommittén</h4>
 
-    <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+    <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
       <div class="autocomplete">
         <input type="text" name="student_name" value="" placeholder="Elevens namn..." id="student-name-field">
+        <input type="text"  name="student_id" id="student-id-field" hidden>
       </div>
       <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
 
@@ -468,7 +451,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 </div>
 
 <div class="row">
-  <form class="expand" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+  <form autocomplete="off"  class="expand" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
     <input type="text" name="k_id" value=<?php echo $k_id; ?> hidden>
     <button class="btn lg red" type="submit" name="remove_kommitte" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill ta bort denna kommitté?');">Ta bort denna kommitté</button>
   </form>
@@ -476,27 +459,31 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 
 <?php
 
-// Get the number of all members
-$all_students = get_users(array(
-  'meta_key' => 'class_id'
-));
+global $wpdb;
 
-// Get first and last name from every student
-$first_last_array_full = array();
-foreach($all_students as $s){
-  array_push($first_last_array_full, get_user_meta( $s->ID, 'nickname', true));
+$all_students = $wpdb->get_results("SELECT * FROM vro_users WHERE class_id IS NOT NULL");
+
+// Get a full array
+$full_student_array = array();
+foreach ($all_students as $s) {
+  array_push($full_student_array, get_full_student_array( $s ));
 }
 
 echo '<script type="text/javascript">';
-echo 'var jsonstudentsall = ' . json_encode($first_last_array_full);
+echo 'var jsonstudentsall = ' . json_encode($first_last_array_full). ';';
+echo 'var jsonstudentsfull = ' . json_encode($full_student_array) . ';';
 echo '</script>'
 
 ?>
 
 <script type="text/javascript">
 
-  autocomplete(document.getElementById("student-name-field"), jsonstudentsall, 'Inga elever hittades.');
+  //autocomplete(document.getElementById("chairman-field"), jsonstudentsall, 'Inga elever hittades.');
+  autocompleteFull(document.getElementById("chairman-field"), jsonstudentsfull, 'Inga elever hittades.', document.getElementById("chairman-id-field"));
+  autocompleteFull(document.getElementById("student-name-field"), jsonstudentsfull, 'Inga elever hittades.', document.getElementById("student-id-field"));
 </script>
+
+
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/datepicker.js" charset="utf-8"></script>
 
 <?php } // End check admin ?>

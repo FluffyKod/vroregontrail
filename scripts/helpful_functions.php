@@ -68,8 +68,101 @@ function get_student_from_nickname( $student_name, $errLocation ) {
 
 }
 
-function get_student_name( $student ) {
-  return $student->first_name . ' ' . $last_name;
+function get_studentshell_from_nickname( $student_name, $errLocation ) {
+  // Get the student with the supplied nickname
+  // Get the student with the supplied nickname
+  global $wpdb;
+
+  $args = array(
+      'meta_query' => array(
+          array(
+              'key' => 'nickname',
+              'value' => $student_name,
+              'compare' => '=='
+          )
+      )
+  );
+
+  // Get the student
+  $student = get_users($args, 0);
+
+  // If no student found, exit with error msh, otherwise return the student
+  if (count($student) < 1) {
+    send_header( $errLocation );
+  } else {
+
+    // Get the studentshell from this wp_user
+    $studentshell = $wpdb->get_row("SELECT * FROM vro_users WHERE wpuser_id = $student->ID");
+    if (!$studentshell) {
+      send_header( $errLocation );
+    } else {
+      return $studentshell;
+    }
+  }
+
+}
+
+function get_student_by_id( $id ) {
+  global $wpdb;
+
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $id");
+  if ($student) {
+    return $student;
+  } else {
+    return NULL;
+  }
+}
+
+function get_studentshell_from_text( $text, $errLocation ) {
+
+  global $wpdb;
+
+  $match = '';
+  $count = preg_match('#\((.*?)\)#', $text, $match);
+
+  if ($count < 1) {
+    send_header( $errLocation );
+  }
+
+  $email = $match[1];
+
+  // Get studentshell
+  $studentshell = $wpdb->get_row("SELECT * FROM vro_users WHERE email = '$email'");
+
+  if (!$studentshell) {
+    send_header( $errLocation );
+  } else {
+    return $studentshell;
+  }
+}
+
+
+function get_full_studentname( $student ) {
+  return $student->first_name . ' ' . $student->last_name;
+}
+
+function get_full_student_array( $student ) {
+
+  global $wpdb;
+
+  // Get class name
+  $class_name = $wpdb->get_var("SELECT name FROM vro_classes WHERE id = $student->class_id");
+
+  $student_data = array();
+
+  $student_data['id'] = $student->id;
+  $student_data['first_name'] = $student->first_name;
+  $student_data['last_name'] = $student->last_name;
+  $student_data['birthyear'] = $student->birthyear;
+  $student_data['gender'] = $student->gender;
+  $student_data['registered_city'] = $student->registered_city;
+  $student_data['phonenumber'] = $student->phonenumber;
+  $student_data['email'] = $student->email;
+  $student_data['program'] = $student->program;
+  $student_data['end_year'] = $student->end_year;
+  $student_data['class_name'] = $class_name;
+
+  return $student_data;
 }
 
 function check_if_entry_exists( $table, $field, $value, $errLocation = false ) {

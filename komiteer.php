@@ -353,6 +353,21 @@
 
             <h3>Skapa ny kommitté</h3>
             <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post" autocomplete="off">
+
+              <?php
+
+              if (isset($_GET['add_new'])) {
+
+                $application_check = $_GET['add_new'];
+
+                if ($application_check == 'nostudentfound') {
+                  echo '<p class="error">Antingen har denna elev inte registrerat sig eller så finns inte eleven i systemet.</p>';
+                }
+
+              }
+
+              ?>
+
               <input type="text" name="kommitte_name" value="" placeholder="Namn på kommittén..." required>
               <div class="text-limited-root">
                 <textarea name="description" placeholder="Beskrivning av kommittéen..." required onkeyup="checkForm(this, kommitte_description_char_count, 300)"></textarea>
@@ -360,6 +375,7 @@
               </div>
               <div class="autocomplete">
                   <input type="text" name="chairman_name" value="" placeholder="Ordförande..." id="chairman-field" required>
+                  <input type="text"  name="chairman_id" id="chairman-id-field" hidden>
               </div>
 
               <button type="submit" name="add_new_kommitte" class="btn lg">Skapa</button>
@@ -372,25 +388,31 @@
         <?php
 
         // Get the number of all members
-        $all_students = get_users(array(
-          'meta_key' => 'class_id'
-        ));
+        $all_students = $wpdb->get_results("SELECT * FROM vro_users WHERE class_id IS NOT NULL");
 
         // Get first and last name from every student
         $first_last_array_full = array();
         foreach($all_students as $s){
-          array_push($first_last_array_full, get_user_meta( $s->ID, 'nickname', true));
+          array_push($first_last_array_full, get_full_studentname( $s ));
+        }
+
+        // Get a full array
+        $full_student_array = array();
+        foreach ($all_students as $s) {
+          array_push($full_student_array, get_full_student_array( $s ));
         }
 
         echo '<script type="text/javascript">';
-        echo 'var jsonstudentsall = ' . json_encode($first_last_array_full);
+        echo 'var jsonstudentsall = ' . json_encode($first_last_array_full). ';';
+        echo 'var jsonstudentsfull = ' . json_encode($full_student_array) . ';';
         echo '</script>'
 
         ?>
 
         <script type="text/javascript">
 
-          autocomplete(document.getElementById("chairman-field"), jsonstudentsall, 'Inga elever hittades.');
+          //autocomplete(document.getElementById("chairman-field"), jsonstudentsall, 'Inga elever hittades.');
+          autocompleteFull(document.getElementById("chairman-field"), jsonstudentsfull, 'Inga elever hittades.', document.getElementById("chairman-id-field"));
         </script>
 
 

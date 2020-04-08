@@ -298,7 +298,7 @@ input[type="file"] {
   overflow: hidden;
 }
 
-form .success, form .error {
+p.success, p.error {
   text-align: left;
   margin: 10px 0;
   padding: 10px;
@@ -308,15 +308,15 @@ form .success, form .error {
   border-radius: 10px;
 }
 
-form .success {
+p.success {
   background-color: var(--main);
 }
 
-.green form .success {
+.green p.success {
   background-color: var(--lighter);
 }
 
-form .error {
+p.error {
   background-color: var(--deny);
 }
 
@@ -1081,6 +1081,7 @@ div[class=kommitee] a {
   color: #fff;
   border-radius: 15px;
   padding: 10px 20px;
+  margin: 7px 0;
 }
 
 
@@ -2106,19 +2107,25 @@ button .btn-description {
   padding: 15px 20px;
   font-size: 0.9rem;
   border-bottom: 2px solid var(--box);
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 3fr 3fr 2fr 1fr;
+  color: #fff;
 }
 
 #datafetch p.member {
   background-color: var(--main);
-  color: #fff;
-
 }
 
 #datafetch p.not-member {
   background-color: var(--deny);
-  color: #fff;
+}
+
+#datafetch p.waiting-member {
+  background-color: var(--wait);
+}
+
+#datafetch p.not-registered {
+  border: 4px dashed #c3c3c3;
 }
 
 /*****************************************

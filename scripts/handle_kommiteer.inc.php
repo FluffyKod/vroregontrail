@@ -63,24 +63,33 @@
 
     global $wpdb;
 
+    $return = '/panel/kommiteer?add_new';
+
     $kommitte_name = test_input( $_POST['kommitte_name'] );
     $description = test_input( $_POST['description'] );
-    $chairman_name = test_input( $_POST['chairman_name'] );
+    // $chairman_name = test_input( $_POST['chairman_name'] );
+    $chairman_id = check_number_value( test_input( $_POST['chairman_id'] ), $return);
 
-    check_if_empty( array($kommitte_name, $description, $chairman_name), '/panel/kommiteer?add_new=empty');
+    check_if_empty( array($kommitte_name, $description, $chairman_id), '/panel/kommiteer?add_new=empty');
 
     // Check if there already is a kommitée with that name
     check_if_entry_exists( 'vro_kommiteer', 'name', $kommitte_name, "/panel/kommiteer?add_new=nametaken&the_description=$description&chairman=$chairman_name");
 
     // Get the student with the supplied nickname
-    $student = get_student_from_nickname($chairman_name, '/panel/kommiteer?add_new=nostudentfound');
+    // $student = get_studentshell_from_text($chairman_name, '/panel/kommiteer?add_new=nostudentfound');
+
+    // Get student from chairman id
+    $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $chairman_id");
+    if (!$student) {
+      send_header( $return . '=noStudentFound' );
+    }
 
     // Create a new array that will hold all the arguments to create a new kommitee
     $kommitte = array();
 
     $kommitte['name'] = $kommitte_name;
     $kommitte['description'] = $description;
-    $kommitte['chairman'] = $student[0]->ID;
+    $kommitte['chairman'] = $student->id;
     $kommitte['status'] = 'y';
 
     insert_record('vro_kommiteer', $kommitte, 'DB insertion failed: failed to add new kommitte in add_new_kommittee');
@@ -94,7 +103,7 @@
 
     $kommitee = array();
 
-    $kommitee['user_id'] = $student[0]->ID;
+    $kommitee['user_id'] = $student->id;
     $kommitee['kommitee_id'] = (int)$new_kommitee->id;
     $kommitee['status'] = 'y';
 
@@ -121,14 +130,14 @@
       // Send mail
       $kommitte = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id = ' . $_POST['accept_kommitee']);
 
-      $chairman = get_user_by( 'ID', $kommitte->chairman );
+      $chairman = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $kommitte->chairman");
       if ($chairman) {
         $answer = test_input( $_POST['komm_answer'] );
         if (empty($answer)) {
           $answer = 'Din kommittéansökan har godkänts.';
         }
 
-        wp_mail( $chairman->user_email, 'Din kommittéansökan har godkänts!', $answer );
+        wp_mail( $chairman->email, 'Din kommittéansökan har godkänts!', $answer );
       }
 
       // Logg action
@@ -149,14 +158,14 @@
       // Send mail
       $kommitte = $wpdb->get_var('SELECT chairman FROM vro_kommiteer WHERE id = ' . $_POST['deny_kommitee']);
 
-      $chairman = get_user_by( 'ID', $kommitte->chairman );
+      $chairman = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $kommitte->chairman");
       if ($chairman) {
         $answer = test_input( $_POST['komm_answer'] );
         if (empty($answer)) {
           $answer = 'Din kommittéansökan har nekats.';
         }
 
-        wp_mail( $chairman->user_email, 'Din kommittéansökan har nekats', $answer );
+        wp_mail( $chairman->email, 'Din kommittéansökan har nekats', $answer );
       }
 
       // Logg action
@@ -200,9 +209,9 @@
 
       // Check if there was a message
       if ( !check_if_empty( array($member_message, $$kommitte_name) ) ) {
-        if ($student = get_user_by('id', $u_id)) {
+        if ($student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $u_id")) {
           // Send the mail
-          $email_address = $student->user_email;
+          $email_address = $student->email;
           wp_mail( $email_address, 'Din ansökan till '. $kommitte_name .' har godkänts', $member_message );
         }
       }
@@ -230,9 +239,9 @@
       // Check if there was a message
       if (!empty($member_message) && !empty($kommitte_name)){
         // Get the applying student
-        if ($student = get_user_by('id', $u_id)) {
+        if ($student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $u_id")) {
           // Send the mail
-          $email_address = $student->user_email;
+          $email_address = $student->email;
           wp_mail( $email_address, 'Din ansökan till '. $kommitte_name .' har nekats', $member_message );
         }
       }
@@ -340,20 +349,37 @@
 
     global $wpdb;
 
+    $return = '/panel/kommiteer?alter_chairman';
+
     $k_id = test_input( $_POST['k_id'] );
     $new_chairman_name = test_input( $_POST['new_chairman_name'] );
+    $new_chairman_id = test_input( $_POST['chairman_id'] );
 
     $k_id = check_number_value( $k_id, "/panel/kommiteer?alter_chairman" );
-
-    check_if_empty( $new_chairman_name, "/panel/kommiteer?k_id=$k_id&alter_chairman=empty" );
+    $new_chairman_id = check_number_value( $new_chairman_id, "/panel/kommiteer?k_id=$k_id&alter_chairman" );
 
     // Get the student with the supplied nickname
-    $student = get_student_from_nickname( $new_chairman_name, "/panel/kommiteer?k_id=$k_id&alter_chairman=nostudentfound" );
+    // $student = get_student_from_nickname( $new_chairman_name, "/panel/kommiteer?k_id=$k_id&alter_chairman=nostudentfound" );
 
-    update_record('vro_kommiteer', 'chairman', $student[0]->ID, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_chairman=failed");
+    $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $new_chairman_id");
+    if (!$student) {
+      send_header( $return . '=noStudentFound' );
+    }
+
+    // Check if student is member
+    if (count($wpdb->get_results("SELECT * FROM vro_kommiteer_members WHERE kommitee_id = $k_id AND user_id = $new_chairman_id")) < 1) {
+      // If not, make em member
+      $new_member = array();
+      $new_member['kommitee_id'] = $k_id;
+      $new_member['user_id'] = $new_chairman_id;
+      $new_member['status'] = 'y';
+      insert_record( 'vro_kommiteer_members', $new_member, 'DB insertion failed: add chairman as member in change_chairman' );
+    }
+
+    update_record('vro_kommiteer', 'chairman', $student->id, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_chairman=failed");
 
     // Logg action
-    $log_description = 'Ordförande för kommittén med id ' . $k_id . ' ändrades till ' . $student[0]->nickname;
+    $log_description = 'Ordförande för kommittén med id ' . $k_id . ' ändrades till ' . get_full_studentname( $student );
     add_log( 'Kommittéer', $log_description, get_current_user_id() );
 
     send_header( "/panel/kommiteer?k_id=$k_id&alter_chairman=success" );
@@ -364,22 +390,30 @@
 
     global $wpdb;
 
-    $student_name = test_input( $_POST['student_name'] );
+    $return = '/panel/kommiteer?add_member';
+
+    $student_id = test_input( $_POST['student_id'] );
     $k_id = test_input( $_POST['kommitte_id'] );
 
     // Check if the k_id was supplied
     $k_id = check_number_value( $k_id, "/panel/kommiteer?add_member");
 
     // CHeck if a student name was supplied
-    check_if_empty( array($student_name), "/panel/kommiteer?k_id=$k_id&add_member=nostudent" );
+    check_if_empty( array($student_id), "/panel/kommiteer?k_id=$k_id&add_member=nostudent" );
 
-    check_if_entry_exists('vro_kommiteer', 'id', $k_id, "/panel/kommiteer?k_id=$k_id&add_member=nokommittefound");
+    if (!check_if_entry_exists('vro_kommiteer', 'id', $k_id)) {
+      send_header("/panel/kommiteer?k_id=$k_id&add_member=nokommittefound");
+    }
 
     // Get the student with the supplied nickname
-    $student = get_student_from_nickname($student_name, "/panel/kommiteer?k_id=$k_id&add_member=nostudentfound");
+    // $student = get_student_from_nickname($student_name, "/panel/kommiteer?k_id=$k_id&add_member=nostudentfound");
+    $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $student_id");
+    if (!$student) {
+      send_header( $return . '=noStudentFound' );
+    }
 
     // Check if student already exists
-    if (count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = ' . $k_id . ' AND user_id = '. $student[0]->ID)) > 0){
+    if (count($wpdb->get_results('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = ' . $k_id . ' AND user_id = '. $student->id)) > 0){
       header("Location: /panel/kommiteer?k_id=$k_id&add_member=studentalreadyadded");
       exit();
     }
@@ -387,7 +421,7 @@
     // Add student to kommitté
     $new_member = array();
 
-    $new_member['user_id'] = $student[0]->ID;
+    $new_member['user_id'] = $student->id;
     $new_member['kommitee_id'] = $k_id;
     $new_member['status'] = 'y';
 
@@ -395,7 +429,7 @@
     insert_record('vro_kommiteer_members', $new_member, "DB insertion failed: failed to add new student in add_member");
 
     // Logg action
-    $log_description = $student[0]->ID . ' lades till i kommittén ' . $k_id;
+    $log_description = $student->id . ' lades till i kommittén ' . $k_id;
     add_log( 'Kommittéer', $log_description, get_current_user_id() );
 
     send_header("/panel/kommiteer?k_id=$k_id&add_member=success");

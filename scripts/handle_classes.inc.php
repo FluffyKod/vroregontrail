@@ -96,7 +96,7 @@ elseif (isset($_POST['give_classpoints_internal'])){
   global $wpdb;
 
   $class_id = check_number_value(test_input( $_POST['c_id'] ), '/panel/medlemmar?give_classpoints');
-  $class_points = check_number_value(test_input( $_POST['add-points'] ). '/panel/medlemmar/?c_id=$class_id&give_classpoints');
+  $class_points = check_number_value(test_input( $_POST['add-points'] ), '/panel/medlemmar/?c_id=$class_id&give_classpoints');
 
   $class_record = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $class_id);
 
@@ -125,7 +125,22 @@ elseif (isset($_POST['give_classpoints_internal'])){
       }
     }
 
-  }
+}
+
+elseif (isset($_POST['remove_class'])) {
+
+  // Set default return url
+  $return = '/panel/medlemmar/?remove_class=';
+
+  // Get form parameter
+  $c_id = check_number_value( test_input($_POST['c_id']), $return . 'badCid');
+
+  // Remove the class
+  remove_record('vro_classes', 'id', $c_id, 'failed to remove class in remove class');
+
+  // Send back to medlem-page
+  send_header( $return . 'success' );
+
 }
 
 else {

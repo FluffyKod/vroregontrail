@@ -91,12 +91,12 @@ function vro_setup() {
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    user_id INTEGER(10) UNSIGNED NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
     subject VARCHAR(100) NOT NULL,
     text VARCHAR(300) NOT NULL,
     status VARCHAR(5) NOT NULL DEFAULT "w",
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES vro_users(id)
+    FOREIGN KEY (user_id) REFERENCES wp_users(ID)
   )';
 
   createTable($table_name, $sql_visselpipan);
@@ -287,7 +287,7 @@ function vro_setup() {
     description VARCHAR(300) NOT NULL,
     user_id BIGINT(20) UNSIGNED,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES vro_users(id)
+    FOREIGN KEY (user_id) REFERENCES wp_users(ID)
   )';
 
   createTable($table_name, $sql_log);
