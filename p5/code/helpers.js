@@ -150,22 +150,27 @@ function loadRoomsFromDatabase(area, callback){
       //saveRooms(sampleRooms)
     }
 
-    rooms = []
+    allAreaRooms = []
+
     parsedRooms = JSON.parse(response.rooms);
 
-    // ONly get the rooms for the specified area
-    //areaRooms = getAreaRooms(parsedRooms, area);
+    parsedRooms.forEach(roomArray => {
+      rooms = []
 
-    parsedRooms.forEach(room => {
-      var newRoom = new Room(room.x, room.y, room.mainText, room.options);
-      rooms.push( newRoom );
+      roomArray.forEach(room => {
+        var newRoom = new Room(room.x, room.y, room.mainText, room.options);
+        rooms.push( newRoom );
+      });
+
+      allAreaRooms.push(rooms);
     });
+
 
     if (response.sprites != false){
       sprites = JSON.parse(response.sprites);
       callback(rooms, sprites)
     } else {
-      callback(rooms);
+      callback(allAreaRooms);
     }
 
   })
@@ -198,6 +203,43 @@ function getAreaRooms(allRooms, area) {
 
     case 'core':
       return allRooms.core.rooms
+
+    default:
+      return Array()
+
+  }
+}
+
+function getRoomsFromArea( rooms, area ) {
+  switch (area) {
+
+    case 'test':
+      return rooms[0];
+      break;
+
+    case 'intro':
+      return rooms[1];
+      break;
+
+    case 'highlands':
+      return rooms[2];
+      break;
+
+    case 'bog':
+      return rooms[3];
+      break;
+
+    case 'city':
+      return rooms[4];
+      break;
+
+    case 'mountain':
+      return rooms[5];
+      break;
+
+    case 'core':
+      return rooms[6];
+      break;
 
     default:
       return Array()
