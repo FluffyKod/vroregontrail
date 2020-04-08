@@ -387,15 +387,31 @@ function saveRoom(){
 
     for (var i = 0; i < activeRoomArray.length; i++) {
       if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
-        activeRoomArray[i].mainText = activeRoom.gui.getValue('main_text');
+        activeRoomArray[i].text = activeRoom.gui.getValue('main_text');
         for (var j = 0; j < activeRoom.optionGuis.length; j++) {
-          activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
-          activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
-          for (var k = 0; k < maxCommandValues; k++) {
-            activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
+          if(activeRoomArray[i].options[j]){
+            activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
+            activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
+            for (var k = 0; k < maxCommandValues; k++) {
+              activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
+            }
+          }else{
+            let option = {
+              text: activeRoom.optionGuis[j].getValue('option_text'),
+              command: activeRoom.optionGuis[j].getValue('option_command'),
+              values: []
+              }
+            for (var k = 0; k < maxCommandValues; k++) {
+              option.values.push(activeRoom.optionGuis[j].getValue('command_value_'+k))
+            }
+            activeRoomArray[i].options.push(option);
           }
-        }
+          //tar bort om det finns options utöver option amount
+          if(j > activeRoomArray[i].gui.getValue("option_amount")){
+            activeRoomArray[i].options.pop()
+          }
 
+        }
         break;
       }
     }
