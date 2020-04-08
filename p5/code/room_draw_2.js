@@ -33,6 +33,36 @@ let generalGuiParent;
 let connectionColors;
 
 
+function getAreaRoomsFromRoomArrays() {
+  // Go through roomArrays and extract only the rooms from each area.
+  let areaRooms = [];
+
+  for (roomData of roomArrays) {
+    areaRooms.push(roomData.rooms);
+  }
+
+  // DEBUG:
+  console.log('GET AREA ROOMS: ', areaRooms);
+
+  return areaRooms;
+
+}
+
+function loadRoomArraysFrom( areaRoomsArray ) {
+  // Go through areaRooms and set the rooms parameter on each area
+  let areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
+
+  for (let i = 0; i < areaRoomsArray.count; i++) {
+    // Get the area rooms for each area above
+    getAreaRooms( roomArrays, areas[i] ).rooms = areaRoomsArray[i];
+  }
+
+  // DEBUG
+  console.log('LOADED ROOM ARRAYS: ', roomArrays);
+
+}
+
+
 function setup(){
 
   roomArrays = {//kanske konstigt att kalla det sprites
