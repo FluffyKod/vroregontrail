@@ -76,7 +76,7 @@ function setup(){
     // No rooms were found, set a default blank
     if (returnedRooms.length > 0){
       roomArrays.test.rooms = returnedRooms;
-      //roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
+      roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
     }
 
   }); // End load rooms
@@ -346,23 +346,23 @@ function saveRoom(){
 function createSpriteArrayFromRoomArray(inputRoomArray){
   this.inputRoomArray = inputRoomArray
   this.SpriteArray = [];
+  activeRoomSpriteArray = [];
   for (var i = 0; i < this.inputRoomArray.length; i++) {
     createCoordinate = indexToScreenCoordinates(this.inputRoomArray[i].x, this.inputRoomArray[i].y);
     print(createCoordinate);
     rs = createRoom(createCoordinate.x, createCoordinate.y);
 
-
-    rs.gui.setValue("main_text", this.inputRoomArray.mainText);
-    rs.gui.setValue("option_amount", this.inputRoomArray.options.length);
-    for (var j = 0; j < rs.optionGuis.length; j++) {
-      rs.optionGuis[j].setValue("option_text", this.inputRoomArray.options[j].text);
-      rs.optionGuis[j].setValue("option_command", this.inputRoomArray.options[j].command);
-      for (var k = 0; k < this.inputRoomArray.options[j].length; k++) {
-        rs.gui.setValue("command_value_"+k, String(this.inputRoomArray.options[j].values[k]));
+    activeRoomSpriteArray[i].gui.setValue("main_text", this.inputRoomArray[i].mainText);
+    activeRoomSpriteArray[i].gui.setValue("option_amount", this.inputRoomArray[i].options.length);
+    for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
+      activeRoomSpriteArray[i].optionGuis[j].setValue("option_text", this.inputRoomArray[i].options[j].text);
+      activeRoomSpriteArray[i].optionGuis[j].setValue("option_command", this.inputRoomArray[i].options[j].command);
+      for (var k = 0; k < this.inputRoomArray[i].options[j].length; k++) {
+        activeRoomSpriteArray[i].gui.setValue("command_value_"+k, String(this.inputRoomArray[i].options[j].values[k]));
 
       }
     }
-    this.SpriteArray.push(rs);
+    this.SpriteArray.push(activeRoomSpriteArray[i]);
 
   }
   return this.SpriteArray;
