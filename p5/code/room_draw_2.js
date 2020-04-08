@@ -315,7 +315,7 @@ function saveRoom(){
         values: []
         }
       for (var j = 0; j < maxCommandValues; j++) {
-        option.values.push(activeRoom.optionGuis[i].getValue('command_value_'+j)) //sparar onödigt många värden men yolo
+        option.values.push(activeRoom.optionGuis[i].getValue('command_value_'+j))
 
       }
       activeRoom.exportRoom.options.push(option);
@@ -326,12 +326,28 @@ function saveRoom(){
 
     for (var i = 0; i < activeRoomArray.length; i++) {
       if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
-        activeRoomArray[i].mainText = activeRoom.gui.getValue('main_text');
+        activeRoomArray[i].text = activeRoom.gui.getValue('main_text');
         for (var j = 0; j < activeRoom.optionGuis.length; j++) {
-          activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
-          activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
-          for (var k = 0; k < maxCommandValues; k++) {
-            activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
+          if(activeRoomArray[i].options[j]){
+            activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
+            activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
+            for (var k = 0; k < maxCommandValues; k++) {
+              activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
+            }
+          }else{//lägger till nya options om den gamla hade färre
+            let option = {
+              text: activeRoom.optionGuis[j].getValue('option_text'),
+              command: activeRoom.optionGuis[j].getValue('option_command'),
+              values: []
+              }
+            for (var k = 0; k < maxCommandValues; k++) {
+              option.values.push(activeRoom.optionGuis[j].getValue('command_value_'+k))
+            }
+            activeRoomArray[i].options.push(option);
+          }
+          //tar bort ett option för varje som existerar över option_amount gränsen
+          if( j > activeRoom.gui.getValue("option_amount")){
+            activeRoomArray[i].options.pop();
           }
         }
 
@@ -482,6 +498,7 @@ function createGeneralGui(){
   generalGui.addButton('upload', function(){
     // TODO: spara nuvarande arrays till databasen
     console.log(roomArrays.test.rooms);
+    roomArrays.test.rooms = activeRoomArray;
     saveRooms(roomArrays.test.rooms);
     //saveSprites(roomArrays.test.sprites);
   })
