@@ -134,7 +134,7 @@ foreach ($waiting_members as $wait_member)
         <div class="see-more">
             <h4>Beskrivning</h4>
             <div>
-              <button onclick="showAnswerForm('change_description')">Ändra beskrivning &#8594;</button>
+              <button onclick="showAnswerForm('change_description')">Ändra kommittéinfo &#8594;</button>
             </div>
         </div>
 
@@ -145,13 +145,17 @@ foreach ($waiting_members as $wait_member)
           <hr>
 
           <form autocomplete="off"  action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="POST">
+            <p class="form-label">Namn på kommittén</p>
+            <input type="text" name="kommitte_name" value="<?php echo $current_kommitee->name ?>">
+
+            <p class="form-label">Beskrivning av kommittén</p>
             <div class="text-limited-root">
               <textarea name="kommitee_description" placeholder="Ny beskrivning..." required onkeyup="checkForm(this, event_description_char_count, 300)"></textarea>
               <p id="event_description_char_count">300</p>
             </div>
             <input name="k_id" value="<?php echo $k_id; ?>" hidden>
 
-            <button name="change_kommitte_description" class="btn" type="submit">Ändra beskrivning</button>
+            <button name="change_kommitte_information" class="btn" type="submit">Ändra kommittéinfo</button>
           </form>
 
         </div>

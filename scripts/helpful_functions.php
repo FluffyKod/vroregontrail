@@ -141,6 +141,17 @@ function get_full_studentname( $student ) {
   return $student->first_name . ' ' . $student->last_name;
 }
 
+function get_full_studentname_from_id( $student_id ) {
+  global $wpdb;
+
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $student_id");
+  if ($student) {
+    return get_full_studentname($student);
+  } else {
+    return '';
+  }
+}
+
 function get_full_student_array( $student ) {
 
   global $wpdb;
@@ -607,6 +618,9 @@ function display_karen( $edit = false ){
     $styrelsen = $wpdb->get_results('SELECT * FROM vro_styrelsen');
 
     foreach ($styrelsen as $s) {
+
+      $vro_student = get_student_by_id( $s->student );
+
       ?>
 
         <div class="box white chairman sm clickable">
@@ -620,9 +634,11 @@ function display_karen( $edit = false ){
 
 
           <h3><?php echo $s->position_name; ?></h3>
-          <p><?php echo get_user_meta($s->student, 'nickname', true); ?></p>
-          <input type="text" name="" value="<?php echo $s->id; ?>" hidden>
-          <input class="position-student-email" name="" value="<?php echo get_userdata($s->student)->user_email; ?>" hidden>
+          <p><?php echo get_full_studentname_from_id( $s->student ); ?></p>
+          <input type="text" name="position-id" value="<?php echo $s->id; ?>" hidden>
+          <input type="text" name="student-id" value="<?php echo $s->student; ?>" hidden>
+          <input class="position-student-email" name="" value="<?php echo $vro_student->email; ?>" hidden>
+          <button class="btn" type="button" name="button">Info</button>
       </div>
 
       <?php
@@ -642,6 +658,9 @@ function display_karen( $edit = false ){
     $utskotten = $wpdb->get_results('SELECT * FROM vro_utskott');
 
     foreach ($utskotten as $u) {
+
+      $vro_student = get_student_by_id( $u->chairman );
+
       ?>
 
       <?php
@@ -662,10 +681,11 @@ function display_karen( $edit = false ){
           } ?>
 
           <h3><?php echo $u->name; ?></h3>
-          <p>Ordförande: <?php echo get_user_meta($u->chairman, 'nickname', true); ?></p>
+          <p>Ordförande: <?php echo get_full_studentname( $vro_student ); ?></p>
           <input class="utskott-id" type="text" name="" value="<?php echo $u->id; ?>" hidden>
           <input class="utskott-description" type="text" name="" value="<?php echo $u->description; ?>" hidden>
-          <input class="utskott-chairman-email" name="" value="<?php echo get_userdata($u->chairman)->user_email; ?>" hidden>
+          <input class="utskott-chairman-email" name="" value="<?php echo $vro_student->email; ?>" hidden>
+          <button class="btn" type="button" name="button">Info</button>
       </div>
 
       <?php

@@ -324,24 +324,34 @@
     send_header("/panel/kommiteer?k_id=$k_id&leave_kommitte=success");
   }
 
-  elseif (isset($_POST['change_kommitte_description'])){
+  elseif (isset($_POST['change_kommitte_information'])){
 
     global $wpdb;
 
-    $new_description = test_input( $_POST['kommitee_description'] );
+    $return = '/panel/kommiteer?alter_information';
+
     $k_id = test_input( $_POST['k_id'] );
+    $k_id = check_number_value( $k_id, $return );
 
-    $k_id = check_number_value( $k_id, '/panel/kommiteer?alter_description' );
+    $return = "/panel/kommiteer?k_id=$k_id&alter_information";
 
-    check_if_empty( array($new_description), "Location: /panel/kommiteer?k_id=$k_id&alter_description=empty" );
+    $new_description = check_post( test_input( $_POST['kommitee_description'] ), $return);
+    $new_name = check_post( test_input( $_POST['kommitte_name'] ), $return );
 
-    update_record( 'vro_kommiteer', 'description', $new_description, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_description=failed");
+    check_if_empty( array($new_description), "Location: /panel/kommiteer?k_id=$k_id&alter_information=empty" );
+
+    // Check if new name exists¨
+    check_if_entry_exists('vro_kommiteer', 'name', $new_name, $return);
+
+    // Update the kommitté with new information
+    update_record( 'vro_kommiteer', 'description', $new_description, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_information=failed");
+    update_record( 'vro_kommiteer', 'name', $new_name, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_information=failed");
 
     // Logg action
-    $log_description = 'Beskrivningen av kommitté ' . $k_id . ' ändrades till ' . $new_description;
+    $log_description = 'Information av kommitté ' . $k_id . ' ändrades till namnet ' . $new_name . ' med beskrivningen ' . $new_description;
     add_log( 'Kommittéer', $log_description, get_current_user_id() );
 
-    send_header( "/panel/kommiteer?k_id=$k_id&alter_description=success" );
+    send_header( "/panel/kommiteer?k_id=$k_id&alter_information=success" );
 
   }
 

@@ -205,7 +205,7 @@ button.btn.lg {
 .add-btn.lg {
   width: 60px;
   height: 60px;
-  padding: 0 0 3px 3px;
+  padding: 1% 0 0 0;
   font-size: 1.8rem;
 }
 
@@ -334,6 +334,12 @@ form .yes-no input[type="radio"] {
 
 form.expand {
   width: 100%;
+}
+
+form p.form-label {
+  font-weight: bold;
+  font-size: 14px;
+  margin: 20px 2px -10px 0;
 }
 
 .choose-et-colors {

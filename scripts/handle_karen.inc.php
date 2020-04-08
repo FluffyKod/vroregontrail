@@ -53,8 +53,11 @@ if (isset($_POST['add_new_position_type'])) {
 
 elseif (isset($_POST['add_new_styrelse_post'])) {
 
+  $return = '/panel/karen?new_styrelse_post';
+
   $styrelse_post = test_input( $_POST['styrelsepost'] );
-  $student_name = test_input( $_POST['student_name'] );
+  // $student_name = test_input( $_POST['student_name'] );
+  $student_id = check_number_value( test_input( $_POST['student_id'] ), $return . '=badStudentId');
 
   if (empty($styrelse_post)){
     header("Location: /panel/karen?new_styrelse_poste=empty");
@@ -65,27 +68,14 @@ elseif (isset($_POST['add_new_styrelse_post'])) {
 
   $styrelse['position_name'] = $styrelse_post;
 
-  if (!empty($student_name)){
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $student_id");
+  if (!$student) {
+    send_header( $return . '=noStudentFound' );
+  }
 
-    // Get the student with the supplied nickname
-    $args = array(
-        'meta_query' => array(
-            array(
-                'key' => 'nickname',
-                'value' => $student_name,
-                'compare' => '=='
-            )
-        )
-    );
-
-    // Get the student
-    $student = get_users($args);
-
-    // If there is a student
-    if (count($student) > 0){
-      $styrelse['student'] = $student[0]->ID;
-    }
-
+  // If there is a student
+  if (count($student) > 0){
+    $styrelse['student'] = $student->id;
   }
 
   // Insert the new suggestion into the database
@@ -97,7 +87,7 @@ elseif (isset($_POST['add_new_styrelse_post'])) {
   }
 
   // Logg action
-  $log_description = 'Lade till styrelseposten ' . $styrelse_post . ' med eleven ' . $student_name;
+  $log_description = 'Lade till styrelseposten ' . $styrelse_post . ' med eleven ' . $student->name;
   add_log( 'Kåren', $log_description, get_current_user_id() );
 
   header("Location: /panel/karen?new_styrelse_poste=success");
@@ -107,8 +97,10 @@ elseif (isset($_POST['add_new_styrelse_post'])) {
 
 elseif (isset($_POST['add_new_utskott'])){
 
+  $return = '/panel/karen?new_utskott';
+
   $utskott_name = test_input( $_POST['utskott_name'] );
-  $student_name = test_input( $_POST['student_name'] );
+  $student_id = check_number_value( test_input( $_POST['student_id'] ), '/panel/karen?new_utskott');
   $description = test_input( $_POST['description'] );
 
   if (empty($utskott_name) ){
@@ -116,39 +108,21 @@ elseif (isset($_POST['add_new_utskott'])){
     exit();
   }
 
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $student_id");
+  if (!$student) {
+    send_header( $return . '=noStudentFound' );
+  }
+
   $utskott = array();
 
   $utskott['name'] = $utskott_name;
+  $utskott['chairman'] = (int)$student->id;
 
-  if (!empty($student_name)){
-
-    // Get the student with the supplied nickname
-    $args = array(
-        'meta_query' => array(
-            array(
-                'key' => 'nickname',
-                'value' => $student_name,
-                'compare' => '=='
-            )
-        )
-    );
-
-    // Get the student
-    $student = get_users($args);
-
-    // If there is a student
-    if (count($student) > 0){
-      $utskott['student'] = $student[0]->ID;
-    }
-
-  }
 
   if (!empty($description)){
     $utskott['description'] = $description;
   }
 
-  // var_dump($utskott);
-  // exit();
 
   // Insert the new suggestion into the database
   if($wpdb->insert(
@@ -159,7 +133,7 @@ elseif (isset($_POST['add_new_utskott'])){
   }
 
   // Logg action
-  $log_description = 'Lade till utskottet ' . $utskott_name . ' med eleven ' . $student_name . ' som ordförande och med beskrivningen ' . $description;
+  $log_description = 'Lade till utskottet ' . $utskott_name . ' med eleven ' . get_full_studentname( $student ) . ' som ordförande och med beskrivningen ' . $description;
   add_log( 'Kåren', $log_description, get_current_user_id() );
 
   header("Location: /panel/karen?new_utskott=success");
@@ -363,7 +337,7 @@ elseif (isset($_POST['delete_utskott'])){
 
   $position_id = (int)$position_id;
 
-  if (!$wpdb->delete( 'vro_utskottn', array( 'id' => $utskott_id ) ) ) {
+  if (!$wpdb->delete( 'vro_utskott', array( 'id' => $utskott_id ) ) ) {
     wp_die('could not delete utskott');
   } else {
 

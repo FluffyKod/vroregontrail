@@ -208,7 +208,7 @@ function createRoom(x, y){
       guiBackgroundHidden =false;
 
     }
-    roomSprite.gui =  QuickSettings.create(10, 10, "Room "+ roomSprite.coordinateString, guiParent);
+    roomSprite.gui = QuickSettings.create(10, 10, "Room "+ roomSprite.coordinateString, guiParent);
     roomSprite.gui.setDraggable(false);
     roomSprite.gui.setWidth(250);
     roomSprite.gui.addTextArea('main_text', "");

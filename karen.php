@@ -71,6 +71,7 @@ if (! is_user_logged_in() ){
               <label><b>Eleven på denna post</b></label>
               <div class="autocomplete">
                 <input type="text" name="student_name" value="" placeholder="Elevens namn..." id="student-name-field">
+                <input type="text" name="student_id" value="" hidden id="student-id-field">
               </div>
 
               <input type="text" name="position_id" value="" id="position-id" hidden>
@@ -103,6 +104,7 @@ if (! is_user_logged_in() ){
               <label><b>Ordförande för detta utskottt</b></label>
               <div class="autocomplete">
                 <input type="text" name="chairman_name" value="" placeholder="Elevens namn..." id="chairman-name-field">
+                <input type="text" name="chairman_id" value="" id="chariman-id-field">
               </div>
 
               <input type="text" name="utskott_id" value="" id="utskott-id" hidden>
@@ -177,6 +179,7 @@ if (! is_user_logged_in() ){
 
               <div class="autocomplete">
                 <input type="text" name="student_name" id="chairman_name" value="" placeholder="Ordförande...">
+                <input type="text"  name="student_id" id="chairman_id_field" hidden>
               </div>
 
 
@@ -197,6 +200,7 @@ if (! is_user_logged_in() ){
               <input type="text" name="styrelsepost" value="" placeholder="Namn på styrelseposten (ex. Ordförande)..." required>
               <div class="autocomplete">
                 <input type="text" name="student_name" id="student_name" value="" placeholder="Elev...">
+                <input type="text" name="student_id" value="" id="student_id_field" hidden>
               </div>
 
 
@@ -208,36 +212,30 @@ if (! is_user_logged_in() ){
       </div>
     <?php endif; //Check if admin ?>
 
+    <?php
 
+    global $wpdb;
 
-      <?php
+    $all_students = $wpdb->get_results("SELECT * FROM vro_users WHERE class_id IS NOT NULL");
 
-      global $wpdb;
+    // Get a full array
+    $full_student_array = array();
+    foreach ($all_students as $s) {
+      array_push($full_student_array, get_full_student_array( $s ));
+    }
 
-      // Get the number of all members
-      $all_students = get_users(array(
-        'meta_key' => 'class_id'
-      ));
+    echo '<script type="text/javascript">';
+    echo 'var jsonstudentsfull = ' . json_encode($full_student_array) . ';';
+    echo '</script>'
 
-      // Get first and last name from every student
-      $first_last_array = array();
-      foreach($all_students as $s){
-        array_push($first_last_array, get_user_meta( $s->ID, 'nickname', true));
-      }
-
-      echo '<script type="text/javascript">';
-      echo 'var jsonstudents = ' . json_encode($first_last_array);
-      echo '</script>'
-
-      ?>
-
+    ?>
       <script>
       // var jsonstudents = getArrayFromColumn(jsonstudents, 'display_name');
 
-      autocomplete(document.getElementById("student_name"), jsonstudents, 'Inga elever hittades');
-      autocomplete(document.getElementById("chairman_name"), jsonstudents, 'Inga elever hittades');
-      autocomplete(document.getElementById("student-name-field"), jsonstudents, 'Inga elever hittades');
-      autocomplete(document.getElementById("chairman-name-field"), jsonstudents, 'Inga elever hittades');
+      autocompleteFull(document.getElementById("student_name"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('student_id_field'));
+      autocompleteFull(document.getElementById("chairman_name"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('chairman_id_field'));
+      autocompleteFull(document.getElementById("student-name-field"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('student-id-field'));
+      autocompleteFull(document.getElementById("chairman-name-field"), jsonstudentsfull, 'Inga elever hittades', document.getElementById('chariman-id-field'));
       </script>
 
       </section>
@@ -295,7 +293,8 @@ if (! is_user_logged_in() ){
               let modal = document.querySelector('#modal');
               let position_name = position.querySelector('h3').innerText;
               let student_name = position.querySelector('p').innerText;
-              let position_id = position.querySelector('input').value;
+              let student_id = position.querySelector('input[name=student-id]').value;
+              let position_id = position.querySelector('input[name=position-id]').value;
 
               // Change the modal header
               document.querySelector('#modal .modal-header .title').textContent = 'Ändra styrelsepositionen ' + position_name;
@@ -305,6 +304,7 @@ if (! is_user_logged_in() ){
               document.querySelector('#modal .modal-body form #position-id').value = position_id;
 
               document.querySelector('#modal .modal-body form .autocomplete #student-name-field').value = student_name;
+              document.querySelector('#modal .modal-body form .autocomplete #student-id-field').value = student_id;
 
               document.querySelector('#modal .modal-body form .button-group #submit-button').name = 'update_styrelse_post';
 
