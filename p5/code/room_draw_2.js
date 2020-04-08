@@ -481,8 +481,9 @@ function createGeneralGui(){
   });
   generalGui.addButton('upload', function(){
     // TODO: spara nuvarande arrays till databasen
+    console.log(roomArrays.test.rooms);
     saveRooms(roomArrays.test.rooms);
-    saveSprites(roomArrays.test.sprites);
+    //saveSprites(roomArrays.test.sprites);
   })
 
 }

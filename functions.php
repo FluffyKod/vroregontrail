@@ -236,26 +236,23 @@ function save_rooms(){
   $rooms_string = stripslashes($rooms_string);
 
   // Check if some rooms have been saved
-  $room_amount = count( $wpdb->get_results("SELECT * FROM vroregon_rooms WHERE id = 1") );
 
-  // Check if there is a record saved
-  if ( $room_amount == 0 ) {
-    // Create a new record and insert the room string
-    $newRooms = array();
-    $newRooms['id'] = 1;
-    $newRooms['rooms'] = $rooms_string;
+  // Delete the existing record if there exists one
+  if (count( $wpdb->get_results("SELECT * FROM vroregon_rooms") ) > 0) {
+    if ($wpdb->delete( 'vroregon_rooms', array( 'id' => 1 ) ) == false) {
+      echo json_encode( array('message' => 'Error: Could not delete rooms row') );
+    }
+  }
 
-    insert_record( 'vroregon_rooms', $newRooms, 'Failed to insert a new rooms row in save_rooms() in functions.php' );
+  // Create a new record and insert the room string
+  $newRooms = array();
+  $newRooms['id'] = 1;
+  $newRooms['rooms'] = $rooms_string;
 
-    echo json_encode( array('message' => 'Inserted a new rooms row') );
-
+  if( $wpdb->insert('vroregon_rooms', $newRooms) == false){
+    echo json_encode( array('message' => 'Error: Could not insert a new rooms row why') );
   } else {
-
-    // Update the existing rooms row
-    update_record( 'vroregon_rooms', 'rooms', $rooms_string, 'id', 1 );
-
-    echo json_encode( array('message' => 'Updated rooms row') );
-
+    echo json_encode( array('message' => 'Success: Inserted a new rooms row') );
   }
 
   //Quit the function
