@@ -66,7 +66,7 @@ function saveRooms(roomsToSave) {
 
   sendAjax(parameters, function(response) {
     console.log(response);
-  })
+  });
 
 }
 

@@ -58,7 +58,7 @@ function check_if_entry_exists( $table, $field, $value, $errLocation = false ) {
 
 }
 
-function insert_record( $table, $record, $errMsg ) {
+function insert_record( $table, $record, $errMsg = false ) {
 
   global $wpdb;
 
@@ -110,13 +110,17 @@ function update_record( $table, $field, $new_value, $check_field, $check_value, 
   }
 }
 
-function remove_record( $table, $field, $value, $errMsg ){
+function remove_record( $table, $field, $value, $errMsg = false){
   global $wpdb;
 
   // check if there are any records
   if (check_if_entry_exists($table, $field, $value)){
     if (!$wpdb->delete( $table, array( $field => $value ) ) ) {
-      wp_die( $errMsg );
+      if ($errMsg) {
+        wp_die( $errMsg );
+      } else {
+        return false;
+      }
     } else {
       return true;
     }
