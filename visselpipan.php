@@ -83,6 +83,13 @@ if (! is_user_logged_in() ){
           foreach ($results as $r)
           {
 
+            $student = get_studentshell_by_wpuser_id( $r->user_id );
+            $fullname = get_full_studentname( $student );
+            $class_name = get_classname_by_id( $student->class_id );
+
+            $phpdate = strtotime($student->created);
+            $date_created = date('Y/m/d H:i', $phpdate);
+
             echo '<div class="row">';
               echo '<div class="box white lg">';
                 echo '<div class="see-more">';
@@ -92,7 +99,7 @@ if (! is_user_logged_in() ){
                   echo '</div>';
                 echo '</div>';
 
-                echo '<p><i>Från: '. get_user_meta($r->user_id, 'nickname',true) .'</i></p>';
+                echo "<p><i><b>$fullname $class_name</b> - $date_created</i></p>";
                 echo '<p>' . $r->text . '</p>';
 
                 echo '<div class="answer" id="' . $r->id .'">';

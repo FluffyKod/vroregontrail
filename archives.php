@@ -86,11 +86,17 @@ if (! is_user_logged_in() ){
         // Add a new row and box for every suggestion
         foreach ($results as $r)
         {
+
+          $student = get_studentshell_by_wpuser_id( $r->user_id );
+          $fullname = get_full_studentname( $student );
+          $class_name = get_classname_by_id( $student->class_id );
+
           echo '<div class="row">';
             echo '<div class="box white lg">';
               echo '<div class="see-more">';
                 echo '<h4>' . $r->subject . '</h4>';
               echo '</div>';
+              echo "<p><i>Från: $fullname - $class_name</i></p>";
               echo '<p>' . $r->text . '</p>';
             echo '</div>';
           echo '</div>';

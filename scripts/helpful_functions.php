@@ -113,6 +113,17 @@ function get_student_by_id( $id ) {
   }
 }
 
+function get_studentshell_by_wpuser_id( $wpuser_id ) {
+  global $wpdb;
+
+  $student = $wpdb->get_row("SELECT * FROM vro_users WHERE wpuser_id = $wpuser_id");
+  if ($student) {
+    return $student;
+  } else {
+    return NULL;
+  }
+}
+
 function get_studentshell_from_text( $text, $errLocation ) {
 
   global $wpdb;
@@ -317,6 +328,21 @@ function get_classid_from( $class_name ) {
 
 }
 
+function get_classname_by_id( $class_id ) {
+
+  global $wpdb;
+
+  // Get class with id
+  $class = $wpdb->get_row("SELECT * FROM vro_classes WHERE id=$class_id");
+
+  // No class was found
+  if ($class == NULL) {
+    return NULL;
+  } else {
+    return $class->name;
+  }
+}
+
 // Return end_year from class name
 function get_endyear_from( $class_name ) {
   // Get the end year from the class name
@@ -381,6 +407,56 @@ function getStudentsInYear($year, $students) {
   }
 
   return $yearArray;
+}
+
+function get_birthyear_by_email( $email ) {
+
+  // Get the endyear
+  $end_year = substr($email, 10, 4);
+
+  // Check if valid
+  if (!is_numeric($end_year)) {
+    return false;
+  }
+
+  $end_year = (int)$end_year;
+  $birthyear = $end_year - 19;
+
+  return $birthyear;
+
+}
+
+function get_student_grade( $student ) {
+
+  // Get the current year
+  $current_year = date('Y');
+
+  // Get the current month
+  $current_month = date('m');
+
+  // If it is before july, act as the year is the previous one
+  if ((int)$current_month < 7){
+    $current_year = (int)$current_year - 1;
+  } else {
+    $current_year = (int)$current_year;
+  }
+
+  $class_name = get_classname_by_id( $student->class_id );
+
+  if ($student->end_year == NULL){
+    $end_year = get_endyear_from( $class_name );
+  } else {
+    $end_year = $student->end_year;
+  }
+
+  // Get the difference, a.k.a the number of years left for this student
+  $years_left =  $end_year - $current_year;
+
+  // Get the grade they are in. ex. 3 years left means you are a 1:st grader, therefore 4 - 3 = 1, 4 - 2 years left = 2 etc.
+  $grade = 4 - $years_left;
+
+  return $grade;
+
 }
 
 function is_event_today( $start_time, $end_time ) {
@@ -626,7 +702,7 @@ function display_karen( $edit = false ){
         <div class="box white chairman sm clickable">
 
         <div class="edit-image">
-          <?php echo get_avatar( $s->student ); ?>
+          <?php echo get_avatar( $vro_student->wpuser_id ); ?>
           <?php if ($edit) { ?>
             <button type="button" name="button" class="edit-styrelse" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
           <?php } ?>
@@ -673,7 +749,7 @@ function display_karen( $edit = false ){
 
           <?php if ($edit) { ?>
             <div class="edit-image">
-              <?php echo get_avatar( $u->chairman ); ?>
+              <?php echo get_avatar( $vro_student->wpuser_id  ); ?>
               <button type="button" name="button" class="edit"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
             </div>
           <?php } else {

@@ -36,9 +36,9 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
-
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
@@ -69,6 +69,8 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
         } else {
 
         ?>
+
+
 
         <div class="top-bar">
           <h2>Medlemmar</h2>
@@ -231,7 +233,7 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
             <div class="see-more">
               <h4>Klasser</h4>
               <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){
-                echo '<h4>Medlemmar i elevkåren</h4>';
+                echo '<h4>Medlemmar</h4>';
               }
               ?>
             </div>
@@ -246,14 +248,20 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
             ?>
 
               <a href="/panel/medlemmar?c_id=<?php echo $c->id; ?>" class="class">
-                <p><?php echo $c->name; ?></p>
+                <p class="class-name"><?php echo $c->name; ?></p>
 
-                <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
+                <!-- <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
                   <div class="member_count">
                     <p><?php echo $student_members; ?></p>
                     <img src="<?php echo get_bloginfo('template_directory') ?>/img/right.png">
                     <p><?php echo $student_non_members; ?></p>
                     <img src="<?php echo get_bloginfo('template_directory') ?>/img/wrong.png">
+                  </div>
+                <?php } ?> -->
+
+                <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
+                  <div class="member_count">
+                    <p class="member-label"><span class="is-members"><?php echo $student_members; ?></span>/<?php echo $student_members + $student_non_members; ?></p>
                   </div>
                 <?php } ?>
 
@@ -285,18 +293,37 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
         <div class="row">
 
-          <div class="box green lg">
+          <div class="box green lg" id="student-shell-box">
 
             <h4>Skapa nytt elevskal</h4>
             <form autocomplete="off" method="post" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>">
+
+              <?php // Show error messages
+
+              if (isset($_GET['new_studentshell'])) {
+                // Scroll to this point
+                ?> <script type="text/javascript"> scrollToElement('student-shell-box');</script> <?php
+
+                $check = $_GET['new_studentshell'];
+
+                if ($check == 'success') {
+                  echo '<p class="success">Det nya elevskalet lades till!</p>';
+                }
+                elseif ($check == 'noclassid') {
+                  echo '<p class="error">Den angivna klassen finns tyvärr inte</p>';
+                }
+              }
+
+             ?>
+
               <input type="text" name="first-name" value="" placeholder="*Förnamn..." required>
               <input type="text" name="last-name" value="" placeholder="*Efternamn..." required>
-              <input type="email" name="email" value="" placeholder="*Skolmail..." required>
+              <input id="student-email-field" type="email" name="email" value="" placeholder="*Skolmail..." pattern="(.+?)vrg.se$" oninvalid="this.setCustomValidity(\'Använd elevens skolmail!\')" oninput="this.setCustomValidity(\'\')" required>
               <div class="autocomplete">
                 <input id="class-name-field" type="text" name="class-name" value="" placeholder="*Klass..." required oninput="fillProgramName('class-name-field', 'program-name-field')">
               </div>
               <input id="program-name-field" type="text" name="program" value="" placeholder="*Utbildningsprogram..." required>
-              <input type="text" name="phonenumber" value="" placeholder="Telefonnummer...">
+              <input id="phonenumber-field" type="text" name="phonenumber" value="" placeholder="Telefonnummer...">
               <input type="text" name="birthyear" value="" placeholder="Födelseår...">
               <input type="text" name="registered-city" value="Stockholm" placeholder="Folkbokförd stad...">
 
@@ -324,6 +351,19 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
             </form>
 
 
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="box white lg">
+
+            <h4>Nytt kalenderår</h4>
+            <p>Klicka på denna knapp för att nollställa alla kårmedlemmars medlemskap och skicka ut mail till samtliga elever att 1. registrera sig på sidan eller 2. uppdatera sitt medlemsskap.</p>
+            <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php') ?>" method="post">
+              <button class="btn lg" type="submit" name="reset-members-new-term" value="/panel/medlemmar" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill starta ett nytt kalenderår och nollställa samtliga medlemmars medlemsstatus?');">Nytt kalenderår</button>
+            </form>
           </div>
 
         </div>
@@ -386,6 +426,18 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
       </div>
 
 
+      <!-- SWEET ALERTS -->
+      <?php if (isset($_GET['reset-members']) && $_GET['reset-members'] == 'success') : ?>
+        <script type="text/javascript">
+        Swal.fire(
+          'Succée!',
+          'Alla elevers medlemsskap har nollställts och de har fått mail om registrering eller återregistrering!',
+          'success'
+          )
+        </script>
+      <?php endif; ?>
+
+
     <?php } // End show single_class or overview ?>
 
       </section>
@@ -399,6 +451,7 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
     </div>
 
+    
     <script type="text/javascript">
       window.onload = highlightLink('link-medlemmar');
     </script>
@@ -420,6 +473,8 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
     autocomplete(document.getElementById("class-name-field"), classes, 'Denna klass är ännu inte skapad');
 
     </script>
+
+
 
     <?php
     // End if admin

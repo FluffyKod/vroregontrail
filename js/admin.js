@@ -80,11 +80,22 @@ function fillProgramName( classNameInputId, programNameInputId ) {
     programName = 'Ekonomiprogrammet';
   }
   else if (classPrefix == 'sb') {
-    programName = 'Samhällsvetenskapsprogrammet inriktning beteendevetenskap';
+    programName = 'Samhällsvetenskapsprogrammet';
   }
 
   if (programName != '') {
     programInput.value = programName;
   }
 
+}
+
+function scrollToElement( elementId ) {
+  $(document).ready(function () {
+    // Handler for .ready() called.
+    let scrollString = '#' + elementId
+
+    $('html, body').animate({
+        scrollTop: $(scrollString).offset().top
+    }, 'slow');
+  });
 }

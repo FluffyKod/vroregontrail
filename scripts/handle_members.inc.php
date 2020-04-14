@@ -24,7 +24,16 @@ if (isset($_POST['toggle_member'])) {
 
   $new_status = ($student->status == 'y') ? 'n' : 'y';
 
-  update_record( 'vro_users', 'status', $new_status, 'id', $student->id, $return . 'failedChangeStatus' );
+  update_record( 'vro_users', 'status', $new_status, 'id', $student->id, 'failedChangeStatus in handlemembers toggle member' );
+
+  // Set date entered if not already set
+  if ( $new_status == 'y' && $student->date_member == NULL ) {
+    $date = date("Y-m-d H:i:s");
+    update_record( 'vro_users', 'date_member', $date, 'id', $student->id, 'failedChangedatemember in handlemembers toggle member' );
+
+    $log_description = 'Satte ingångsdatum för ' . $student_id . ' till ' . $date;
+    add_log( 'Medlemmar', $log_description, get_current_user_id() );
+  }
 
   // Success!
 
@@ -346,10 +355,6 @@ elseif (isset($_POST['link_new_user'])) {
     send_header( $return . "=nostudentshell&phonenumber=$phonenumber" );
   }
 
-  $mail_subject = 'Välkommen till Viktor Rydberg Odenplans hemsida!';
-  $mail_text = 'Hej '. $studentshell->first_name .'! Välkommen till Viktor Rydbergs Odenplans hemsida! Gå in på vroelevkar.se för att se matsedeln, ansöka till kommittéer och mycket mer!';
-
-
   // Check if date entered has been set
   if ($studentshell->date_member == NULL) {
     // If not, set date entered and welcome to kåren
@@ -363,15 +368,21 @@ elseif (isset($_POST['link_new_user'])) {
 
   } else {
 
-    // NOTE:
-    // Set status to waiting OR YES HERE
-    $new_register_status = 'w';
+    // Only do this to waiting and no members
+    if ($studentshell->status != 'y') {
 
-    // Check if already correct status
-    if ($studentshell->status != $new_register_status) {
-      update_record( 'vro_users', 'status', $new_register_status, 'id', $studentshell->id, $return . '=studentShellFailedSetStatus' );
+      // NOTE:
+      // Set status to waiting OR YES HERE
+
+      // If reregister - set to yes. If registering first time - set to wainting
+      $new_register_status = ($studentshell->wpuser_id != NULL) ? 'y' : 'w';
+
+      // Check if already correct status
+      if ($studentshell->status != $new_register_status) {
+        update_record( 'vro_users', 'status', $new_register_status, 'id', $studentshell->id, $return . '=studentShellFailedSetStatus' );
+      }
+
     }
-
 
   }
 
@@ -406,6 +417,7 @@ elseif (isset($_POST['link_new_user'])) {
 
     // Set studentshell wpuser_id
     update_record( 'vro_users', 'wpuser_id', $user_id, 'id', $studentshell->id, $return . '=studentshellwpiderror'  );
+    update_record( 'vro_users', 'phonen umber', $phonenumber, 'id', $studentshell->id, $return . '=failedSetPhonenumber' );
 
   }
   else {
@@ -413,22 +425,19 @@ elseif (isset($_POST['link_new_user'])) {
 
     // CHECK PASSWORD
     if (user_pass_ok( $email_address, $password ) == false) {
-      echo 'test';
+      send_header($return . "=InvalidEmailOrPassword&email=$email_address&phonenumber=$phonenumber");
     }
 
-
     // NEW PASSWORD
-    wp_set_password( $password, $studentshell->wpuser_id );
-    exit();
+    // wp_set_password( $password, $studentshell->wpuser_id );
 
-    // Updated instead of registered
-    $mail_subject = 'Ditt medlemsskap i VRO elevkår är uppdaterat!';
-    $mail_text = 'Hej '. $studentshell->first_name .'! Tack för att du uppdaterade ditt medlemsskap! Glöm inte att gå in på hemsidan för att se matsedeln, ansöka till kommittéer och projektgrupper, se klasspokalenpoän och mycket mer!';
+    // Update phonenumber
+    update_record( 'vro_users', 'phonenumber', $phonenumber, 'id', $studentshell->id, $return . '=failedUpdatePhonenumber' );
 
     // Log em in
     $wp_user = get_user_by('id', $studentshell->wpuser_id);
     wp_set_current_user( $studentshell->wpuser_id, $wp_user->user_login );
-    wp_set_auth_cookie( $user_id );
+    wp_set_auth_cookie( $studentshell->wpuser_id );
     do_action( 'wp_login', $wp_user->user_login );
 
     // Logg action
@@ -436,11 +445,8 @@ elseif (isset($_POST['link_new_user'])) {
     add_log( 'Medlemmar', $log_description, get_current_user_id() );
 
     // Change successreturn to updated
-    $success_return = '/panel/dashboard?reregister=resuccess';
+    $success_return = '/panel/dashboard?reregister=success';
   }
-
-  // Send mail
-  wp_mail( $email_address, $mail_subject, $mail_text );
 
   // Send to dashboard. Success!
   send_header( $success_return );
@@ -521,7 +527,7 @@ elseif(isset($_POST['accept_member'])) {
 
   $member_answer = test_input( $_POST['member_answer'] );
 
-  update_record('vro_users', 'status', 'w', 'id', $u_id, $return . 'acceptFailed');
+  update_record('vro_users', 'status', 'y', 'id', $u_id, $return . 'acceptFailed');
 
   if (!empty($member_answer)){
     if ($student = $wpdb->get_row("SELECT * FROM vro_users WHERE id = $u_id")) {
@@ -594,6 +600,51 @@ elseif(isset($_POST['add_studentshell'])) {
   add_log( 'Elev', $log_description, get_current_user_id() );
 
   send_header($return . '=success');
+
+}
+
+elseif (isset($_POST['reset-members-new-term'])) {
+
+  global $wpdb;
+
+  $return = '/panel/medlemmar?reset-members=';
+
+  // Set all userstatuses to default status
+  $default_status = 'n';
+
+  // Get all students
+  $all_students = $wpdb->get_results("SELECT * FROM vro_users");
+
+  // Go through every student
+  foreach ($all_students as $s) {
+
+    // Update status
+    if ($s->status != $default_status) {
+      // NOTE: CHANGE TO SILENT WARNING
+      update_record('vro_users', 'status', $default_status, 'id', $s->id, $return . "changeStatusFailedFor$s->id");
+    }
+
+    // Send different mail depending on student already has an account
+    $mail_subject = 'Nytt kalenderår för VRO Elevkår';
+
+    $register_url = 'https://vroelevkar.se/register';
+    $register_link = '<a href="' . $register_url . '">' . $register_url . '</a>';
+
+    $mail_text = "<p>Hej $s->first_name!<br><br>Nu påbörjas ett nytt kalenderår för VRO Elevkår. Gå in på $register_link för att ";
+    $mail_text .= ($s->wpuser_id == NULL) ? "registrera dig!" : "uppdatera ditt medlemsskap!";
+    $mail_text .= '</p>';
+
+    $mail_text .= "<p>Bästa hälsningar,<br>Viktor Rydberg Odenplans Elevkår</p>";
+
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+
+    // Send the mail
+    wp_mail( $s->email, $mail_subject, $mail_text, $headers );
+
+  }
+
+  // Success!
+  send_header( $return . 'success' );
 
 }
 

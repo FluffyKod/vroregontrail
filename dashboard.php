@@ -38,7 +38,7 @@ if (! is_user_logged_in() ){
       </script>
     <?php endif; ?>
 
-    <?php if (isset($_GET['register']) && $_GET['register'] == 'resuccess') : ?>
+    <?php if (isset($_GET['reregister']) && $_GET['reregister'] == 'success') : ?>
       <script type="text/javascript">
       Swal.fire(
         'Succée!',

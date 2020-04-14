@@ -1,4 +1,4 @@
-/* Hello CHANGE HERE */
+/* ITSA CHANGE PEOPLE */
 
 /*****************************************
 * Variables
@@ -1121,6 +1121,12 @@ div[class=kommitee] a {
   border-radius: 20px;
   margin: 15px 0;
   text-decoration: none;
+  align-items: center;
+}
+
+.class p.class-name {
+  font-size: 18px;
+  /* font-weight: bold; */
 }
 
 .class .member_count {
@@ -1134,16 +1140,38 @@ div[class=kommitee] a {
   margin: 0 20px 0 10px;
 }
 
+.member-label {
+    background: var(--highlight);
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    color: var(--darker);
+}
+
+.member-label .is-members {
+  font-weight: bold;
+  color: var(--main);
+}
+
 .student {
   background-color: var(--main);
   border-radius: 20px;
   color: #fff;
   padding: 10px 20px;
   margin: 10px 0;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 50px 3fr 3fr 2fr 1fr;
   align-items: center;
 }
+
+.student button.edit-btn {
+  position: relative;
+  right: 50%;
+}
+
 
 .student.no-member {
   background-color: var(--deny);
@@ -1870,22 +1898,25 @@ div[class=kommitee] a {
   position: relative;
 }
 
-.edit-image button {
+.edit-image button, button.edit-btn {
   transition: .5s;
-  position: absolute;
-  right: -5px;
-  bottom: 10px;
   background: none;
   border: none;
   outline: none;
 }
 
-.edit-image button:hover {
+.edit-image button {
+  position: absolute;
+  right: -5px;
+  bottom: 10px;
+}
+
+.edit-image button:hover, button.edit-btn:hover {
   transform: rotate(-10deg);
   transition: .5s;
 }
 
-.edit-image button img {
+.edit-image button img, button.edit-btn img {
   width: 40px;
   height: 40px;
   border: none;

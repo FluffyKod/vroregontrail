@@ -118,6 +118,13 @@
         foreach ($results as $r)
         {
 
+          $student = get_student_by_id( $r->chairman );
+          $fullname = get_full_studentname( $student );
+          $class_name = get_classname_by_id( $student->class_id );
+
+          $phpdate = strtotime($student->created);
+          $date_created = date('Y/m/d H:i', $phpdate);
+
           ?>
           <div class="row">'
             <div class="box white lg">
@@ -128,6 +135,7 @@
                 </div>
               </div>
 
+              <p><i><b><?php echo $fullname; ?> <?php echo $class_name ?></b> - <?php echo $date_created; ?></i></p>
               <p><?php echo $r->description ?></p>
 
               <div class="answer" id="<?php echo $r->id ?>">

@@ -27,6 +27,35 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
 
 ?>
 
+<div class="modal" id="student-modal">
+  <div class="modal-header">
+    <div class="title">
+      Namn
+    </div>
+    <button data-close-button class="close-button" type="button" name="button">&times;</button>
+  </div>
+  <div class="modal-body">
+    <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_medlemmar.inc.php'); ?>" method="post">
+
+      <label><b>Elevens förnamn</b></label>
+      <input type="text" name="new-first-name" value="" placeholder="Förnamn..." id="first-name-field">
+
+      <label><b>Elevens efternamn</b></label>
+      <input type="text" name="new-last-name" value="" placeholder="Efternamn..." id="last-name-field">
+
+      <input type="text" name="student-id" id="student-id" hidden>
+
+      <div class="button-group">
+        <button class="btn lg" type="submit" name="update-student-information" id="submit-button">Ändra</button>
+        <button class="btn lg red" type="submit" name="" id="remove-student" onclick="return confirm('Är du säker på att du vill ta bort denna elev?')">-</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div id="overlay"></div>
+
 <div class="top-bar">
   <h2><?php echo $current_class->name ?></h2>
   <p><?php echo current_time('d M Y, D'); ?></p>
@@ -40,7 +69,7 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
 
 <div class="row">
 
-  <div class="box white lg">
+  <div class="box white lg" id="student-root">
 
     <div class="see-more">
       <h4>Elever</h4>
@@ -62,15 +91,14 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
 
           $student_classes .= ($student->status == 'n') ? ' no-member' : '';
           $student_classes .= ($student->status == 'w') ? ' waiting' : '';
+          $phone = ($student->phonenumber == NULL) ? '' : $student->phonenumber;
 
           ?>
           <div class="<?php echo $student_classes; ?>" id="student_<?php echo $student->id; ?>">
-            <p><?php echo $student->first_name . ' ' . $student->last_name; ?></p>
+            <button class="edit-btn" type="button" name="button" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+            <p><span class="first-name"><?php echo $student->first_name; ?></span> <span class="last-name"><?php echo $student->last_name; ?></span></p>
             <p><?php echo $student->email; ?></p>
-
-            <?php if ($student->phonenumber) : ?>
-              <p><?php echo $student->phonenumber; ?></p>
-            <?php endif; ?>
+            <p><?php echo $phone ?></p>
           <?php
 
           if ($student->status == 'n') {
@@ -164,6 +192,32 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
   </form>
 </div>
 
+<script src="<?php echo get_bloginfo('template_directory') ?>/js/modal.js" charset="utf-8"></script>
 <script type="text/javascript">
-  fillProgramName('class-name-field2', 'program-name-field2')
+  fillProgramName('class-name-field2', 'program-name-field2');
+
+  var studentDivs = document.querySelectorAll('#student-root .student');
+
+  studentDivs.forEach( (studentDiv) => {
+
+    let editButton = studentDiv.querySelector('.edit-btn');
+
+    editButton.addEventListener('click', function() {
+
+      let modal = document.querySelector('#student-modal');
+
+      let firstName = studentDiv.querySelector('span.first-name').innerText;
+      let lastName = studentDiv.querySelector('span.last-name').innerText;
+
+      // Change the modal header
+      modal.querySelector('.modal-header .title').textContent = firstName + ' ' + lastName;
+
+      modal.querySelector('.modal-body #first-name-field').value = firstName;
+      modal.querySelector('.modal-body #last-name-field').value = lastName;
+
+      // OPen the modal
+      openModal(modal);
+    });
+
+  });
 </script>

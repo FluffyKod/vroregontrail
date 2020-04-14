@@ -131,6 +131,10 @@ section .box.appear {
   margin-left: 5%;
 }
 
+#front-calendar {
+    margin-bottom: 50px;
+}
+
 #front-calendar .modal {
   text-align: left;
 }
