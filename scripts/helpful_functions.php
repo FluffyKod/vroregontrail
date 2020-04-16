@@ -11,6 +11,14 @@ function test_input( $data ){
   return $data;
 }
 
+function is_student_admin() {
+  if (current_user_can('administrator') || current_user_can('elevkaren')) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 /*****************************************
 * Helper functions
 *****************************************/

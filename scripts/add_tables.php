@@ -148,6 +148,12 @@ function vro_setup() {
   // Main Kommitee table
   $table_name = $prefix . 'projektgrupper';
 
+  /*
+    visibility:
+      e - endast elevkåren kan se + gå med
+      a - alla medlemmar kan se + skicka förfrågan om att gå med
+  */
+
   // Set fields
   $sql_projektgrupper = 'CREATE TABLE ' . $table_name . '(
     id INTEGER(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -155,6 +161,7 @@ function vro_setup() {
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name VARCHAR(100) NOT NULL,
     description VARCHAR(300) NOT NULL,
+    visibility VARCHAR(5) NOT NULL DEFAULT "e",
     PRIMARY KEY (id)
   )';
 
@@ -170,6 +177,7 @@ function vro_setup() {
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     user_id INTEGER(10) UNSIGNED NOT NULL,
     projektgrupp_id INTEGER(10) UNSIGNED NOT NULL,
+    status VARCHAR(5) NOT NULL DEFAULT "w",
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES vro_users(id),
     FOREIGN KEY (projektgrupp_id) REFERENCES vro_projektgrupper(id)

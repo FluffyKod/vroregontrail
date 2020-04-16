@@ -55,6 +55,7 @@ if (! is_user_logged_in() ){
       *************************************-->
 
       <?php
+
       // Display a special navbar for admins
       if (!current_user_can('administrator') and !current_user_can('elevkaren') ){
         // Get the members view

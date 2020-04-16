@@ -14,6 +14,7 @@
 
   // Get all projektgrupper
   $projektgrupper = $wpdb->get_results('SELECT * FROM vro_projektgrupper ORDER BY name');
+  $studentshell_id = get_studentshell_id( get_current_user_id() );
 
   require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
@@ -98,6 +99,9 @@
 
               ?>
 
+              <!-- Check visibility, only show locked ones to admins -->
+              <?php if ( ($p->visibility == 'e' && (current_user_can('administrator') || current_user_can('elevkaren') )) || $p->visibility == 'a' ): ?>
+
               <!-- Create new element to hold the information -->
               <div class="kommitee">
                 <a href="/panel/projektgrupper?p_id=<?php echo $p->id; ?>">
@@ -108,16 +112,21 @@
                         // if they have joined --> display Jag är medlem,
                         // if they are not member att all --> display nothing
 
-                    $member_check = $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $k->id . ' AND user_id = '. get_current_user_id() );
+                    $member_check = $wpdb->get_row('SELECT * FROM vro_projektgrupper_members WHERE projektgrupp_id = '. $p->id . ' AND user_id = '. $studentshell_id );
 
-                    if ($member_check != NULL){
+                    if ($member_check->status == 'y'){
                       echo '<p>Jag är med!</p>';
+                    }
+                    elseif ($member_check->status == 'w'){
+                      echo '<p>Förfrågan skickad</p>';
                     }
 
                     ?>
                 </a>
 
               </div>
+
+            <?php endif; ?>
 
             <?php } ?>
 
@@ -132,6 +141,8 @@
           ADD NEW KOMMITÉE
         **************************  -->
 
+        <?php if (current_user_can('administrator') || current_user_can('elevkaren') ): ?>
+
         <div class="row" id="new-projektgrupp">
 
           <div class="box white lg allow-overflow">
@@ -144,12 +155,20 @@
                 <p id="projektgrupp_description_char_count">300</p>
               </div>
 
+              <select class="form-select" name="visibility" required>
+                <option value="">- Synlighet -</option>
+                <option value="e">Endast elevkåren</option>
+                <option value="a">Alla</option>
+              </select>
+
               <button type="submit" name="add_new_projektgrupp" class="btn lg">Skapa</button>
             </form>
 
           </div>
 
         </div>
+
+      <?php endif; // end is admin ?>
 
 
 
