@@ -389,6 +389,9 @@ elseif (isset($_POST['link_new_user'])) {
   // CHeck if there already exists a user with the student wpuser_id
   if ($studentshell->wpuser_id == NULL) {
 
+    // Set phonenumber
+    update_record( 'vro_users', 'phonenumber', $phonenumber, 'id', $studentshell->id, $return . '=failedSetPhonenumber' );
+
     // Create a new wp_user
     $user_id = wp_create_user($email_address, $password, $email_address);
 
@@ -412,12 +415,11 @@ elseif (isset($_POST['link_new_user'])) {
     do_action( 'wp_login', $user->user_login );
 
     // Logg action
-    $log_description = 'Registrerade eleven ' . $first_name . ' ' . $last_name;
+    $log_description = 'Registrerade eleven ' . $studentshell->first_name . ' ' . $studentshell->$last_name;
     add_log( 'Medlemmar', $log_description, get_current_user_id() );
 
     // Set studentshell wpuser_id
     update_record( 'vro_users', 'wpuser_id', $user_id, 'id', $studentshell->id, $return . '=studentshellwpiderror'  );
-    update_record( 'vro_users', 'phonen umber', $phonenumber, 'id', $studentshell->id, $return . '=failedSetPhonenumber' );
 
   }
   else {
