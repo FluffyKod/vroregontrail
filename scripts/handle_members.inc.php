@@ -648,7 +648,123 @@ elseif (isset($_POST['reset-members-new-term'])) {
 
 }
 
+elseif (isset($_POST['update-student-information'])) {
+
+  global $wpdb;
+
+  $c_id = check_number_value( $_POST['class-id'], '/panel/medlemmar?update-student=noClassId' );
+  $return = "/panel/medlemmar?c_id=$c_id&update-student";
+
+  $student_id = check_number_value( $_POST['the-student-id'], $return );
+  $student = get_student_by_id( $student_id );
+  if (!$student) {
+    send_header( $return . 'noStudentFound' );
+  }
+
+  $info = array();
+
+  // Default empty to null
+  $info['firstname'] = test_input( $_POST['new-first-name'], $return . '=empty' );
+  $info['lastname'] = test_input( $_POST['new-last-name'], $return . '=empty' );
+  $info['phonenumber'] = emptyToNull( test_input( $_POST['new-phonenumber'], $return . '=empty' ) );
+  $info['schoolmail'] = test_input( $_POST['new-schoolmail'], $return . '=empty' );
+  $info['birthyear'] = emptyToNull( $_POST['new-birthyear'], $return . '=empty' );
+  $info['gender'] = emptyToNull( test_input( $_POST['new-gender'], $return . '=empty' ) );
+  $info['city'] = emptyToNull( test_input( $_POST['new-city'], $return . '=empty' ) );
+  $info['program'] = emptyToNull( test_input( $_POST['new-program'], $return . '=empty' ) );
+
+
+
+  // Check if birthyear is number
+  if ($info['birthyear'] != NULL && !is_numeric($info['birthyear'])) {
+    send_header($return . '=nanBirthyear');
+  }
+
+  if ($info['birthyear'] != NULL) {
+    // Set birthyear as number
+    $info['birthyear'] = (int)$info['birthyear'];
+  }
+
+  // Check if value is deviant, only then update it
+  if ($student->first_name != $info['firstname']) {
+    update_record( 'vro_users', 'first_name', $info['firstname'], 'id', $student_id, $return . '=notUpdateFirstName' );
+  }
+
+  if ($student->last_name != $info['lastname']) {
+    update_record( 'vro_users', 'last_name', $info['lastname'], 'id', $student_id, $return . '=notUpdateLastName' );
+  }
+
+  if ($student->phonenumber != $info['phonenumber']) {
+    if ($info['phonenumber'] == NULL) {
+      update_with_null( 'vro_users', 'phonenumber', $student_id, $return . '=notUpdatePhonenumber' );
+    } else {
+      update_record( 'vro_users', 'phonenumber', $info['phonenumber'], 'id', $student_id, $return . '=notUpdatePhonenumber' );
+    }
+  }
+
+  if ($student->email != $info['schoolmail']) {
+    update_record( 'vro_users', 'email', $info['schoolmail'], 'id', $student_id, $return . '=notUpdateEmail' );
+  }
+
+  if ($student->birthyear != $info['birthyear']) {
+    if ($info['birthyear'] == NULL) {
+      update_with_null( 'vro_users', 'birthyear', $student_id, $return . '=notUpdateBirthyear' );
+    } else {
+      update_record( 'vro_users', 'birthyear', $info['birthyear'], 'id', $student_id, $return . '=notUpdateBirthyear' );
+    }
+  }
+
+  if ($student->gender != $info['gender']) {
+    if ($info['gender'] == NULL) {
+      update_with_null( 'vro_users', 'gender', $student_id, $return . '=notUpdateGender' );
+    } else {
+      update_record( 'vro_users', 'gender', $info['gender'], 'id', $student_id, $return . '=notUpdateGender' );
+    }
+  }
+
+  if ($student->registered_city != $info['city']) {
+    if ($info['city'] == NULL) {
+      update_with_null( 'vro_users', 'registered_city', $student_id, $return . '=notUpdateRegisteredCity' );
+    } else {
+      update_record( 'vro_users', 'registered_city', $info['city'], 'id', $student_id, $return . '=notUpdateRegisteredCity' );
+    }
+  }
+
+  if ($student->program != $info['program']) {
+    update_record( 'vro_users', 'program', $info['program'], 'id', $student_id, $return . '=notUpdateProgram' );
+
+    if ($info['program'] == NULL) {
+      update_with_null( 'vro_users', 'program', $student_id, $return . '=notUpdateProgram' );
+    } else {
+      update_record( 'vro_users', 'program', $info['program'], 'id', $student_id, $return . '=notUpdateProgram' );
+    }
+  }
+  // Success!
+  send_header( $return . '=success' );
+}
+
+elseif (isset($_POST['remove-student'])) {
+
+  global $wpdb;
+
+  $c_id = check_number_value( $_POST['class-id'], '/panel/medlemmar?remove-student=noClassId' );
+  $return = "/panel/medlemmar?c_id=$c_id&remove-student";
+
+  $student_id = check_number_value( $_POST['the-student-id'], $return );
+  $student = get_student_by_id( $student_id );
+  if (!$student) {
+    send_header( $return . 'noStudentFound' );
+  }
+
+  // Delete student
+  remove_record( 'vro_users', 'id', $student_id, $return . '=couldNotDelete' );
+
+  // Success
+  send_header( $return . 'success' );
+
+}
+
 else {
-  header("Location: /panel/medlemmar?add_user=error");
+  header("Location: /panel/medlemmar");
   exit();
 } // End post

@@ -98,7 +98,7 @@ html {
   cursor: pointer;
 }
 
-.box.allow-overflow {
+.allow-overflow, .overflow {
   overflow: visible;
 }
 
@@ -166,6 +166,11 @@ button:hover {
   border: none;
 }
 
+.btn.white {
+  background: white;
+  color: var(--main);
+}
+
 .btn:hover {
   transform: translateY(-5px);
   transition: 0.5s;
@@ -228,6 +233,12 @@ button.btn.lg {
   position: absolute;
   right: 10px;
   bottom: 20px;
+}
+
+.button-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
 }
 
 
@@ -2463,6 +2474,15 @@ button .btn-description {
 }
 
 @media only screen and (max-width: 534px) {
+  .button-group {
+    grid-template-columns: 1fr;
+    padding-top: 20px;
+  }
+
+  .button-group .btn.lg {
+    margin: 0;
+  }
+
   .update h4 {
     text-align: center;
   }

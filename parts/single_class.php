@@ -35,19 +35,41 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
     <button data-close-button class="close-button" type="button" name="button">&times;</button>
   </div>
   <div class="modal-body">
-    <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_medlemmar.inc.php'); ?>" method="post">
+    <form autocomplete="off" method="post" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>">
 
-      <label><b>Elevens förnamn</b></label>
-      <input type="text" name="new-first-name" value="" placeholder="Förnamn..." id="first-name-field">
 
-      <label><b>Elevens efternamn</b></label>
-      <input type="text" name="new-last-name" value="" placeholder="Efternamn..." id="last-name-field">
+      <input type="text" name="new-first-name" value="" placeholder="Förnamn..." id="first-name-field" required>
 
-      <input type="text" name="student-id" id="student-id" hidden>
+      <input type="text" name="new-last-name" value="" placeholder="Efternamn..." id="last-name-field" required>
+
+      <input type="text" name="new-phonenumber" value="" placeholder="Telefonnummer..." id="phonenumber-field">
+
+      <input type="text" name="new-schoolmail" value="" placeholder="Skolmail..." id="schoolmail-field" required>
+
+      <input type="text" name="new-birthyear" value="" placeholder="Födelseår..." id="birthyear-field">
+
+      <input type="text" name="new-gender" value="" placeholder="Kön..." list="gender-options" id="gender-field">
+      <datalist id="gender-options">
+        <option value="Man">
+        <option value="Kvinna">
+        <option value="Annat">
+      </datalist>
+
+      <input type="text" name="new-city" value="" placeholder="Folkbokförd stad..." id="city-field">
+
+      <input type="text" name="new-program" value="" placeholder="Program..." list="program-options" id="program-field">
+      <datalist id="program-options">
+        <option value="Ekonomiprogrammet">
+        <option value="Naturvetenskapsprogrammet">
+        <option value="Samhällsvetenskapsprogrammet">
+      </datalist>
+
+      <input type="text" name="the-student-id" id="student-id-field" value="" hidden>
+      <input type="text" name="class-id" id="class-id" value="<?php echo $c_id; ?>" hidden>
 
       <div class="button-group">
         <button class="btn lg" type="submit" name="update-student-information" id="submit-button">Ändra</button>
-        <button class="btn lg red" type="submit" name="" id="remove-student" onclick="return confirm('Är du säker på att du vill ta bort denna elev?')">-</button>
+        <button class="btn lg red" type="submit" name="remove-student" id="remove-student" onclick="return confirm('Är du säker på att du vill ta bort denna elev?')">-</button>
       </div>
 
     </form>
@@ -76,13 +98,26 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
       <h4>Växla medlem</h4>
     </div>
 
+    <?php // Show error messages
+
+    if (isset($_GET['update-student'])) {
+
+      $check = $_GET['update-student'];
+
+      if ($check == 'success') {
+        echo '<p class="success">Elevinformationen ändrades!</p>';
+      }
+    }
+
+   ?>
+
 
     <?php
 
     // Setup to get all students for this class
 
       // Get all students for that class
-      $student_arr = $wpdb->get_results("SELECT * FROM vro_users WHERE class_id = $c_id");
+      $student_arr = $wpdb->get_results("SELECT * FROM vro_users WHERE class_id = $c_id ORDER BY first_name");
       if ($student_arr) {
         // Go throught every student
         foreach ($student_arr as $student) {
@@ -94,11 +129,17 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
           $phone = ($student->phonenumber == NULL) ? '' : $student->phonenumber;
 
           ?>
-          <div class="<?php echo $student_classes; ?>" id="student_<?php echo $student->id; ?>">
+          <div class="<?php echo $student_classes; ?>" id="<?php echo $student->id; ?>">
             <button class="edit-btn" type="button" name="button" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
             <p><span class="first-name"><?php echo $student->first_name; ?></span> <span class="last-name"><?php echo $student->last_name; ?></span></p>
-            <p><?php echo $student->email; ?></p>
-            <p><?php echo $phone ?></p>
+            <p class="student-email"><?php echo $student->email; ?></p>
+            <p class="student-phonenumber"><?php echo $phone ?></p>
+            <div class="student-information" hidden>
+              <input type="text" name="student-birthyear" value="<?php echo ($student->birthyear == NULL ? '' : $student->birthyear);  ?>">
+              <input type="text" name="student-gender" value="<?php echo ($student->gender == NULL ? '' : $student->gender); ?>">
+              <input type="text" name="student-city" value="<?php echo ($student->registered_city == NULL ? '' : $student->registered_city); ?>">
+              <input type="text" name="student-program" value="<?php echo ($student->program == NULL ? '' : $student->program); ?>">
+            </div>
           <?php
 
           if ($student->status == 'n') {
@@ -206,14 +247,29 @@ $current_class = $wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $c_id);
 
       let modal = document.querySelector('#student-modal');
 
+      let studentId = studentDiv.id;
+
       let firstName = studentDiv.querySelector('span.first-name').innerText;
       let lastName = studentDiv.querySelector('span.last-name').innerText;
+      let schoolMail = studentDiv.querySelector('p.student-email').innerText;
+      let phonenumber = studentDiv.querySelector('p.student-phonenumber').innerText;
+      let birthyear = studentDiv.querySelector('div.student-information input[name=student-birthyear]').value;
+      let city = studentDiv.querySelector('div.student-information input[name=student-city]').value;
+      let program = studentDiv.querySelector('div.student-information input[name=student-program]').value;
+      let gender = studentDiv.querySelector('div.student-information input[name=student-gender]').value;
 
       // Change the modal header
       modal.querySelector('.modal-header .title').textContent = firstName + ' ' + lastName;
 
       modal.querySelector('.modal-body #first-name-field').value = firstName;
       modal.querySelector('.modal-body #last-name-field').value = lastName;
+      modal.querySelector('.modal-body #phonenumber-field').value = phonenumber;
+      modal.querySelector('.modal-body #schoolmail-field').value = schoolMail;
+      modal.querySelector('.modal-body #birthyear-field').value = birthyear;
+      modal.querySelector('.modal-body #city-field').value = city;
+      modal.querySelector('.modal-body #program-field').value = program;
+      modal.querySelector('.modal-body #gender-field').value = gender;
+      modal.querySelector('.modal-body #student-id-field').value = studentId;
 
       // OPen the modal
       openModal(modal);

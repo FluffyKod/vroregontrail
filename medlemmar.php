@@ -347,7 +347,11 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
             <h4>Ladda ned medlemsregister till Ebas</h4>
             <form action="<?php echo (get_bloginfo('template_directory') . '/scripts/file_functions.inc.php') ?>" method="post">
-              <button class="btn lg" type="submit" name="download-member-list" value="/panel/medlemmar">Ladda ned medlemsregister</button>
+              <div class="button-group">
+                <button class="btn lg white" type="submit" name="download-member-report">Ladda ned medlemsrapport</button>
+                <button class="btn lg" type="submit" name="download-member-list" value="/panel/medlemmar">Ladda ned medlemsregister</button>
+              </div>
+
             </form>
 
 
@@ -451,7 +455,7 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
     </div>
 
-    
+
     <script type="text/javascript">
       window.onload = highlightLink('link-medlemmar');
     </script>

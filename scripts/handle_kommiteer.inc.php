@@ -89,7 +89,7 @@
 
     $kommitte['name'] = $kommitte_name;
     $kommitte['description'] = $description;
-    $kommitte['chairman'] = $student->id;
+    $kommitte['chairman'] = (int)$student->id;
     $kommitte['status'] = 'y';
 
     insert_record('vro_kommiteer', $kommitte, 'DB insertion failed: failed to add new kommitte in add_new_kommittee');
@@ -101,13 +101,13 @@
     // Set the chairman as a new member
     $new_kommitee = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE name="'. $kommitte_name .'"');
 
-    $kommitee = array();
+    $kommitee_member = array();
 
-    $kommitee['user_id'] = $student->id;
-    $kommitee['kommitee_id'] = (int)$new_kommitee->id;
-    $kommitee['status'] = 'y';
+    $kommitee_member['user_id'] = (int)$student->id;
+    $kommitee_member['kommitee_id'] = (int)$new_kommitee->id;
+    $kommitee_member['status'] = 'y';
 
-    insert_record('vro_kommiteer_members', $kommitee, 'DB insertion failed: failed to add new chairman in new kommitté in add_new_kommittee');
+    insert_record('vro_kommiteer_members', $kommitee_member, 'DB insertion failed: failed to add new chairman in new kommitté in add_new_kommittee');
 
     send_header('/panel/kommiteer?add_new=success');
 

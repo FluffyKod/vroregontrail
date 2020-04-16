@@ -142,7 +142,7 @@ function data_fetch(){
         $div_class .= ($u->wpuser_id == NULL) ? ' not-registered' : '';
 
         ?>
-        <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#student_<?php echo $u->id; ?>">
+        <a href="/panel/medlemmar/?c_id=<?php echo $user_class_id; ?>#<?php echo $u->id; ?>">
           <p class="<?php echo $div_class ?>">
             <span><?php echo $nickname; ?></span>
             <span><?php echo $email; ?></span>

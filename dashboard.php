@@ -31,7 +31,7 @@ if (! is_user_logged_in() ){
     <?php if (isset($_GET['register']) && $_GET['register'] == 'success') : ?>
       <script type="text/javascript">
       Swal.fire(
-        'Succée!',
+        'Succé!',
         'Du är nu registrerad och kan använda alla funktioner på hemsidan!',
         'success'
         )
@@ -41,7 +41,7 @@ if (! is_user_logged_in() ){
     <?php if (isset($_GET['reregister']) && $_GET['reregister'] == 'success') : ?>
       <script type="text/javascript">
       Swal.fire(
-        'Succée!',
+        'Succé!',
         'Du har nu uppdaterat ditt medlemsskap och kan fortsätta använda hemsidan!',
         'success'
         )

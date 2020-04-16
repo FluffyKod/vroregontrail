@@ -254,6 +254,30 @@ function update_record( $table, $field, $new_value, $check_field, $check_value, 
   }
 }
 
+// Update a field will null for a given id
+function update_with_null( $table, $field, $id, $errLocation = false ) {
+  global $wpdb;
+
+  if ($wpdb->update(
+    $table,
+    array(
+        $field => null,
+    ),
+    array( 'id' => $id ),
+    null,
+    '%d'
+  ) == false) {
+    if ($errLocation) {
+      send_header( $errLocation );
+    } else {
+      return false;
+    }
+  } else {
+    return true;
+  }
+
+}
+
 function remove_record( $table, $field, $value, $errMsg ){
   global $wpdb;
 
