@@ -43,7 +43,8 @@
       <button type="button" name="button" onclick="getPlayer()">Get player</button>
 
       <div id="grandparent">
-        <img src="<?php echo get_bloginfo('template_directory') ?>/p5/code/test.png" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">
+        <p id="game-asset-folder" hidden><?php echo get_bloginfo('template_directory') ?>/game-assets/</p>
+        <img id="background-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/scottishHiglands.jpg" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">
         <!--<div id="topbox">
         </div>-->
 

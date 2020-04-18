@@ -4,6 +4,10 @@ let currentoption;
 let optionlength;
 let maxOptionLength = 5;
 let rooms = [];
+
+// All rooms
+let allAreaRooms;
+
 let load;
 let grandparent;
 let canvas;
@@ -35,6 +39,12 @@ let soundEnabled;
 let keypressed = false;
 let timer;
 
+// GAME ASSETS
+let backgrounds = {
+  'highlands-main': 'scottishHiglands.jpg',
+  'intro-main': 'village.png'
+}
+
 ////////////////////////////////////////////
 // SETUP
 ////////////////////////////////////////////
@@ -46,6 +56,11 @@ function setup(){
   // Get all saved rooms from the database
   loadRoomsFromDatabase(currentArea, function(returnedRooms) {
 
+
+    // Set all rooms
+    allAreaRooms = returnedRooms;
+
+    // Set the current room array
     rooms = getRoomsFromArea( returnedRooms, currentArea );
 
     defineCanvas();
@@ -193,6 +208,34 @@ function player(){
   this.charisma = 0;
   this.grit = 0;
   this.kindness = 0;
+  this.area = currentArea;
+}
+
+////////////////////////////////////////////
+// AREA FUNCTIONS
+////////////////////////////////////////////
+function changeBackgroundImage( area, ownFilePath = false ) {
+
+  let backgroundAssetFolder = document.getElementById('game-asset-folder').innerText + 'backgrounds/';
+  let backgroundElement = document.getElementById('background-image');
+
+  let newImagePath = backgroundAssetFolder + backgrounds['highlands-main'];
+
+  switch (area) {
+    case 'higlands':
+      newImagePath = backgroundAssetFolder + backgrounds['highlands-main'];
+      break;
+
+    case 'intro':
+      newImagePath = backgroundAssetFolder + backgrounds['intro-main'];
+      break;
+
+    default:
+      newImagePath = backgroundAssetFolder + backgrounds['highlands-main'];
+  }
+
+  backgroundElement.src = newImagePath;
+
 }
 
 ////////////////////////////////////////////
@@ -251,7 +294,20 @@ function option(ref){
   }
   this.switchToArea = function(suppliedValues) {
     if (suppliedValues.length >= 1) {
+      // switch area
       currentArea = suppliedValues[0];
+
+      // Update player
+      player.area = currentArea;
+
+      // Set rooms to new area rooms
+      rooms = getRoomsFromArea( allAreaRooms, currentArea );
+
+      // Change background image
+      changeBackgroundImage( currentArea );
+
+      // Change music
+
     } else {
       console.log('ERROR: Not enough values supplied to switcharea command');
     }
@@ -326,20 +382,37 @@ function option(ref){
         this.giveIntelligence(this.values);
       }
 
-      // DOUBLE COMMANDS
+      // ******************
+      // COMPOSITE COMMANDS
+      // ******************
+
+      // 1 - item (str), 2 - x, 3 - y
       if(this.command == 'item-move'){
         this.addItemToInventory(this.values.slice(0, 1));
         this.moveToNewPlace(this.values.slice(1));
       }
 
-      if(this.command == 'item-switchArea'){
+      // 1 - item (str), 2 - new area, 3 - y
+      if(this.command == 'item-switchArea-move'){
         this.addItemToInventory(this.values.slice(0, 1));
-        this.switchToArea(this.values.slice(1));
+        this.switchToArea(this.values.slice(1, 2));
+        this.moveToNewPlace(this.values.slice(2));
       }
+
 
       if(this.command == 'stat-move'){
         this.giveStat(this.values.slice(0, 2));
-        this.switchToArea(this.values.slice(2));
+        this.moveToNewPlace(this.values.slice(2));
+      }
+
+      if(this.command == 'switchArea-move'){
+        this.switchToArea(this.values.slice(0, 1));
+        this.moveToNewPlace(this.values.slice(1));
+      }
+
+      if(this.command == 'background-move'){
+        changeBackgroundImage(this.values.slice(0, 1), true);
+        this.moveToNewPlace(this.values.slice(1));
       }
   }
 

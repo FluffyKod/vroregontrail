@@ -8,8 +8,6 @@ let topCoordinate = {x: -1, y: -1};
 let activeRoom; //stores the active room Object.
 let activeOptionGui;
 
-let colors = {};
-
 let ableToCreateRoom;
 
 let roomArrays;
@@ -99,15 +97,6 @@ function setup(){
   activeRoomArray = activeArea.rooms;
   activeRoomSpriteArray = activeArea.sprites;
 
-  colors =
-  {
-    activeFillColor: color(255),
-    activeStrokeColor: color(51),
-    highlight: color(255,255,255,25),
-    inactiveFillColor: color(51),
-    inactiveStrokeColor: color(255)
-  };
-
   connectionColors = [color(255, 0, 0), color(255, 255, 0), color(0, 255, 0), color(0, 255, 255), color(0, 0, 255)];
 
   createCanvas(canvasSize.width, canvasSize.height);
@@ -133,12 +122,8 @@ function setup(){
 
       // Parse all area rooms
       loadRoomArraysFromAreaRooms( returnedRooms );
+      console.log('FROM DATABASE: ', activeRoomArray);
 
-      // Go through all area rooms and set all sprites
-
-
-      // roomArrays.test.rooms = returnedRooms;
-      // roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
     }
 
   }); // End load rooms
@@ -160,7 +145,7 @@ function highlightOverMouse(){
   if(!guiMouseIsOver){
     hx = mouseX + (32-(mouseX%64));
     hy = mouseY + (32-(mouseY%64));
-    fill(colors.highlight);
+    fill(color(255,255,255,50));
     noStroke();
     rectMode(CENTER);
     rect(hx,hy,roomBoxSize, roomBoxSize);
@@ -178,9 +163,15 @@ function keyPressed(){
   if(keyCode === TAB){
     window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));
   }
+  if(keyCode === ENTER){
+    showValueAmountControl();
+    optionShowControl();
+  }
+
 }
 
 function mousePressed(){
+
   if(activeRoom){ //kollar om något rum ens finns
     showValueAmountControl();
     optionShowControl();
@@ -201,9 +192,9 @@ function mousePressed(){
 
 }
 
-function mouseReleased(){ //funkar typ inte på mac??
+function mouseReleased(){
   showValueAmountControl();
-  optionShowControl(); //lite spray and pray måste nog inte kallas här
+  optionShowControl();
 
 }
 
@@ -211,12 +202,12 @@ function drawZeroIndicator(){
   frX = floor(width/2) + (32-(floor(width/2)%64));
   frY = floor(height/2) + (32-(floor(height/2)%64));
   noFill();
-  stroke(colors.highlight)
+  stroke(activeArea.lightColor)
   rectMode(CENTER);
   rect(frX,frY,roomBoxSize, roomBoxSize);
   indexCoordinates = screenToIndexCoordinates(frX,frY);
 
-  fill(colors.highlight);
+  fill(activeArea.lightColor);
   coordinateStr= "(" + indexCoordinates.x + ", " + indexCoordinates.y + ")"
   textSize(15);
   text(coordinateStr, frX-roomBoxSize/2+10,frY-roomBoxSize/2+25);
@@ -251,7 +242,6 @@ function createRoom(x, y){
     roomSprite.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
 
     roomSprite.depth = 1;
-    roomSprite.exportRoom;
     roomSprite.optionGuis = [];
 
     roomSprite.optionObjs = [];
@@ -360,28 +350,73 @@ function createRoom(x, y){
   }
 }
 
-function addOptionGuis(roomSprite){
+// Hide all guis for alla areas
+function hideGuis(){
+  let spriteArrays =
+  [
+    roomArrays.test.sprites,
+    roomArrays.intro.sprites,
+    roomArrays.highlands.sprites,
+    roomArrays.bog.sprites,
+    roomArrays.city.sprites,
+    roomArrays.mountain.sprites,
+    roomArrays.core.sprites
+  ]
+
+  for (const spriteArray of spriteArrays) {
+    for (const sprite of spriteArray) {
+      // Hide main guis
+      sprite.gui.hide();
+
+      // Do not hide rooms for test area
+      if (spriteArrays.indexOf(spriteArray) != 0) {
+        sprite.depth = 0
+        sprite.mouseActive = false
+        sprite.visible = false
+      }
+
+      //Hides option guis
+      for (const option of sprite.optionGuis) {
+        option.hide();
+      }
+    }
+  }
 }
 
 function saveRoom(){
-  if (!activeRoom.exportRoom) {
-    activeRoom.exportRoom = new room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [])
+  // Check if there already exists a room with the coordinates
+
+  let doesRoomExist = false;
+  for (const room of activeRoomArray){
+    if (room.x == activeRoom.indexX && room.y == activeRoom.indexY) {
+      doesRoomExist = true;
+    }
+  }
+
+  if (!doesRoomExist) {
+    let exportRoom = new Room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [])
     //save option object
     for (var i = 0; i < activeRoom.gui.getValue('option_amount'); i++) {
-      option = {
+      console.log("createOption");
+      let option = {
         text: activeRoom.optionGuis[i].getValue('option_text'),
         command: activeRoom.optionGuis[i].getValue('option_command'),
         values: []
-        }
+      }
       for (var j = 0; j < maxCommandValues; j++) {
         option.values.push(activeRoom.optionGuis[i].getValue('command_value_'+j)) //sparar onödigt många värden men yolo
 
       }
-      activeRoom.exportRoom.options.push(option);
+      exportRoom.options.push(option);
     }
-    activeRoomArray.push(activeRoom.exportRoom);
+    activeRoomArray.push(exportRoom);
+
+    console.log('IN SAVEROOM IF');
 
   }else { //uppdaterar objektet om det redan finns
+
+    console.log('IN SAVEROOM ELSE');
+
     //hittar vilket rum activeRoom är
     for (var i = 0; i < activeRoomArray.length; i++) {
       if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
@@ -406,11 +441,10 @@ function saveRoom(){
             activeRoomArray[i].options.push(option);
           }
           //tar bort om det finns options utöver option amount
-          if(j > activeRoomArray[i].gui.getValue("option_amount")){
+          if(j > activeRoom.gui.getValue("option_amount")){
             console.log("pop");
             activeRoomArray[i].options.pop()
           }
-
         }
         break;
       }
@@ -451,6 +485,9 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
     this.SpriteArray.push(activeRoomSpriteArray[i]);
 
   }
+
+  hideGuis();
+
   return this.SpriteArray;
 
 
@@ -608,6 +645,23 @@ function showValueAmountControl(){
           activeRoom.optionGuis[i].setValue('command_description', 'sets new main text but does not change options or move player')
           showAmount = 1;
           break;
+        case 'switchArea-move':
+          activeRoom.optionGuis[i].setValue('command_description', 'Switch to a new area and move to a room in that area. Value 1: new area Value 2 & 3: new area coordinates')
+          showAmount = 3;
+          break;
+        case 'encounter':
+          activeRoom.optionGuis[i].setValue('command_description', 'play a game.')
+          showAmount = 2;
+          break;
+        case 'stat-move':
+          activeRoom.optionGuis[i].setValue('command_description', 'play a game.')
+          showAmount = 2;
+          break;
+        case 'background-move':
+          activeRoom.optionGuis[i].setValue('command_description', 'Change background and move')
+          showAmount = 3;
+          break;
+
         default:
           activeRoom.optionGuis[i].setValue('command_description', 'ERROR: command not found')
           showAmount = 0;
