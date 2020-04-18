@@ -76,6 +76,10 @@ function setup(){
 
     // Create the player
     player = new player();
+
+    // Update player stats from the database
+    getPlayer();
+
     currentRoom = findRoomWithPlayer();
 
     // Set id for the displayed options
@@ -184,6 +188,9 @@ function keyPressed(){
     currentoption = 0;
     load = false;
 
+    // SAVE PLAYER PROGRESS
+    savePlayer()
+
     }
   if(keyCode == SHIFT && !soundEnabled){
     blip = loadSound("menu_blip.wav")
@@ -214,27 +221,40 @@ function player(){
 ////////////////////////////////////////////
 // AREA FUNCTIONS
 ////////////////////////////////////////////
-function changeBackgroundImage( area, ownFilePath = false ) {
+function changeBackgroundImage( fileName ) {
 
+  // Get path to the game-assets/backgrounds/ folder
   let backgroundAssetFolder = document.getElementById('game-asset-folder').innerText + 'backgrounds/';
+
+  // Get the html element which displays the image
   let backgroundElement = document.getElementById('background-image');
 
-  let newImagePath = backgroundAssetFolder + backgrounds['highlands-main'];
+  // Create full filepath
+  let newImagePath = backgroundAssetFolder + fileName;
+
+  // Set new background image
+  backgroundElement.src = newImagePath;
+
+}
+
+function getBackgroundImageFromArea( area ) {
+
+  let imageName = backgrounds['highlands-main'];
 
   switch (area) {
     case 'higlands':
-      newImagePath = backgroundAssetFolder + backgrounds['highlands-main'];
+      imageName = backgrounds['highlands-main'];
       break;
 
     case 'intro':
-      newImagePath = backgroundAssetFolder + backgrounds['intro-main'];
+      imageName = backgrounds['intro-main'];
       break;
 
     default:
-      newImagePath = backgroundAssetFolder + backgrounds['highlands-main'];
+      imageName = backgrounds['highlands-main'];
   }
 
-  backgroundElement.src = newImagePath;
+  return imageName;
 
 }
 
@@ -304,7 +324,8 @@ function option(ref){
       rooms = getRoomsFromArea( allAreaRooms, currentArea );
 
       // Change background image
-      changeBackgroundImage( currentArea );
+      let newAreaImage = getBackgroundImageFromArea( currentArea );
+      changeBackgroundImage( newAreaImage );
 
       // Change music
 
@@ -411,7 +432,7 @@ function option(ref){
       }
 
       if(this.command == 'background-move'){
-        changeBackgroundImage(this.values.slice(0, 1), true);
+        changeBackgroundImage(this.values.slice(0, 1));
         this.moveToNewPlace(this.values.slice(1));
       }
   }

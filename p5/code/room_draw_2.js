@@ -350,8 +350,13 @@ function createRoom(x, y){
   }
 }
 
+function getAreaIndex( areaName ) {
+  const areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
+  return areas.indexOf(areaName);
+}
+
 // Hide all guis for alla areas
-function hideGuis(){
+function hideGuis(areaIndex = 0){
   let spriteArrays =
   [
     roomArrays.test.sprites,
@@ -369,7 +374,7 @@ function hideGuis(){
       sprite.gui.hide();
 
       // Do not hide rooms for test area
-      if (spriteArrays.indexOf(spriteArray) != 0) {
+      if (spriteArrays.indexOf(spriteArray) != areaIndex) {
         sprite.depth = 0
         sprite.mouseActive = false
         sprite.visible = false
@@ -446,9 +451,38 @@ function saveRoom(){
             activeRoomArray[i].options.pop()
           }
         }
+
+        // Hide everything
+
+        areaIndex = getAreaIndex( currentArea );
+        hideGuis(areaIndex);
+
+        // Show current rooms
+        for (sprite of activeRoomSpriteArray) {
+          sprite.gui.show();
+        }
+
+        // Show the active room on top
+        activeRoomSpriteArray[i].gui.show();
+
+        // Remove empty options from option array
+        activeRoomArray[i].options = activeRoomArray[i].options.filter(function(value, index, arr) {
+          // Show all options
+          activeRoomSpriteArray[i].optionGuis[index].show();
+
+          // Hide empty rooms
+          if (value.text == "") {
+              activeRoomSpriteArray[i].optionGuis[index].hide();
+          }
+
+          // Remove those options which are empty
+          return value.text != "";
+        })
+
         break;
       }
     }
+
   }
 
 }
@@ -531,7 +565,9 @@ function drawConnections(){
 function drawConnectionsFromRoom(roomSprite){
   if(roomSprite){
     for (var z = 0; z < roomSprite.optionGuis.length; z++) {
-      if(roomSprite.optionGuis[z].getValue('option_command') == "move"){
+
+      let optionCommand = roomSprite.optionGuis[z].getValue('option_command');
+      if(optionCommand == "move"){
         stroke(connectionColors[z]);
         //ta koordinaterna från values delen
         let connection = indexToScreenCoordinates(
@@ -539,6 +575,7 @@ function drawConnectionsFromRoom(roomSprite){
           Number(roomSprite.optionGuis[z].getValue('command_value_'+1)))
 
         if(connection.x!=null && connection.y != null){
+          //stroke(color(255,255,255));
           line(roomSprite.position.x-10+z*4, roomSprite.position.y-10+z*4, connection.x-10+z*4, connection.y-10+z*4)
         }
       }
@@ -551,6 +588,8 @@ function createGeneralGui(){
   generalGui.setDraggable(false);
   generalGui.addButton('center (tab)', function(){window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));});
   generalGui.addDropDown('area' ,['test','intro', 'highlands', 'bog', 'city', 'mountain', 'core'], function(value){
+      currentArea = value.label;
+
       for (var i = 0; i < 7; i++) { //om det går borde man hämta antal värden i objektet istället för att hårdkoda 7
         if (i == value.index){
 
@@ -602,6 +641,7 @@ function createGeneralGui(){
     // console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
     // saveRoomsToDatabase(roomArrays.test.rooms);
   })
+  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description</i><br><br><b>move</b><br><b>info</b><br><b>background-move</b>')
 
 }
 
@@ -659,6 +699,10 @@ function showValueAmountControl(){
           break;
         case 'background-move':
           activeRoom.optionGuis[i].setValue('command_description', 'Change background and move')
+          showAmount = 3;
+          break;
+        case 'item-move':
+          activeRoom.optionGuis[i].setValue('command_description', 'Get item and and move')
           showAmount = 3;
           break;
 

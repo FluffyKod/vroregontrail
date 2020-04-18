@@ -42,7 +42,14 @@
       <button type="button" name="button" onclick="savePlayer()">Save player</button>
       <button type="button" name="button" onclick="getPlayer()">Get player</button>
 
+      <!-- <audio controls autoplay>
+        <source src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio> -->
+
       <div id="grandparent">
+
+
         <p id="game-asset-folder" hidden><?php echo get_bloginfo('template_directory') ?>/game-assets/</p>
         <img id="background-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/scottishHiglands.jpg" alt="test" style="width:1920px;height:1080px;position:absolute;top:0px;bottom:0px;">
         <!--<div id="topbox">
