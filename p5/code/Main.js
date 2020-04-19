@@ -323,8 +323,15 @@ function option(ref){
   this.addItemToInventory = function(suppliedValues) {
     // Check if there is enough values
     if (suppliedValues.length >= 1) {
-      player.inventory.push(suppliedValues[0]);
-      updateInventoryGui();
+
+      if (player.inventory.indexOf(suppliedValues[0]) == -1) {
+        player.inventory.push(suppliedValues[0]);
+        updateInventoryGui();
+      } else {
+        textbox.html('You already picked up that item!');
+        write = false;
+      }
+
 
     } else {
       console.log('ERROR: Not enough values supplied to item command');
