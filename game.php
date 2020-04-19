@@ -44,9 +44,6 @@
     *************************************-->
     <?php show_error_alert(); ?>
 
-      <button type="button" name="button" onclick="savePlayer()">Save player</button>
-      <button type="button" name="button" onclick="getPlayer()">Get player</button>
-
       <!-- <audio controls autoplay>
         <source src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3" type="audio/mpeg">
         Your browser does not support the audio element.

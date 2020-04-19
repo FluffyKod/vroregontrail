@@ -122,40 +122,21 @@ function saveSprites(spriteArrayToSave) {
 
 function loadRoomsFromDatabase(area, callback){
 
-    sampleRooms = [
-
-      new Room(0, 0, 'You wake up on a sandy beach', [
-        {
-          text: 'Go right',
-          cmd: 'move',
-          values: [0, 1]
-        },
-        {
-          text: 'Go left',
-          cmd: 'tp',
-          values: [0, 2]
-        }
-      ]),
-      new Room(0, 1, 'You see a shipreck.', [
-        {
-          text: 'Check out the ship',
-          cmd: 'info',
-          values: ['The ship is broken at many places.']
-        },
-        {
-          text: 'Go back',
-          cmd: 'tp',
-          values: [0, 0]
-        }
-      ]),
-      new Room(0, 2, 'You come to a forest.', [
-        {
-          text: 'Go back',
-          cmd: 'tp',
-          values: [0, 0]
-        }
-      ])
-    ]  //slut på rooms arrayn
+    // sampleRooms = [
+    //
+    //   new Room(0, 0, 'You wake up on a sandy beach', [
+    //     {
+    //       text: 'Go right',
+    //       cmd: 'move',
+    //       values: [0, 1]
+    //     },
+    //     {
+    //       text: 'Go left',
+    //       cmd: 'tp',
+    //       values: [0, 2]
+    //     }
+    //   ]),
+    // ]  //slut på rooms arrayn
 
   // Get the rooms
   parameters = {

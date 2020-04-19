@@ -1,6 +1,6 @@
 let roomText = "room text";
 
-function room( x, y, mainText, options ){
+function Room( x, y, mainText, options ){
 
   // Set default values
   this.x = x;
