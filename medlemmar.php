@@ -40,6 +40,11 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
   </head>
   <body>
 
+    <!-- ***********************************
+    * ERROR HANDLING
+    *************************************-->
+    <?php show_error_alert(); ?>
+
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
 
@@ -293,7 +298,7 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
         <div class="row">
 
-          <div class="box green lg" id="student-shell-box">
+          <div class="box green lg allow-overflow" id="student-shell-box">
 
             <h4>Skapa nytt elevskal</h4>
             <form autocomplete="off" method="post" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>">

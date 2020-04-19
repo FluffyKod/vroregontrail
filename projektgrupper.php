@@ -5,7 +5,7 @@
  */
 
  // CHECK IF LOGGED IN SND ADMIN
- if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
+ if (! is_user_logged_in() ){
    wp_redirect( '/panel' );
  } else {
 
@@ -37,6 +37,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
+
+    <!-- ***********************************
+    * ERROR HANDLING
+    *************************************-->
+    <?php show_error_alert(); ?>
 
     <div class="container">
 
@@ -87,10 +92,12 @@
             <div class="kommiteer">
 
               <!-- Always show the add new kommitée card -->
+              <?php if (is_student_admin()): ?>
               <div class="kommitee alert">
                   <a href="#new-projektgrupp" class="add-btn lg">+</a>
                   <h5>Skapa ny projektgrupp</h5>
               </div>
+            <?php endif; ?>
 
               <?php
 
@@ -102,8 +109,13 @@
               <!-- Check visibility, only show locked ones to admins -->
               <?php if ( ($p->visibility == 'e' && (current_user_can('administrator') || current_user_can('elevkaren') )) || $p->visibility == 'a' ): ?>
 
+                <?php
+                  $projektgrupp_classes = 'kommitee join';
+                  $projektgrupp_classes .= ($p->visibility == 'e') ? ' green' : '';
+                ?>
+
               <!-- Create new element to hold the information -->
-              <div class="kommitee">
+              <div class="<?php echo $projektgrupp_classes; ?>">
                 <a href="/panel/projektgrupper?p_id=<?php echo $p->id; ?>">
                     <!-- Name -->
                     <h4><?php echo $p->name ?></h4>
@@ -119,6 +131,18 @@
                     }
                     elseif ($member_check->status == 'w'){
                       echo '<p>Förfrågan skickad</p>';
+                    }
+
+                    if (is_student_admin()) {
+                      $application_number = count( $wpdb->get_results('SELECT * FROM vro_projektgrupper_members WHERE projektgrupp_id = '. $p->id . ' AND status = "w"') );
+                      if ( $application_number > 0 ){
+                        if ($application_number == 1) {
+                          echo '<p class="attention">'. $application_number .' ny förfrågan!<p>';
+                        } else {
+                          echo '<p class="attention">'. $application_number .' nya förfrågningar!<p>';
+                        }
+
+                      }
                     }
 
                     ?>

@@ -16,9 +16,9 @@ if (isset($_POST['add_event_type'])) {
   $bgColor = test_input( $_POST['etBgColor'] );
   $fgColor = test_input( $_POST['etFgColor'] );
 
-  check_if_empty(array($name), '/panel/kalender?event_type=empty')
+  check_if_empty(array($name), '/panel/kalender?event_type=empty');
 
-  if check_if_entry_exists('vro_event_types', 'name', $name){
+  if (check_if_entry_exists('vro_event_types', 'name', $name)){
       // Replace the # to %23 so it is safe to send in the url
       $bgColor = '%23' . substr($bgColor, 1);
       $fgColor = '%23' . substr($fgColor, 1);
@@ -58,7 +58,8 @@ elseif (isset($_POST['remove_event_type'])) {
 
   // disable the specified event type
   if ($wpdb->update( 'vro_event_types', array( 'status' => 'n' ), array( 'id' => $etId ) ) == false){
-    wp_die('database remove event type failed');
+    send_error( '/panel/kalender?remove_event_type', 'Det gick inte att ta bort eventtypen.' );
+    // wp_die('database remove event type failed');
   } else {
     // Success!
 
@@ -112,7 +113,8 @@ elseif (isset($_POST['alter_event_type'])) {
   );
 
   if ($wpdb->update( 'vro_event_types', $updated_event, array( 'id' => $etId ) ) == false){
-    wp_die('database alter event type failed');
+    send_error( '/panel/kalender?alter_event_type', 'Det gick inte att ändra eventtypen.' );
+    // wp_die('database alter event type failed'); DEV
   } else {
     // Success!
 
@@ -232,7 +234,8 @@ elseif (isset($_POST['add_event'])) {
       'vro_events',
       $new_event
   ) == false) {
-    wp_die('database insertion failed');
+    send_error( '/panel/kalender?add_event', 'Det gick inte att lägga till eventet.' );
+    // wp_die('database insertion failed'); DEV
   }
 
   // Logg action
@@ -260,7 +263,8 @@ elseif (isset($_POST['publish_event'])){
   $event_id = (int)$event_id;
 
   if ($wpdb->update( 'vro_events', array('visibility' => 'a'), array( 'id' => $event_id ) ) == false){
-    wp_die('publish event failed');
+    send_error( '/panel/kalender?publish_event', 'Det gick inte att publicera eventet.' );
+    // wp_die('publish event failed'); DEV
   } else {
     // Success!
 
@@ -290,7 +294,8 @@ elseif (isset($_POST['unpublish_event'])){
   $event_id = (int)$event_id;
 
   if ($wpdb->update( 'vro_events', array('visibility' => 'e'), array( 'id' => $event_id ) ) == false){
-    wp_die('publish event failed');
+    send_error( '/panel/kalender?unpublish_event', 'Det gick inte att avpublicera eventet.' );
+    // wp_die('unpublish event failed');
   } else {
     // Success!
 
@@ -320,7 +325,8 @@ elseif (isset($_POST['remove_event'])){
   $event_id = (int)$event_id;
 
   if ($wpdb->delete( 'vro_events', array( 'id' => $event_id ) ) == false){
-    wp_die('remove event failed');
+    send_error( '/panel/kalender?remove_event', 'Det gick inte att ta bort eventet.' );
+    // wp_die('remove event failed'); DEV
   } else {
     // Success!
 

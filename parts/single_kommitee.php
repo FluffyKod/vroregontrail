@@ -177,7 +177,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 <div class="kommitee-row">
 
 
-  <div class="box white" id="chairman">
+  <div class="box white allow-overflow" id="chairman">
       <!-- <?php echo get_avatar( $chairman_id ); ?> -->
       <h4><?php echo get_full_studentname( $chairman ); ?></h4>
       <p>Ordförande</p>

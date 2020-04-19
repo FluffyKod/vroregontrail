@@ -45,7 +45,8 @@ function vro_setup() {
     created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     name VARCHAR(50) NOT NULL,
-    points INTEGER(10) UNSIGNED NOT NULL DEFAULT 0,
+    points INTEGER(10) NOT NULL DEFAULT 0,
+    active VARCHAR(5) NOT NULL DEFAULT "y",
     PRIMARY KEY (id)
   )';
 
@@ -178,6 +179,7 @@ function vro_setup() {
     user_id INTEGER(10) UNSIGNED NOT NULL,
     projektgrupp_id INTEGER(10) UNSIGNED NOT NULL,
     status VARCHAR(5) NOT NULL DEFAULT "w",
+    motivation VARCHAR(300),
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES vro_users(id),
     FOREIGN KEY (projektgrupp_id) REFERENCES vro_projektgrupper(id)

@@ -33,11 +33,16 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-mountain-jump.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
   </head>
   <body>
+
+    <!-- ***********************************
+    * ERROR HANDLING
+    *************************************-->
+    <?php show_error_alert(); ?>
 
       <button type="button" name="button" onclick="savePlayer()">Save player</button>
       <button type="button" name="button" onclick="getPlayer()">Get player</button>

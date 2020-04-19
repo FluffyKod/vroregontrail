@@ -21,8 +21,16 @@ if (! is_user_logged_in() ){
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
+
+    <!-- ***********************************
+    * ERROR HANDLING
+    *************************************-->
+    <?php show_error_alert(); ?>
 
     <div class="container">
 
@@ -152,7 +160,11 @@ if (! is_user_logged_in() ){
            ?>
 
             <input type="text" name="subject" placeholder="Rubrik..." required>
-            <textarea name="text" placeholder="Förslag..." required></textarea>
+
+            <div class="text-limited-root">
+              <textarea name="text" placeholder="Förslag..." required onkeyup="checkForm(this, visselpipa_char_count, 300)"></textarea>
+              <p id="visselpipa_char_count">300</p>
+            </div>
 
             <button name="new_visselpipa" class="btn lg" type="submit">Skicka</button>
 

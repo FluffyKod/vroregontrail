@@ -28,7 +28,7 @@
 
 <div class="row">
 
-  <div class="box green lg">
+  <div class="box green lg allow-overflow">
 
     <h4>Lägg till ny elev i roll</h4>
     <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_members.inc.php'); ?>" method="POST">

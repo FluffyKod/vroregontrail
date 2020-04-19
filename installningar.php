@@ -25,10 +25,17 @@ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
 
     <div class="container">
+
+      <!-- ***********************************
+      * ERROR HANDLING
+      *************************************-->
+      <?php show_error_alert(); ?>
 
       <!--
       * Admin Navbar

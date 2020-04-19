@@ -69,6 +69,11 @@ if (count($kommitees) == 0){
       <p>Kommittéer</p>
     </a>
 
+    <a href="/panel/projektgrupper/" class="nav-item" id="link-projektgrupper">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
+      <p>Projektgrupper</p>
+    </a>
+
     <a href="/panel/kalender/" class="nav-item" id="link-kalender">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/calendar.png" alt="" class="nav-icon">
       <p>Kalender</p>

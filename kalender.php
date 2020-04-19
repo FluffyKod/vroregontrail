@@ -26,8 +26,14 @@ $current_student = wp_get_current_user();
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
+
+    <!-- ***********************************
+    * ERROR HANDLING
+    *************************************-->
+    <?php show_error_alert(); ?>
 
     <div class="container">
 

@@ -41,6 +41,11 @@
   </head>
   <body>
 
+    <!-- ***********************************
+    * ERROR HANDLING
+    *************************************-->
+    <?php show_error_alert(); ?>
+
     <div class="container">
 
       <!-- ***********************************
@@ -136,7 +141,7 @@
               </div>
 
               <p><i><b><?php echo $fullname; ?> <?php echo $class_name ?></b> - <?php echo $date_created; ?></i></p>
-              <p><?php echo $r->description ?></p>
+              <p class="komm-desc"><?php echo $r->description ?></p>
 
               <div class="answer" id="<?php echo $r->id ?>">
 
@@ -247,7 +252,7 @@
               ?>
 
               <!-- Create new element to hold the information -->
-              <div class="kommitee">
+              <div class="kommitee join">
                 <a href="/panel/kommiteer?k_id=<?php echo $k->id; ?>">
                     <!-- Name -->
                     <h4><?php echo $k->name ?></h4>

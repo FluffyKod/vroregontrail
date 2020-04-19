@@ -12,18 +12,10 @@
   $kommitee_applications = count($wpdb->get_results('SELECT * FROM vro_kommiteer WHERE status = "w"'));
 
   // Get all users that are waiting to become members of kåren
-  $args = array(
-      'meta_query' => array(
-          array(
-              'key' => 'status',
-              'value' => 'w',
-              'compare' => '=='
-          )
-      )
-  );
+  $member_applications = count($wpdb->get_results('SELECT * FROM vro_users WHERE status = "w"'));
 
-  // Get all members
-  $member_applications = count(get_users($args));
+  // Projektgrupper applications
+  $projektgrupp_applications = count($wpdb->get_results('SELECT * FROM vro_projektgrupper_members WHERE status = "w"'));
 
  ?>
 
@@ -106,7 +98,16 @@
     </a>
 
     <a href="/panel/projektgrupper/" class="nav-item" id="link-projektgrupper">
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
+
+      <?php if ($projektgrupp_applications > 0) { ?>
+      <div class="notification">
+        <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
+        <span><?php echo $projektgrupp_applications; ?></span>
+      </div>
+      <?php } else { ?>
+        <img src="<?php echo get_bloginfo('template_directory') ?>/img/edit.png" alt="" class="nav-icon">
+      <?php } ?>
+
       <p>Projektgrupper</p>
     </a>
 

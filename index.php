@@ -7,13 +7,13 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   Swal.fire(
     'Förändring av hemsidan',
     'Just nu håller vi på med att förbättra hemsidan, därför kommer inte du kunna logga in och använda den som vanligt. Den väntas åter bli aktiv igen efter påsklovet!',
     'info'
   )
-</script>
+</script> -->
 
 <header id="v-header">
 

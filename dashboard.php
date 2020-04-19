@@ -28,6 +28,11 @@ if (! is_user_logged_in() ){
   </head>
   <body>
 
+    <!-- ***********************************
+    * ERROR HANDLING
+    *************************************-->
+    <?php show_error_alert(); ?>
+
     <?php if (isset($_GET['register']) && $_GET['register'] == 'success') : ?>
       <script type="text/javascript">
       Swal.fire(
@@ -128,7 +133,7 @@ if (! is_user_logged_in() ){
           </div>
 
           <!-- Classpoints box -->
-          <div class="box white sm classpoints">
+          <div class="box white sm classpoints allow-overflow">
 
             <div class="">
 

@@ -25,10 +25,17 @@ if (! is_user_logged_in() ){
 
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
-     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
-       <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/js/forms.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   </head>
   <body>
+
+    <!-- ***********************************
+    * ERROR HANDLING
+    *************************************-->
+    <?php show_error_alert(); ?>
 
     <div class="container">
 
@@ -62,7 +69,7 @@ if (! is_user_logged_in() ){
             </div>
             <button data-close-button class="close-button" type="button" name="button">&times;</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body allow-overflow">
             <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="post">
 
               <label><b>Namn på styrelseposten</b></label>
@@ -152,6 +159,8 @@ if (! is_user_logged_in() ){
             <h4>Komponera nytt kårbrev</h4>
             <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">
 
+              <?php show_form_messages( 'publish_karbrev', 'Kårbrevet har publicerats!' ); ?>
+
               <input type="text" name="letter_title" placeholder="Titel...">
 
               <textarea name="letter_content" placeholder="Kårbrevet..."></textarea>
@@ -165,7 +174,7 @@ if (! is_user_logged_in() ){
 
         <div class="row">
 
-          <div class="box white lg">
+          <div class="box white lg allow-overflow">
 
             <h4>Lägg till nytt utskott</h4>
             <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">

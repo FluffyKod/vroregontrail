@@ -76,7 +76,10 @@ elseif (isset($_POST['give_class_points'])) {
       $new_points = $current_points + (int)$class_points;
 
       if ($wpdb->update( 'vro_classes', array( 'points' => $new_points ), array( 'id' => $class_record->id) ) == false){
-        wp_die('add class points failed');
+
+        send_error( $callback . '?class_points', 'Det gick inte att ändra klasspoängen.' );
+        // wp_die('add class points failed'); DEV
+
       } else {
 
         // Logg action
@@ -112,7 +115,8 @@ elseif (isset($_POST['give_classpoints_internal'])){
       $new_points = $current_points + (int)$class_points;
 
       if ($wpdb->update( 'vro_classes', array( 'points' => $new_points ), array( 'id' => $class_record->id) ) == false){
-        wp_die('add class points failed');
+        send_error( '/panel/medlemmar/?c_id=$class_id&give_classpoints', 'Det gick inte att ändra klasspoängen.' );
+        // wp_die('add class points failed'); DEV
       } else {
 
         // Logg action

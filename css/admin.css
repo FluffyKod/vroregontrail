@@ -974,6 +974,11 @@ select.form-select {
   height: 220px;
 }
 
+div.kommitee.join.green {
+  background: var(--lighter);
+  color: #fff;
+}
+
 .kommitee .attention {
   color: #fff;
   transition: .5s;
@@ -984,23 +989,31 @@ select.form-select {
 }
 
 /* Only select the kommitees, not the add kommmitee box */
-div[class=kommitee]:hover {
+div.kommitee.join:hover {
   color: #fff;
   transition: 0.5s ease-in-out;
   cursor: pointer;
 }
 
-div[class=kommitee]:hover a {
+div.kommitee.join.green:hover {
+  color: #000;
+}
+
+div.kommitee.join:hover a {
   color: #fff;
   transition: 0.5s ease-in-out;
   cursor: pointer;
 }
 
-div[class=kommitee]::before {
+div.kommitee.join.green:hover a {
+  color: #000;
+}
+
+div.kommitee.join::before {
   content: "";
   position: absolute;
   left: 0;
-  bottom: calc(-100% + 30px);
+  bottom: calc(-100% + 40px);
   width: 100%;
   height: 100%;
   background: var(--lighter);
@@ -1008,11 +1021,16 @@ div[class=kommitee]::before {
   transition: 0.5s ease-in-out;
 }
 
-div[class=kommitee]:hover::before {
+div.kommitee.join.green::before {
+  background: #fff;
+  /* bottom: calc(100% - 40px); */
+}
+
+div.kommitee.join:hover::before {
   bottom: 0;
 }
 
-div[class=kommitee] a {
+div.kommitee.join a {
   position: relative;
   z-index: 2;
   text-decoration: none;
@@ -1024,6 +1042,10 @@ div[class=kommitee] a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+div.kommitee.join.green a {
+  color: #fff;
 }
 
 .kommitee-row {
@@ -1268,6 +1290,10 @@ div[class=kommitee] a {
 
 #kommitte-name-select {
   display: none;
+}
+
+.komm-desc {
+  word-break: break-word;
 }
 
 /* ------ Calendar ------ */

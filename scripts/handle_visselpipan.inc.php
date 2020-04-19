@@ -31,7 +31,8 @@ if (isset($_POST['new_visselpipa'])) {
         'vro_visselpipan',
         $suggestion
     ) == false) {
-      wp_die('database insertion failed');
+      send_error( '/panel/visselpipan?visselpipa', 'Det gick inte att skicka visselpipan.' );
+      // wp_die('database insertion failed');
     }
 
     // Logg action

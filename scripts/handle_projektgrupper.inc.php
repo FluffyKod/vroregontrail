@@ -232,3 +232,67 @@
     }
 
   }
+
+  elseif (isset($_POST['apply_for_projektgrupp'])){
+
+    global $wpdb;
+
+    // Get the id's
+    $k_id = test_input( $_POST['p_id'] );
+    $student_id = test_input( $_POST['student_id'] );
+    $motivation = test_input( $_POST['motivation'] );
+
+    // INPUT VALIDATION
+    $return = "/panel/projektgrupper?apply_for_projektgrupp";
+    $k_id = check_number_value( $k_id, $return);
+
+    $return = "/panel/projektgrupper?p_id=$k_id&apply_for_projektgrupp";
+
+    $student_id = check_number_value( $student_id, $return );
+
+    // Check if this user already has sent an application
+    if ( count($wpdb->get_results('SELECT * FROM vro_projektgrupper_members WHERE user_id='. $student_id .' AND projektgrupp_id='. $k_id .'')) > 0 ) {
+      header( $return . "=alreadythere");
+      exit();
+    } else {
+
+      // Insert an application
+      $new_application = array();
+
+      $new_application['user_id'] = $student_id;
+      $new_application['projektgrupp_id'] = $k_id;
+      $new_application['status'] = 'w';
+      $new_application['motivation'] = $motivation;
+
+      // Insert the new suggestion into the database
+      insert_record('vro_projektgrupper_members', $new_application, 'DB insertion failed: failed to add new projektgrupp member application in apply_for_projekgrupp');
+
+      // Logg action
+      $log_description = $student_id . ' skickade en medlemsansökan till projekgrupp med id ' . $k_id;
+      add_log( 'Projektgrupper', $log_description, get_current_user_id() );
+
+      send_header( $return . "=success" );
+
+    }
+
+  }
+
+  elseif (isset($_POST['toggle_projektgrupp'])) {
+
+    global $wpdb;
+
+    $p_id = check_number_value( $_POST['p_id'], '/panel/projektgrupper?toggle-projektgrupp' );
+    $return = "/panel/projektgrupper?p_id=$p_id&toggle-projektgrupp";
+
+    $projektgrupp = $wpdb->get_row("SELECT * FROM vro_projektgrupper WHERE id = $p_id");
+
+    // Toggle
+    $new_visibility = ($projektgrupp->visibility == 'e') ? 'a' : 'e';
+
+    // Update
+    update_record( 'vro_projektgrupper', 'visibility', $new_visibility, 'id', $p_id, $return . '=failedToggle' );
+
+    // Success!
+    send_header( $return . '=success' );
+
+  }

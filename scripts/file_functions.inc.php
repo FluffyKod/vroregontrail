@@ -103,7 +103,7 @@ if (isset($_POST['download-member-report'])) {
   fputs($f, "  - X i rutan betyder att informationen SAKNAS\n\n");
 
   $name_pad = 35;
-  $headers = "|" . str_pad('NAMN', $name_pad, ' ', STR_PAD_BOTH) . create_header( array('KLASS', 'TELEFON', 'MAIL', 'FOLKBOKFÖRD  STAD', 'DATUM MEDLEM', 'KÖN', 'PROGRAM', 'FÖDELSEÅR') );
+  $headers = "|" . str_pad('NAMN', $name_pad, ' ', STR_PAD_BOTH) . create_header( array('KLASS', 'HEMSIDEKONTO', 'TELEFON', 'MAIL', 'FOLKBOKFÖRD  STAD', 'DATUM MEDLEM', 'KÖN', 'PROGRAM', 'FÖDELSEÅR') );
   fputs($f, $headers . str_pad('', strlen($headers) - 5, '-') . "\n");
 
   // Go through and add a row for each student
@@ -131,6 +131,7 @@ if (isset($_POST['download-member-report'])) {
     $text_row .= str_pad($class_name, 7, ' ', STR_PAD_BOTH);
 
     // Write the colums
+    $text_row .= fill_column( 'HEMSIDEKONTO', $s->wpuser_id );
     $text_row .= fill_column( 'TELEFON', $s->phonenumber );
     $text_row .= fill_column( 'MAIL', $s->email );
     $text_row .= fill_column( 'FOLKBOKFÖRD STAD', $s->registered_city );

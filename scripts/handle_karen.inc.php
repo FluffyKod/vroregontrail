@@ -37,7 +37,8 @@ if (isset($_POST['add_new_position_type'])) {
         'vro_position_types',
         $position_type
     ) == false) {
-      wp_die('database insertion failed');
+      send_error( '/panel/karen?new_position_type', 'Det gick inte att lägga till positionsstypen.' );
+      // wp_die('database insertion failed');DEV
     }
 
     // Logg action
@@ -83,7 +84,8 @@ elseif (isset($_POST['add_new_styrelse_post'])) {
       'vro_styrelsen',
       $styrelse
   ) == false) {
-    wp_die('database insertion failed');
+    send_error( '/panel/karen?new_styrelse_poste', 'Det gick inte att lägga till styrelseposten.' );
+    // wp_die('database insertion failed');  DEV
   }
 
   // Logg action
@@ -129,7 +131,8 @@ elseif (isset($_POST['add_new_utskott'])){
       'vro_utskott',
       $utskott
   ) == false) {
-    wp_die('database insertion failed in add utskott');
+    send_error( '/panel/karen?new_utskott', 'Det gick inte att lägga till utskottet.' );
+    // wp_die('database insertion failed in add utskott');
   }
 
   // Logg action
@@ -181,7 +184,8 @@ elseif (isset($_POST['update_styrelse_post'])){
 
   // Insert the new suggestion into the database
   if ( !$wpdb->query( $wpdb->prepare('UPDATE vro_styrelsen SET position_name = %s, student = %s WHERE id = %s', $styrelse['position_name'], $styrelse['student'], $position_id) ) ){
-    wp_die('database alterartion failed. Alter styrelse member');
+    send_error( '/panel/karen?alter_styrelse_post', 'Det gick inte att ändra styrelseposten.' );
+    // wp_die('database alterartion failed. Alter styrelse member');
   } else{
     //
 
@@ -211,7 +215,8 @@ elseif (isset($_POST['delete_styrelse_post'])) {
   $position_id = (int)$position_id;
 
   if (!$wpdb->delete( 'vro_styrelsen', array( 'id' => $position_id ) ) ) {
-    wp_die('could not delete styrelse post');
+    send_error( '/panel/karen?remove_styrelse_post', 'Det gick inte att ta bort styrelseposten.' );
+    // wp_die('could not delete styrelse post'); DEV
   } else {
 
     // Logg action
@@ -276,7 +281,8 @@ elseif (isset($_POST['edit_utskott'])){
   // Insert the new suggestion into the database
 
   if ( !$wpdb->update('vro_utskott', array('name' => ''. $utskott['name'] .'', 'description' => ''. $utskott['description'] .'', 'chairman' => $utskott['chairman']), array('id' => $utskott_id)) ){
-    wp_die('edit utskott failed');
+    send_error( '/panel/karen?edit_utskott', 'Det gick inte att ändra utskottsinformationen.' );
+    // wp_die('edit utskott failed');
   } else{
     // Success!
 
@@ -305,7 +311,8 @@ elseif (isset($_POST['delete_utskott'])){
   $position_id = (int)$position_id;
 
   if (!$wpdb->delete( 'vro_utskott', array( 'id' => $utskott_id ) ) ) {
-    wp_die('could not delete utskott');
+    send_error( '/panel/karen?remove_utskott', 'Det gick inte att ta bort utskottet.' );
+    // wp_die('could not delete utskott');
   } else {
 
     // Logg action
@@ -362,7 +369,8 @@ elseif ( isset($_POST['publish_karbrev'])){
 
   // insert the post
   if ( !$post_id = wp_insert_post( $post_args, $error ) ){
-    wp_die( $error );
+    send_error( '/panel/medlemmar/publish_karbrev', "Det gick inte att publicera kårbrevet. ($error)" );
+    // wp_die( $error );
   } else {
 
     // Add post meta

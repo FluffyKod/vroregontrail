@@ -22,8 +22,63 @@ function is_student_admin() {
 /*****************************************
 * Helper functions
 *****************************************/
+// LOGGING FUNCTION
+function add_log( $log_source = NULL, $description = NULL, $user_id = NULL ) {
+
+  // Add a log
+  global $wpdb;
+
+  // Create a new array that will hold all the arguments to create a new log
+  $log = array();
+
+  // Check if a log source has been provided and that it is not to long
+  if ( $log_source == NULL || empty($log_source) || strlen($log_source) > 100 ){
+    $log_source = '';
+  }
+
+  // If all good, add the argument
+  $log['log_source'] = $log_source;
+
+  // Check if a descriptionhas been provided and that it is not to long
+  if ( $description == NULL || empty( $description ) ){
+    $description = '';
+  }
+
+  if ( strlen($description) > 300 ) {
+    $description = substr($description, 0, 280);
+  }
+
+  // If all good, add the argument
+  $log['description'] = $description;
+
+  // Check if an user id has been provided
+  if ( $user_id != NULL && is_numeric($user_id) ){
+    $log['user_id'] = $user_id;
+  }
+
+  if($wpdb->insert(
+        'vro_log',
+        $log
+    ) == false) {
+      // send_error( '/panel/visselpipan?visselpipa', 'Det gick inte att skicka visselpipan.' );
+      // wp_die('database insertion failed in logging'); DEV
+      return False;
+  } else {
+    return True;
+  }
+
+}
+
 function send_header( $location ){
   header("Location: " . $location);
+  exit();
+}
+
+function send_error( $return, $wperrormsg ) {
+  // Add error log
+  add_log( 'Error', $wperrormsg, get_current_user_id() );
+
+  header("Location: " . $return . '=error&wperror=' . $wperrormsg );
   exit();
 }
 
@@ -215,7 +270,8 @@ function insert_record( $table, $record, $errMsg ) {
   global $wpdb;
 
   if( $wpdb->insert($table, $record) == false){
-    wp_die( $errMsg );
+    send_error( '/panel?insert', $errMsg );
+    // wp_die( $errMsg );
   }
 
 }
@@ -292,7 +348,8 @@ function remove_record( $table, $field, $value, $errMsg ){
   // check if there are any records
   if (check_if_entry_exists($table, $field, $value)){
     if (!$wpdb->delete( $table, array( $field => $value ) ) ) {
-      wp_die( $errMsg );
+      send_error( '/panel?remove', $errMsg );
+      // wp_die( $errMsg );
     } else {
       return true;
     }
@@ -304,7 +361,8 @@ function delete_record( $table, $options, $errMsg ) {
 
   // Delete the student from the record
   if ($wpdb->delete( $table, $options) == false){
-    wp_die( $errMsg );
+    send_error( '/panel?deletion', $errMsg );
+    // wp_die( $errMsg );
   } else {
     return true;
   }
@@ -746,7 +804,10 @@ function display_karen( $edit = false ){
           <input type="text" name="position-id" value="<?php echo $s->id; ?>" hidden>
           <input type="text" name="student-id" value="<?php echo $s->student; ?>" hidden>
           <input class="position-student-email" name="" value="<?php echo $vro_student->email; ?>" hidden>
+
+          <?php if ($edit): ?>
           <button class="btn" type="button" name="button">Info</button>
+          <?php endif; ?>
       </div>
 
       <?php
@@ -829,52 +890,34 @@ function update_or_add_meta( $u_id, $key, $value ) {
   return true;
 }
 
-// LOGGING FUNCTION
-function add_log( $log_source = NULL, $description = NULL, $user_id = NULL ) {
 
-  // Add a log
-  global $wpdb;
-
-  // Create a new array that will hold all the arguments to create a new log
-  $log = array();
-
-  // Check if a log source has been provided and that it is not to long
-  if ( $log_source == NULL || empty($log_source) || strlen($log_source) > 100 ){
-    $log_source = '';
-  }
-
-  // If all good, add the argument
-  $log['log_source'] = $log_source;
-
-  // Check if a descriptionhas been provided and that it is not to long
-  if ( $description == NULL || empty( $description ) ){
-    $description = '';
-  }
-
-  if ( strlen($description) > 300 ) {
-    $description = substr($description, 0, 280);
-  }
-
-  // If all good, add the argument
-  $log['description'] = $description;
-
-  // Check if an user id has been provided
-  if ( $user_id != NULL && is_numeric($user_id) ){
-    $log['user_id'] = $user_id;
-  }
-
-  if($wpdb->insert(
-        'vro_log',
-        $log
-    ) == false) {
-      wp_die('database insertion failed in logging');
-      return False;
-  } else {
-    return True;
-  }
-
-}
 
 function show_success_alert( $header, $msg ) {
   echo '<script type="text/javascript">Swal.fire("'. $header .'","'. $msg .'","success")</script>';
+}
+
+function show_error_alert() {
+  if (isset($_GET['wperror'])) {
+    $header = 'Oj, något gick fel!';
+    $msg = test_input($_GET['wperror']);
+
+    echo '<script type="text/javascript">Swal.fire("'. $header .'","'. $msg .'","error")</script>';
+  }
+}
+
+function show_form_messages( $get_statement, $success_msg ) {
+
+  if (isset($_GET[$get_statement])) {
+
+    $check = $_GET[$get_statement];
+
+    if ($check == 'empty') {
+      echo '<p class="error">Du måste fylla i alla fält!</p>';
+    }
+    elseif ($check == 'success') {
+      echo "<p class='success'>$success_msg</p>";
+    }
+
+  }
+
 }

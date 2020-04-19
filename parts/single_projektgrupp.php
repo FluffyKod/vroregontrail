@@ -30,7 +30,7 @@ if ($current_projektgrupp->visibility == 'e' && (!current_user_can('administrato
   wp_redirect('/panel/projektgrupper');
 }
 
-$current_student_id = get_studentshell_by_wpuser_id( get_current_user_id() );
+$current_student_id = (int)get_studentshell_by_wpuser_id( get_current_user_id() )->id;
 
 // get all kommitee members
 $all_members = $wpdb->get_results('SELECT * FROM vro_projektgrupper_members WHERE projektgrupp_id=' . $p_id . ' AND status="y"');
@@ -39,11 +39,18 @@ $is_waiting = count($wpdb->get_results('SELECT * FROM vro_projektgrupper_members
 $waiting_members = $wpdb->get_results('SELECT * FROM vro_projektgrupper_members where projektgrupp_id = ' . $p_id . ' AND status = "w"' );
 
 // Check if the $current student is in this projektgrupp
-if (check_if_entry_exists('vro_projektgrupper_members', 'user_id', $current_student_id)) {
+if (count($wpdb->get_results('SELECT * FROM vro_projektgrupper_members WHERE user_id='. $current_student_id .' AND projektgrupp_id='. $p_id)) > 0) {
   $in_projektgrupp = true;
 } else {
   $in_projektgrupp = false;
 }
+
+if (is_student_admin()) {
+  $visibility_string = ($current_projektgrupp->visibility == 'e') ? '(Endast synlig för admins)' : '(Öppen för alla)';
+} else {
+  $visibility_string = '';
+}
+
 
 ?>
 
@@ -53,12 +60,39 @@ if (check_if_entry_exists('vro_projektgrupper_members', 'user_id', $current_stud
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>
 
 <div class="top-bar">
-  <h2><?php echo $current_projektgrupp->name; ?></h2>
+  <h2><?php echo $current_projektgrupp->name; ?> <?php echo $visibility_string; ?></h2>
   <p><?php echo current_time('d M Y, D'); ?></p>
 </div>
 
+<?php if (is_student_admin()) { ?>
+<div class="banner">
+
+  <?php
+    if (count($waiting_members) == 1){
+      echo "<h3>" . count($waiting_members) . " ny medlemsförfrågan!</h3>";
+    } else {
+      echo "<h3>" . count($waiting_members) . "nya medlemsförfrågningar!</h3>";
+    }
+  ?>
+
+  <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
+  <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
+</div>
+<?php } else {?>
+
+  <div class="banner">
+
+    <h3><?php echo $current_projektgrupp->name; ?></h3>
+
+    <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatright.png" alt="" class="chatright">
+    <img src="<?php echo get_bloginfo('template_directory') ?>/img/chatleft.png" alt="" class="chatleft">
+  </div>
+
+<?php } // End is student admin  ?>
+
 <?php
 
+if (is_student_admin()) {
 foreach ($waiting_members as $wait_member)
 {
   $wm = $wpdb->get_row('SELECT * FROM vro_users WHERE id = ' . $wait_member->user_id);
@@ -68,11 +102,14 @@ foreach ($waiting_members as $wait_member)
 
     <div class="box white lg">
       <div class="see-more">
-        <h4><?php echo get_full_studentname( $wm ); ?></h4>
+        <h4><?php echo get_full_studentname( $wm ); ?> - <?php echo get_classname_by_id( $wm->class_id ); ?></h4>
           <div>
           <button onclick="showAnswerForm(<?php echo $wm->id ?>)">Svara &#8594;</button>
         </div>
       </div>
+
+      <p><i>Motivering: </i><?php echo (($wait_member->motivation != NULL) ? $wait_member->motivation : 'Ingen motivering gavs.') ?></p>
+      <p><i>Skolmail: </i><?php echo $wm->email; ?></p>
 
       <div class="answer" id="<?php echo $wm->id; ?>">
 
@@ -81,7 +118,7 @@ foreach ($waiting_members as $wait_member)
         <h4>Svar</h4>
 
         <form autocomplete="off"  autocomplete="off"  action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_projektgrupper.inc.php'); ?>" method="POST">
-          <textarea name="kommitee_member_answer" placeholder="Svar..."></textarea>
+          <textarea name="kommitee_member_answer" placeholder="Svar..." required></textarea>
           <input name="kid" value="<?php echo $p_id; ?>" hidden>
 
           <button name="accept_kommitee_member" value="<?php echo $wm->id ?>" class="btn" type="submit">Godkänn</button>
@@ -96,7 +133,7 @@ foreach ($waiting_members as $wait_member)
 
 <?php
 } // ENd foreach
-
+} // END IS admin
 ?>
 
 <!-- **************************
@@ -146,6 +183,7 @@ foreach ($waiting_members as $wait_member)
 
 </div>
 
+
 <?php if ( (!current_user_can( 'administrator' ) && !current_user_can( 'elevkaren' )) && !$in_projektgrupp ): ?>
   <div class="row">
 
@@ -156,7 +194,29 @@ foreach ($waiting_members as $wait_member)
         <input type="text" name="p_id" value="<?php echo $p_id; ?>" hidden>
         <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
 
-        <button class="btn lg" type="submit" name="button"></button>
+        <div class="text-limited-root">
+          <textarea name="motivation" placeholder="Varför ska just DU få vara med i denna projektgrupp?" required onkeyup="checkForm(this, motivation_char_count, 300)"></textarea>
+          <p id="motivation_char_count">300</p>
+        </div>
+
+        <button class="btn lg" type="submit" name="apply_for_projektgrupp">Skicka en intresseförfrågan!</button>
+      </form>
+    </div>
+
+  </div>
+<?php endif; ?>
+
+<?php if ( $is_waiting ): ?>
+  <div class="row">
+
+    <div class="box green lg">
+      <h4>En förfrågan till denna projekgrupp har skickats!</h4>
+
+      <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_projektgrupper.inc.php'); ?>" method="post">
+        <input type="text" name="projektgrupp_id" value="<?php echo $p_id; ?>" hidden>
+        <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
+
+        <button class="btn lg" type="submit" name="leave_projektgrupp">Dra tillbaka förfrågan</button>
       </form>
     </div>
 
@@ -230,6 +290,17 @@ foreach ($waiting_members as $wait_member)
     </form>
 
   </div>
+</div>
+
+<div class="row">
+  <form class="expand" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_projektgrupper.inc.php'); ?>" method="post">
+    <input type="text" name="p_id" value=<?php echo $p_id; ?> hidden>
+    <?php if ($current_projektgrupp->visibility == 'e'){  ?>
+      <button class="btn lg" type="submit" name="toggle_projektgrupp">Öppna projektgrupp för alla</button>
+    <?php } else { ?>
+      <button class="btn lg" type="submit" name="toggle_projektgrupp">Lås projektgrupp för icke-admins</button>
+    <?php } ?>
+  </form>
 </div>
 
 <div class="row">

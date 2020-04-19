@@ -57,7 +57,8 @@ if (isset($_POST['send_notification_kommitte'])) {
 
     // insert the post
     if ( !$post_id = wp_insert_post( $post_args, $error ) ){
-      wp_die( $error );
+      send_error( '/panel/kommiteer?k_id=$k_id&send_notification', "Det gick inte att skicka kårnotisen kårbrevet. ($error)" );
+      // wp_die( $error );
     } else {
 
       // Add post meta
@@ -96,7 +97,8 @@ elseif (isset( $_POST['archive_notification'] )){
 	);
 
 	if (!wp_update_post( $args ) ) {
-    wp_die('Update post status to archive failed');
+    send_error( '/panel/kommiteer?archive_notification', 'Det gick inte att arkivera notifikationen.' );
+    // wp_die('Update post status to archive failed');
   } else {
     // Logg action
     $log_description = 'Arkiverade kommitténotifikationen med id ' . $post_id;
@@ -118,7 +120,8 @@ elseif (isset( $_POST['delete_notification'] )){
   }
 
 	if (!wp_delete_post( $post_id ) ) {
-    wp_die('delte post status to archive failed');
+    send_error( '/panel/arkiv?delete_notification', 'Det gick inte att ta bort notifikationen.' );
+    // wp_die('delte post status to archive failed');
   } else {
     // Logg action
     $log_description = 'Tog bort kommitténotififaktionen med id ' . $post_id;
