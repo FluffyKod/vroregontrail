@@ -5,10 +5,9 @@
  */
 
  // Only show game to logged in users
- if (! is_user_logged_in() ){
-   echo "<h1>Du måste vara inloggad för att se spelet</h1>";
-   echo '<a href="/wp-login.php">Logga In</a>';
- } else {
+ if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){
+   wp_redirect( '/' );
+ }else {
 
 ?>
 
@@ -33,7 +32,7 @@
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/dat.gui.js"></script>
 
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
-        <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/main.js"></script>
+        <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/room_class.js"></script>
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/room_draw_2.js"></script>
 

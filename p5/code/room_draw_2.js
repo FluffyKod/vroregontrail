@@ -8,8 +8,6 @@ let topCoordinate = {x: -1, y: -1};
 let activeRoom; //stores the active room Object.
 let activeOptionGui;
 
-let colors = {};
-
 let ableToCreateRoom;
 
 let roomArrays;
@@ -21,6 +19,7 @@ let guiBackgroundHidden = false;
 let guiMouseIsOver = false;
 
 let showCoordinatesHighlight = false;
+let showAllConnections = false;
 
 let guiParent
 let maxCommandValues = 4;
@@ -32,30 +31,71 @@ let generalGuiParent;
 let connectionColors;
 
 
+function getAreaRoomsFromRoomArrays() {
+  // Go through roomArrays and extract only the rooms from each area.
+  let areaRooms = [];
+
+  areaRooms.push(roomArrays.test.rooms);
+  areaRooms.push(roomArrays.intro.rooms);
+  areaRooms.push(roomArrays.highlands.rooms);
+  areaRooms.push(roomArrays.bog.rooms);
+  areaRooms.push(roomArrays.city.rooms);
+  areaRooms.push(roomArrays.mountain.rooms);
+  areaRooms.push(roomArrays.core.rooms);
+
+  // DEBUG:
+  console.log('GET AREA ROOMS: ', areaRooms);
+
+  return areaRooms;
+
+}
+
+function loadRoomArraysFromAreaRooms( areaRoomsArray ) {
+  // Go through areaRooms and set the rooms parameter on each area
+
+  // Check that there are enough rooms in each
+  roomArrays.test.rooms = (areaRoomsArray.length >= 0) ? areaRoomsArray[0] : [];
+  roomArrays.intro.rooms = (areaRoomsArray.length >= 1) ? areaRoomsArray[1] : [];
+  roomArrays.highlands.rooms = (areaRoomsArray.length >= 2) ? areaRoomsArray[2] : [];
+  roomArrays.bog.rooms = (areaRoomsArray.length >= 3) ? areaRoomsArray[3] : [];
+  roomArrays.city.rooms = (areaRoomsArray.length >= 4) ? areaRoomsArray[4] : [];
+  roomArrays.mountain.rooms = (areaRoomsArray.length >= 5) ? areaRoomsArray[5] : [];
+  roomArrays.core.rooms = (areaRoomsArray.length >= 6) ? areaRoomsArray[6] : [];
+
+  roomArrays.test.sprites = (areaRoomsArray.length >= 0) ? createSpriteArrayFromRoomArray(areaRoomsArray[0]) : [];
+  roomArrays.intro.sprites = (areaRoomsArray.length >= 1) ? createSpriteArrayFromRoomArray(areaRoomsArray[1]) : [];
+  roomArrays.highlands.sprites = (areaRoomsArray.length >= 2) ? createSpriteArrayFromRoomArray(areaRoomsArray[2]) : [];
+  roomArrays.bog.sprites = (areaRoomsArray.length >= 3) ? createSpriteArrayFromRoomArray(areaRoomsArray[3]) : [];
+  roomArrays.city.sprites = (areaRoomsArray.length >= 4) ? createSpriteArrayFromRoomArray(areaRoomsArray[4]) : [];
+  roomArrays.mountain.sprites = (areaRoomsArray.length >= 5) ? createSpriteArrayFromRoomArray(areaRoomsArray[5]) : [];
+  roomArrays.core.sprites = (areaRoomsArray.length >= 6) ? createSpriteArrayFromRoomArray(areaRoomsArray[6]) : [];
+
+  //
+  activeArea = roomArrays.test;
+  activeRoomArray = activeArea.rooms;
+  activeRoomSpriteArray = activeArea.sprites;
+
+  // DEBUG
+  console.log('LOADED ROOM ARRAYS: ', roomArrays);
+
+}
+
+
 function setup(){
 
   roomArrays = {//kanske konstigt att kalla det sprites
-    test: {rooms: [], sprites: [], lightColor: color(255), darkColor: color(51)},
-    intro: {rooms: [], sprites: [], lightColor: color(214), darkColor: color(51)},
-    highlands: {rooms: [], sprites: [], lightColor: color(208, 240, 156), darkColor: color(73, 117, 52)},
-    bog: {rooms: [], sprites: [], lightColor: color(189, 172, 157), darkColor: color(66, 46, 33)},
-    city: {rooms: [], sprites: [], lightColor: color(212, 207, 178), darkColor: color(120, 108, 41)},
-    mountain: {rooms: [], sprites: [], lightColor: color(135,222,224), darkColor: color(64,106,107)},
-    core: {rooms: [], sprites: [], lightColor: color(145, 42, 42), darkColor: color(36, 35, 35)}
+    test:      {rooms: [], sprites: [], lightColor: color(255, 255, 255), darkColor: color( 51,  51,  51)},
+    intro:     {rooms: [], sprites: [], lightColor: color(214, 214, 214), darkColor: color( 51,  51,  51)},
+    highlands: {rooms: [], sprites: [], lightColor: color(208, 240, 156), darkColor: color( 73, 117,  52)},
+    bog:       {rooms: [], sprites: [], lightColor: color(189, 172, 157), darkColor: color( 66,  46,  33)},
+    city:      {rooms: [], sprites: [], lightColor: color(212, 207, 178), darkColor: color(120, 108,  41)},
+    mountain:  {rooms: [], sprites: [], lightColor: color(135, 222, 224), darkColor: color( 64, 106, 107)},
+    core:      {rooms: [], sprites: [], lightColor: color(145,  42,  42), darkColor: color( 36,  35,  35)}
   }
 
   activeArea = roomArrays.test;
   activeRoomArray = activeArea.rooms;
   activeRoomSpriteArray = activeArea.sprites;
-
-  colors =
-  {
-    activeFillColor: color(255),
-    activeStrokeColor: color(51),
-    highlight: color(255,255,255,25),
-    inactiveFillColor: color(51),
-    inactiveStrokeColor: color(255)
-  };
 
   connectionColors = [color(255, 0, 0), color(255, 255, 0), color(0, 255, 0), color(0, 255, 255), color(0, 0, 255)];
 
@@ -72,11 +112,18 @@ function setup(){
   createGeneralGui();
 
   // Get rooms array
-  loadRooms('all', function(returnedRooms) {
+  loadRoomsFromDatabase('all', function(returnedRooms) {
     // No rooms were found, set a default blank
     if (returnedRooms.length > 0){
-      roomArrays.test.rooms = returnedRooms;
-      //roomArrays.test.sprites = createSpriteArrayFromRoomArray(returnedRooms);
+
+      // BELOW IS FOR MULITPLE AREAS
+
+      console.log('RETURNED ROOMS:', returnedRooms);
+
+      // Parse all area rooms
+      loadRoomArraysFromAreaRooms( returnedRooms );
+      console.log('FROM DATABASE: ', activeRoomArray);
+
     }
 
   }); // End load rooms
@@ -98,7 +145,7 @@ function highlightOverMouse(){
   if(!guiMouseIsOver){
     hx = mouseX + (32-(mouseX%64));
     hy = mouseY + (32-(mouseY%64));
-    fill(colors.highlight);
+    fill(color(255,255,255,50));
     noStroke();
     rectMode(CENTER);
     rect(hx,hy,roomBoxSize, roomBoxSize);
@@ -116,9 +163,15 @@ function keyPressed(){
   if(keyCode === TAB){
     window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));
   }
+  if(keyCode === ENTER){
+    showValueAmountControl();
+    optionShowControl();
+  }
+
 }
 
 function mousePressed(){
+
   if(activeRoom){ //kollar om något rum ens finns
     showValueAmountControl();
     optionShowControl();
@@ -139,9 +192,9 @@ function mousePressed(){
 
 }
 
-function mouseReleased(){ //funkar typ inte på mac??
+function mouseReleased(){
   showValueAmountControl();
-  optionShowControl(); //lite spray and pray måste nog inte kallas här
+  optionShowControl();
 
 }
 
@@ -149,12 +202,12 @@ function drawZeroIndicator(){
   frX = floor(width/2) + (32-(floor(width/2)%64));
   frY = floor(height/2) + (32-(floor(height/2)%64));
   noFill();
-  stroke(colors.highlight)
+  stroke(activeArea.lightColor)
   rectMode(CENTER);
   rect(frX,frY,roomBoxSize, roomBoxSize);
   indexCoordinates = screenToIndexCoordinates(frX,frY);
 
-  fill(colors.highlight);
+  fill(activeArea.lightColor);
   coordinateStr= "(" + indexCoordinates.x + ", " + indexCoordinates.y + ")"
   textSize(15);
   text(coordinateStr, frX-roomBoxSize/2+10,frY-roomBoxSize/2+25);
@@ -189,11 +242,7 @@ function createRoom(x, y){
     roomSprite.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
 
     roomSprite.depth = 1;
-
-    roomSprite.exportRoom;
-
     roomSprite.optionGuis = [];
-
 
     roomSprite.optionObjs = [];
     for (var i = 0; i < maxOptionAmount; i++) {
@@ -229,7 +278,8 @@ function createRoom(x, y){
       roomSprite.optionGui = QuickSettings.create( 210*i+60,10,'option_'+i, guiParent).hide();//borde parenta till en egen.
       roomSprite.optionGui.setDraggable(false);
       roomSprite.optionGui.addText('option_text', '' );
-      roomSprite.optionGui.addDropDown('option_command', ['','move', 'info']);
+      roomSprite.optionGui.addText('option_command', ['','move', 'info']);
+      roomSprite.optionGui.addHTML('command_description', 'test');
 
       for (var j = 0; j < maxCommandValues; j++) {
         roomSprite.optionGui.addText('command_value_'+j);
@@ -300,45 +350,139 @@ function createRoom(x, y){
   }
 }
 
-function addOptionGuis(roomSprite){
+function getAreaIndex( areaName ) {
+  const areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
+  return areas.indexOf(areaName);
+}
+
+// Hide all guis for alla areas
+function hideGuis(areaIndex = 0){
+  let spriteArrays =
+  [
+    roomArrays.test.sprites,
+    roomArrays.intro.sprites,
+    roomArrays.highlands.sprites,
+    roomArrays.bog.sprites,
+    roomArrays.city.sprites,
+    roomArrays.mountain.sprites,
+    roomArrays.core.sprites
+  ]
+
+  for (const spriteArray of spriteArrays) {
+    for (const sprite of spriteArray) {
+      // Hide main guis
+      sprite.gui.hide();
+
+      // Do not hide rooms for test area
+      if (spriteArrays.indexOf(spriteArray) != areaIndex) {
+        sprite.depth = 0
+        sprite.mouseActive = false
+        sprite.visible = false
+      }
+
+      //Hides option guis
+      for (const option of sprite.optionGuis) {
+        option.hide();
+      }
+    }
+  }
 }
 
 function saveRoom(){
-  if (!activeRoom.exportRoom) {
-    activeRoom.exportRoom = new room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [
+  // Check if there already exists a room with the coordinates
 
-    ])
+  let doesRoomExist = false;
+  for (const room of activeRoomArray){
+    if (room.x == activeRoom.indexX && room.y == activeRoom.indexY) {
+      doesRoomExist = true;
+    }
+  }
+
+  if (!doesRoomExist) {
+    let exportRoom = new Room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [])
     //save option object
     for (var i = 0; i < activeRoom.gui.getValue('option_amount'); i++) {
-      option = {
+      console.log("createOption");
+      let option = {
         text: activeRoom.optionGuis[i].getValue('option_text'),
-        command: activeRoom.optionGuis[i].getValue('option_command').value,
+        command: activeRoom.optionGuis[i].getValue('option_command'),
         values: []
-        }
+      }
       for (var j = 0; j < maxCommandValues; j++) {
         option.values.push(activeRoom.optionGuis[i].getValue('command_value_'+j)) //sparar onödigt många värden men yolo
 
       }
-      activeRoom.exportRoom.options.push(option);
+      exportRoom.options.push(option);
     }
-    activeRoomArray.push(activeRoom.exportRoom);
+    activeRoomArray.push(exportRoom);
 
-  }else if(activeRoom.exportRoom){ //uppdaterar objektet om det redan finns
+    console.log('IN SAVEROOM IF');
 
+  }else { //uppdaterar objektet om det redan finns
+
+    console.log('IN SAVEROOM ELSE');
+
+    //hittar vilket rum activeRoom är
     for (var i = 0; i < activeRoomArray.length; i++) {
       if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
         activeRoomArray[i].mainText = activeRoom.gui.getValue('main_text');
         for (var j = 0; j < activeRoom.optionGuis.length; j++) {
-          activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
-          activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command').value
-          for (var k = 0; k < maxCommandValues; k++) {
-            activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
+          //kollar om det optionet finns
+          if(activeRoomArray[i].options[j]){
+            activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
+            activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
+            for (var k = 0; k < maxCommandValues; k++) {
+              activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
+            }
+          }else{
+            let option = {
+              text: activeRoom.optionGuis[j].getValue('option_text'),
+              command: activeRoom.optionGuis[j].getValue('option_command'),
+              values: []
+              }
+            for (var k = 0; k < maxCommandValues; k++) {
+              option.values.push(activeRoom.optionGuis[j].getValue('command_value_'+k))
+            }
+            activeRoomArray[i].options.push(option);
+          }
+          //tar bort om det finns options utöver option amount
+          if(j > activeRoom.gui.getValue("option_amount")){
+            console.log("pop");
+            activeRoomArray[i].options.pop()
           }
         }
+
+        // Hide everything
+
+        areaIndex = getAreaIndex( currentArea );
+        hideGuis(areaIndex);
+
+        // Show current rooms
+        for (sprite of activeRoomSpriteArray) {
+          sprite.gui.show();
+        }
+
+        // Show the active room on top
+        activeRoomSpriteArray[i].gui.show();
+
+        // Remove empty options from option array
+        activeRoomArray[i].options = activeRoomArray[i].options.filter(function(value, index, arr) {
+          // Show all options
+          activeRoomSpriteArray[i].optionGuis[index].show();
+
+          // Hide empty rooms
+          if (value.text == "") {
+              activeRoomSpriteArray[i].optionGuis[index].hide();
+          }
+
+          // Remove those options which are empty
+          return value.text != "";
+        })
 
         break;
       }
     }
+
   }
 
 }
@@ -346,25 +490,38 @@ function saveRoom(){
 function createSpriteArrayFromRoomArray(inputRoomArray){
   this.inputRoomArray = inputRoomArray
   this.SpriteArray = [];
+  activeRoomSpriteArray = [];
   for (var i = 0; i < this.inputRoomArray.length; i++) {
     createCoordinate = indexToScreenCoordinates(this.inputRoomArray[i].x, this.inputRoomArray[i].y);
     print(createCoordinate);
-    rs = createRoom(createCoordinate.x, createCoordinate.y);
+    //creates a room and pushes it to the activeRoomSpriteArray
+    createRoom(createCoordinate.x, createCoordinate.y);
+    //hides all guis created
+    activeRoomSpriteArray[i].gui.hide();
+    for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
+      activeRoomSpriteArray[i].optionGuis[j].hide();
+    }
+    //set values
+    activeRoomSpriteArray[i].gui.setValue("main_text", this.inputRoomArray[i].mainText);
+    activeRoomSpriteArray[i].gui.setValue("option_amount", this.inputRoomArray[i].options.length);
+
+    for (var j = 0; j < this.inputRoomArray[i].options.length; j++) {
 
 
-    rs.gui.setValue("main_text", this.inputRoomArray.mainText);
-    rs.gui.setValue("option_amount", this.inputRoomArray.options.length);
-    for (var j = 0; j < rs.optionGuis.length; j++) {
-      rs.optionGuis[j].setValue("option_text", this.inputRoomArray.options[j].text);
-      rs.optionGuis[j].setValue("option_command", this.inputRoomArray.options[j].command);
-      for (var k = 0; k < this.inputRoomArray.options[j].length; k++) {
-        rs.gui.setValue("command_value_"+k, String(this.inputRoomArray.options[j].values[k]));
+
+      activeRoomSpriteArray[i].optionGuis[j].setValue("option_text", this.inputRoomArray[i].options[j].text);
+      activeRoomSpriteArray[i].optionGuis[j].setValue("option_command", this.inputRoomArray[i].options[j].command);
+      for (var k = 0; k < this.inputRoomArray[i].options[j].values.length; k++) {
+        activeRoomSpriteArray[i].optionGuis[j].setValue("command_value_"+k, String(this.inputRoomArray[i].options[j].values[k]));
 
       }
     }
-    this.SpriteArray.push(rs);
+    this.SpriteArray.push(activeRoomSpriteArray[i]);
 
   }
+
+  hideGuis();
+
   return this.SpriteArray;
 
 
@@ -387,31 +544,39 @@ function deleteRoom(){
       for (var j = 0; j < activeRoom.optionGuis.length; j++) {
         activeRoom.optionGuis[j].hide();
       }
-      print("presplice sprite: "+activeRoomSpriteArray.length)
-
       activeRoom.remove();
       activeRoomSpriteArray.splice(i,1);
-      print("postsplice sprite: "+activeRoomSpriteArray.length)
       break;
     }
   }
 
 }
-// TODO: make littlebit nicer looking
+
 function drawConnections(){
-  for (var i = 0; i < activeRoomSpriteArray.length; i++) {
-    for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
-      if(activeRoomSpriteArray[i].optionGuis[j].getValue('option_command').value == "move"){
-        stroke(connectionColors[j]);
-        //tar in koordinaterna från values delen
-        connection = indexToScreenCoordinates(
-          Number(activeRoomSpriteArray[i].optionGuis[j].getValue('command_value_'+0)), Number(activeRoomSpriteArray[i].optionGuis[j].getValue('command_value_'+1))
-        );
-        if(connection.x!=null && connection.y != null
-        ){
+  if(showAllConnections){
+    for (var i = 0; i < activeRoomSpriteArray.length; i++) {
+      drawConnectionsFromRoom(activeRoomSpriteArray[i]);
+    }
+  }else{
+    drawConnectionsFromRoom(activeRoom);
+  }
+}
 
-          line(activeRoomSpriteArray[i].position.x-10+j*4, activeRoomSpriteArray[i].position.y-10+j*4, connection.x-10+j*4, connection.y-10+j*4)
+function drawConnectionsFromRoom(roomSprite){
+  if(roomSprite){
+    for (var z = 0; z < roomSprite.optionGuis.length; z++) {
 
+      let optionCommand = roomSprite.optionGuis[z].getValue('option_command');
+      if(optionCommand == "move" || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music'){
+        stroke(connectionColors[z]);
+        //ta koordinaterna från values delen
+        let connection = indexToScreenCoordinates(
+          Number(roomSprite.optionGuis[z].getValue('command_value_'+0)),
+          Number(roomSprite.optionGuis[z].getValue('command_value_'+1)))
+
+        if(connection.x!=null && connection.y != null){
+          //stroke(color(255,255,255));
+          line(roomSprite.position.x-10+z*4, roomSprite.position.y-10+z*4, connection.x-10+z*4, connection.y-10+z*4)
         }
       }
     }
@@ -423,6 +588,8 @@ function createGeneralGui(){
   generalGui.setDraggable(false);
   generalGui.addButton('center (tab)', function(){window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));});
   generalGui.addDropDown('area' ,['test','intro', 'highlands', 'bog', 'city', 'mountain', 'core'], function(value){
+      currentArea = value.label;
+
       for (var i = 0; i < 7; i++) { //om det går borde man hämta antal värden i objektet istället för att hårdkoda 7
         if (i == value.index){
 
@@ -448,16 +615,33 @@ function createGeneralGui(){
 
   } );
   generalGui.addBoolean('show_all_connections',false, function(value){
-    // TODO: toggla mellan att visa alla rumskopplingar och bara visa för de som är selected.
+    showAllConnections = value;
   });
   generalGui.addBoolean('highlight_coordinates',false,  function(value){
     showCoordinatesHighlight = value;
   });
+  generalGui.addBoolean('show_command_descriptions', true,  function(value){
+    //borde egentligen loopa alla areas
+    for (var i = 0; i < activeRoomSpriteArray.length; i++) {
+      for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
+        if(value){
+          activeRoomSpriteArray[i].optionGuis[j].showControl("command_description");
+        }else {
+          activeRoomSpriteArray[i].optionGuis[j].hideControl("command_description");
+        }
+      }
+    }
+  });
   generalGui.addButton('upload', function(){
-    // TODO: spara nuvarande arrays till databasen
-    saveRooms(roomArrays.test.rooms);
-    saveSprites(roomArrays.test.sprites);
+    // Get all areas rooms
+    let areaRoomsToSave = getAreaRoomsFromRoomArrays();
+    console.log('AREA ARRAY TO BE SAVED TO DATABASE: ', areaRoomsToSave);
+    saveRoomsToDatabase(areaRoomsToSave);
+
+    // console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
+    // saveRoomsToDatabase(roomArrays.test.rooms);
   })
+  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br>')
 
 }
 
@@ -489,15 +673,58 @@ function showValueAmountControl(){
   if (activeRoom) {
     for (var i = 0; i < activeRoom.optionGuis.length; i++) {
       showAmount = 0;
-      switch (activeRoom.optionGuis[i].getValue('option_command').value) {
+      switch (activeRoom.optionGuis[i].getValue('option_command')) {
 
         case '':
           break;
         case 'move':
+          activeRoom.optionGuis[i].setValue('command_description', 'move player to room with coordinates (value 0, value 1)')
           showAmount = 2;
           break;
         case 'info':
+          activeRoom.optionGuis[i].setValue('command_description', 'sets new main text but does not change options or move player')
           showAmount = 1;
+          break;
+        case 'move-item':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and give item (value 3)')
+          showAmount = 3;
+          break;
+        case 'encounter':
+          activeRoom.optionGuis[i].setValue('command_description', 'plays minigame with name (value 1)')
+          showAmount = 1;
+          break;
+        case 'move-item-switchArea':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1), give item (value 3) and switch to area (value 4)')
+          showAmount = 4;
+          break;
+        case 'move-background':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and change background with filename (value 3)')
+          showAmount = 3;
+          break;
+        case 'move-stat':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and change stat (value 3) with (value 4)')
+          showAmount = 4;
+          break;
+        case 'move-switchArea':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and switch to area (value 3)')
+          showAmount = 3;
+          break;
+        case 'move-background-music':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1), change background with filename (value 3), change music with filename (value 4)')
+          showAmount = 4;
+          break;
+        case 'info-stat':
+          activeRoom.optionGuis[i].setValue('command_description', 'give extra info in same room (value 1) and change stat (value 2) with (value 3)')
+          showAmount = 3;
+          break;
+        case 'info-item':
+          activeRoom.optionGuis[i].setValue('command_description', 'give extra info in same room (value 1) and give item (value 2)')
+          showAmount = 2;
+          break;
+
+        default:
+          activeRoom.optionGuis[i].setValue('command_description', 'ERROR: command not found')
+          showAmount = 0;
           break;
       }
       for (var j = 0; j < maxCommandValues; j++) {

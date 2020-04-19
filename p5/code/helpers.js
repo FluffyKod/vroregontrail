@@ -45,7 +45,25 @@ function getPlayer() {
 
     // Translate the recieved player and set the new player
     if ( response.player != false ) {
+
       player = JSON.parse(response.player);
+      currentArea = player.area;
+      rooms = getRoomsFromArea( allAreaRooms, currentArea );
+
+      changeBackgroundImage( player.background );
+
+      resetTextbox();
+
+      updateDebug();
+      updateInventoryGui()
+      updateStatGui('', true);
+
+      return;
+
+      // rooms = getRoomsFromArea( allAreaRooms, currentArea );
+      // currentRoom = findRoomWithPlayer();
+      // console.log(currentRoom);
+      // console.log(currentArea);
     }
 
   });
@@ -55,7 +73,7 @@ function getPlayer() {
 ////////////////////////////////////////////
 // SAVE ROOMS OPTIONS TO DATABASE
 ////////////////////////////////////////////
-function saveRooms(roomsToSave) {
+function saveRoomsToDatabase(roomsToSave) {
 
   // console.log(roomsToSave);
   var roomsString = JSON.stringify(roomsToSave);
@@ -66,7 +84,7 @@ function saveRooms(roomsToSave) {
 
   sendAjax(parameters, function(response) {
     console.log(response);
-  })
+  });
 
 }
 
@@ -102,7 +120,7 @@ function saveSprites(spriteArrayToSave) {
   // })
 }
 
-function loadRooms(area, callback){
+function loadRoomsFromDatabase(area, callback){
 
     sampleRooms = [
 
@@ -150,22 +168,27 @@ function loadRooms(area, callback){
       //saveRooms(sampleRooms)
     }
 
-    rooms = []
+    allAreaRooms = []
+
     parsedRooms = JSON.parse(response.rooms);
 
-    // ONly get the rooms for the specified area
-    //areaRooms = getAreaRooms(parsedRooms, area);
+    parsedRooms.forEach(roomArray => {
+      rooms = []
 
-    parsedRooms.forEach(room => {
-      var newRoom = new Room(room.x, room.y, room.mainText, room.options);
-      rooms.push( newRoom );
+      roomArray.forEach(room => {
+        var newRoom = new Room(room.x, room.y, room.mainText, room.options);
+        rooms.push( newRoom );
+      });
+
+      allAreaRooms.push(rooms);
     });
+
 
     if (response.sprites != false){
       sprites = JSON.parse(response.sprites);
       callback(rooms, sprites)
     } else {
-      callback(rooms);
+      callback(allAreaRooms);
     }
 
   })
@@ -179,25 +202,62 @@ function getAreaRooms(allRooms, area) {
   switch (area) {
 
     case 'test':
-      return allRooms.test
+      return allRooms.test.rooms
 
     case 'intro':
-      return allRooms.intro
+      return allRooms.intro.rooms
 
     case 'highlands':
-      return allRooms.highlands
+      return allRooms.highlands.rooms
 
     case 'bog':
-      return allRooms.bog
+      return allRooms.bog.rooms
 
     case 'city':
-      return allRooms.city
+      return allRooms.city.rooms
 
     case 'mountain':
-      return allRooms.mountain
+      return allRooms.mountain.rooms
 
     case 'core':
-      return allRooms.core
+      return allRooms.core.rooms
+
+    default:
+      return Array()
+
+  }
+}
+
+function getRoomsFromArea( rooms, area ) {
+  switch (area) {
+
+    case 'test':
+      return rooms[0];
+      break;
+
+    case 'intro':
+      return rooms[1];
+      break;
+
+    case 'highlands':
+      return rooms[2];
+      break;
+
+    case 'bog':
+      return rooms[3];
+      break;
+
+    case 'city':
+      return rooms[4];
+      break;
+
+    case 'mountain':
+      return rooms[5];
+      break;
+
+    case 'core':
+      return rooms[6];
+      break;
 
     default:
       return Array()

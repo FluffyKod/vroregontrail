@@ -265,7 +265,7 @@ function check_if_entry_exists( $table, $field, $value, $errLocation = false ) {
 
 }
 
-function insert_record( $table, $record, $errMsg ) {
+function insert_record( $table, $record, $errMsg = false ) {
 
   global $wpdb;
 
