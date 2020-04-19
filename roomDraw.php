@@ -32,7 +32,7 @@
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/dat.gui.js"></script>
 
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
-        <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/main.js"></script>
+        <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/room_class.js"></script>
         <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/room_draw_2.js"></script>
 
