@@ -45,9 +45,21 @@ function getPlayer() {
 
     // Translate the recieved player and set the new player
     if ( response.player != false ) {
+
+      player = JSON.parse(response.player);
+      currentArea = player.area;
+      rooms = getRoomsFromArea( allAreaRooms, currentArea );
+
+      changeBackgroundImage( player.background );
+
+      resetTextbox();
+
+      updateDebug();
+      updateInventoryGui()
+      updateStatGui('', true);
+
       return;
-      // player = JSON.parse(response.player);
-      // currentArea = player.area;
+
       // rooms = getRoomsFromArea( allAreaRooms, currentArea );
       // currentRoom = findRoomWithPlayer();
       // console.log(currentRoom);

@@ -567,7 +567,7 @@ function drawConnectionsFromRoom(roomSprite){
     for (var z = 0; z < roomSprite.optionGuis.length; z++) {
 
       let optionCommand = roomSprite.optionGuis[z].getValue('option_command');
-      if(optionCommand == "move"){
+      if(optionCommand == "move" || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music'){
         stroke(connectionColors[z]);
         //ta koordinaterna från values delen
         let connection = indexToScreenCoordinates(
@@ -641,7 +641,7 @@ function createGeneralGui(){
     // console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
     // saveRoomsToDatabase(roomArrays.test.rooms);
   })
-  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description</i><br><br><b>move</b><br><b>info</b><br><b>background-move</b>')
+  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br>')
 
 }
 
@@ -685,25 +685,41 @@ function showValueAmountControl(){
           activeRoom.optionGuis[i].setValue('command_description', 'sets new main text but does not change options or move player')
           showAmount = 1;
           break;
-        case 'switchArea-move':
-          activeRoom.optionGuis[i].setValue('command_description', 'Switch to a new area and move to a room in that area. Value 1: new area Value 2 & 3: new area coordinates')
+        case 'move-item':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and give item (value 3)')
           showAmount = 3;
           break;
         case 'encounter':
-          activeRoom.optionGuis[i].setValue('command_description', 'play a game.')
-          showAmount = 2;
+          activeRoom.optionGuis[i].setValue('command_description', 'plays minigame with name (value 1)')
+          showAmount = 1;
           break;
-        case 'stat-move':
-          activeRoom.optionGuis[i].setValue('command_description', 'play a game.')
-          showAmount = 2;
+        case 'move-item-switchArea':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1), give item (value 3) and switch to area (value 4)')
+          showAmount = 4;
           break;
-        case 'background-move':
-          activeRoom.optionGuis[i].setValue('command_description', 'Change background and move')
+        case 'move-background':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and change background with filename (value 3)')
           showAmount = 3;
           break;
-        case 'item-move':
-          activeRoom.optionGuis[i].setValue('command_description', 'Get item and and move')
+        case 'move-stat':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and change stat (value 3) with (value 4)')
+          showAmount = 4;
+          break;
+        case 'move-switchArea':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and switch to area (value 3)')
           showAmount = 3;
+          break;
+        case 'move-background-music':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1), change background with filename (value 3), change music with filename (value 4)')
+          showAmount = 4;
+          break;
+        case 'info-stat':
+          activeRoom.optionGuis[i].setValue('command_description', 'give extra info in same room (value 1) and change stat (value 2) with (value 3)')
+          showAmount = 3;
+          break;
+        case 'info-item':
+          activeRoom.optionGuis[i].setValue('command_description', 'give extra info in same room (value 1) and give item (value 2)')
+          showAmount = 2;
           break;
 
         default:
