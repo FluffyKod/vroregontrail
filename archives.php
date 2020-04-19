@@ -4,6 +4,8 @@
  * Template Name: Arkiv
  */
 
+// In register link
+
 // Show this page only to admin or Elevkåren
 if (! is_user_logged_in() ){
   wp_redirect( '/' );
