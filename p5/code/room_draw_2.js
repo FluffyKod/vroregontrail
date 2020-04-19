@@ -127,18 +127,15 @@ function setup(){
     }
 
   }); // End load rooms
+  drawScene()
+  drawZeroIndicator();
 
 }
 
-function draw(){
-
+function drawScene(){
   background(activeArea.darkColor);
-
-  drawZeroIndicator();
   drawSprites();
   drawConnections();
-  highlightOverMouse();// borde bara göras där det går
-
 }
 
 function highlightOverMouse(){
@@ -166,12 +163,14 @@ function keyPressed(){
   if(keyCode === ENTER){
     showValueAmountControl();
     optionShowControl();
+    drawScene()
   }
 
 }
 
 function mousePressed(){
 
+  drawScene()
   if(activeRoom){ //kollar om något rum ens finns
     showValueAmountControl();
     optionShowControl();
@@ -188,6 +187,7 @@ function mousePressed(){
     createRoom(mouseX + (roomBoxSize/2-(mouseX%roomBoxSize)), mouseY + (roomBoxSize/2-(mouseY%roomBoxSize)) ); //modulo skiten gör så att den hamnar på  sitt grid
 
   }
+  drawScene()
 
 
 }
@@ -195,7 +195,7 @@ function mousePressed(){
 function mouseReleased(){
   showValueAmountControl();
   optionShowControl();
-
+  drawScene()
 }
 
 function drawZeroIndicator(){
