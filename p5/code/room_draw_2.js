@@ -2,7 +2,7 @@ let roomBoxSize = 64; //helst delbar m 2
 let spriteGridWidth = 3;
 let spriteGridHeight = 3;
 
-let canvasSize = {width: roomBoxSize*100, height: roomBoxSize*100 }
+let canvasSize = {width: roomBoxSize*50, height: roomBoxSize*50 }
 
 let topCoordinate = {x: -1, y: -1};
 let activeRoom; //stores the active room Object.
@@ -18,7 +18,7 @@ let activeRoomSpriteArray;
 let guiBackgroundHidden = false;
 let guiMouseIsOver = false;
 
-let showCoordinatesHighlight = false;
+let showGrid = true;
 let showAllConnections = false;
 
 let guiParent
@@ -77,7 +77,7 @@ function loadRoomArraysFromAreaRooms( areaRoomsArray ) {
 
   // DEBUG
   console.log('LOADED ROOM ARRAYS: ', roomArrays);
-
+  drawScene()
 }
 
 
@@ -134,8 +134,29 @@ function setup(){
 
 function drawScene(){
   background(activeArea.darkColor);
+  if(showGrid){
+    drawGrid();
+  }
   drawSprites();
   drawConnections();
+}
+
+function drawGrid(){
+  for (var y = 0; y < height; y+= roomBoxSize) {
+    stroke(255,255,255,20)
+    line(0,y,width,y)
+
+  }
+  for (var x = 0; x < width; x+= roomBoxSize) {
+    stroke(255,255,255,20)
+    line(x,0,x,height)
+  }
+}
+//TODO: fungerar inte för någon anledning
+function outlineZeroRoom(){
+  stroke(activeArea.lightColor)
+  noFill()
+  rect((floor(width/2)*roomBoxSize+roomBoxSize/2),(floor(height/2)*roomBoxSize+roomBoxSize/2), roomBoxSize, roomBoxSize)
 }
 
 function highlightOverMouse(){
@@ -271,7 +292,7 @@ function createRoom(x, y){
       }
     });
     roomSprite.gui.addButton('save',function(){saveRoom()});
-    roomSprite.gui.addButton('delete',function(){deleteRoom()});
+    roomSprite.gui.addButton('delete',function(){deleteRoom(); drawScene()});
 
 
     for (var i = 1; i <= maxOptionAmount; i++) {
@@ -616,9 +637,11 @@ function createGeneralGui(){
   } );
   generalGui.addBoolean('show_all_connections',false, function(value){
     showAllConnections = value;
+    drawScene()
   });
-  generalGui.addBoolean('highlight_coordinates',false,  function(value){
-    showCoordinatesHighlight = value;
+  generalGui.addBoolean('show_grid',true,  function(value){
+    showGrid = value;
+    drawScene();
   });
   generalGui.addBoolean('show_command_descriptions', true,  function(value){
     //borde egentligen loopa alla areas
