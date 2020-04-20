@@ -49,6 +49,7 @@ function getPlayer() {
       player = JSON.parse(response.player);
       currentArea = player.area;
       rooms = getRoomsFromArea( allAreaRooms, currentArea );
+      currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
 
       changeBackgroundImage( player.background );
 
