@@ -22,7 +22,7 @@ let showGrid = true;
 let showAllConnections = false;
 
 let guiParent
-let maxCommandValues = 4;
+let maxCommandValues = 6;
 let maxOptionAmount = 5;
 
 let generalGui;
