@@ -361,6 +361,11 @@ function getUnlockedOptions(options) {
           unlockedOptions.push(option);
         }
       }
+      else if (option.command == 'move-stat-ifItem') {
+        if (player.inventory.indexOf(option.values[4]) > -1) {
+          unlockedOptions.push(option);
+        }
+      }
       else if (option.command == 'info-ifStat' || option.command == 'item-ifStat') {
         if (checkStat(option.values[1], option.values[2])) {
           unlockedOptions.push(option);
@@ -381,6 +386,7 @@ function getUnlockedOptions(options) {
           unlockedOptions.push(option);
         }
       }
+
        else {
         unlockedOptions.push(option)
       }
@@ -605,6 +611,11 @@ function option(ref){
 
       if (this.command == 'move-ifStat') {
         this.moveToNewPlace(this.values.slice(0,2));
+      }
+
+      if (this.command == 'move-stat-ifItem') {
+        this.moveToNewPlace(this.values.slice(0,2));
+        this.giveStat(this.values.slice(2,4));
       }
 
       if (this.command == 'item-ifStat') {

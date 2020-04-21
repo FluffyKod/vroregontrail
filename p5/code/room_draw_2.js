@@ -567,7 +567,7 @@ function drawConnectionsFromRoom(roomSprite){
     for (var z = 0; z < roomSprite.optionGuis.length; z++) {
 
       let optionCommand = roomSprite.optionGuis[z].getValue('option_command');
-      if(optionCommand == "move" || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music'){
+      if(optionCommand == "move" || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music' || optionCommand == 'move-ifItem' || optionCommand == 'move-ifStat' || optionCommand == 'move-item-ifStat' || optionCommand == 'move-stat-ifItem'){
         stroke(connectionColors[z]);
         //ta koordinaterna från values delen
         let connection = indexToScreenCoordinates(
@@ -748,6 +748,10 @@ function showValueAmountControl(){
         case 'info-ifItem':
           activeRoom.optionGuis[i].setValue('command_description', 'write info (value 0) if player has item (value 1)')
           showAmount = 2;
+          break;
+        case 'move-stat-ifItem':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and increment stat (value 2) with (value 3) if player has item (value 4)')
+          showAmount = 5;
           break;
         default:
           activeRoom.optionGuis[i].setValue('command_description', 'ERROR: command not found')
