@@ -85,6 +85,7 @@ function setup(){
     getPlayer();
 
     currentRoom = findRoomWithPlayer();
+    currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
 
     // Set id for the displayed options
     displayedOptions.push(new option('#option-1'));
@@ -294,6 +295,110 @@ function changeArea() {
 
 }
 
+function checkOptionCritera(room) {
+  let trimmedRoom = room;
+  for (option of trimmedRoom.options) {
+    // Check if item is supplied
+    if (option.command == 'move-ifItem') {
+      // Check if player has this item
+      if (player.inventory.indexOf(option.values[2]) == -1) {
+        // Remove the option
+        trimmedRoom.options = trimmedRoom.options.slice(0, trimmedRoom.options.indexOf(option)).concat(trimmedRoom.options.slice(trimmedRoom.options.indexOf(option) + 1, trimmedRoom.options.length));
+      }
+    }
+  }
+
+  return trimmedRoom;
+}
+
+function checkStat(stat, value) {
+  if (stat == 'intelligence') {
+    if (player.intellegence >= value) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  if (stat == 'grit') {
+    if (player.grit >= value) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  if (stat == 'kindness') {
+    if (player.kindness >= value) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  if (stat == 'charisma') {
+    if (player.charisma >= value) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+}
+
+function getUnlockedOptions(options) {
+  let unlockedOptions = []
+
+  if (player.inventory) {
+    for (const option of options) {
+      if (option.command == 'move-ifItem') {
+        if (player.inventory.indexOf(option.values[2]) > -1) {
+          unlockedOptions.push(option);
+        }
+      }
+      else if (option.command == 'info-ifItem') {
+        if (player.inventory.indexOf(option.values[1]) > -1) {
+          unlockedOptions.push(option);
+        }
+      }
+      else if (option.command == 'move-stat-ifItem') {
+        if (player.inventory.indexOf(option.values[4]) > -1) {
+          unlockedOptions.push(option);
+        }
+      }
+      else if (option.command == 'info-ifStat' || option.command == 'item-ifStat') {
+        if (checkStat(option.values[1], option.values[2])) {
+          unlockedOptions.push(option);
+        }
+      }
+      else if (option.command == 'move-ifStat') {
+        if (checkStat(option.values[2], option.values[3])) {
+          unlockedOptions.push(option);
+        }
+      }
+      else if (option.command == 'move-item-ifStat') {
+        if (checkStat(option.values[3], option.values[4])) {
+          unlockedOptions.push(option);
+        }
+      }
+      else if (option.command == 'info-item-ifStat') {
+        if (checkStat(option.values[2], option.values[3])) {
+          unlockedOptions.push(option);
+        }
+      }
+
+       else {
+        unlockedOptions.push(option)
+      }
+    }
+
+    return unlockedOptions;
+  } else {
+    return options;
+  }
+
+}
+
 ////////////////////////////////////////////
 // OPTION CLASS
 ////////////////////////////////////////////
@@ -498,9 +603,47 @@ function option(ref){
         changeBackgroundImage(this.values.slice(2,3)[0]);
         // changeMusic(this.values.slice(3,4)[0]);
       }
+
+      // (x,y), background name, music name
+      if(this.command == 'move-ifItem'){
+        this.moveToNewPlace(this.values.slice(0,2));
+      }
+
+      if (this.command == 'move-ifStat') {
+        this.moveToNewPlace(this.values.slice(0,2));
+      }
+
+      if (this.command == 'move-stat-ifItem') {
+        this.moveToNewPlace(this.values.slice(0,2));
+        this.giveStat(this.values.slice(2,4));
+      }
+
+      if (this.command == 'item-ifStat') {
+        this.addItemToInventory(this.values.slice(0,1));
+      }
+
+      if (this.command == 'move-item-ifStat') {
+        this.moveToNewPlace(this.values.slice(0,2));
+        this.addItemToInventory(this.values.slice(2,3));
+      }
+
+      if (this.command == 'info-item-ifStat') {
+        this.writeInfo(this.values.slice(0, 1));
+        this.addItemToInventory(this.values.slice(1,2));
+      }
+
+      if (this.command == 'info-ifStat') {
+        this.writeInfo(this.values.slice(0, 1));
+      }
+
+      if (this.command == 'info-ifItem') {
+        this.writeInfo(this.values.slice(0, 1));
+      }
   }
 
 }
+
+
 
 ////////////////////////////////////////////
 // ROOM CLASS
@@ -513,6 +656,10 @@ function Room( x, y, mainText, options ){
   this.y = y;
   this.mainText = mainText;
   this.options = options;
+  this.unlockedOptions = getUnlockedOptions(this.options);
+  console.log(this.unlockedOptions);
+
+  // Go through
 
   this.load = function(){
 
@@ -522,20 +669,21 @@ function Room( x, y, mainText, options ){
     }
 
     // Get the number of displayedOptions
-    optionlength = this.options.length;
+    optionlength = this.unlockedOptions.length;
 
     // Set the option variables for use in front ends display options
     for (var i = 0; i < optionlength; i++) {
       // Set the displayed text on option
-      displayedOptions[i].ref.html(this.options[i].text);
+      displayedOptions[i].ref.html(this.unlockedOptions[i].text);
 
-      displayedOptions[i].command = this.options[i].command;
+      displayedOptions[i].command = this.unlockedOptions[i].command;
 
-      displayedOptions[i].values = this.options[i].values;
+      displayedOptions[i].values = this.unlockedOptions[i].values;
 
     }
 
   }
+
 }
 
   function typing(divId, inputtext){
@@ -609,6 +757,8 @@ function drawTextbox(){
   }
 
   if(!load && currentRoom){
+    currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
+    console.log(currentRoom);
     currentRoom.load();
     load = true;
   }
@@ -653,6 +803,7 @@ function changeRoom( area, x, y ) {
 
   // Set current room
   currentRoom = findRoomWithPlayer();
+  currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
   currentRoom.load();
 
   // Update gui
