@@ -2,7 +2,6 @@
 let displayedOptions = [];
 let currentoption;
 let optionlength;
-let maxOptionLength = 5;
 let rooms = [];
 
 // All rooms
