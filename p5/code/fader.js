@@ -6,31 +6,30 @@ $(window).ready(function() {
     }, 4000)
 })
 
-function runFadeWithMusic() {
-  $('#audio-holder').animate({
-        volume: 0
-    }, 2000, function() {
-        // Change music
-        $('#audio-holder').attr('src', './taverna.mp3')
-        $('#audio-holder').animate({
-            volume: 1
-        }, 3000)
-    })
+function fade(music, continueGame) {
 
-    $('.fade').animate({
-        top: 0
-    }, 2000, function() {
-        $('.dim').css('background', 'black');
+  if (music != false) {
+    $('#audio-holder').animate({
+          volume: 0
+      }, 2000, function() {
+          // Change music
+          player.music = music
+          $('#audio-holder').attr('src', music)
+          $('#audio-holder').animate({
+              volume: 1
+          }, 2000)
+      })
+  }
 
-        $('.dim').animate({
-            opacity: 0
-        }, 3000, function() {
-            $('.dim').css('background', 'white')
-            $('.dim').css('opacity', 1)
-        })
+  $('.dim').animate({
+    opacity: 1
+  }, 3000, function() {
 
-        $('.fade').animate({
-            top: '-200%'
-        }, 1000)
-    })
+    continueGame()
+
+    $('.dim').animate({
+      opacity: 0
+    }, 3000)
+  })
+
 }

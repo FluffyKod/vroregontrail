@@ -3,6 +3,7 @@ let displayedOptions = [];
 let currentoption;
 let optionlength;
 let rooms = [];
+let maxOptionLength = 5;
 
 // All rooms
 let allAreaRooms;
@@ -45,7 +46,8 @@ let backgrounds = {
 }
 
 let music = {
-  highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3'
+  highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3',
+  hauntedHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3'
 }
 
 ////////////////////////////////////////////
@@ -232,7 +234,7 @@ function player(){
 ////////////////////////////////////////////
 // AREA FUNCTIONS
 ////////////////////////////////////////////
-function changeBackgroundImage( fileName ) {
+function changeBackgroundImage( fileName, withFade = false ) {
 
   // Get path to the game-assets/backgrounds/ folder
   let backgroundAssetFolder = document.getElementById('game-asset-folder').innerText + 'backgrounds/';
@@ -276,10 +278,6 @@ function getBackgroundImageFromArea( area ) {
 }
 
 function changeArea() {
-
-  // Fade everything
-  runFadeWithMusic()
-
   // Update player
   player.area = currentArea;
 
@@ -441,13 +439,18 @@ function option(ref){
       console.log('ERROR: Not enough values supplied to item command');
     }
   }
-  this.moveToNewPlace = function(suppliedValues) {
+  this.moveToNewPlace = function(suppliedValues, fadeLoad = false) {
     // Check that there are enough values
     if (suppliedValues.length >= 2) {
       write = true;
       player.x = Number(suppliedValues[0]);
       player.y = Number(suppliedValues[1]);
       currentRoom = findRoomWithPlayer();
+      if (fadeLoad) {
+        currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
+        currentRoom.load();
+        savePlayer();
+      }
     } else {
       console.log('ERROR: Not enough values supplied to move command');
     }
@@ -592,15 +595,29 @@ function option(ref){
 
       // (x, y), new background name
       if(this.command == 'move-background'){
-        this.moveToNewPlace(this.values.slice(0,2));
-        changeBackgroundImage(this.values.slice(2)[0]);
+        let self = this;
+
+        fade(music['hauntedHouse'], function() {
+          changeBackgroundImage(self.values.slice(2)[0]);
+          self.moveToNewPlace(self.values.slice(0,2), true);
+        })
+
+        // this.moveToNewPlace(this.values.slice(0,2));
+        // changeBackgroundImage(this.values.slice(2)[0]);
+
       }
 
       // (x,y), background name, music name
       if(this.command == 'move-background-music'){
-        this.moveToNewPlace(this.values.slice(0,2));
-        changeBackgroundImage(this.values.slice(2,3)[0]);
-        // changeMusic(this.values.slice(3,4)[0]);
+        let self = this;
+        let song = music[this.values[3]];
+
+        fade(song, function() {
+          // self.moveToNewPlace(self.values.slice(0,2));
+          changeBackgroundImage(self.values.slice(2)[0]);
+          self.moveToNewPlace(self.values.slice(0,2), true);
+
+        })
       }
 
       // (x,y), background name, music name
@@ -656,7 +673,6 @@ function Room( x, y, mainText, options ){
   this.mainText = mainText;
   this.options = options;
   this.unlockedOptions = getUnlockedOptions(this.options);
-  console.log(this.unlockedOptions);
 
   // Go through
 
@@ -757,7 +773,6 @@ function drawTextbox(){
 
   if(!load && currentRoom){
     currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
-    console.log(currentRoom);
     currentRoom.load();
     load = true;
   }
