@@ -1,23 +1,15 @@
-$(window).ready(function() {
-    $('#audio-holder').prop('volume', 0);
-
-    $('#audio-holder').animate({
-        volume: 1
-    }, 4000)
-})
-
-function fade(music, continueGame) {
+function fade(music = false, continueGame = false) {
 
   if (music != false) {
     $('#audio-holder').animate({
           volume: 0
-      }, 2000, function() {
+      }, 2200, function() {
           // Change music
           player.music = music
           $('#audio-holder').attr('src', music)
           $('#audio-holder').animate({
               volume: 1
-          }, 2000)
+          }, 3000)
       })
   }
 
@@ -25,7 +17,10 @@ function fade(music, continueGame) {
     opacity: 1
   }, 3000, function() {
 
-    continueGame()
+    if (continueGame) {
+      continueGame()
+    }
+
 
     $('.dim').animate({
       opacity: 0
@@ -33,3 +28,17 @@ function fade(music, continueGame) {
   })
 
 }
+
+$(window).ready(function() {
+    $('#audio-holder').prop('volume', 0);
+
+    $('#audio-holder').animate({
+        volume: 1
+    }, 4000)
+
+    $('.dim').css('opacity', 1);
+
+    $('.dim').animate({
+      opacity: 0
+    }, 6000)
+})
