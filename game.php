@@ -25,6 +25,7 @@
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/fader.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ernst-running.js"></script>
@@ -44,10 +45,9 @@
     *************************************-->
     <?php show_error_alert(); ?>
 
-      <!-- <audio controls autoplay>
-        <source src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio> -->
+      <audio id="audio-holder" controls autoplay src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3"></audio>
+      <div class="fade"></div>
+      <div class="dim"></div>
 
       <div id="grandparent">
 

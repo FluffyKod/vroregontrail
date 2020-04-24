@@ -277,6 +277,9 @@ function getBackgroundImageFromArea( area ) {
 
 function changeArea() {
 
+  // Fade everything
+  runFadeWithMusic()
+
   // Update player
   player.area = currentArea;
 
