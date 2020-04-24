@@ -146,14 +146,11 @@ function draw(){
         break;
       case 'pepes_bread':
         if(define){pb_defineVar(); define = false;}
-
         pb_draw();
         break;
       case 'sheep_invaders':
-
         break;
       case 'wasp_attack':
-
         break;
     }
   }

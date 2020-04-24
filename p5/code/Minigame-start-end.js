@@ -10,7 +10,6 @@ function startScreen(title, description){
   text(this.title, width/2,height/2);
 
   blinkingText();
-  print(enterTextShow);
   if(enterTextShow){
     textSize(20)
     textAlign(CENTER, TOP);
@@ -20,11 +19,7 @@ function startScreen(title, description){
   if(keyWentDown('r')){
     gameOver = false;
     startSc = false;
-    print("ppooop")
-
   }
-
-
 }
 
 function winScreen(){
@@ -62,10 +57,7 @@ function gameOverScreen(){
   if(keyWentDown('q')){
     switchToText();
     clearVar= true
-
-
   }
-
 }
 
 function blinkingText(){
