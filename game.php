@@ -100,6 +100,10 @@
                 <option value="">test</option>
                 <option value="">intro</option>
                 <option value="">highlands</option>
+                <option value="">bog</option>
+                <option value="">city</option>
+                <option value="">mountain</option>
+                <option value="">core</option>
               </select>
               <br/>
 
