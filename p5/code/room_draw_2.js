@@ -32,6 +32,8 @@ let generalGuiParent;
 
 let connectionColors;
 
+let selectedArea = 'test';
+
 
 function getAreaRoomsFromRoomArrays() {
   // Go through roomArrays and extract only the rooms from each area.
@@ -293,7 +295,6 @@ function createRoom(x, y){
         roomSprite.optionGuis[i].show()
       }
     });
-    roomSprite.gui.addButton('save',function(){saveRoom(activeRoom, activeRoomSpriteArray, activeRoomArray)});
     roomSprite.gui.addButton('delete',function(){deleteRoom(); drawScene()});
 
 
@@ -331,7 +332,6 @@ function createRoom(x, y){
       fill(strokeColor);
       text(this.coordinateString, -roomBoxSize/2+10,-roomBoxSize/2+25)
 
-
     }
     roomSprite.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
 
@@ -349,27 +349,18 @@ function createRoom(x, y){
         }
       }
 
-
       this.gui.show();
       activeRoom.active = false;
       activeRoom = this;
       activeRoom.active = true;
-      activeOptionGui = this.optionGuis;//väldigt slarvigt borde sättas ihop m activeRoom
-      //if(this.roomObj === null){
-      //  this.roomObj = new room(this.indexX, this.indexY, this.mainText, this.options);
-      //}
+      activeOptionGui = this.optionGuis;
     }
-
     roomSprite.debug = false;
 
-    //roomSprite.indexX = j;
-    //roomSprite.indexY = i;
     if(activeRoom){activeRoom.active = false;}
     activeRoom = roomSprite;
     activeRoom.active = true;
     activeRoomSpriteArray.push(roomSprite);
-
-
   }
 }
 
@@ -476,8 +467,7 @@ function saveRoom(roomSpriteToSave, spriteArray, roomArray){
           }
         }
         // Hide everything
-        areaIndex = getAreaIndex( currentArea );
-        hideGuis(areaIndex);
+        hideGuis(getAreaIndex(selectedArea));
 
         // Show current rooms
         for (sprite of spriteArray) {
@@ -508,7 +498,7 @@ function saveRoom(roomSpriteToSave, spriteArray, roomArray){
 }
 
 function saveAllRooms(){
-  let spriteArrays =
+  let allSpriteArrays =
   [
     roomArrays.test.sprites,
     roomArrays.intro.sprites,
@@ -518,7 +508,7 @@ function saveAllRooms(){
     roomArrays.mountain.sprites,
     roomArrays.core.sprites
   ]
-  let roomArrays =
+  let allRoomArrays =
   [
     roomArrays.test.rooms,
     roomArrays.intro.rooms,
@@ -528,9 +518,9 @@ function saveAllRooms(){
     roomArrays.mountain.rooms,
     roomArrays.core.rooms
   ]
-  for (var i = 0; i < spriteArrays.length; i++) {
-    for (var j = 0; j < spriteArrays[i].length; j++) {
-      saveRoom(spriteArrays[i][j], spriteArrays[i], roomArrays[i]);
+  for (var i = 0; i < allSpriteArrays.length; i++) {
+    for (var j = 0; j < allSpriteArrays[i].length; j++) {
+      saveRoom(allSpriteArrays[i][j], allSpriteArrays[i], allRoomArrays[i]);
     }
   }
 }
@@ -564,12 +554,8 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
     this.SpriteArray.push(activeRoomSpriteArray[i]);
 
   }
-
-  hideGuis();
-
+  hideGuis(getAreaIndex(selectedArea));
   return this.SpriteArray;
-
-
 }
 
 function deleteRoom(){
@@ -612,7 +598,7 @@ function drawConnectionsFromRoom(roomSprite){
     for (var z = 0; z < roomSprite.optionGuis.length; z++) {
 
       let optionCommand = roomSprite.optionGuis[z].getValue('option_command');
-      if(optionCommand == "move" || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music' || optionCommand == 'move-ifItem' || optionCommand == 'move-ifStat' || optionCommand == 'move-item-ifStat' || optionCommand == 'move-stat-ifItem'){
+      if(optionCommand == "move" || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music' || optionCommand == 'move-ifItem' || optionCommand == 'move-ifStat' || optionCommand == 'move-item-ifStat' || optionCommand == 'move-stat-ifItem' || optionCommand == 'move-x' || optionCommand== 'move-y' ){
         stroke(connectionColors[z]);
         //ta koordinaterna från values delen
         let connection = indexToScreenCoordinates(
@@ -633,7 +619,7 @@ function createGeneralGui(){
   generalGui.setDraggable(false);
   generalGui.addButton('center (tab)', function(){window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));});
   generalGui.addDropDown('area' ,['test','intro', 'highlands', 'bog', 'city', 'mountain', 'core'], function(value){
-      currentArea = value.label;
+      selectedArea = value.label;
 
       for (var i = 0; i < 7; i++) { //om det går borde man hämta antal värden i objektet istället för att hårdkoda 7
         if (i == value.index){
@@ -655,9 +641,6 @@ function createGeneralGui(){
 
         }
       }
-
-
-
   } );
   generalGui.addBoolean('show_all_connections',false, function(value){
     showAllConnections = value;
@@ -679,11 +662,11 @@ function createGeneralGui(){
       }
     }
   });
-  generalGui.addButton('hide_all_guis', function(){hideGuis()})
-  generalGui.addButton('save_all', function(){
+  generalGui.addButton('hide_all_guis', function(){hideGuis(getAreaIndex(selectedArea))})
+  generalGui.addButton('save and upload', function(){
+
     saveAllRooms();
-  })
-  generalGui.addButton('upload', function(){
+    hideGuis(getAreaIndex(selectedArea));
     // Get all areas rooms
     let areaRoomsToSave = getAreaRoomsFromRoomArrays();
     console.log('AREA ARRAY TO BE SAVED TO DATABASE: ', areaRoomsToSave);
@@ -692,7 +675,7 @@ function createGeneralGui(){
     // console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
     // saveRoomsToDatabase(roomArrays.test.rooms);
   })
-  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br>')
+  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br>')
 
 }
 
@@ -731,6 +714,18 @@ function showValueAmountControl(){
         case 'move':
           activeRoom.optionGuis[i].setValue('command_description', 'move player to room with coordinates (value 0, value 1)')
           showAmount = 2;
+          break;
+        case 'move-y':
+          activeRoom.optionGuis[i].setValue('command_description', 'move player to room with -1 y-coordinate')
+          showAmount = 0;
+          activeRoom.optionGuis[i].setValue('command_value_0', activeRoom.indexX);
+          activeRoom.optionGuis[i].setValue('command_value_1', activeRoom.indexY - 1);
+          break;
+        case 'move-x':
+          activeRoom.optionGuis[i].setValue('command_description', 'move player to room with +1 x-coordinate')
+          showAmount = 0;
+          activeRoom.optionGuis[i].setValue('command_value_0', activeRoom.indexX + 1);
+          activeRoom.optionGuis[i].setValue('command_value_1', activeRoom.indexY);
           break;
         case 'info':
           activeRoom.optionGuis[i].setValue('command_description', 'sets new main text but does not change options or move player')

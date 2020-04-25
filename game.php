@@ -62,11 +62,11 @@
           <div id="textbox" class="box"></div>
 
           <div id="optionbox" class="box">
-            <div id="option-1" class = "option">option 1</div>
-            <div id="option-2" class = "option">option 2</div>
-            <div id="option-3" class = "option">option 3</div>
-            <div id="option-4" class = "option">option 4</div>
-            <div id="option-5" class = "option">option 5</div>
+            <div id="option-1" class = "option"></div>
+            <div id="option-2" class = "option"></div>
+            <div id="option-3" class = "option"></div>
+            <div id="option-4" class = "option"></div>
+            <div id="option-5" class = "option"></div>
           </div>
 
           <div id="dev-box" class="box">

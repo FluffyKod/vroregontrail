@@ -1,6 +1,6 @@
 
 let displayedOptions = [];
-let currentoption;
+let currentoption = 0;
 let optionlength;
 let rooms = [];
 let maxOptionLength = 5;
@@ -21,7 +21,7 @@ let spriteImgSrc;
 
 var player;
 let currentRoom;
-let currentArea = 'test';
+let currentArea = 'intro';
 
 let define = true;
 let clearVar = false;
@@ -57,7 +57,7 @@ function preload(){
 
   if(!usingRoomDraw){
     spriteImgSrc = document.getElementById('game-asset-folder').innerText + 'Sprites/Png/';
-    
+
     fr_preload();
     cg_preload();
     er_preload()
@@ -401,12 +401,23 @@ function getUnlockedOptions(options) {
         unlockedOptions.push(option)
       }
     }
-
     return unlockedOptions;
   } else {
     return options;
   }
 
+}
+
+function checkIfRoomExists(x, y, area = false) {
+  let roomsToCheck = (area == false) ? rooms : allAreaRooms[getAreaIndex(area)];
+
+  for (room of roomsToCheck) {
+    if (room.x == x && room.y == y) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 ////////////////////////////////////////////
@@ -438,7 +449,6 @@ function option(ref){
   this.addItemToInventory = function(suppliedValues) {
     // Check if there is enough values
     if (suppliedValues.length >= 1) {
-
       if (player.inventory.indexOf(suppliedValues[0]) == -1) {
         player.inventory.push(suppliedValues[0]);
         updateInventoryGui();
@@ -446,24 +456,32 @@ function option(ref){
         textbox.html('You already picked up that item!');
         write = false;
       }
-
-
     } else {
       console.log('ERROR: Not enough values supplied to item command');
     }
   }
-  this.moveToNewPlace = function(suppliedValues, fadeLoad = false) {
+  this.moveToNewPlace = function(suppliedValues, fadeLoad = false, toArea = false) {
     // Check that there are enough values
     if (suppliedValues.length >= 2) {
-      write = true;
-      player.x = Number(suppliedValues[0]);
-      player.y = Number(suppliedValues[1]);
-      currentRoom = findRoomWithPlayer();
-      if (fadeLoad) {
-        currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
-        currentRoom.load();
-        savePlayer();
+      let suppliedX = Number(suppliedValues[0]);
+      let suppliedY = Number(suppliedValues[1]);
+
+      if (checkIfRoomExists(suppliedX, suppliedY, toArea)) {
+        write = true;
+        player.x = Number(suppliedValues[0]);
+        player.y = Number(suppliedValues[1]);
+        currentRoom = findRoomWithPlayer();
+        if (fadeLoad) {
+          currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
+          currentRoom.load();
+          savePlayer();
+        }
+      } else {
+        textbox.html("ERROR: ROOM DOES NOT EXIST");
+        write = false;
       }
+
+
     } else {
       console.log('ERROR: Not enough values supplied to move command');
     }
@@ -538,7 +556,7 @@ function option(ref){
       }
 
       // Move player to new location
-      if(this.command == 'move'){
+      if(this.command == 'move' || this.command == 'move-y' || this.command == 'move-x'){
         this.moveToNewPlace(this.values)
       }
 
@@ -601,7 +619,7 @@ function option(ref){
 
       // (x, y), new area name
       if(this.command == 'move-switchArea'){
-        this.moveToNewPlace(this.values.slice(0, 2));
+        this.moveToNewPlace(this.values.slice(0, 2), true, this.values.slice(2));
         this.switchToArea(this.values.slice(2));
 
       }
@@ -617,7 +635,6 @@ function option(ref){
 
         // this.moveToNewPlace(this.values.slice(0,2));
         // changeBackgroundImage(this.values.slice(2)[0]);
-
       }
 
       // (x,y), background name, music name
@@ -671,8 +688,6 @@ function option(ref){
   }
 
 }
-
-
 
 ////////////////////////////////////////////
 // ROOM CLASS
