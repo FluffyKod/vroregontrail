@@ -18,6 +18,9 @@
     <style> body {padding: 0; margin: 0;} </style>
     <LINK REL=StyleSheet HREF="<?php echo get_bloginfo('template_directory') ?>/p5/code/style.css" TYPE="text/css" MEDIA=screen>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/p5.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.dom.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.sound.min.js"></script>
@@ -25,6 +28,7 @@
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
+    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/fader.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ernst-running.js"></script>
@@ -33,8 +37,7 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-mountain-jump.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
 
   </head>
   <body>
@@ -44,10 +47,9 @@
     *************************************-->
     <?php show_error_alert(); ?>
 
-      <!-- <audio controls autoplay>
-        <source src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio> -->
+      <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3"></audio>
+      <div class="fade"></div>
+      <div class="dim"></div>
 
       <div id="grandparent">
 

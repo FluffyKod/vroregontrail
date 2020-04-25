@@ -25,7 +25,7 @@ let showAllConnections = false;
 
 let guiParent
 let maxCommandValues = 6;
-let maxOptionAmount = 5;
+let maxOptionAmount = 6;
 
 let generalGui;
 let generalGuiParent;
