@@ -1,3 +1,5 @@
+let usingRoomDraw = true;
+
 let roomBoxSize = 64; //helst delbar m 2
 let spriteGridWidth = 3;
 let spriteGridHeight = 3;

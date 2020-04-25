@@ -17,6 +17,8 @@ var startSc;
 var drawText;
 let drawCanvas;
 
+let spriteImgSrc;
+
 var player;
 let currentRoom;
 let currentArea = 'test';
@@ -51,7 +53,13 @@ let music = {
 
 //loads sprites for games, called before setup p5 shenanigans
 function preload(){
-  fr_preload()
+  spriteImgSrc = document.getElementById('game-asset-folder').innerText + 'Sprites/Png/';
+
+  if(!usingRoomDraw){
+    fr_preload();
+    cg_preload();
+    er_preload()
+  }
 }
 
 ////////////////////////////////////////////
@@ -61,7 +69,6 @@ function preload(){
 
 
 function setup(){
-
   // Get all saved rooms from the database
   loadRoomsFromDatabase(currentArea, function(returnedRooms) {
 

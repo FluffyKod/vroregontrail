@@ -43,12 +43,12 @@
         console.log('test');
 
       </script>
-
     <script src="../../p5.min.js"></script>
     <script src="../../addons/p5.dom.min.js"></script>
     <script src="../../addons/p5.sound.min.js"></script>
     <script src="../../addons/p5.play.js"></script>
 
+    <script>let usingRoomDraw = false</script>
     <script src="Main.js"></script>
     <script src="Rooms.js"></script>
     <script src="Minigame-pepe.js"></script>

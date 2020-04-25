@@ -5,52 +5,51 @@ var cg_bullets, cg_bulletspeed;
 var cards, cardwidth, cardheight, cardspeed, cardrate;
 var score = 0;
 
+function cg_preload(){
+  //spriteImgSrc sätts i Main
+  crossbow_idle = loadImage(spriteImgSrc + 'crossbow-idle.png');
+  crossbow_arrow = loadImage(spriteImgSrc + 'crossbow-arrow.png');
+  crossbow_shoot = loadImage(spriteImgSrc + 'crossbow-shoot.png');
+  crossbow_reload1 = loadImage(spriteImgSrc + 'crossbow-reload1.png');
+  crossbow_reload2 = loadImage(spriteImgSrc + 'crossbow-reload2.png');
+  card_images = [
+    loadImage(spriteImgSrc + 'card1.png'),
+    loadImage(spriteImgSrc + 'card2.png'),
+    loadImage(spriteImgSrc + 'card3.png'),
+    loadImage(spriteImgSrc + 'card4.png'),
+    loadImage(spriteImgSrc + 'card5.png'),
+    loadImage(spriteImgSrc + 'card6.png'),
+    loadImage(spriteImgSrc + 'card7.png')
+  ]
+}
 
 function cg_draw(){
   if(startSc){startScreen("Card Fight");}
   if(!gameOver){
+
     drawCardGame();
-
-
   }
   if(gameOver && !startSc){
+    camera.position.x = width/2;
+    camera.position.y = height/2;
     gameOverScreen();
     if(clearVar){cg_deleteVar();}
   }
   if(win){
+    camera.position.x = width/2;
+    camera.position.y = height/2;
     winScreen();
-    
+
   }
 }
-/*
-function setup(){
-
-  defineCanvas();
-  textSize(40)
-
-  defineVar();
-
-
-
-
-} // setup()
-
-
-
-function draw(){
-
-
-}// function draw()
-*/
-
 
 function cg_defineVar(){
     gameOver = true;
     startSc = true;
     spawnrate = 80; //higher -> lower rate
     cardspeed = 2;
-    cardwidth = 40;
-    cardheight = 60;
+    cardwidth = 56;
+    cardheight = 80;
     cards = new Group();
     cg_bullets = new Group();
     cg_bulletspeed = 5;
@@ -59,11 +58,17 @@ function cg_defineVar(){
 
     cg_playersize = 50;
     cg_playerspeed = 7;
-
+    camera.position.x = width/2;
+    camera.position.y = height/2;
+    let cg_idle_animation = loadAnimation(crossbow_idle);
+    let cg_reload_animation = loadAnimation(crossbow_shoot, crossbow_reload1, crossbow_reload2, crossbow_idle);
 
     cg_player = createSprite(width/2, height-cg_playersize, cg_playersize, cg_playersize);
-    cg_player.shapeColor = color(255);
-    cg_player.setCollider('rectangle', 0, 0, cg_playersize, cg_playersize)
+    cg_player.addAnimation('reload', cg_reload_animation);
+    cg_player.animation.looping = false;
+    cg_player.animation.frameDelay = 12;
+    cg_player.animation.stop()
+    cg_player.setCollider('rectangle', 0, 0, cg_playersize, cg_playersize);
 }
 
 function cg_deleteVar(){
@@ -89,9 +94,8 @@ function cg_playerMove(){
 
 function spawnCards(){
   if(frameCount % spawnrate == 0){
-
     card = createSprite(random(cardwidth,width-cardwidth), -20, cardwidth, cardheight)
-
+    card.addImage(random(card_images))
     card.velocity.y = random(5, cardspeed+score*0.15);
     cards.add(card);
   }
@@ -125,8 +129,14 @@ function drawCardGame(){
     }
     drawSprites();
     cg_playerMove();
+    print(cg_player.animation.getFrame())
+    if(cg_player.animation.getFrame()!=cg_player.animation.getLastFrame() && frameCount % 12 == 0)
+      cg_player.animation.nextFrame();
+
     if(keyWentDown(" ") && cg_bullets.length < 4){
+      cg_player.animation.changeFrame(0)
       bullet = createSprite(cg_player.position.x, cg_player.position.y, 12, 38)
+      bullet.addImage(crossbow_arrow)
       bullet.setCollider('circle',0,0,12)
       //bullet.rotation += 360
       bullet.velocity.y = -cg_bulletspeed
@@ -135,6 +145,7 @@ function drawCardGame(){
 
 
 
+    }else{
     }
     spawnCards();
 

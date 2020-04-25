@@ -1,3 +1,5 @@
+let usingRoomDraw = false;
+
 var enterTextShow = true;
 
 function startScreen(title, description){
