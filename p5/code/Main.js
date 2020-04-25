@@ -57,7 +57,7 @@ function preload(){
 
   if(!usingRoomDraw){
     spriteImgSrc = document.getElementById('game-asset-folder').innerText + 'Sprites/Png/';
-    
+
     fr_preload();
     cg_preload();
     er_preload()
@@ -610,7 +610,7 @@ function option(ref){
       if(this.command == 'move-background'){
         let self = this;
 
-        fade(music['hauntedHouse'], function() {
+        fade(false, function() {
           changeBackgroundImage(self.values.slice(2)[0]);
           self.moveToNewPlace(self.values.slice(0,2), true);
         })
@@ -835,6 +835,9 @@ function changeRoom( area, x, y ) {
 
   // Update gui
   resetTextbox()
+  updateDebug();
+  updateInventoryGui()
+  updateStatGui('', true);
 
   // Save to database
   savePlayer();
