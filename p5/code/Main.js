@@ -235,6 +235,7 @@ function player(){
   // Track stats
   this.inventory = [];
   this.intellegence = 0;
+  this.dexterity = 0;
   this.charisma = 0;
   this.grit = 0;
   this.kindness = 0;
@@ -348,6 +349,14 @@ function checkStat(stat, value) {
   }
   if (stat == 'charisma') {
     if (player.charisma >= value) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  if (stat == 'dexterity') {
+    if (player.dexterity >= value) {
       return true;
     }
     else {
@@ -539,6 +548,10 @@ function option(ref){
       if (suppliedValues[0] == 'kindness') {
         player.kindness += Number(suppliedValues[1])
         updateStatGui('kindness')
+      }
+      if (suppliedValues[0] == 'dexterity') {
+        player.dexterity += Number(suppliedValues[1])
+        updateStatGui('dexterity')
       }
 
     } else {
@@ -885,6 +898,7 @@ function resetPlayer() {
   player.inventory = [];
   player.intellegence = 0;
   player.charisma = 0;
+  player.dexterity = 0;
   player.grit = 0;
   player.kindness = 0;
   player.area = currentArea;
@@ -941,6 +955,9 @@ function updateStatGui(stat = '', all = false) {
   }
   if (stat == 'kindness' || all == true) {
     document.getElementById('kindness').innerText = player.kindness;
+  }
+  if (stat == 'dexterity' || all == true) {
+    document.getElementById('dexterity').innerText = player.dexterity;
   }
 
 }

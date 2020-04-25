@@ -83,6 +83,7 @@
               <p>Charisma: <span id="charisma"></span></p>
               <p>Grit: <span id="grit"></span></p>
               <p>Kindness: <span id="kindness"></span></p>
+              <p>Dexterity: <span id="dexterity"></span></p>
             </div>
 
 
