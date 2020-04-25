@@ -49,6 +49,11 @@ let music = {
   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3'
 }
 
+//loads sprites for games, called before setup p5 shenanigans
+function preload(){
+  fr_preload()
+}
+
 ////////////////////////////////////////////
 // SETUP
 ////////////////////////////////////////////

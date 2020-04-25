@@ -10,8 +10,16 @@ var score;
 var fr_hard = false;
 var win = false;
 
-function fr_defineVar(){
+function fr_preload(){
+  let imgSrc = document.getElementById('game-asset-folder').innerText + 'Sprites/Png/';
+  //let imgSrc = "../../game-assets/Sprites/Png/"
+  img_riverplayer_falling = loadImage(imgSrc + 'riverplayer-falling.png');
+  img_riverplayer_swim = loadImage(imgSrc + 'riverplayer-swim.png');
+  img_riverplayer_up = loadImage(imgSrc + 'riverplayer-up.png');
+}
 
+
+function fr_defineVar(){
   if(fr_hard){
     swimv = -21
     streamforce = 2.5
@@ -25,9 +33,10 @@ function fr_defineVar(){
   score = 0;
   win = false;
   bird = createSprite(width/2,height/2, 50, 50);
+  var myAnimation = bird.addAnimation('idle',img_riverplayer_falling)
+  bird.addAnimation('swim', img_riverplayer_falling, img_riverplayer_swim, img_riverplayer_up)
 
-  var myAnimation = bird.addAnimation('idle','riverplayer-falling.png')
-  bird.addAnimation('swim','riverplayer-falling.png','riverplayer-swim.png','riverplayer-up.png')
+
 
   bird.shapeColor = color(255);
   //bird.rotateToDirection = true;

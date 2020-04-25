@@ -36,6 +36,7 @@ function winScreen(){
     text("press 'q' to continue",width/2,height/2);
   }
   if(keyWentDown('q')){
+    //TODO: ett sätt att specifiera vart man hamnar
     player.position.y +=1;
   }
 }
