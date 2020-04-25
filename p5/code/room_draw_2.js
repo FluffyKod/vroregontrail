@@ -293,7 +293,7 @@ function createRoom(x, y){
         roomSprite.optionGuis[i].show()
       }
     });
-    roomSprite.gui.addButton('save',function(){saveRoom()});
+    roomSprite.gui.addButton('save',function(){saveRoom(activeRoom, activeRoomSpriteArray, activeRoomArray)});
     roomSprite.gui.addButton('delete',function(){deleteRoom(); drawScene()});
 
 
@@ -411,33 +411,34 @@ function hideGuis(areaIndex = 0){
   }
 }
 
-function saveRoom(){
+//saves roomSprite from spriteArray into roomArray
+function saveRoom(roomSpriteToSave, spriteArray, roomArray){
   // Check if there already exists a room with the coordinates
 
   let doesRoomExist = false;
-  for (const room of activeRoomArray){
-    if (room.x == activeRoom.indexX && room.y == activeRoom.indexY) {
+  for (const room of roomArray){
+    if (room.x == roomSpriteToSave.indexX && room.y == roomSpriteToSave.indexY) {
       doesRoomExist = true;
     }
   }
 
   if (!doesRoomExist) {
-    let exportRoom = new Room(activeRoom.indexX, activeRoom.indexY, activeRoom.gui.getValue('main_text'), [])
+    let exportRoom = new Room(roomSpriteToSave.indexX, roomSpriteToSave.indexY, roomSpriteToSave.gui.getValue('main_text'), [])
     //save option object
-    for (var i = 0; i < activeRoom.gui.getValue('option_amount'); i++) {
+    for (var i = 0; i < roomSpriteToSave.gui.getValue('option_amount'); i++) {
       console.log("createOption");
       let option = {
-        text: activeRoom.optionGuis[i].getValue('option_text'),
-        command: activeRoom.optionGuis[i].getValue('option_command'),
+        text: roomSpriteToSave.optionGuis[i].getValue('option_text'),
+        command: roomSpriteToSave.optionGuis[i].getValue('option_command'),
         values: []
       }
       for (var j = 0; j < maxCommandValues; j++) {
-        option.values.push(activeRoom.optionGuis[i].getValue('command_value_'+j)) //sparar onödigt många värden men yolo
+        option.values.push(roomSpriteToSave.optionGuis[i].getValue('command_value_'+j)) //sparar onödigt många värden men yolo
 
       }
       exportRoom.options.push(option);
     }
-    activeRoomArray.push(exportRoom);
+    roomArray.push(exportRoom);
 
     console.log('IN SAVEROOM IF');
 
@@ -445,57 +446,55 @@ function saveRoom(){
 
     console.log('IN SAVEROOM ELSE');
 
-    //hittar vilket rum activeRoom är
-    for (var i = 0; i < activeRoomArray.length; i++) {
-      if (activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY) {
-        activeRoomArray[i].mainText = activeRoom.gui.getValue('main_text');
-        for (var j = 0; j < activeRoom.optionGuis.length; j++) {
+    //hittar vilket rum roomSpriteToSave är
+    for (var i = 0; i < roomArray.length; i++) {
+      if (roomArray[i].x == roomSpriteToSave.indexX && roomArray[i].y == roomSpriteToSave.indexY) {
+        roomArray[i].mainText = roomSpriteToSave.gui.getValue('main_text');
+        for (var j = 0; j < roomSpriteToSave.optionGuis.length; j++) {
           //kollar om det optionet finns
-          if(activeRoomArray[i].options[j]){
-            activeRoomArray[i].options[j].text = activeRoom.optionGuis[j].getValue('option_text')
-            activeRoomArray[i].options[j].command = activeRoom.optionGuis[j].getValue('option_command')
+          if(roomArray[i].options[j]){
+            roomArray[i].options[j].text = roomSpriteToSave.optionGuis[j].getValue('option_text')
+            roomArray[i].options[j].command = roomSpriteToSave.optionGuis[j].getValue('option_command')
             for (var k = 0; k < maxCommandValues; k++) {
-              activeRoomArray[i].options[j].values[k] = activeRoom.optionGuis[j].getValue('command_value_'+k);
+              roomArray[i].options[j].values[k] = roomSpriteToSave.optionGuis[j].getValue('command_value_'+k);
             }
           }else{
             let option = {
-              text: activeRoom.optionGuis[j].getValue('option_text'),
-              command: activeRoom.optionGuis[j].getValue('option_command'),
+              text: roomSpriteToSave.optionGuis[j].getValue('option_text'),
+              command: roomSpriteToSave.optionGuis[j].getValue('option_command'),
               values: []
               }
             for (var k = 0; k < maxCommandValues; k++) {
-              option.values.push(activeRoom.optionGuis[j].getValue('command_value_'+k))
+              option.values.push(roomSpriteToSave.optionGuis[j].getValue('command_value_'+k))
             }
-            activeRoomArray[i].options.push(option);
+            roomArray[i].options.push(option);
           }
           //tar bort om det finns options utöver option amount
-          if(j > activeRoom.gui.getValue("option_amount")){
+          if(j > roomSpriteToSave.gui.getValue("option_amount")){
             console.log("pop");
-            activeRoomArray[i].options.pop()
+            roomArray[i].options.pop()
           }
         }
-
         // Hide everything
-
         areaIndex = getAreaIndex( currentArea );
         hideGuis(areaIndex);
 
         // Show current rooms
-        for (sprite of activeRoomSpriteArray) {
+        for (sprite of spriteArray) {
           sprite.gui.show();
         }
 
         // Show the active room on top
-        activeRoomSpriteArray[i].gui.show();
+        spriteArray[i].gui.show();
 
         // Remove empty options from option array
-        activeRoomArray[i].options = activeRoomArray[i].options.filter(function(value, index, arr) {
+        roomArray[i].options = roomArray[i].options.filter(function(value, index, arr) {
           // Show all options
-          activeRoomSpriteArray[i].optionGuis[index].show();
+          spriteArray[i].optionGuis[index].show();
 
           // Hide empty rooms
           if (value.text == "") {
-              activeRoomSpriteArray[i].optionGuis[index].hide();
+              spriteArray[i].optionGuis[index].hide();
           }
 
           // Remove those options which are empty
@@ -505,9 +504,35 @@ function saveRoom(){
         break;
       }
     }
-
   }
+}
 
+function saveAllRooms(){
+  let spriteArrays =
+  [
+    roomArrays.test.sprites,
+    roomArrays.intro.sprites,
+    roomArrays.highlands.sprites,
+    roomArrays.bog.sprites,
+    roomArrays.city.sprites,
+    roomArrays.mountain.sprites,
+    roomArrays.core.sprites
+  ]
+  let roomArrays =
+  [
+    roomArrays.test.rooms,
+    roomArrays.intro.rooms,
+    roomArrays.highlands.rooms,
+    roomArrays.bog.rooms,
+    roomArrays.city.rooms,
+    roomArrays.mountain.rooms,
+    roomArrays.core.rooms
+  ]
+  for (var i = 0; i < spriteArrays.length; i++) {
+    for (var j = 0; j < spriteArrays[i].length; j++) {
+      saveRoom(spriteArrays[i][j], spriteArrays[i], roomArrays[i]);
+    }
+  }
 }
 
 function createSpriteArrayFromRoomArray(inputRoomArray){
@@ -529,9 +554,6 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
     activeRoomSpriteArray[i].gui.setValue("option_amount", this.inputRoomArray[i].options.length);
 
     for (var j = 0; j < this.inputRoomArray[i].options.length; j++) {
-
-
-
       activeRoomSpriteArray[i].optionGuis[j].setValue("option_text", this.inputRoomArray[i].options[j].text);
       activeRoomSpriteArray[i].optionGuis[j].setValue("option_command", this.inputRoomArray[i].options[j].command);
       for (var k = 0; k < this.inputRoomArray[i].options[j].values.length; k++) {
@@ -657,6 +679,10 @@ function createGeneralGui(){
       }
     }
   });
+  generalGui.addButton('hide_all_guis', function(){hideGuis()})
+  generalGui.addButton('save_all', function(){
+    saveAllRooms();
+  })
   generalGui.addButton('upload', function(){
     // Get all areas rooms
     let areaRoomsToSave = getAreaRoomsFromRoomArrays();

@@ -54,9 +54,10 @@ let music = {
 
 //loads sprites for games, called before setup p5 shenanigans
 function preload(){
-  spriteImgSrc = document.getElementById('game-asset-folder').innerText + 'Sprites/Png/';
 
   if(!usingRoomDraw){
+    spriteImgSrc = document.getElementById('game-asset-folder').innerText + 'Sprites/Png/';
+    
     fr_preload();
     cg_preload();
     er_preload()
@@ -479,7 +480,7 @@ function option(ref){
   this.switchToArea = function(suppliedValues) {
     if (suppliedValues.length >= 1) {
       // switch area
-      currentArea = suppliedValues[0];
+      currentArea = suppliedValues[1];
 
       changeArea();
 
