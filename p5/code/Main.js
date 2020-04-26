@@ -31,6 +31,10 @@ let counter;
 
 let textbox;
 
+// Minigameendings
+let minigameGameOver;
+let minigameWin;
+
 //minigame-switch variables;
 let current_encounter;
 
@@ -376,6 +380,11 @@ function getUnlockedOptions(options) {
           unlockedOptions.push(option);
         }
       }
+      else if (option.command == 'move-ifNotItem') {
+        if (player.inventory.indexOf(option.values[2]) == -1) {
+          unlockedOptions.push(option);
+        }
+      }
       else if (option.command == 'info-ifItem') {
         if (player.inventory.indexOf(option.values[1]) > -1) {
           unlockedOptions.push(option);
@@ -590,7 +599,13 @@ function option(ref){
 
       // Start a new game
       if(this.command == 'encounter'){
-        this.doEncounter(this.values)
+        if (this.values.length >= 5) {
+          minigameWin = this.values.slice(0, 2);
+          minigameGameOver = this.values.slice(2, 4);
+          this.doEncounter(this.values.slice(4));
+        } else {
+          console.log('ERROR: TO FEW VALUES IN ENCOUNTER COMMAND');
+        }
       }
 
       // Give stats
@@ -608,7 +623,6 @@ function option(ref){
         this.addItemToInventory(this.values.slice(2));
 
       }
-
       // (z, y), item, new area
       if(this.command == 'move-item-switchArea'){
         this.moveToNewPlace(this.values.slice(0, 2));
@@ -671,6 +685,11 @@ function option(ref){
       // (x,y), background name, music name
       if(this.command == 'move-ifItem'){
         this.moveToNewPlace(this.values.slice(0,2));
+      }
+
+      if(this.command == 'move-ifNotItem'){
+        this.moveToNewPlace(this.values.slice(0, 2));
+        this.addItemToInventory(this.values.slice(2));
       }
 
       if(this.command == 'move-addBeenTo'){
