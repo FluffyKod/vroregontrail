@@ -910,7 +910,7 @@ function resetPlayer() {
 
   // Track stats
   player.inventory = [];
-  this.beenTo = [];
+  player.beenTo = [];
   player.intellegence = 0;
   player.charisma = 0;
   player.dexterity = 0;
