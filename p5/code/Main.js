@@ -407,7 +407,7 @@ function getUnlockedOptions(options) {
         }
       }
       else if (option.command == 'move-notBeenTo') {
-        if (player.beenTo.indexOf(option.values[2]) > -1) {
+        if (player.beenTo.indexOf(option.values[2]) == -1) {
           unlockedOptions.push(option);
         }
       }
