@@ -182,9 +182,11 @@ function highlightOverMouse(){
 }
 
 function keyPressed(){
+  /* tog bort var jobbigt, kanske kan byta till annan knapp
   if(keyCode === TAB){
     window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));
   }
+  */
   if(keyCode === ENTER){
     showValueAmountControl();
     optionShowControl();
@@ -617,7 +619,7 @@ function drawConnectionsFromRoom(roomSprite){
 function createGeneralGui(){
   generalGui = QuickSettings.create( 0,0,'Settings', generalGuiParent);
   generalGui.setDraggable(false);
-  generalGui.addButton('center (tab)', function(){window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));});
+  generalGui.addButton('center (0,0)', function(){window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));});
   generalGui.addDropDown('area' ,['test','intro', 'highlands', 'bog', 'city', 'mountain', 'core'], function(value){
       selectedArea = value.label;
 
