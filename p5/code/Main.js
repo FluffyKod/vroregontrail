@@ -234,6 +234,7 @@ function player(){
 
   // Track stats
   this.inventory = [];
+  this.beenTo = [];
   this.intellegence = 0;
   this.dexterity = 0;
   this.charisma = 0;
@@ -405,7 +406,11 @@ function getUnlockedOptions(options) {
           unlockedOptions.push(option);
         }
       }
-
+      else if (option.command == 'move-notBeenTo') {
+        if (player.beenTo.indexOf(option.values[2]) > -1) {
+          unlockedOptions.push(option);
+        }
+      }
        else {
         unlockedOptions.push(option)
       }
@@ -668,6 +673,11 @@ function option(ref){
         this.moveToNewPlace(this.values.slice(0,2));
       }
 
+      if(this.command == 'move-addBeenTo'){
+        this.moveToNewPlace(this.values.slice(0,2));
+        player.beenTo.push(this.values.slice(2)[0]);
+      }
+
       if (this.command == 'move-ifStat') {
         this.moveToNewPlace(this.values.slice(0,2));
       }
@@ -697,6 +707,10 @@ function option(ref){
 
       if (this.command == 'info-ifItem') {
         this.writeInfo(this.values.slice(0, 1));
+      }
+
+      if(this.command == 'move-notBeenTo'){
+        this.moveToNewPlace(this.values.slice(0,2));
       }
   }
 
