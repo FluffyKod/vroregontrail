@@ -600,7 +600,7 @@ function drawConnectionsFromRoom(roomSprite){
     for (var z = 0; z < roomSprite.optionGuis.length; z++) {
 
       let optionCommand = roomSprite.optionGuis[z].getValue('option_command');
-      if(optionCommand == "move" || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music' || optionCommand == 'move-ifItem' || optionCommand == 'move-ifStat' || optionCommand == 'move-item-ifStat' || optionCommand == 'move-stat-ifItem' || optionCommand == 'move-x' || optionCommand== 'move-y' ){
+      if(optionCommand == "move" || optionCommand == 'move-notBeenTo' || optionCommand == 'move-addBeenTo' || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music' || optionCommand == 'move-ifItem' || optionCommand == 'move-ifStat' || optionCommand == 'move-item-ifStat' || optionCommand == 'move-stat-ifItem' || optionCommand == 'move-x' || optionCommand== 'move-y' ){
         stroke(connectionColors[z]);
         //ta koordinaterna från values delen
         let connection = indexToScreenCoordinates(
@@ -677,7 +677,7 @@ function createGeneralGui(){
     // console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
     // saveRoomsToDatabase(roomArrays.test.rooms);
   })
-  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br>')
+  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br><b>move-notBeenTo</b><br><b>move-addBeenTo</b><br>')
   generalGui.addHTML('Player stats', 'intelligence<br>charisma<br>grit<br>kindness<br>dexterity' )
 
 }
@@ -802,6 +802,15 @@ function showValueAmountControl(){
           activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and increment stat (value 2) with (value 3) if player has item (value 4)')
           showAmount = 5;
           break;
+        case 'move-notBeenTo':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) if player has not been to (value 2)')
+          showAmount = 3;
+          break;
+        case 'move-addBeenTo':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and add (value 2) to player been to ')
+          showAmount = 3;
+          break;
+
         default:
           activeRoom.optionGuis[i].setValue('command_description', 'ERROR: command not found')
           showAmount = 0;
