@@ -31,6 +31,10 @@ let counter;
 
 let textbox;
 
+// Minigameendings
+let minigameGameOver;
+let minigameWin;
+
 //minigame-switch variables;
 let current_encounter;
 
@@ -234,6 +238,7 @@ function player(){
 
   // Track stats
   this.inventory = [];
+  this.beenTo = [];
   this.intellegence = 0;
   this.dexterity = 0;
   this.charisma = 0;
@@ -375,6 +380,11 @@ function getUnlockedOptions(options) {
           unlockedOptions.push(option);
         }
       }
+      else if (option.command == 'move-ifNotItem') {
+        if (player.inventory.indexOf(option.values[2]) == -1) {
+          unlockedOptions.push(option);
+        }
+      }
       else if (option.command == 'info-ifItem') {
         if (player.inventory.indexOf(option.values[1]) > -1) {
           unlockedOptions.push(option);
@@ -405,7 +415,11 @@ function getUnlockedOptions(options) {
           unlockedOptions.push(option);
         }
       }
-
+      else if (option.command == 'move-notBeenTo') {
+        if (player.beenTo.indexOf(option.values[2]) == -1) {
+          unlockedOptions.push(option);
+        }
+      }
        else {
         unlockedOptions.push(option)
       }
@@ -585,7 +599,13 @@ function option(ref){
 
       // Start a new game
       if(this.command == 'encounter'){
-        this.doEncounter(this.values)
+        if (this.values.length >= 5) {
+          minigameWin = this.values.slice(0, 2);
+          minigameGameOver = this.values.slice(2, 4);
+          this.doEncounter(this.values.slice(4));
+        } else {
+          console.log('ERROR: TO FEW VALUES IN ENCOUNTER COMMAND');
+        }
       }
 
       // Give stats
@@ -603,7 +623,6 @@ function option(ref){
         this.addItemToInventory(this.values.slice(2));
 
       }
-
       // (z, y), item, new area
       if(this.command == 'move-item-switchArea'){
         this.moveToNewPlace(this.values.slice(0, 2));
@@ -668,6 +687,16 @@ function option(ref){
         this.moveToNewPlace(this.values.slice(0,2));
       }
 
+      if(this.command == 'move-ifNotItem'){
+        this.moveToNewPlace(this.values.slice(0, 2));
+        this.addItemToInventory(this.values.slice(2));
+      }
+
+      if(this.command == 'move-addBeenTo'){
+        this.moveToNewPlace(this.values.slice(0,2));
+        player.beenTo.push(this.values.slice(2)[0]);
+      }
+
       if (this.command == 'move-ifStat') {
         this.moveToNewPlace(this.values.slice(0,2));
       }
@@ -697,6 +726,10 @@ function option(ref){
 
       if (this.command == 'info-ifItem') {
         this.writeInfo(this.values.slice(0, 1));
+      }
+
+      if(this.command == 'move-notBeenTo'){
+        this.moveToNewPlace(this.values.slice(0,2));
       }
   }
 
@@ -896,6 +929,7 @@ function resetPlayer() {
 
   // Track stats
   player.inventory = [];
+  player.beenTo = [];
   player.intellegence = 0;
   player.charisma = 0;
   player.dexterity = 0;

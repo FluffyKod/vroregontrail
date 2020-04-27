@@ -182,9 +182,11 @@ function highlightOverMouse(){
 }
 
 function keyPressed(){
+  /* tog bort var jobbigt, kanske kan byta till annan knapp
   if(keyCode === TAB){
     window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));
   }
+  */
   if(keyCode === ENTER){
     showValueAmountControl();
     optionShowControl();
@@ -334,26 +336,27 @@ function createRoom(x, y){
 
     }
     roomSprite.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
+      if(!guiMouseIsOver){
+        if(activeRoom){
+          activeRoom.gui.hide();
 
-      if(activeRoom){
-        activeRoom.gui.hide();
-
-      }
-      // TODO: Måste kallas på fler ställen
-      if (activeOptionGui!=null) {
-        for (var i = 0; i < maxOptionAmount; i++) {
-          activeOptionGui[i].hide();
         }
-        for (var i = 0; i < this.gui.getValue('option_amount'); i++) {
-          this.optionGuis[i].show();
+        // TODO: Måste kallas på fler ställen
+        if (activeOptionGui!=null) {
+          for (var i = 0; i < maxOptionAmount; i++) {
+            activeOptionGui[i].hide();
+          }
+          for (var i = 0; i < this.gui.getValue('option_amount'); i++) {
+            this.optionGuis[i].show();
+          }
         }
-      }
 
-      this.gui.show();
-      activeRoom.active = false;
-      activeRoom = this;
-      activeRoom.active = true;
-      activeOptionGui = this.optionGuis;
+        this.gui.show();
+        activeRoom.active = false;
+        activeRoom = this;
+        activeRoom.active = true;
+        activeOptionGui = this.optionGuis;
+      }
     }
     roomSprite.debug = false;
 
@@ -598,7 +601,7 @@ function drawConnectionsFromRoom(roomSprite){
     for (var z = 0; z < roomSprite.optionGuis.length; z++) {
 
       let optionCommand = roomSprite.optionGuis[z].getValue('option_command');
-      if(optionCommand == "move" || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music' || optionCommand == 'move-ifItem' || optionCommand == 'move-ifStat' || optionCommand == 'move-item-ifStat' || optionCommand == 'move-stat-ifItem' || optionCommand == 'move-x' || optionCommand== 'move-y' ){
+      if(optionCommand == "move" || optionCommand == 'move-notBeenTo' || optionCommand == 'move-ifNotItem' || optionCommand == 'move-addBeenTo' || optionCommand == 'move-item' || optionCommand == 'move-background' || optionCommand == 'move-stat' || optionCommand == 'move-switchArea' || optionCommand == 'move-background-music' || optionCommand == 'move-ifItem' || optionCommand == 'move-ifStat' || optionCommand == 'move-item-ifStat' || optionCommand == 'move-stat-ifItem' || optionCommand == 'move-x' || optionCommand== 'move-y' ){
         stroke(connectionColors[z]);
         //ta koordinaterna från values delen
         let connection = indexToScreenCoordinates(
@@ -617,7 +620,7 @@ function drawConnectionsFromRoom(roomSprite){
 function createGeneralGui(){
   generalGui = QuickSettings.create( 0,0,'Settings', generalGuiParent);
   generalGui.setDraggable(false);
-  generalGui.addButton('center (tab)', function(){window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));});
+  generalGui.addButton('center (0,0)', function(){window.scrollTo(floor(width/2-window.innerWidth/2),floor(height/2-window.innerHeight/2));});
   generalGui.addDropDown('area' ,['test','intro', 'highlands', 'bog', 'city', 'mountain', 'core'], function(value){
       selectedArea = value.label;
 
@@ -675,7 +678,7 @@ function createGeneralGui(){
     // console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
     // saveRoomsToDatabase(roomArrays.test.rooms);
   })
-  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br>')
+  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifNotItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br><b>move-notBeenTo</b><br><b>move-addBeenTo</b><br>')
   generalGui.addHTML('Player stats', 'intelligence<br>charisma<br>grit<br>kindness<br>dexterity' )
 
 }
@@ -737,8 +740,8 @@ function showValueAmountControl(){
           showAmount = 3;
           break;
         case 'encounter':
-          activeRoom.optionGuis[i].setValue('command_description', 'plays minigame with name (value 0)')
-          showAmount = 1;
+          activeRoom.optionGuis[i].setValue('command_description', 'plays minigame with name (value 0), move to win room (value 1, value 2), move to game over room (value 3, value 4)')
+          showAmount = 5;
           break;
         case 'move-item-switchArea':
           activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1), give item (value 2) and switch to area (value 3)')
@@ -753,7 +756,7 @@ function showValueAmountControl(){
           showAmount = 4;
           break;
         case 'move-switchArea':
-          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and switch to area (value 2)')
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and switch to area str (value 2)')
           showAmount = 3;
           break;
         case 'move-background-music':
@@ -770,6 +773,10 @@ function showValueAmountControl(){
           break;
         case 'move-ifItem':
           activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) if player has item (value 2)')
+          showAmount = 3;
+          break;
+        case 'move-ifNotItem':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) if player DOES NOT have item (value 2)')
           showAmount = 3;
           break;
         case 'move-ifStat':
@@ -800,6 +807,15 @@ function showValueAmountControl(){
           activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and increment stat (value 2) with (value 3) if player has item (value 4)')
           showAmount = 5;
           break;
+        case 'move-notBeenTo':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) if player has not been to (value 2)')
+          showAmount = 3;
+          break;
+        case 'move-addBeenTo':
+          activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and add (value 2) to player been to ')
+          showAmount = 3;
+          break;
+
         default:
           activeRoom.optionGuis[i].setValue('command_description', 'ERROR: command not found')
           showAmount = 0;
