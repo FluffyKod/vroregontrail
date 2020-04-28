@@ -13,7 +13,7 @@ function fade(music = false, continueGame = false) {
       })
   }
 
-  $('.dim').animate({
+  $('#overlay').animate({
     opacity: 1
   }, 3000, function() {
 
@@ -21,8 +21,7 @@ function fade(music = false, continueGame = false) {
       continueGame()
     }
 
-
-    $('.dim').animate({
+    $('#overlay').animate({
       opacity: 0
     }, 3000)
   })
@@ -30,15 +29,20 @@ function fade(music = false, continueGame = false) {
 }
 
 $(window).ready(function() {
+
     $('#audio-holder').prop('volume', 0);
 
     $('#audio-holder').animate({
         volume: 1
     }, 4000)
 
-    $('.dim').css('opacity', 1);
-
-    $('.dim').animate({
-      opacity: 0
-    }, 6000)
+    // $('.dim').css('opacity', 1);
+    //
+    // setTimeout(function() {
+    //   paused = false;
+    // }, 2000)
+    //
+    // $('.dim').animate({
+    //   opacity: 0
+    // }, 6000)
 })

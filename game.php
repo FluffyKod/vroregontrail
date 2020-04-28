@@ -17,6 +17,7 @@
     <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
     <style> body {padding: 0; margin: 0;} </style>
     <LINK REL=StyleSheet HREF="<?php echo get_bloginfo('template_directory') ?>/p5/code/style.css" TYPE="text/css" MEDIA=screen>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
@@ -25,19 +26,6 @@
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.dom.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.sound.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.play.js"></script>
-
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/fader.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ernst-running.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-flappy-river.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-invaders.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-mountain-jump.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
-    <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
-
 
   </head>
   <body>
@@ -48,14 +36,27 @@
     <?php show_error_alert(); ?>
 
       <!-- <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3"></audio> -->
+      <audio id="textloop-holder" hidden loop src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/textloop-long.wav"></audio>
+      <audio id="choice-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/choice.wav"></audio>
       <div class="fade"></div>
+      <div id="overlay"></div>
       <div class="dim"></div>
+
+      <div id="intro-screen">
+        <img id="intro-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/beach.png" alt="test">
+        <img id="logo" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/curseofthecircle.png" alt="">
+
+        <div class="menu">
+            <button id="main-choice" class="blink">[ NEW GAME ]</button>
+            <button>[ QUIT ]</button>
+        </div>
+      </div>
 
       <div id="grandparent">
 
 
         <p id="game-asset-folder" hidden><?php echo get_bloginfo('template_directory') ?>/game-assets/</p>
-        <img id="background-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/highlands-general.jpg" alt="test">
+        <img id="background-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/beach.png" alt="test">
 
         <div id="parent">
 
@@ -118,6 +119,23 @@
         </div>
 
       </div>
+
+
+      <!-- SCRIPTS -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.2/gsap.min.js" charset="utf-8"></script>
+
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/fader.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/introscreen.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ernst-running.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-flappy-river.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-invaders.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-mountain-jump.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
 
   </body>
 </html>

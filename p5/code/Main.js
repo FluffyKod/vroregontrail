@@ -30,6 +30,7 @@ let texttest;
 let counter;
 
 let textbox;
+let paused = true;
 
 // Minigameendings
 let minigameGameOver;
@@ -47,13 +48,18 @@ let timer;
 
 // GAME ASSETS
 let backgrounds = {
-  highlandsMain: 'highlands-general.jpg',
-  introMain: 'village.png'
+  beach: 'beach.png',
+  creepyHouse: 'creepyhouse.png',
+  scottish: 'scottish.png',
+  tavern: 'tavern.png'
 }
 
 let music = {
   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3',
-  hauntedHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3'
+  creepyHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3',
+  highlandsBoss: '',
+  tavern: '',
+  mainTheme: ''
 }
 
 //loads sprites for games, called before setup p5 shenanigans
@@ -181,6 +187,10 @@ function draw(){
 function keyPressed(){
   timer = 0;
 
+  // Stop sound
+  $('#choice-holder').get(0).pause();
+  $('#choice-holder').get(0).currentTime = 0;
+
   if(!keypressed){
     // Set the current selected option by the player to no one
     // currentoption 1 is the first option, 2 is second etc.
@@ -194,6 +204,9 @@ function keyPressed(){
       currentoption = optionlength-1;
     }
 
+    // Play choice sound
+    $('#choice-holder').get(0).play();
+
   }
   if(keyCode == DOWN_ARROW){
     if(currentoption < optionlength-1){
@@ -202,7 +215,8 @@ function keyPressed(){
       currentoption = 0;
     }
 
-
+    // Play choice sound
+    $('#choice-holder').get(0).play();
   }
   if(keyCode == ENTER){
     textbox = select('#textbox');
@@ -281,15 +295,15 @@ function getBackgroundImageFromArea( area ) {
 
   switch (area) {
     case 'highlands':
-      imageName = backgrounds.highlandsMain;
+      imageName = backgrounds.scottish;
       break;
 
     case 'intro':
-      imageName = backgrounds.introMain;
+      imageName = backgrounds.beach;
       break;
 
     default:
-      imageName = backgrounds.highlandsMain;
+      imageName = backgrounds.scottish;
   }
 
   return imageName;
@@ -780,10 +794,17 @@ function Room( x, y, mainText, options ){
     this.divId = divId;
 
     if (counter < inputtext.length) {
+      // Play sound effect if it is not playing
+      if ($('#textloop-holder').get(0).paused && !paused) {
+        $('#textloop-holder').get(0).play();
+      }
+
       document.getElementById(this.divId).innerHTML += inputtext.charAt(counter);
       counter++
     } else {
       write = false;
+      // Reset sound effect
+      $('#textloop-holder').get(0).pause();
     }
 
   }
@@ -819,38 +840,26 @@ function defineCanvas(){
 function drawTextbox(){
 
   // ALL OF THIS IS CALLED SEVERAL TIMES A SECOND: NEED FOR LOOPS EVERY TIME??
+  if (!paused) {
+    for (var i = 0; i < displayedOptions.length; i++) {
+      displayedOptions[i].unhighlight();
+    }
 
-  for (var i = 0; i < displayedOptions.length; i++) {
-    displayedOptions[i].unhighlight();
+    if(keypressed && timer < 600){
+      timer++;
+      displayedOptions[currentoption].highlight();
+    }
+
+    if (write) {
+      typing('textbox', currentRoom.mainText);
+    }
+
+    if(!load && currentRoom){
+      currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
+      currentRoom.load();
+      load = true;
+    }
   }
-
-  if(keypressed && timer < 600){
-    timer++;
-    displayedOptions[currentoption].highlight();
-  }
-
-  // IT WORKS WITHOUT THE CODE BELOW
-  // for (var i = 0; i < rooms.length; i++) {
-  //   if(write){
-  //     typing("textbox", rooms[i].mainText);
-  //   }
-  //   if(!load && currentRoom){
-  //     currentRoom.load();
-  //     load = true;
-  //   }
-  //
-  // }
-
-  if (write) {
-    typing('textbox', currentRoom.mainText);
-  }
-
-  if(!load && currentRoom){
-    currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
-    currentRoom.load();
-    load = true;
-  }
-
 
 }
 
@@ -942,7 +951,7 @@ function resetPlayer() {
   currentArea = 'intro';
   rooms = getRoomsFromArea( allAreaRooms, currentArea );
   changeRoom( 'intro', 0, 0 );
-  player.background = backgrounds.highlandsMain;
+  player.background = backgrounds.beach;
 
   changeBackgroundImage( player.background );
 

@@ -146,10 +146,6 @@ function loadRoomsFromDatabase(area, callback){
   }
 
   sendAjax(parameters, function(response) {
-    if (response.rooms == false){
-      // Save the test rooms instead
-      //saveRooms(sampleRooms)
-    }
 
     allAreaRooms = []
 
