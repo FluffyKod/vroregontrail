@@ -633,7 +633,8 @@ function is_chairman( $u_id ) {
 
   $kommitte_names = array();
 
-  $kommittes = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE chairman = ' . $u_id . ' AND status="y"');
+  $student_id = $wpdb->get_row("SELECT * FROM vro_users WHERE wpuser_id = $u_id")
+  $kommittes = $wpdb->get_results('SELECT * FROM vro_kommiteer WHERE chairman = ' . $student_id . ' AND status="y"');
 
   foreach ( $kommittes as $k ) {
     array_push( $kommitte_names, array('id' => $k->id, 'name' => $k->name) );

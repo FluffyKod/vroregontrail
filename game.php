@@ -4,8 +4,8 @@
  */
 
  // Only show game to logged in users
- if (! is_user_logged_in() ){
-   echo "<h1>Du måste vara inloggad för att se spelet</h1>";
+ if (! is_student_admin() ){
+   echo "<h1>Du måste logga in som admin för att se spelet</h1>";
    echo '<a href="/wp-login.php">Logga In</a>';
  } else {
 
@@ -35,20 +35,31 @@
     *************************************-->
     <?php show_error_alert(); ?>
 
+    <?php
+
+    global $wpdb;
+
+    $user = wp_get_current_user();
+    $has_played = (count($wpdb->get_results("SELECT * FROM vroregon_players WHERE user_id = $user->ID")) > 0) ? true : false;
+
+    $menu_text = ($has_played == false) ? 'NEW GAME' : 'CONTINUE GAME';
+
+    ?>
+
       <!-- <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3"></audio> -->
       <audio id="textloop-holder" hidden loop src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/textloop-long.wav"></audio>
       <audio id="choice-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/choice.wav"></audio>
-      <div class="fade"></div>
+      <audio id="select-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/select.wav"></audio>
+
       <div id="overlay"></div>
-      <div class="dim"></div>
 
       <div id="intro-screen">
         <img id="intro-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/beach.png" alt="test">
         <img id="logo" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/curseofthecircle.png" alt="">
 
         <div class="menu">
-            <button id="main-choice" class="blink">[ NEW GAME ]</button>
-            <button>[ QUIT ]</button>
+            <button id="main-choice" class="blink">[ <?php echo $menu_text ?> ]</button>
+            <button onclick="window.location.href = '/';">[ QUIT ]</button>
         </div>
       </div>
 

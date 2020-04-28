@@ -54,11 +54,21 @@ let backgrounds = {
   tavern: 'tavern.png'
 }
 
+// DEV SITE MUSIC
+// let music = {
+//   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3',
+//   creepyHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3',
+//   highlandsBoss: '',
+//   tavern: '',
+//   mainTheme: ''
+// }
+
+// PRODUCTION SITE MUSIC
 let music = {
-  highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3',
-  creepyHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3',
-  highlandsBoss: '',
-  tavern: '',
+  highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
+  creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
+  highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/boss.mp3',
+  tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
   mainTheme: ''
 }
 
@@ -187,59 +197,71 @@ function draw(){
 function keyPressed(){
   timer = 0;
 
-  // Stop sound
-  $('#choice-holder').get(0).pause();
-  $('#choice-holder').get(0).currentTime = 0;
+  if (!paused) {
 
-  if(!keypressed){
-    // Set the current selected option by the player to no one
-    // currentoption 1 is the first option, 2 is second etc.
-    currentoption = 0;
-    keypressed = true;
-  }
-  if(keyCode == UP_ARROW){
-    if(currentoption > 0){
-      currentoption -= 1;
-    }else {
-      currentoption = optionlength-1;
-    }
+    // Stop sound
+    $('#choice-holder').get(0).pause();
+    $('#choice-holder').get(0).currentTime = 0;
 
-    // Play choice sound
-    $('#choice-holder').get(0).play();
+    $('#select-holder').get(0).pause();
+    $('#select-holder').get(0).currentTime = 0;
 
-  }
-  if(keyCode == DOWN_ARROW){
-    if(currentoption < optionlength-1){
-      currentoption += 1;
-    }else {
+    if(!keypressed){
+      // Set the current selected option by the player to no one
+      // currentoption 1 is the first option, 2 is second etc.
       currentoption = 0;
+      keypressed = true;
     }
+    if(keyCode == UP_ARROW){
+      if(currentoption > 0){
+        currentoption -= 1;
+      }else {
+        currentoption = optionlength-1;
+      }
 
-    // Play choice sound
-    $('#choice-holder').get(0).play();
-  }
-  if(keyCode == ENTER){
-    textbox = select('#textbox');
-    textbox.html("")
-    counter = 0;
-    displayedOptions[currentoption].runCommand();
-    currentoption = 0;
-    load = false;
-
-    // SAVE PLAYER PROGRESS
-    savePlayer()
-
-    // DEBUG
-    updateDebug();
+      // Play choice sound
+      $('#choice-holder').get(0).play();
 
     }
-  if(keyCode == SHIFT && !soundEnabled){
-    blip = loadSound("menu_blip.wav")
-    soundEnabled = true;
+    if(keyCode == DOWN_ARROW){
+      if(currentoption < optionlength-1){
+        currentoption += 1;
+      }else {
+        currentoption = 0;
+      }
+
+      // Play choice sound
+      $('#choice-holder').get(0).play();
+    }
+    if(keyCode == ENTER){
+      textbox = select('#textbox');
+      textbox.html("")
+      counter = 0;
+      displayedOptions[currentoption].runCommand();
+      currentoption = 0;
+      load = false;
+
+      // Play select sound
+      $('#select-holder').get(0).play();
+
+      // SAVE PLAYER PROGRESS
+      savePlayer()
+
+      // DEBUG
+      updateDebug();
+
+      }
+    if(keyCode == SHIFT && !soundEnabled){
+      blip = loadSound("menu_blip.wav")
+      soundEnabled = true;
+    }
+
   }
 
 
-  }
+
+
+}
 
 ////////////////////////////////////////////
 // PLAYER CLASS
