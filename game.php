@@ -47,7 +47,7 @@
     *************************************-->
     <?php show_error_alert(); ?>
 
-      <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3"></audio>
+      <!-- <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/highlands-ambient.mp3"></audio> -->
       <div class="fade"></div>
       <div class="dim"></div>
 

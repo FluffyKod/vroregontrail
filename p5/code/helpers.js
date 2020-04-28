@@ -154,6 +154,7 @@ function loadRoomsFromDatabase(area, callback){
     allAreaRooms = []
 
     parsedRooms = JSON.parse(response.rooms);
+    console.log('DATABASE RESPONSE: ', parsedRooms);
 
     parsedRooms.forEach(roomArray => {
       rooms = []
@@ -166,13 +167,7 @@ function loadRoomsFromDatabase(area, callback){
       allAreaRooms.push(rooms);
     });
 
-
-    if (response.sprites != false){
-      sprites = JSON.parse(response.sprites);
-      callback(rooms, sprites)
-    } else {
-      callback(allAreaRooms);
-    }
+    callback(allAreaRooms);
 
   })
 

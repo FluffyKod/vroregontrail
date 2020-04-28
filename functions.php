@@ -204,15 +204,8 @@ function fetch_rooms(){
   // Get the rooms stored in the database in a long string
   $rooms_string = $wpdb->get_var('SELECT rooms FROM vroregon_rooms WHERE id = 1');
 
-  $sprite_string = false;
-
-  // Check if there is a record saved
-  if ( $room_amount == 2 ) {
-    $sprite_string = $wpdb->get_var('SELECT rooms FROM vroregon_rooms WHERE id = 2');
-  }
-
   // Send the array back
-  echo json_encode( array('rooms' => $rooms_string, 'sprites' => $sprite_string) );
+  echo json_encode( array('rooms' => $rooms_string) );
 
   // Quit the function
   die();

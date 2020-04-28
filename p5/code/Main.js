@@ -21,7 +21,7 @@ let spriteImgSrc;
 
 var player;
 let currentRoom;
-let currentArea = 'test';
+let currentArea = 'intro';
 
 let define = true;
 let clearVar = false;
@@ -939,9 +939,9 @@ function resetPlayer() {
   player.background = backgrounds.highlandsMain;
   player.music = music.highlandsAmbient;
 
-  currentArea = 'test';
+  currentArea = 'intro';
   rooms = getRoomsFromArea( allAreaRooms, currentArea );
-  changeRoom( 'test', 0, 0 );
+  changeRoom( 'intro', 0, 0 );
   player.background = backgrounds.highlandsMain;
 
   changeBackgroundImage( player.background );
