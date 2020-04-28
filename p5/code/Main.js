@@ -21,7 +21,7 @@ let spriteImgSrc;
 
 var player;
 let currentRoom;
-let currentArea = 'intro';
+let currentArea = 'test';
 
 let define = true;
 let clearVar = false;
