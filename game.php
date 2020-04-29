@@ -138,7 +138,7 @@
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/fader.js"></script>
-      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/introscreen.js"></script>
+      <!-- <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/introscreen.js"></script> -->
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ernst-running.js"></script>

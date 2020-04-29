@@ -30,7 +30,7 @@ let texttest;
 let counter;
 
 let textbox;
-let paused = true;
+let paused = false; // DEBUG
 
 // Minigameendings
 let minigameGameOver;
@@ -332,7 +332,32 @@ function getBackgroundImageFromArea( area ) {
 
 }
 
-function changeArea() {
+
+function getSongFromArea( area ) {
+
+  let song = music.highlandsMain;
+
+  switch (area) {
+    case 'intro':
+      song = music.introBeach;
+      break;
+
+    case 'highlands':
+      song = music.highlandsAmbient;
+      break;
+
+    default:
+      song = music.highlandsAmbient;
+  }
+
+  return song;
+
+}
+
+function changeArea(area) {
+
+  currentArea = area
+
   // Update player
   player.area = currentArea;
 
@@ -341,9 +366,9 @@ function changeArea() {
 
   // Change background image
   let newAreaImage = getBackgroundImageFromArea( currentArea );
-  changeBackgroundImage( newAreaImage );
+  let newSong = getSongFromArea( currentArea )
 
-  // Change music
+  return newAreaImage, newSong
 
 }
 
@@ -468,7 +493,8 @@ function getUnlockedOptions(options) {
 }
 
 function checkIfRoomExists(x, y, area = false) {
-  let roomsToCheck = (area == false) ? rooms : allAreaRooms[getAreaIndex(area)];
+
+  let roomsToCheck = (area == false) ? rooms : getRoomsFromArea( allAreaRooms, currentArea );
 
   for (room of roomsToCheck) {
     if (room.x == x && room.y == y) {
@@ -554,17 +580,6 @@ function option(ref){
       console.log('ERROR: Not enough values supplied to info command');
     }
   }
-  this.switchToArea = function(suppliedValues) {
-    if (suppliedValues.length >= 1) {
-      // switch area
-      currentArea = suppliedValues[1];
-
-      changeArea();
-
-    } else {
-      console.log('ERROR: Not enough values supplied to switcharea command');
-    }
-  }
   this.doEncounter = function(suppliedValues) {
     // Check that there are enough values
     if (suppliedValues.length >= 2) {
@@ -630,7 +645,7 @@ function option(ref){
 
       // Switch to a new area
       if (this.command == 'switchArea'){
-        this.switchToArea(this.values)
+        this.switchToArea(this.values[0])
       }
 
       // Start a new game
@@ -687,8 +702,16 @@ function option(ref){
 
       // (x, y), new area name
       if(this.command == 'move-switchArea'){
-        this.moveToNewPlace(this.values.slice(0, 2), true, this.values.slice(2));
-        this.switchToArea(this.values.slice(2));
+        let move = this.values.slice(0, 2);
+        let newArea = this.values.slice(2,3)[0]
+        let self = this;
+
+        let background, song = changeArea( newArea );
+
+        fade(song, function() {
+          changeBackgroundImage(background);
+          self.moveToNewPlace(move, true);
+        })
 
       }
 
@@ -913,7 +936,7 @@ function changeRoom( area, x, y ) {
   // Set the properties
   currentArea = area;
   player.area = area;
-  changeArea();
+  changeArea( currentArea );
 
   rooms = getRoomsFromArea( allAreaRooms, currentArea );
 

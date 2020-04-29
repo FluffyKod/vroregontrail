@@ -202,6 +202,11 @@ function getAreaRooms(allRooms, area) {
   }
 }
 
+function getAreaIndex( areaName ) {
+  const areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
+  return areas.indexOf(areaName);
+}
+
 function getRoomsFromArea( rooms, area ) {
   switch (area) {
 

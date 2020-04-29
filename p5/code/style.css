@@ -36,6 +36,10 @@ body {
 * INTRO SCREEM
 ******************************/
 
+#intro-screen {
+  display: none;
+}
+
 @keyframes animateLogo {
     0% {
         transform: translateX(-50%) translateY(10px);
@@ -50,8 +54,9 @@ body {
 
 #logo {
     width: 60%;
+    min-width: 500px;
     position: absolute;
-    top: -2%;
+    top: 7%;
     left: 50%;
     transform: translateX(-50%);
     /* animation: animateLogo 4s infinite ease-in-out; */

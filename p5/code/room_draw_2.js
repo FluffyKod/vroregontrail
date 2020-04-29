@@ -367,10 +367,7 @@ function createRoom(x, y){
   }
 }
 
-function getAreaIndex( areaName ) {
-  const areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
-  return areas.indexOf(areaName);
-}
+
 
 // Hide all guis for alla areas
 function hideGuis(areaIndex = 0){
