@@ -49,8 +49,8 @@ let timer;
 // GAME ASSETS
 let backgrounds = {
   beach: 'beach.png',
-  creepyHouse: 'creepyhouse.png',
   scottish: 'scottish.png',
+  creepyHouse: 'creepyhouse.png',
   tavern: 'tavern.png'
 }
 
@@ -296,7 +296,7 @@ function player(){
 ////////////////////////////////////////////
 // AREA FUNCTIONS
 ////////////////////////////////////////////
-function changeBackgroundImage( fileName, withFade = false ) {
+function changeBackgroundImage( suppliedImage, isFileName = true ) {
 
   // Get path to the game-assets/backgrounds/ folder
   let backgroundAssetFolder = document.getElementById('game-asset-folder').innerText + 'backgrounds/';
@@ -304,7 +304,12 @@ function changeBackgroundImage( fileName, withFade = false ) {
   // Get the html element which displays the image
   let backgroundElement = document.getElementById('background-image');
 
+  let fileName = suppliedImage;
+
   // Create full filepath
+  if (isFileName == false) {
+    fileName = backgrounds[suppliedImage];
+  }
   let newImagePath = backgroundAssetFolder + fileName;
 
   // Update player info
@@ -637,6 +642,8 @@ function option(ref){
   this.runCommand = function() {
 
       // SINGLE COMMANDS
+      console.log('COMMAND', this.command);
+      console.log('VALUES', this.values);
 
       // Give player an item
       if(this.command == 'item'){
@@ -731,7 +738,7 @@ function option(ref){
         let self = this;
 
         fade(false, function() {
-          changeBackgroundImage(self.values.slice(2)[0]);
+          changeBackgroundImage(self.values.slice(2,3)[0], false);
           self.moveToNewPlace(self.values.slice(0,2), true);
         })
 
