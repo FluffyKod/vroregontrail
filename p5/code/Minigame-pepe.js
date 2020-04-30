@@ -30,6 +30,11 @@ function draw(){
 // function draw()
 }
 */
+
+function pb_preload(){
+  
+}
+
 function pb_setup(){
 
   pb_defineVar();

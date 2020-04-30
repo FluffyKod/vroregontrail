@@ -902,7 +902,7 @@ function defineCanvas(){
 
 function drawTextbox(){
 
-  // ALL OF THIS IS CALLED SEVERAL TIMES A SECOND: NEED FOR LOOPS EVERY TIME??
+  // ALL OF THIS IS CALLED SEVERAL TIMES A SECOND: NEED FOR LOOPS EVERY TIME?? haah probably not //zeo
   if (!paused) {
     for (var i = 0; i < displayedOptions.length; i++) {
       displayedOptions[i].unhighlight();
