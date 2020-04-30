@@ -163,8 +163,7 @@ function drawCardGame(){
       if(cards[i].position.y > height){
         cg_playerhp-=1;
         cards[i].remove();
-      }
-      if(cards[i].overlap(cg_player)){
+      }else if(cards[i].overlap(cg_player)){
         cards[i].remove();
         cg_playerhp -=1;
       }

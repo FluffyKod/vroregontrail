@@ -1,3 +1,6 @@
+@font-face {
+  src: url(../game-assets/fonts/VPPixel-Simplified.otf);
+  font-family: pixel;
 
 /******************************
 * GENERAL
@@ -115,6 +118,7 @@ body {
 
 .box {
   background-color: #80a4b2;
+  font-family: pixel;
   color: #ebebeb;
   border: 5px #ebebeb;
   outline-style: solid;
