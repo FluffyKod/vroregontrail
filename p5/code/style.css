@@ -1,5 +1,5 @@
 @font-face {
-  src: url(../game-assets/fonts/VPPixel-Simplified.otf);
+  src: url(../../game-assets/fonts/VPPixel-Simplified.otf);
   font-family: pixel;
 }
 
@@ -16,7 +16,7 @@ body {
   max-width: 100vw;
   max-height: 100vh;
   overflow: hidden;
-  font-family: 'VT323', monospace;
+  font-family: pixel;
   letter-spacing: 2px;
 }
 
@@ -81,7 +81,7 @@ body {
 }
 
 .menu button {
-    font-family: 'VT323', monospace;
+    font-family: pixel;
     background: none;
     font-size: 40px;
     color: #000;
