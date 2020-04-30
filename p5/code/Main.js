@@ -49,8 +49,8 @@ let timer;
 // GAME ASSETS
 let backgrounds = {
   beach: 'beach.png',
-  creepyHouse: 'creepyhouse.png',
   scottish: 'scottish.png',
+  creepyHouse: 'creepyhouse.png',
   tavern: 'tavern.png'
 }
 
