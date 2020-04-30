@@ -30,7 +30,7 @@ let texttest;
 let counter;
 
 let textbox;
-let paused = true; // DEBUG
+let paused = false; // DEBUG
 
 // Minigameendings
 let minigameGameOver;

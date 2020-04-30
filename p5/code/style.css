@@ -40,9 +40,9 @@ body {
 * INTRO SCREEM
 ******************************/
 
-/* #intro-screen {
+#intro-screen {
   display: none;
-} */
+}
 
 @keyframes animateLogo {
     0% {
