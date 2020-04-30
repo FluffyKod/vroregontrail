@@ -46,7 +46,7 @@
 
     ?>
 
-      <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3"></audio>
+      <!-- <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3"></audio> -->
       <audio id="textloop-holder" hidden loop src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/textloop-long.wav"></audio>
       <audio id="choice-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/choice.wav"></audio>
       <audio id="select-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/select.wav"></audio>

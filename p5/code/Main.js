@@ -64,11 +64,15 @@ let music = {
   introBeach: 'http://vroregon.local/wp-content/uploads/wakup.wav'
 }
 
+let colors = {
+  highlands: ['background', 'color']
+}
+
 // PRODUCTION SITE MUSIC
 // let music = {
 //   highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
 //   creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
-//   highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/boss.mp3',
+//   highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
 //   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
 //   mainTheme: '',
 //   introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav'
@@ -524,13 +528,11 @@ function option(ref){
       this.ref.style('background-color','#fff');
       this.ref.style('padding-color', '#fff');
       this.ref.style('color','#80a4b2');
-
-      if(soundEnabled) {blip.play();}
   }
   this.unhighlight = function(){
-      this.ref.style('background-color','#80a4b2');
-      this.ref.style('padding-color', '#80a4b2');
-      this.ref.style('color','#fff');
+      this.ref.style('background','none');
+      this.ref.style('padding-color', 'inherit');
+      this.ref.style('color','inherit');
   }
 
   this.addItemToInventory = function(suppliedValues) {

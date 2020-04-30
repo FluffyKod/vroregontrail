@@ -118,14 +118,17 @@ body {
 ******************************/
 
 .box {
-  background-color: #80a4b2;
+  /* background-color: #80a4b2;
+   */
+   background-color: rgba(95,97,92, 0.8);
   font-family: pixel;
   color: #ebebeb;
-  border: 5px #ebebeb;
+  /* border: 5px #ebebeb; */
   outline-style: solid;
-  outline-width: 6px;
+  outline-width: 4px;
   padding: 6px;
   margin: 0px;
+  /* outline: none; */
 }
 
 #grandparent {
@@ -144,15 +147,21 @@ body {
 
 #parent {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  /* grid-template-columns: 2fr 1fr;
   grid-template-rows: 3fr 1fr;
   grid-template-areas:
     "text dev"
-    "option dev";
+    "option dev"; */
+  grid-template-columns: 1fr;
+  grid-template-rows: 3fr 1fr;
+  grid-template-areas:
+    "text"
+    "option";
   margin-left: auto;
   margin-right: auto;
-  width: 60%;
-  height: 80%;
+  width: 30%;
+  min-width: 600px;
+  height: 75%;
   grid-gap: 50px;
 }
 
@@ -178,7 +187,8 @@ body {
   padding: 6px;
   font-size: 20px;
   height: 42px;
-  color: #ebebeb
+  color: #ebebeb;
+  background: none;
 }
 
 #background-image {
@@ -191,6 +201,7 @@ body {
 }
 
 #dev-box {
+  display: none;
   grid-area: dev;
   position: relative;
   width: 100%;
