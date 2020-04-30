@@ -30,7 +30,7 @@ let texttest;
 let counter;
 
 let textbox;
-let paused = false; // DEBUG
+let paused = true; // DEBUG
 
 // Minigameendings
 let minigameGameOver;
@@ -60,7 +60,7 @@ let music = {
   creepyHouse: 'http://vroregon.local/wp-content/uploads/creepyHouse.mp3',
   highlandsBoss: 'http://vroregon.local/wp-content/uploads/highlandsBoss.mp3',
   tavern: 'http://vroregon.local/wp-content/uploads/tavern.mp3',
-  mainTheme: '',
+  mainThemeIntro: 'http://vroregon.local/wp-content/uploads/harKommerJag.mp3',
   introBeach: 'http://vroregon.local/wp-content/uploads/wakup.wav'
 }
 

@@ -46,7 +46,7 @@
 
     ?>
 
-      <!-- <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3"></audio> -->
+      <audio id="audio-holder" hidden autoplay loop src="http://vroregon.local/wp-content/uploads/harKommerJag.mp3"></audio>
       <audio id="textloop-holder" hidden loop src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/textloop-long.wav"></audio>
       <audio id="choice-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/choice.wav"></audio>
       <audio id="select-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/select.wav"></audio>
@@ -138,7 +138,7 @@
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/helpers.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Main.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/fader.js"></script>
-      <!-- <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/introscreen.js"></script> -->
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/introscreen.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-pepe.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-card-game.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ernst-running.js"></script>

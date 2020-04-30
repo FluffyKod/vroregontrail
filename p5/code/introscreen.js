@@ -37,6 +37,10 @@ $('#main-choice').mouseleave(function() {
 $('#main-choice').click(function() {
     $('#main-choice').removeClass('blink');
 
+    $('#audio-holder').animate({
+          volume: 0
+      }, 3000)
+
     $('#overlay').css('background', 'black');
     $('#overlay').animate({
         opacity: 1
@@ -47,6 +51,12 @@ $('#main-choice').click(function() {
         setTimeout(function() {
           paused = false;
         }, 2000)
+
+        // Change music
+        $('#audio-holder').attr('src', player.music)
+        $('#audio-holder').animate({
+            volume: 0.3
+        }, 3000)
 
         $('#overlay').animate({
             opacity: 0

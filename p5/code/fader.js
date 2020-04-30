@@ -18,10 +18,11 @@ function fade(music = false, continueGame = false) {
   }, 3000, function() {
 
     if (continueGame) {
+      $('#audio-holder').attr('src', player.music)
       continueGame()
     }
 
-    changeBoxColor() 
+    changeBoxColor()
 
     $('#overlay').animate({
       opacity: 0
@@ -32,11 +33,18 @@ function fade(music = false, continueGame = false) {
 
 $(window).ready(function() {
 
-    $('#audio-holder').prop('volume', 0);
+    $('#audio-holder').get(0).pause();
+    $('#audio-holder').prop('volume', 0.3);
 
-    $('#audio-holder').animate({
-        volume: 0.3
-    }, 4000)
+    setTimeout(function() {
+      $('#audio-holder').get(0).play();
+    }, 2800);
+    // $('#audio-holder').attr('src', player.music)
+    // $('#audio-holder').prop('volume', 0);
+    //
+    // $('#audio-holder').animate({
+    //     volume: 0.3
+    // }, 4000)
 
     // $('.dim').css('opacity', 1);
     //
