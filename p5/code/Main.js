@@ -318,8 +318,9 @@ function changeBackgroundImage( fileName, withFade = false ) {
 
 }
 
-function updateColor() {
-  $('.box').css
+function changeBoxColor() {
+  let classes = 'box ' + currentArea;
+  $('.box').attr('class', classes);
 }
 
 function getBackgroundImageFromArea( area ) {

@@ -3,6 +3,11 @@
   font-family: pixel;
 }
 
+:root {
+  --intro: rgba(95,97,92, 0.8);
+  --highlands: rgba(95,97,92, 0.8);
+}
+
 /******************************
 * GENERAL
 ******************************/
@@ -118,13 +123,25 @@ body {
 ******************************/
 
 .box {
-  background-color: rgba(95,97,92, 0.8);
+  background-color: var(--intro);
   font-family: pixel;
   color: #ebebeb;
   outline-style: solid;
   outline-width: 4px;
   padding: 6px;
   margin: 0px;
+}
+
+.box.intro {
+  background-color: var(--intro);
+}
+
+.box.highlands {
+  background-color: var(--highlands);
+}
+
+.box.bog {
+  background-color: var(--intro);
 }
 
 #grandparent {
@@ -142,7 +159,7 @@ body {
 }
 
 /* DEV-BOX LAYOUT */
-/* #parent {
+#parent {
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 3fr 1fr;
@@ -162,10 +179,10 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-} */
+}
 
 /* PRODUCTION LAYOUT */
-#parent {
+/* #parent {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 3fr 1fr;
@@ -186,7 +203,7 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-}
+} */
 
 
 #textbox {

@@ -54,6 +54,8 @@ function getPlayer() {
       $('#audio-holder').attr('src', player.music)
 
       resetTextbox();
+      changeBoxColor();
+      changeBackgroundImage(player.background);
 
       updateDebug();
       updateInventoryGui()

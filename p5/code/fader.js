@@ -21,6 +21,8 @@ function fade(music = false, continueGame = false) {
       continueGame()
     }
 
+    changeBoxColor() 
+
     $('#overlay').animate({
       opacity: 0
     }, 3000)
