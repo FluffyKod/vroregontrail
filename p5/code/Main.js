@@ -30,6 +30,7 @@ let texttest;
 let counter;
 
 let textbox;
+let paused = false; // DEBUG
 
 // Minigameendings
 let minigameGameOver;
@@ -47,13 +48,28 @@ let timer;
 
 // GAME ASSETS
 let backgrounds = {
-  highlandsMain: 'highlands-general.jpg',
-  introMain: 'village.png'
+  beach: 'beach.png',
+  creepyHouse: 'creepyhouse.png',
+  scottish: 'scottish.png',
+  tavern: 'tavern.png'
 }
 
+// DEV SITE MUSIC
+// let music = {
+//   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3',
+//   creepyHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3',
+//   highlandsBoss: '',
+//   tavern: '',
+//   mainTheme: ''
+// }
+
+// PRODUCTION SITE MUSIC
 let music = {
-  highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3',
-  hauntedHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3'
+  highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
+  creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
+  highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/boss.mp3',
+  tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
+  mainTheme: ''
 }
 
 //loads sprites for games, called before setup p5 shenanigans
@@ -181,51 +197,71 @@ function draw(){
 function keyPressed(){
   timer = 0;
 
-  if(!keypressed){
-    // Set the current selected option by the player to no one
-    // currentoption 1 is the first option, 2 is second etc.
-    currentoption = 0;
-    keypressed = true;
-  }
-  if(keyCode == UP_ARROW){
-    if(currentoption > 0){
-      currentoption -= 1;
-    }else {
-      currentoption = optionlength-1;
-    }
+  if (!paused) {
 
-  }
-  if(keyCode == DOWN_ARROW){
-    if(currentoption < optionlength-1){
-      currentoption += 1;
-    }else {
+    // Stop sound
+    $('#choice-holder').get(0).pause();
+    $('#choice-holder').get(0).currentTime = 0;
+
+    $('#select-holder').get(0).pause();
+    $('#select-holder').get(0).currentTime = 0;
+
+    if(!keypressed){
+      // Set the current selected option by the player to no one
+      // currentoption 1 is the first option, 2 is second etc.
       currentoption = 0;
+      keypressed = true;
     }
+    if(keyCode == UP_ARROW){
+      if(currentoption > 0){
+        currentoption -= 1;
+      }else {
+        currentoption = optionlength-1;
+      }
 
-
-  }
-  if(keyCode == ENTER){
-    textbox = select('#textbox');
-    textbox.html("")
-    counter = 0;
-    displayedOptions[currentoption].runCommand();
-    currentoption = 0;
-    load = false;
-
-    // SAVE PLAYER PROGRESS
-    savePlayer()
-
-    // DEBUG
-    updateDebug();
+      // Play choice sound
+      $('#choice-holder').get(0).play();
 
     }
-  if(keyCode == SHIFT && !soundEnabled){
-    blip = loadSound("menu_blip.wav")
-    soundEnabled = true;
+    if(keyCode == DOWN_ARROW){
+      if(currentoption < optionlength-1){
+        currentoption += 1;
+      }else {
+        currentoption = 0;
+      }
+
+      // Play choice sound
+      $('#choice-holder').get(0).play();
+    }
+    if(keyCode == ENTER){
+      textbox = select('#textbox');
+      textbox.html("")
+      counter = 0;
+      displayedOptions[currentoption].runCommand();
+      currentoption = 0;
+      load = false;
+
+      // Play select sound
+      $('#select-holder').get(0).play();
+
+      // SAVE PLAYER PROGRESS
+      savePlayer()
+
+      // DEBUG
+      updateDebug();
+
+      }
+    if(keyCode == SHIFT && !soundEnabled){
+      blip = loadSound("menu_blip.wav")
+      soundEnabled = true;
+    }
+
   }
 
 
-  }
+
+
+}
 
 ////////////////////////////////////////////
 // PLAYER CLASS
@@ -281,22 +317,47 @@ function getBackgroundImageFromArea( area ) {
 
   switch (area) {
     case 'highlands':
-      imageName = backgrounds.highlandsMain;
+      imageName = backgrounds.scottish;
       break;
 
     case 'intro':
-      imageName = backgrounds.introMain;
+      imageName = backgrounds.beach;
       break;
 
     default:
-      imageName = backgrounds.highlandsMain;
+      imageName = backgrounds.scottish;
   }
 
   return imageName;
 
 }
 
-function changeArea() {
+
+function getSongFromArea( area ) {
+
+  let song = music.highlandsMain;
+
+  switch (area) {
+    case 'intro':
+      song = music.introBeach;
+      break;
+
+    case 'highlands':
+      song = music.highlandsAmbient;
+      break;
+
+    default:
+      song = music.highlandsAmbient;
+  }
+
+  return song;
+
+}
+
+function changeArea(area) {
+
+  currentArea = area
+
   // Update player
   player.area = currentArea;
 
@@ -305,9 +366,9 @@ function changeArea() {
 
   // Change background image
   let newAreaImage = getBackgroundImageFromArea( currentArea );
-  changeBackgroundImage( newAreaImage );
+  let newSong = getSongFromArea( currentArea )
 
-  // Change music
+  return newAreaImage, newSong
 
 }
 
@@ -432,7 +493,8 @@ function getUnlockedOptions(options) {
 }
 
 function checkIfRoomExists(x, y, area = false) {
-  let roomsToCheck = (area == false) ? rooms : allAreaRooms[getAreaIndex(area)];
+
+  let roomsToCheck = (area == false) ? rooms : getRoomsFromArea( allAreaRooms, currentArea );
 
   for (room of roomsToCheck) {
     if (room.x == x && room.y == y) {
@@ -518,17 +580,6 @@ function option(ref){
       console.log('ERROR: Not enough values supplied to info command');
     }
   }
-  this.switchToArea = function(suppliedValues) {
-    if (suppliedValues.length >= 1) {
-      // switch area
-      currentArea = suppliedValues[1];
-
-      changeArea();
-
-    } else {
-      console.log('ERROR: Not enough values supplied to switcharea command');
-    }
-  }
   this.doEncounter = function(suppliedValues) {
     // Check that there are enough values
     if (suppliedValues.length >= 2) {
@@ -594,7 +645,7 @@ function option(ref){
 
       // Switch to a new area
       if (this.command == 'switchArea'){
-        this.switchToArea(this.values)
+        this.switchToArea(this.values[0])
       }
 
       // Start a new game
@@ -651,8 +702,16 @@ function option(ref){
 
       // (x, y), new area name
       if(this.command == 'move-switchArea'){
-        this.moveToNewPlace(this.values.slice(0, 2), true, this.values.slice(2));
-        this.switchToArea(this.values.slice(2));
+        let move = this.values.slice(0, 2);
+        let newArea = this.values.slice(2,3)[0]
+        let self = this;
+
+        let background, song = changeArea( newArea );
+
+        fade(song, function() {
+          changeBackgroundImage(background);
+          self.moveToNewPlace(move, true);
+        })
 
       }
 
@@ -780,10 +839,17 @@ function Room( x, y, mainText, options ){
     this.divId = divId;
 
     if (counter < inputtext.length) {
+      // Play sound effect if it is not playing
+      if ($('#textloop-holder').get(0).paused && !paused) {
+        $('#textloop-holder').get(0).play();
+      }
+
       document.getElementById(this.divId).innerHTML += inputtext.charAt(counter);
       counter++
     } else {
       write = false;
+      // Reset sound effect
+      $('#textloop-holder').get(0).pause();
     }
 
   }
@@ -819,38 +885,26 @@ function defineCanvas(){
 function drawTextbox(){
 
   // ALL OF THIS IS CALLED SEVERAL TIMES A SECOND: NEED FOR LOOPS EVERY TIME??
+  if (!paused) {
+    for (var i = 0; i < displayedOptions.length; i++) {
+      displayedOptions[i].unhighlight();
+    }
 
-  for (var i = 0; i < displayedOptions.length; i++) {
-    displayedOptions[i].unhighlight();
+    if(keypressed && timer < 600){
+      timer++;
+      displayedOptions[currentoption].highlight();
+    }
+
+    if (write) {
+      typing('textbox', currentRoom.mainText);
+    }
+
+    if(!load && currentRoom){
+      currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
+      currentRoom.load();
+      load = true;
+    }
   }
-
-  if(keypressed && timer < 600){
-    timer++;
-    displayedOptions[currentoption].highlight();
-  }
-
-  // IT WORKS WITHOUT THE CODE BELOW
-  // for (var i = 0; i < rooms.length; i++) {
-  //   if(write){
-  //     typing("textbox", rooms[i].mainText);
-  //   }
-  //   if(!load && currentRoom){
-  //     currentRoom.load();
-  //     load = true;
-  //   }
-  //
-  // }
-
-  if (write) {
-    typing('textbox', currentRoom.mainText);
-  }
-
-  if(!load && currentRoom){
-    currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
-    currentRoom.load();
-    load = true;
-  }
-
 
 }
 
@@ -882,7 +936,7 @@ function changeRoom( area, x, y ) {
   // Set the properties
   currentArea = area;
   player.area = area;
-  changeArea();
+  changeArea( currentArea );
 
   rooms = getRoomsFromArea( allAreaRooms, currentArea );
 
@@ -939,10 +993,10 @@ function resetPlayer() {
   player.background = backgrounds.highlandsMain;
   player.music = music.highlandsAmbient;
 
-  currentArea = 'test';
+  currentArea = 'intro';
   rooms = getRoomsFromArea( allAreaRooms, currentArea );
-  changeRoom( 'test', 0, 0 );
-  player.background = backgrounds.highlandsMain;
+  changeRoom( 'intro', 0, 0 );
+  player.background = backgrounds.beach;
 
   changeBackgroundImage( player.background );
 

@@ -367,10 +367,7 @@ function createRoom(x, y){
   }
 }
 
-function getAreaIndex( areaName ) {
-  const areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
-  return areas.indexOf(areaName);
-}
+
 
 // Hide all guis for alla areas
 function hideGuis(areaIndex = 0){
@@ -672,11 +669,7 @@ function createGeneralGui(){
     hideGuis(getAreaIndex(selectedArea));
     // Get all areas rooms
     let areaRoomsToSave = getAreaRoomsFromRoomArrays();
-    console.log('AREA ARRAY TO BE SAVED TO DATABASE: ', areaRoomsToSave);
     saveRoomsToDatabase(areaRoomsToSave);
-
-    // console.log('ROOM ARRAY TO BE SAVED TO DATABASE: ', roomArrays.test.rooms);
-    // saveRoomsToDatabase(roomArrays.test.rooms);
   })
   generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifNotItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br><b>move-notBeenTo</b><br><b>move-addBeenTo</b><br>')
   generalGui.addHTML('Player stats', 'intelligence<br>charisma<br>grit<br>kindness<br>dexterity' )
