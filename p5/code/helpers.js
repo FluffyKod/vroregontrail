@@ -41,7 +41,6 @@ function getPlayer() {
   }
 
   sendAjax(parameters, function(response) {
-    console.log(response);
 
     // Translate the recieved player and set the new player
     if ( response.player != false ) {
@@ -50,8 +49,8 @@ function getPlayer() {
       currentArea = player.area;
       rooms = getRoomsFromArea( allAreaRooms, currentArea );
       currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
+      // changeBackgroundImage( player.background );
 
-      changeBackgroundImage( player.background );
       $('#audio-holder').attr('src', player.music)
 
       resetTextbox();

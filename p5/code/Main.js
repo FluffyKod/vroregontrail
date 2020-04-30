@@ -55,22 +55,24 @@ let backgrounds = {
 }
 
 // DEV SITE MUSIC
-// let music = {
-//   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3',
-//   creepyHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3',
-//   highlandsBoss: '',
-//   tavern: '',
-//   mainTheme: ''
-// }
+let music = {
+  highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3',
+  creepyHouse: 'http://vroregon.local/wp-content/uploads/creepyHouse.mp3',
+  highlandsBoss: 'http://vroregon.local/wp-content/uploads/highlandsBoss.mp3',
+  tavern: 'http://vroregon.local/wp-content/uploads/tavern.mp3',
+  mainTheme: '',
+  introBeach: 'http://vroregon.local/wp-content/uploads/wakup.wav'
+}
 
 // PRODUCTION SITE MUSIC
-let music = {
-  highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
-  creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
-  highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/boss.mp3',
-  tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
-  mainTheme: ''
-}
+// let music = {
+//   highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
+//   creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
+//   highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/boss.mp3',
+//   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
+//   mainTheme: '',
+//   introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav'
+// }
 
 //loads sprites for games, called before setup p5 shenanigans
 function preload(){
@@ -368,7 +370,7 @@ function changeArea(area) {
   let newAreaImage = getBackgroundImageFromArea( currentArea );
   let newSong = getSongFromArea( currentArea )
 
-  return newAreaImage, newSong
+  return [newAreaImage, newSong]
 
 }
 
@@ -706,10 +708,11 @@ function option(ref){
         let newArea = this.values.slice(2,3)[0]
         let self = this;
 
-        let background, song = changeArea( newArea );
+        let newAssets = changeArea( newArea );
+        console.log('IN MOVE SWITCH AREA');
 
-        fade(song, function() {
-          changeBackgroundImage(background);
+        fade(newAssets[1], function() {
+          changeBackgroundImage(newAssets[0]);
           self.moveToNewPlace(move, true);
         })
 
@@ -940,8 +943,8 @@ function changeRoom( area, x, y ) {
 
   rooms = getRoomsFromArea( allAreaRooms, currentArea );
 
-  player.x = x;
-  player.y = y;
+  player.x = Number(x);
+  player.y = Number(y);
 
   // Set current room
   currentRoom = findRoomWithPlayer();
@@ -990,8 +993,8 @@ function resetPlayer() {
   player.grit = 0;
   player.kindness = 0;
   player.area = currentArea;
-  player.background = backgrounds.highlandsMain;
-  player.music = music.highlandsAmbient;
+  player.background = backgrounds.beach;
+  player.music = music.introBeach;
 
   currentArea = 'intro';
   rooms = getRoomsFromArea( allAreaRooms, currentArea );
