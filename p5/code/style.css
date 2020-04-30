@@ -118,17 +118,13 @@ body {
 ******************************/
 
 .box {
-  /* background-color: #80a4b2;
-   */
-   background-color: rgba(95,97,92, 0.8);
+  background-color: rgba(95,97,92, 0.8);
   font-family: pixel;
   color: #ebebeb;
-  /* border: 5px #ebebeb; */
   outline-style: solid;
   outline-width: 4px;
   padding: 6px;
   margin: 0px;
-  /* outline: none; */
 }
 
 #grandparent {
@@ -145,13 +141,32 @@ body {
   z-index: -1;
 }
 
+/* DEV-BOX LAYOUT */
 #parent {
   display: grid;
-  /* grid-template-columns: 2fr 1fr;
+  grid-template-columns: 2fr 1fr;
   grid-template-rows: 3fr 1fr;
   grid-template-areas:
     "text dev"
-    "option dev"; */
+    "option dev";
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  min-width: 800px;
+  height: 75%;
+  grid-gap: 50px;
+}
+
+#dev-box {
+  grid-area: dev;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* PRODUCTION LAYOUT */
+/* #parent {
+  display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 3fr 1fr;
   grid-template-areas:
@@ -164,6 +179,15 @@ body {
   height: 75%;
   grid-gap: 50px;
 }
+
+#dev-box {
+  display: none;
+  grid-area: dev;
+  position: relative;
+  width: 100%;
+  height: 100%;
+} */
+
 
 #textbox {
   grid-area: text;
@@ -198,14 +222,6 @@ body {
   position: absolute;
   top: 0;
   bottom: 0;
-}
-
-#dev-box {
-  display: none;
-  grid-area: dev;
-  position: relative;
-  width: 100%;
-  height: 100%;
 }
 
 #dev-box input {

@@ -65,7 +65,8 @@ let music = {
 }
 
 let colors = {
-  highlands: ['background', 'color']
+  intro: '#5F615C',
+  highlands: '#5F615C'
 }
 
 // PRODUCTION SITE MUSIC
@@ -317,6 +318,10 @@ function changeBackgroundImage( fileName, withFade = false ) {
 
 }
 
+function updateColor() {
+  $('.box').css
+}
+
 function getBackgroundImageFromArea( area ) {
 
   let imageName = backgrounds.highlandsMain;
@@ -527,7 +532,7 @@ function option(ref){
   this.highlight = function(){
       this.ref.style('background-color','#fff');
       this.ref.style('padding-color', '#fff');
-      this.ref.style('color','#80a4b2');
+      this.ref.style('color', colors[currentArea]);
   }
   this.unhighlight = function(){
       this.ref.style('background','none');
