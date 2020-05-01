@@ -1,7 +1,7 @@
 var er_player, er_playersize, er_playerv, jumpv;
 var er_gravity;
 var er_spawnrate;
-var score;
+var er_score;
 var er_ground;
 var jump, slide;
 
@@ -28,7 +28,7 @@ function er_preload(){
 
 
 function er_draw(){
-  if(startSc){startScreen("Ernst Running"); }
+  if(startSc){startScreen("Gate Run"); }
   if(!gameOver){drawErnstRunning();}
   if(!startSc && gameOver){
     camera.position.x = width/2;
@@ -53,7 +53,7 @@ function newGame() {
   er_player.velocity.y = 0;
   jump = false;
   slide = false;
-  score = 0;
+  er_score = 0;
 }
 
 function er_deleteVar(){
@@ -62,11 +62,12 @@ function er_deleteVar(){
   birds.removeSprites();
   er_rocks.removeSprites();
   frameCount = 0;
+  er_score = 0;
 }
 
 function er_defineVar(){
   win = false;
-  score = 0;
+  er_score = 0;
   er_spawnrate = 40
   er_playersize = 50;
   er_playerv = 8;
@@ -77,7 +78,7 @@ function er_defineVar(){
   er_player.addAnimation('jump', runner_jump)
   er_player.addAnimation('run', runner_run_anim)
   er_player.frameDelay = 6
-  er_player.velocity.x = er_playerv + 0.01*score;
+  er_player.velocity.x = er_playerv + 0.01*er_score;
   er_player.setCollider('rectangle', 0, 0, er_playersize, er_playersize)
   er_ground = createSprite(width/2,3*height/4+er_playersize/2,width,height/2);
   er_ground.draw = function(){
@@ -104,10 +105,10 @@ function drawErnstRunning(){
   drawSprites();
   textFont(pixel_font,40)
   fill(255);
-  text("Distance run: "+420*floor(score)+195+'m', er_player.position.x- width/2 +210, -50);
-  er_player.velocity.x = er_playerv + 0.01*score;
+  text("Distance run: "+420*floor(er_score)+195+'m', er_player.position.x- width/2 +210, -50);
+  er_player.velocity.x = er_playerv + 0.01*er_score;
 
-  if(score >= 100){
+  if(er_score >= 100){
     win = true;
   }
 
@@ -149,13 +150,13 @@ function drawErnstRunning(){
     rock.addImage(random(img_signs))
     rock.setCollider('rectangle',0,0,er_playersize,er_playersize);
     er_rocks.add(rock);
-    score++
+    er_score++
     }else if(rint == 1){
     bird = createSprite(er_player.position.x + width+ random(0,120), height/2- er_playersize/2-10, er_playersize, er_playersize);
     bird.addImage(random(img_signs))
     bird.rotation = 180;
     birds.add(bird);
-    score++
+    er_score++
     }
   }
 
