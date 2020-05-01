@@ -89,10 +89,11 @@ if (count($kommitees) == 0){
       <p>Kåren</p>
     </a>
 
-    <a href="game" class="nav-item" id="link-game">
-      <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">
+    <!-- TEXT ADVENTURE GAME -->
+    <!-- <a href="game" class="nav-item" id="link-game">
+      <img src="<?php echo get_bloginfo('template_directory') ?>/img/cursecircle.png" alt="" class="nav-icon">
       <p>Textäventyr</p>
-    </a>
+    </a> -->
 
     <a href="/panel/arkiv" class="nav-item" id="link-arkiv">
       <img src="<?php echo get_bloginfo('template_directory') ?>/img/folder.png" alt="" class="nav-icon">

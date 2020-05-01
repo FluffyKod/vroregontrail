@@ -675,7 +675,9 @@ function display_karbrev( $amount = 0, $header = true, $edit = true ){
   require_once ABSPATH . '/wp-admin/includes/taxonomy.php';
 
   if (category_exists( 'karbrev' ) ) {
-    $catArray = array( get_cat_ID('karbrev') );
+    $catArray = Array( get_cat_ID('karbrev') );
+  } else {
+    $catArray = Array();
   }
 
   if (count($catArray) > 0){

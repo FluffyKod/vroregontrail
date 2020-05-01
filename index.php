@@ -63,6 +63,17 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
 </header>
 
+<!-- LAUNCH -->
+<section id="notice" class="green">
+
+  <div class="news">
+    <h2>Nyheter!</h2>
+    <p>Äntligen är Kommunikationsutskottets textäventyr "Curse of the Circle" här! Hela Kapitel 1 - Highlands är släppt, så vad väntar du på? Börja spela!</p>
+  </div>
+
+  <a href="/game" class="btn lg">Till Spelet</a>
+</section>
+
 <section id="about-us">
 
   <div class="about-us-text">
@@ -117,13 +128,18 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
       <div id="frescatis" class="one">
 
-        <?php foreach ($json_odenplan_frescati['Trip'] as $key => $trip) { ?>
-          <div class="frescati-time">
-            <hr>
-            <p><b><?php echo $trip['LegList']['Leg'][0]['Origin']['name']; ?>: </b> <?php echo substr( $trip['LegList']['Leg'][0]['Origin']['time'], 0, 5 );?></p>
-            <p><b><?php echo $trip['LegList']['Leg'][0]['Destination']['name']; ?>: </b> <?php echo substr( $trip['LegList']['Leg'][0]['Destination']['time'], 0, 5); ?></p>
-          </div>
+        <?php if ($json_odenplan_frescati['Trip'] != null) { ?>
+
+          <?php foreach ($json_odenplan_frescati['Trip'] as $key => $trip) { ?>
+            <div class="frescati-time">
+              <hr>
+              <p><b><?php echo $trip['LegList']['Leg'][0]['Origin']['name']; ?>: </b> <?php echo substr( $trip['LegList']['Leg'][0]['Origin']['time'], 0, 5 );?></p>
+              <p><b><?php echo $trip['LegList']['Leg'][0]['Destination']['name']; ?>: </b> <?php echo substr( $trip['LegList']['Leg'][0]['Destination']['time'], 0, 5); ?></p>
+            </div>
+          <?php } ?>
+
         <?php } ?>
+
     </div>
 
   </div>
@@ -137,6 +153,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
       <div id="odenplans" class="one">
 
+        <?php if ($json_frescati_odenplan['Trip'] != null) { ?>
         <?php foreach ($json_frescati_odenplan['Trip'] as $key => $trip) { ?>
           <div class="frescati-time">
             <hr>
@@ -144,6 +161,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
             <p><b><?php echo $trip['LegList']['Leg'][0]['Destination']['name']; ?>: </b> <?php echo substr( $trip['LegList']['Leg'][0]['Destination']['time'], 0, 5 ); ?></p>
           </div>
         <?php } ?>
+      <?php } ?>
     </div>
 
     </div>
@@ -301,6 +319,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
   }
 
   window.addEventListener('scroll', function() {
+    scrollAppear('news');
     scrollAppear('about-us-text');
     scrollAppearAll('box');
     fillNavigationBar('v-header');

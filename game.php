@@ -61,10 +61,8 @@
           confirmButtonText: 'Ja'
         }).then((result) => {
           if (result.value) {
-            return true;
-          } else {
-            return false;
-          }
+            clearPlayer();
+          } 
         })
       }
 
