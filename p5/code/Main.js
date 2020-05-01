@@ -88,7 +88,7 @@ function preload(){
 
   if(!usingRoomDraw){
     assetFolderSrc = document.getElementById('game-asset-folder').innerText
-    pixel_font = loadFont(assetFolderSrc+"Fonts/VPPixel-Simplified.otf")
+    pixel_font = loadFont(assetFolderSrc+"fonts/VPPixel-Simplified.otf")
     spriteImgSrc = assetFolderSrc + 'Sprites/Png/';
 
     fr_preload();
@@ -131,6 +131,7 @@ function setup(){
 
     // Update player stats from the database
     getPlayer();
+    changeBackgroundImage(player.background);
 
     currentRoom = findRoomWithPlayer();
     currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
@@ -295,8 +296,8 @@ function player(){
   this.grit = 0;
   this.kindness = 0;
   this.area = currentArea;
-  this.background = backgrounds.highlandsMain;
-  this.music = music.highlands;
+  this.background = backgrounds.beach;
+  this.music = music.introBeach;
 
 }
 
@@ -336,13 +337,13 @@ function changeBoxColor() {
   if (player.background = backgrounds['highlands']) {
     classes += ' highlands';
   }
-  
+
   $('.box').attr('class', classes);
 }
 
 function getBackgroundImageFromArea( area ) {
 
-  let imageName = backgrounds.highlandsMain;
+  let imageName = backgrounds.highlands;
 
   switch (area) {
     case 'highlands':
@@ -1039,12 +1040,11 @@ function resetPlayer() {
   player.background = backgrounds.beach;
 
   changeBackgroundImage( player.background );
+  savePlayer();
 
   resetTextbox();
 
   updateDebug();
-
-  savePlayer();
 
   location.reload();
   return false;

@@ -42,7 +42,7 @@
     $user = wp_get_current_user();
     $has_played = (count($wpdb->get_results("SELECT * FROM vroregon_players WHERE user_id = $user->ID")) > 0) ? true : false;
 
-    $menu_text = ($has_played == false) ? 'NEW GAME' : 'CONTINUE GAME';
+    $menu_text = ($has_played == false) ? 'NEW ADVENTURE' : 'CONTINUE ADVENTURE';
 
     ?>
 
@@ -51,7 +51,7 @@
       <audio id="choice-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/choice.wav"></audio>
       <audio id="select-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/select.wav"></audio>
 
-      <button id="toggle-sound" type="button" name="button">TOGGLE MUSIC!</button>
+      <img id="toggle-sound" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/mini-assets/musicON.png" />
 
       <div id="overlay"></div>
 

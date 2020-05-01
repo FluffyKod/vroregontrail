@@ -67,7 +67,7 @@ body {
     width: 60%;
     min-width: 500px;
     position: absolute;
-    top: 2%;
+    top: -1%;
     left: 50%;
     transform: translateX(-50%);
     /* animation: animateLogo 4s infinite ease-in-out; */
@@ -90,7 +90,7 @@ body {
 .menu button {
     font-family: pixel;
     background: none;
-    font-size: 30px;
+    font-size: 25px;
     color: #000;
     font-weight: bold;
     letter-spacing: 10px;
@@ -264,4 +264,5 @@ body {
   z-index: 5;
   top: 0;
   left: 0;
+  width: 70px;
 }

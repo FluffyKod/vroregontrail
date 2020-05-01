@@ -73,10 +73,14 @@ $('#main-choice').click(function() {
 
 $('#toggle-sound').click(function() {
   hasSound = (hasSound == true) ? false : true;
+  let musicImgOn = $('#game-asset-folder').text() + 'mini-assets/musicON.png';
+  let musicImgOff = $('#game-asset-folder').text() + 'mini-assets/musicOFF.png';
 
   if (hasSound == true) {
+    $('#toggle-sound').attr('src', musicImgOn);
     $('#audio-holder').prop('volume', 0.3);
   } else {
+    $('#toggle-sound').attr('src', musicImgOff);
     $('#audio-holder').prop('volume', 0);
   }
 })

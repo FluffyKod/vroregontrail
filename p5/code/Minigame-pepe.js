@@ -14,7 +14,7 @@ function pb_preload(){
   pepe_idle_animation.frameDelay = 15;
   pepe_semi_alerted = loadAnimation(spriteImgSrc +'Pepe-semi-alerted.png');//borde bara visas som en bild
   pepe_fully_alerted = loadAnimation(spriteImgSrc +'Pepe-full-alerted.png');
-  hand_animation = loadAnimation(spriteImgSrc +'pepe-hand-idle.png',spriteImgSrc +'Pepe-hand-stretch.png',spriteImgSrc +'Pepe-hand-grabbed.png');
+  hand_animation = loadAnimation(spriteImgSrc +'pepe-hand-idle.png',spriteImgSrc +'Pepe-hand-stretch.png',spriteImgSrc +'pepe-hand-grabbed.png');
   hand_animation.playing = false;
   pb_background_img = loadImage(spriteImgSrc +'Pepe-bakgrund.png')
 

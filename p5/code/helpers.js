@@ -46,6 +46,8 @@ function getPlayer() {
     if ( response.player != false ) {
 
       player = JSON.parse(response.player);
+
+      changeBackgroundImage(player.background);
       currentArea = player.area;
       rooms = getRoomsFromArea( allAreaRooms, currentArea );
       currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
@@ -55,7 +57,6 @@ function getPlayer() {
 
       resetTextbox();
       changeBoxColor();
-      changeBackgroundImage(player.background);
 
       updateDebug();
       updateInventoryGui()
