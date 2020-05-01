@@ -50,7 +50,7 @@ let timer;
 let backgrounds = {
   beach: 'beach.gif',
   creepyHouse: 'creepyhouse.gif',
-  scottish: 'scottish.gif',
+  highlands: 'scottish.gif',
   tavern: 'tavern.gif'
 }
 
