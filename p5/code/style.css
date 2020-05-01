@@ -200,7 +200,7 @@ body {
 }
 
 /* DEV-BOX LAYOUT */
-#parent {
+/* #parent {
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 3fr 1fr;
@@ -220,10 +220,10 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-}
+} */
 
 /* PRODUCTION LAYOUT */
- /*#parent {
+ #parent {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 3fr 1fr;
@@ -244,7 +244,7 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-}*/
+}
 
 
 #textbox {

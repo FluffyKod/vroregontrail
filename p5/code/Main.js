@@ -341,6 +341,15 @@ function changeBoxColor() {
   if (player.background = backgrounds['highlands']) {
     classes += ' highlands';
   }
+  if (player.background = backgrounds['intro']) {
+    classes += ' intro';
+  }
+  if (player.background = backgrounds['creepyHouse']) {
+    classes += ' creepyhouse';
+  }
+  if (player.background = backgrounds['tavern']) {
+    classes += ' tavern';
+  }
 
   $('.box').attr('class', classes);
 }
