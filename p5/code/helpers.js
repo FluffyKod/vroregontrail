@@ -74,6 +74,19 @@ function getPlayer() {
 
 }
 
+function clearPlayer() {
+  parameters = {
+    action: 'clear_player'
+  }
+
+  sendAjax(parameters, function(response) {
+    console.log(response);
+  });
+
+  location.reload();
+  return false;
+}
+
 ////////////////////////////////////////////
 // SAVE ROOMS OPTIONS TO DATABASE
 ////////////////////////////////////////////

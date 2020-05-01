@@ -106,9 +106,10 @@ body {
 
 .menu button:hover{
     color: red;
+    cursor: pointer;
 }
 
-#game-img {
+#game-img, #gameover-img, #endscreen-img {
     position: absolute;
     top: 0;
     left: 0;
@@ -118,6 +119,36 @@ body {
     opacity: 1;
     pointer-events: none;
     object-fit: cover;
+}
+
+
+#gameover, #endscreen {
+  opacity: 0;
+  pointer-events: none;
+  z-index: -10;
+}
+
+#gameover .menu, #endscreen .menu {
+  z-index: -14;
+  bottom: 20%;
+}
+
+#gameover .menu button, #endscreen .menu button {
+  color: white;
+}
+
+#gameover .menu button:hover, #endscreen .menu button:hover {
+  color: red;
+}
+
+#gameover.active, #endscreen .active {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 10;
+}
+
+#gameover.active .menu, #endscreen .active .menu {
+  z-index: 14;
 }
 
 /******************************

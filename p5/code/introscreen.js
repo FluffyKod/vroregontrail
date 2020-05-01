@@ -41,7 +41,7 @@ $('#main-choice').click(function() {
           volume: 0
       }, 3000)
 
-    $('#overlay').css('background', 'black');
+    // $('#overlay').css('background', 'black');
     $('#overlay').animate({
         opacity: 1
     }, 3000, function() {
@@ -69,6 +69,10 @@ $('#main-choice').click(function() {
 
     })
 
+})
+
+$('#restart-game').click(function() {
+  clearPlayer();
 })
 
 $('#toggle-sound').click(function() {

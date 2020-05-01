@@ -81,7 +81,8 @@ let music = {
   boss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
   mainThemeIntro: 'http://vroelevkar.se/wp-content/uploads/2020/04/harKommerJag.mp3',
-  introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav'
+  introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav',
+  gameOver: 'http://vroelevkar.se/wp-content/uploads/2020/05/sheep-calm.mp3'
 }
 
 //loads sprites for games, called before setup p5 shenanigans
@@ -299,6 +300,7 @@ function player(){
   this.area = currentArea;
   this.background = backgrounds.beach;
   this.music = music.introBeach;
+  this.completed = [];
 
 }
 
@@ -543,7 +545,7 @@ function checkIfRoomExists(x, y, area = false) {
 function option(ref){
   this.ref = select(ref);
 
-  this.text = 'test';
+  this.text = '';
   this.ref.html(this.text);
 
   this.command;
@@ -823,6 +825,21 @@ function option(ref){
       if(this.command == 'move-notBeenTo'){
         this.moveToNewPlace(this.values.slice(0,2));
       }
+
+      if(this.command == 'gameover'){
+        // Show game over screen
+        $('#audio-holder').attr('src', music['gameOver']);
+        $('#gameover').addClass('active');
+      }
+
+      if(this.command == 'endscreen'){
+        // Show end screen
+        let chapterCompleted = this.values[0];
+
+        $('#audio-holder').attr('src', music['gameOver']);
+        $('#endscreen').addClass('active');
+        player.completed.push(1);
+      }
   }
 
 }
@@ -1034,6 +1051,7 @@ function resetPlayer() {
   player.area = currentArea;
   player.background = backgrounds.beach;
   player.music = music.introBeach;
+  player.completed = [];
 
   currentArea = 'intro';
   rooms = getRoomsFromArea( allAreaRooms, currentArea );

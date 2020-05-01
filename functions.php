@@ -359,3 +359,29 @@ function get_saved_player() {
   die();
 
 }
+
+// the ajax function
+add_action('wp_ajax_clear_player' , 'clear_player');
+add_action('wp_ajax_nopriv_clear_player','clear_player');
+function clear_player(){
+
+  // Access the wordpress database functions
+  global $wpdb;
+
+  // Get the current user id
+  $current_uid = get_current_user_id();
+
+  // Check if a player object already exists
+  if ( !check_if_entry_exists( 'vroregon_players', 'user_id', $current_uid ) ) {
+
+    // Create new player entry
+    remove_record( 'vroregon_players', 'user_id', $current_uid, 'Kunde inte ta bort spelar-data från databasen' );
+
+    echo json_encode( array('message' => 'removed player record') );
+
+  }
+
+  // Quit the function
+  die();
+
+}
