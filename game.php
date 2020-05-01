@@ -46,6 +46,30 @@
 
     ?>
 
+    <script type="text/javascript">
+
+      function holdup(title, text) {
+        event.stopPropagation();
+
+        Swal.fire({
+          title: title,
+          text: text,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ja'
+        }).then((result) => {
+          if (result.value) {
+            return true;
+          } else {
+            return false;
+          }
+        })
+      }
+
+    </script>
+
       <audio id="audio-holder" hidden autoplay loop src="http://vroelevkar.se/wp-content/uploads/2020/04/harKommerJag.mp3"></audio>
       <audio id="textloop-holder" hidden loop src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/textloop-long.wav"></audio>
       <audio id="choice-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/choice.wav"></audio>
@@ -61,6 +85,11 @@
 
         <div class="menu">
             <button id="main-choice" class="blink">[ <?php echo $menu_text ?> ]</button>
+
+            <?php if ($menu_text == 'CONTINUE ADVENTURE'): ?>
+                <button id="restart-game" type="button" name="button" onclick="holdup('Är du säker?', 'Om du startar om spelet kommer all din progress nollställas.')">[ RESTART GAME ]</button>
+            <?php endif; ?>
+
             <button onclick="window.location.href = '/';">[ QUIT ]</button>
         </div>
       </div>
@@ -152,7 +181,6 @@
 
       </div>
 
-
       <!-- SCRIPTS -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.2/gsap.min.js" charset="utf-8"></script>
 
@@ -168,6 +196,23 @@
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-mountain-jump.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
+
+      <script type="text/javascript">
+        setTimeout(function() {
+          if (player.completed && player.completed.length > 0) {
+            // Hide continueGame button
+            $('#main-choice').remove();
+
+            // Popup with info
+            Swal.fire(
+              'Kapitel 1 Avklarat!',
+              'Du har spelat klart kapitel 1: Highlands. Vänta på nästa release för att kunna fortsätta spela!',
+              'success'
+            )
+          }
+        }, 3000)
+
+      </script>
 
   </body>
 </html>

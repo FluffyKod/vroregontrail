@@ -75,16 +75,19 @@ function getPlayer() {
 }
 
 function clearPlayer() {
+  console.log('IN CLEAR PLAYER');
+
   parameters = {
     action: 'clear_player'
   }
 
   sendAjax(parameters, function(response) {
     console.log(response);
+
+    location.reload();
+    return false;
   });
 
-  location.reload();
-  return false;
 }
 
 ////////////////////////////////////////////

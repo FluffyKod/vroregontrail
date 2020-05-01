@@ -372,7 +372,7 @@ function clear_player(){
   $current_uid = get_current_user_id();
 
   // Check if a player object already exists
-  if ( !check_if_entry_exists( 'vroregon_players', 'user_id', $current_uid ) ) {
+  if ( check_if_entry_exists( 'vroregon_players', 'user_id', $current_uid ) ) {
 
     // Create new player entry
     remove_record( 'vroregon_players', 'user_id', $current_uid, 'Kunde inte ta bort spelar-data från databasen' );
