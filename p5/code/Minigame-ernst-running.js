@@ -37,7 +37,10 @@ function er_draw(){
     if(clearVar){er_deleteVar();}
   }
   if(win){
-
+    camera.position.x = width/2;
+    camera.position.y = height/2;
+    winScreen();
+    if(clearVar){er_deleteVar();}
   }
 }
 
@@ -51,8 +54,6 @@ function newGame() {
   jump = false;
   slide = false;
   score = 0;
-
-
 }
 
 function er_deleteVar(){
@@ -100,13 +101,13 @@ function er_defineVar(){
 function drawErnstRunning(){
   background(51);
   drawSprites();
-  textSize(40);
+  textFont(pixel_font,40)
   fill(255);
-  text(20*floor(score)+'m', er_player.position.x+ width/2 -100, 100);
+  text("Distance run: "+20*floor(score)+'m', er_player.position.x- width/2 +210, -50);
   score += 0.1;
   er_player.velocity.x = er_playerv + 0.01*score;
 
-  if(score >= 500){
+  if(score >= 200){
     win = true;
   }
 
