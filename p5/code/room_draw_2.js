@@ -671,7 +671,7 @@ function createGeneralGui(){
     let areaRoomsToSave = getAreaRoomsFromRoomArrays();
     saveRoomsToDatabase(areaRoomsToSave);
   })
-  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifNotItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br><b>move-notBeenTo</b><br><b>move-addBeenTo</b><br>')
+  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifNotItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br><b>move-notBeenTo</b><br><b>move-addBeenTo</b><br><b>gameover</b><br><b>endscreen</b>')
   generalGui.addHTML('Player stats', 'intelligence<br>charisma<br>grit<br>kindness<br>dexterity' )
 
 }
@@ -807,6 +807,16 @@ function showValueAmountControl(){
         case 'move-addBeenTo':
           activeRoom.optionGuis[i].setValue('command_description', 'move to new coordinates (value 0, value 1) and add (value 2) to player been to ')
           showAmount = 3;
+          break;
+
+        case 'gameover':
+          activeRoom.optionGuis[i].setValue('command_description', 'show gameover screen and make player reset the game')
+          showAmount = 0;
+          break;
+
+        case 'endscreen':
+          activeRoom.optionGuis[i].setValue('command_description', 'show endscreen for chapter int (value 0)')
+          showAmount = 1;
           break;
 
         default:
