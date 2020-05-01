@@ -542,7 +542,7 @@ function checkIfRoomExists(x, y, area = false) {
 function option(ref){
   this.ref = select(ref);
 
-  this.text = 'test';
+  this.text = '';
   this.ref.html(this.text);
 
   this.command;
@@ -821,6 +821,12 @@ function option(ref){
 
       if(this.command == 'move-notBeenTo'){
         this.moveToNewPlace(this.values.slice(0,2));
+      }
+
+      if(this.command == 'gameover'){
+        // Show game over screen
+        changeBackgroundImage('gameover');
+        $('gameover').addCLass('active');
       }
   }
 

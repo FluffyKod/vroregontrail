@@ -65,6 +65,15 @@
         </div>
       </div>
 
+      <div id="gameover">
+        <img id="gameover-img" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/gameover.gif" alt="">
+
+        <div class="menu">
+          <button id="restart-game">[ RESTART ADVENTURE ]</button>
+        </div>
+
+      </div>
+
       <div id="grandparent">
 
 
@@ -105,6 +114,7 @@
             <button type="button" name="button" onclick="savePlayer()">Save player</button>
             <button type="button" name="button" onclick="getPlayer()">Get player</button>
             <button type="button" name="button" onclick="resetPlayer()">Reset Game</button>
+            <button type="button" name="button" onclick="clearPlayer()">Clear Player From DB</button>
 
             <h3>Hoppa till koordinat</h3>
 
