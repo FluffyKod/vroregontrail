@@ -4,8 +4,10 @@
 }
 
 :root {
-  --intro: rgba(65,111,183, 0.6);
-  --highlands: rgba(65,111,183, 0.6);
+  --intro: rgba(95,97,92, 0.8);
+  --highlands: rgba(95,97,92, 0.8);
+  --tavern: rgba(137,38,12, 0.8);
+  --creepyhouse: rgba(79,20,28, 0.8);
 }
 
 /******************************
@@ -45,9 +47,9 @@ body {
 * INTRO SCREEM
 ******************************/
 
-#intro-screen {
+/* #intro-screen {
   display: none;
-}
+} */
 
 @keyframes animateLogo {
     0% {
@@ -65,7 +67,7 @@ body {
     width: 60%;
     min-width: 500px;
     position: absolute;
-    top: 7%;
+    top: 2%;
     left: 50%;
     transform: translateX(-50%);
     /* animation: animateLogo 4s infinite ease-in-out; */
@@ -140,8 +142,12 @@ body {
   background-color: var(--highlands);
 }
 
-.box.bog {
-  background-color: var(--intro);
+.box.tavern {
+  background-color: var(--tavern);
+}
+
+.box.creepyhouse {
+  background-color: var(--creepyhouse);
 }
 
 #grandparent {

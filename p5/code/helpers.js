@@ -51,7 +51,7 @@ function getPlayer() {
       currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
       // changeBackgroundImage( player.background );
 
-      $('#audio-holder').attr('src', player.music)
+      // $('#audio-holder').attr('src', player.music)
 
       resetTextbox();
       changeBoxColor();

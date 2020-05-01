@@ -30,7 +30,7 @@ let texttest;
 let counter;
 
 let textbox;
-let paused = false; // DEBUG
+let paused = true; // DEBUG
 
 // Minigameendings
 let minigameGameOver;
@@ -48,36 +48,38 @@ let timer;
 
 // GAME ASSETS
 let backgrounds = {
-  beach: 'beach.png',
-  scottish: 'scottish.png',
-  creepyHouse: 'creepyhouse.png',
-  tavern: 'tavern.png'
+  beach: 'beach.gif',
+  creepyHouse: 'creepyhouse.gif',
+  scottish: 'scottish.gif',
+  tavern: 'tavern.gif'
 }
 
 // DEV SITE MUSIC
-let music = {
-  highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3',
-  creepyHouse: 'http://vroregon.local/wp-content/uploads/creepyHouse.mp3',
-  highlandsBoss: 'http://vroregon.local/wp-content/uploads/highlandsBoss.mp3',
-  tavern: 'http://vroregon.local/wp-content/uploads/tavern.mp3',
-  mainTheme: '',
-  introBeach: 'http://vroregon.local/wp-content/uploads/wakup.wav'
-}
+// let music = {
+//   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3',
+//   creepyHouse: 'http://vroregon.local/wp-content/uploads/creepyHouse.mp3',
+//   highlandsBoss: 'http://vroregon.local/wp-content/uploads/highlandsBoss.mp3',
+//   tavern: 'http://vroregon.local/wp-content/uploads/tavern.mp3',
+//   mainThemeIntro: 'http://vroregon.local/wp-content/uploads/harKommerJag.mp3',
+//   introBeach: 'http://vroregon.local/wp-content/uploads/wakup.wav'
+// }
 
 let colors = {
   intro: '#5F615C',
-  highlands: '#5F615C'
+  highlands: '#5F615C',
+  tavern: '#89260c',
+  creepyHouse: '#4f141c',
 }
 
 // PRODUCTION SITE MUSIC
-// let music = {
-//   highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
-//   creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
-//   highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
-//   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
-//   mainTheme: '',
-//   introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav'
-// }
+let music = {
+  highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
+  creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
+  highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
+  tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
+  mainThemeIntro: 'http://vroelevkar.se/wp-content/uploads/2020/04/harKommerJag.mp3',
+  introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav'
+}
 
 //loads sprites for games, called before setup p5 shenanigans
 function preload(){
