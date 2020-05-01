@@ -104,11 +104,10 @@ function drawErnstRunning(){
   drawSprites();
   textFont(pixel_font,40)
   fill(255);
-  text("Distance run: "+20*floor(score)+'m', er_player.position.x- width/2 +210, -50);
-  score += 0.1;
+  text("Distance run: "+420*floor(score)+195+'m', er_player.position.x- width/2 +210, -50);
   er_player.velocity.x = er_playerv + 0.01*score;
 
-  if(score >= 200){
+  if(score >= 100){
     win = true;
   }
 
@@ -150,11 +149,13 @@ function drawErnstRunning(){
     rock.addImage(random(img_signs))
     rock.setCollider('rectangle',0,0,er_playersize,er_playersize);
     er_rocks.add(rock);
+    score++
     }else if(rint == 1){
     bird = createSprite(er_player.position.x + width+ random(0,120), height/2- er_playersize/2-10, er_playersize, er_playersize);
     bird.addImage(random(img_signs))
     bird.rotation = 180;
     birds.add(bird);
+    score++
     }
   }
 
