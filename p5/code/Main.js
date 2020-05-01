@@ -80,7 +80,8 @@ let music = {
   boss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
   mainThemeIntro: 'http://vroelevkar.se/wp-content/uploads/2020/04/harKommerJag.mp3',
-  introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav'
+  introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav',
+  gameOver: 'http://vroelevkar.se/wp-content/uploads/2020/05/sheep-calm.mp3'
 }
 
 //loads sprites for games, called before setup p5 shenanigans
@@ -825,6 +826,7 @@ function option(ref){
 
       if(this.command == 'gameover'){
         // Show game over screen
+        $('#audio-holder').attr('src', music['gameOver']);
         changeBackgroundImage('gameover');
         $('gameover').addCLass('active');
       }
