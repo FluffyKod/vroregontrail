@@ -77,7 +77,7 @@ let colors = {
 let music = {
   highlands: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
   creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
-  highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
+  boss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
   mainThemeIntro: 'http://vroelevkar.se/wp-content/uploads/2020/04/harKommerJag.mp3',
   introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav'
@@ -331,7 +331,12 @@ function changeBackgroundImage( suppliedImage, isFileName = true ) {
 }
 
 function changeBoxColor() {
-  let classes = 'box ' + currentArea;
+  let classes = 'box';
+
+  if (player.background = backgrounds['highlands']) {
+    classes += ' highlands';
+  }
+  
   $('.box').attr('class', classes);
 }
 
@@ -881,6 +886,9 @@ function Room( x, y, mainText, options ){
   }
 
   function switchToEncounter(){
+    // Switch to boss music
+    $('#audio-holder').attr('src', music['boss'])
+
     drawText = false;
     drawCanvas = true;
     grandparent.hide();
@@ -890,9 +898,13 @@ function Room( x, y, mainText, options ){
   function switchToText(){
     drawText = true;
     drawCanvas = false;
+
+    // Switch music
+    $('#audio-holder').attr('src', player.music)
+
     document.getElementById('grandparent').style = '';
     document.getElementById('grandparent').style.display = 'flex';
-    grandparent.show();
+    //grandparent.show();
     canvas.hide();
 
   }
