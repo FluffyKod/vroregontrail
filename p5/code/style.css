@@ -1,3 +1,12 @@
+@font-face {
+  src: url(../../game-assets/fonts/VPPixel-Simplified.otf);
+  font-family: pixel;
+}
+
+:root {
+  --intro: rgba(95,97,92, 0.8);
+  --highlands: rgba(95,97,92, 0.8);
+}
 
 /******************************
 * GENERAL
@@ -12,7 +21,7 @@ body {
   max-width: 100vw;
   max-height: 100vh;
   overflow: hidden;
-  font-family: 'VT323', monospace;
+  font-family: pixel;
   letter-spacing: 2px;
 }
 
@@ -36,6 +45,10 @@ body {
 * INTRO SCREEM
 ******************************/
 
+/* #intro-screen {
+  display: none;
+} */
+
 @keyframes animateLogo {
     0% {
         transform: translateX(-50%) translateY(10px);
@@ -50,8 +63,9 @@ body {
 
 #logo {
     width: 60%;
+    min-width: 500px;
     position: absolute;
-    top: -2%;
+    top: 2%;
     left: 50%;
     transform: translateX(-50%);
     /* animation: animateLogo 4s infinite ease-in-out; */
@@ -72,9 +86,9 @@ body {
 }
 
 .menu button {
-    font-family: 'VT323', monospace;
+    font-family: pixel;
     background: none;
-    font-size: 40px;
+    font-size: 30px;
     color: #000;
     font-weight: bold;
     letter-spacing: 10px;
@@ -109,13 +123,25 @@ body {
 ******************************/
 
 .box {
-  background-color: #80a4b2;
+  background-color: var(--intro);
+  font-family: pixel;
   color: #ebebeb;
-  border: 5px #ebebeb;
   outline-style: solid;
-  outline-width: 6px;
+  outline-width: 4px;
   padding: 6px;
   margin: 0px;
+}
+
+.box.intro {
+  background-color: var(--intro);
+}
+
+.box.highlands {
+  background-color: var(--highlands);
+}
+
+.box.bog {
+  background-color: var(--intro);
 }
 
 #grandparent {
@@ -132,6 +158,7 @@ body {
   z-index: -1;
 }
 
+/* DEV-BOX LAYOUT */
 #parent {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -141,10 +168,43 @@ body {
     "option dev";
   margin-left: auto;
   margin-right: auto;
-  width: 60%;
-  height: 80%;
+  width: 80%;
+  min-width: 800px;
+  height: 75%;
   grid-gap: 50px;
 }
+
+#dev-box {
+  grid-area: dev;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* PRODUCTION LAYOUT */
+/* #parent {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 3fr 1fr;
+  grid-template-areas:
+    "text"
+    "option";
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+  min-width: 600px;
+  height: 75%;
+  grid-gap: 50px;
+}
+
+#dev-box {
+  display: none;
+  grid-area: dev;
+  position: relative;
+  width: 100%;
+  height: 100%;
+} */
+
 
 #textbox {
   grid-area: text;
@@ -152,7 +212,7 @@ body {
   height: 100%;
   width: 100%;
   position: relative;
-  font-size: 23px;
+  font-size: 20px;
   line-height: 30px;
   padding: 20px;
 }
@@ -168,7 +228,8 @@ body {
   padding: 6px;
   font-size: 20px;
   height: 42px;
-  color: #ebebeb
+  color: #ebebeb;
+  background: none;
 }
 
 #background-image {
@@ -178,13 +239,6 @@ body {
   position: absolute;
   top: 0;
   bottom: 0;
-}
-
-#dev-box {
-  grid-area: dev;
-  position: relative;
-  width: 100%;
-  height: 100%;
 }
 
 #dev-box input {

@@ -30,7 +30,7 @@ let texttest;
 let counter;
 
 let textbox;
-let paused = true;
+let paused = true; // DEBUG
 
 // Minigameendings
 let minigameGameOver;
@@ -56,20 +56,27 @@ let backgrounds = {
 
 // DEV SITE MUSIC
 // let music = {
-//   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlands-ambient.mp3',
-//   creepyHouse: 'http://vroregon.local/wp-content/uploads/spaky.mp3',
-//   highlandsBoss: '',
-//   tavern: '',
-//   mainTheme: ''
+//   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3',
+//   creepyHouse: 'http://vroregon.local/wp-content/uploads/creepyHouse.mp3',
+//   highlandsBoss: 'http://vroregon.local/wp-content/uploads/highlandsBoss.mp3',
+//   tavern: 'http://vroregon.local/wp-content/uploads/tavern.mp3',
+//   mainThemeIntro: 'http://vroregon.local/wp-content/uploads/harKommerJag.mp3',
+//   introBeach: 'http://vroregon.local/wp-content/uploads/wakup.wav'
 // }
+
+let colors = {
+  intro: '#5F615C',
+  highlands: '#5F615C'
+}
 
 // PRODUCTION SITE MUSIC
 let music = {
   highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
   creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
-  highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/boss.mp3',
+  highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
-  mainTheme: ''
+  mainThemeIntro: 'http://vroelevkar.se/wp-content/uploads/2020/04/harKommerJag.mp3',
+  introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav'
 }
 
 //loads sprites for games, called before setup p5 shenanigans
@@ -289,7 +296,7 @@ function player(){
 ////////////////////////////////////////////
 // AREA FUNCTIONS
 ////////////////////////////////////////////
-function changeBackgroundImage( fileName, withFade = false ) {
+function changeBackgroundImage( suppliedImage, isFileName = true ) {
 
   // Get path to the game-assets/backgrounds/ folder
   let backgroundAssetFolder = document.getElementById('game-asset-folder').innerText + 'backgrounds/';
@@ -297,7 +304,12 @@ function changeBackgroundImage( fileName, withFade = false ) {
   // Get the html element which displays the image
   let backgroundElement = document.getElementById('background-image');
 
+  let fileName = suppliedImage;
+
   // Create full filepath
+  if (isFileName == false) {
+    fileName = backgrounds[suppliedImage];
+  }
   let newImagePath = backgroundAssetFolder + fileName;
 
   // Update player info
@@ -309,6 +321,11 @@ function changeBackgroundImage( fileName, withFade = false ) {
   // console.log('SUPPLIED FILENAME: ', fileName);
   // console.log('BACKGROUND ELEMENT SRC:', backgroundElement.src);
 
+}
+
+function changeBoxColor() {
+  let classes = 'box ' + currentArea;
+  $('.box').attr('class', classes);
 }
 
 function getBackgroundImageFromArea( area ) {
@@ -332,7 +349,32 @@ function getBackgroundImageFromArea( area ) {
 
 }
 
-function changeArea() {
+
+function getSongFromArea( area ) {
+
+  let song = music.highlandsMain;
+
+  switch (area) {
+    case 'intro':
+      song = music.introBeach;
+      break;
+
+    case 'highlands':
+      song = music.highlandsAmbient;
+      break;
+
+    default:
+      song = music.highlandsAmbient;
+  }
+
+  return song;
+
+}
+
+function changeArea(area) {
+
+  currentArea = area
+
   // Update player
   player.area = currentArea;
 
@@ -341,9 +383,9 @@ function changeArea() {
 
   // Change background image
   let newAreaImage = getBackgroundImageFromArea( currentArea );
-  changeBackgroundImage( newAreaImage );
+  let newSong = getSongFromArea( currentArea )
 
-  // Change music
+  return [newAreaImage, newSong]
 
 }
 
@@ -468,7 +510,8 @@ function getUnlockedOptions(options) {
 }
 
 function checkIfRoomExists(x, y, area = false) {
-  let roomsToCheck = (area == false) ? rooms : allAreaRooms[getAreaIndex(area)];
+
+  let roomsToCheck = (area == false) ? rooms : getRoomsFromArea( allAreaRooms, currentArea );
 
   for (room of roomsToCheck) {
     if (room.x == x && room.y == y) {
@@ -495,14 +538,12 @@ function option(ref){
   this.highlight = function(){
       this.ref.style('background-color','#fff');
       this.ref.style('padding-color', '#fff');
-      this.ref.style('color','#80a4b2');
-
-      if(soundEnabled) {blip.play();}
+      this.ref.style('color', colors[currentArea]);
   }
   this.unhighlight = function(){
-      this.ref.style('background-color','#80a4b2');
-      this.ref.style('padding-color', '#80a4b2');
-      this.ref.style('color','#fff');
+      this.ref.style('background','none');
+      this.ref.style('padding-color', 'inherit');
+      this.ref.style('color','inherit');
   }
 
   this.addItemToInventory = function(suppliedValues) {
@@ -554,17 +595,6 @@ function option(ref){
       console.log('ERROR: Not enough values supplied to info command');
     }
   }
-  this.switchToArea = function(suppliedValues) {
-    if (suppliedValues.length >= 1) {
-      // switch area
-      currentArea = suppliedValues[1];
-
-      changeArea();
-
-    } else {
-      console.log('ERROR: Not enough values supplied to switcharea command');
-    }
-  }
   this.doEncounter = function(suppliedValues) {
     // Check that there are enough values
     if (suppliedValues.length >= 2) {
@@ -612,6 +642,8 @@ function option(ref){
   this.runCommand = function() {
 
       // SINGLE COMMANDS
+      console.log('COMMAND', this.command);
+      console.log('VALUES', this.values);
 
       // Give player an item
       if(this.command == 'item'){
@@ -630,7 +662,7 @@ function option(ref){
 
       // Switch to a new area
       if (this.command == 'switchArea'){
-        this.switchToArea(this.values)
+        this.switchToArea(this.values[0])
       }
 
       // Start a new game
@@ -687,8 +719,17 @@ function option(ref){
 
       // (x, y), new area name
       if(this.command == 'move-switchArea'){
-        this.moveToNewPlace(this.values.slice(0, 2), true, this.values.slice(2));
-        this.switchToArea(this.values.slice(2));
+        let move = this.values.slice(0, 2);
+        let newArea = this.values.slice(2,3)[0]
+        let self = this;
+
+        let newAssets = changeArea( newArea );
+        console.log('IN MOVE SWITCH AREA');
+
+        fade(newAssets[1], function() {
+          changeBackgroundImage(newAssets[0]);
+          self.moveToNewPlace(move, true);
+        })
 
       }
 
@@ -697,7 +738,7 @@ function option(ref){
         let self = this;
 
         fade(false, function() {
-          changeBackgroundImage(self.values.slice(2)[0]);
+          changeBackgroundImage(self.values.slice(2,3)[0], false);
           self.moveToNewPlace(self.values.slice(0,2), true);
         })
 
@@ -861,7 +902,7 @@ function defineCanvas(){
 
 function drawTextbox(){
 
-  // ALL OF THIS IS CALLED SEVERAL TIMES A SECOND: NEED FOR LOOPS EVERY TIME??
+  // ALL OF THIS IS CALLED SEVERAL TIMES A SECOND: NEED FOR LOOPS EVERY TIME?? haah probably not //zeo
   if (!paused) {
     for (var i = 0; i < displayedOptions.length; i++) {
       displayedOptions[i].unhighlight();
@@ -913,12 +954,12 @@ function changeRoom( area, x, y ) {
   // Set the properties
   currentArea = area;
   player.area = area;
-  changeArea();
+  changeArea( currentArea );
 
   rooms = getRoomsFromArea( allAreaRooms, currentArea );
 
-  player.x = x;
-  player.y = y;
+  player.x = Number(x);
+  player.y = Number(y);
 
   // Set current room
   currentRoom = findRoomWithPlayer();
@@ -967,8 +1008,8 @@ function resetPlayer() {
   player.grit = 0;
   player.kindness = 0;
   player.area = currentArea;
-  player.background = backgrounds.highlandsMain;
-  player.music = music.highlandsAmbient;
+  player.background = backgrounds.beach;
+  player.music = music.introBeach;
 
   currentArea = 'intro';
   rooms = getRoomsFromArea( allAreaRooms, currentArea );

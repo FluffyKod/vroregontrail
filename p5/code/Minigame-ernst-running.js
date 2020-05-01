@@ -106,16 +106,16 @@ function drawErnstRunning(){
   fill(255);
   text(20*floor(score)+'m', er_player.position.x+ width/2 -100, 100);
   score += 0.1;
-  er_player.debug = true;
   er_player.velocity.x = er_playerv + 0.01*score;
 
   if(score >= 500){
     win = true;
   }
+
   if(keyIsDown(DOWN_ARROW)){
     //er_player = createSprite(width/2,height/2, er_playersize, er_playersize/2);
     slide = true;
-    er_player.changeAnimation('slide')
+    er_player.changeAnimation("slide")
     er_player.setCollider('rectangle', 0, er_playersize/4, er_playersize, er_playersize/2)
   }else if(keyWentUp(DOWN_ARROW)){
     er_player.setCollider('rectangle', 0, 0, er_playersize, er_playersize)
@@ -129,7 +129,7 @@ function drawErnstRunning(){
     er_player.velocity.y = 0;
     er_player.position.y = height/2
     jump = false;
-    er_player.changeAnimation("run")
+    if(!slide) er_player.changeAnimation("run");
   }
   if(keyWentDown(UP_ARROW) && !jump && !slide){
     er_player.velocity.y = -jumpv;

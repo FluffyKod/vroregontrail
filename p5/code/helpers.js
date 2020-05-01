@@ -41,7 +41,6 @@ function getPlayer() {
   }
 
   sendAjax(parameters, function(response) {
-    console.log(response);
 
     // Translate the recieved player and set the new player
     if ( response.player != false ) {
@@ -50,11 +49,13 @@ function getPlayer() {
       currentArea = player.area;
       rooms = getRoomsFromArea( allAreaRooms, currentArea );
       currentRoom.unlockedOptions = getUnlockedOptions(currentRoom.options);
+      // changeBackgroundImage( player.background );
 
-      changeBackgroundImage( player.background );
-      $('#audio-holder').attr('src', player.music)
+      // $('#audio-holder').attr('src', player.music)
 
       resetTextbox();
+      changeBoxColor();
+      changeBackgroundImage(player.background);
 
       updateDebug();
       updateInventoryGui()
@@ -200,6 +201,11 @@ function getAreaRooms(allRooms, area) {
       return Array()
 
   }
+}
+
+function getAreaIndex( areaName ) {
+  const areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
+  return areas.indexOf(areaName);
 }
 
 function getRoomsFromArea( rooms, area ) {
