@@ -899,6 +899,7 @@ function Room( x, y, mainText, options ){
   function switchToText(){
     drawText = true;
     drawCanvas = false;
+    win= false;
 
     // Switch music
     $('#audio-holder').attr('src', player.music)
