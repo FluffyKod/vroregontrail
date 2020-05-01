@@ -299,6 +299,7 @@ function player(){
   this.area = currentArea;
   this.background = backgrounds.beach;
   this.music = music.introBeach;
+  this.completed = [];
 
 }
 
@@ -827,8 +828,16 @@ function option(ref){
       if(this.command == 'gameover'){
         // Show game over screen
         $('#audio-holder').attr('src', music['gameOver']);
-        changeBackgroundImage('gameover');
-        $('gameover').addCLass('active');
+        $('#gameover').addClass('active');
+      }
+
+      if(this.command == 'endscreen'){
+        // Show end screen
+        let chapterCompleted = this.values[0];
+
+        $('#audio-holder').attr('src', music['gameOver']);
+        $('#endscreen').addClass('active');
+        player.completed.push(1);
       }
   }
 
@@ -1042,6 +1051,7 @@ function resetPlayer() {
   player.area = currentArea;
   player.background = backgrounds.beach;
   player.music = music.introBeach;
+  player.completed = [];
 
   currentArea = 'intro';
   rooms = getRoomsFromArea( allAreaRooms, currentArea );

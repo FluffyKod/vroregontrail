@@ -74,6 +74,15 @@
 
       </div>
 
+      <div id="endscreen">
+        <img id="endscreen-img" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/chapter1finished.png" alt="">
+
+        <div class="menu">
+          <button onclick="window.location.href = '/game';">[ BACK TO MAIN MENU ]</button>
+        </div>
+
+      </div>
+
       <div id="grandparent">
 
 

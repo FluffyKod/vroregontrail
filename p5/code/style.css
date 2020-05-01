@@ -109,7 +109,7 @@ body {
     cursor: pointer;
 }
 
-#game-img, #gameover-img {
+#game-img, #gameover-img, #endscreen-img {
     position: absolute;
     top: 0;
     left: 0;
@@ -122,32 +122,32 @@ body {
 }
 
 
-#gameover {
+#gameover, #endscreen {
   opacity: 0;
   pointer-events: none;
   z-index: -10;
 }
 
-#gameover .menu {
+#gameover .menu, #endscreen .menu {
   z-index: -14;
   bottom: 20%;
 }
 
-#gameover .menu button {
+#gameover .menu button, #endscreen .menu button {
   color: white;
 }
 
-#gameover .menu button:hover {
+#gameover .menu button:hover, #endscreen .menu button:hover {
   color: red;
 }
 
-#gameover.active {
+#gameover.active, #endscreen .active {
   opacity: 1;
   pointer-events: all;
   z-index: 10;
 }
 
-#gameover.active .menu {
+#gameover.active .menu, #endscreen .active .menu {
   z-index: 14;
 }
 
