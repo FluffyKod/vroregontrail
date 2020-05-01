@@ -5,6 +5,7 @@ let optionlength;
 let rooms = [];
 let maxOptionLength = 5;
 
+let win = false;
 // All rooms
 let allAreaRooms;
 let pixel_font;
@@ -899,7 +900,6 @@ function Room( x, y, mainText, options ){
   function switchToText(){
     drawText = true;
     drawCanvas = false;
-    win= false;
 
     // Switch music
     $('#audio-holder').attr('src', player.music)

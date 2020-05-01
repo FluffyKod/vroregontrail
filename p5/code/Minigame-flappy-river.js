@@ -7,8 +7,8 @@ var logv, rockv;
 var gameOver = true;
 var startSc = true;
 var score;
-var fr_hard = false;
-var win = false;
+var fr_hard;
+
 
 function fr_preload(){
   //spriteImgSrc sätts i Main
@@ -21,6 +21,13 @@ function fr_preload(){
 
 
 function fr_defineVar(){
+  win = false;
+  fr_hard = true;
+  for (var i = 0; i < player.beenTo.length; i++) {
+    if(player.beenTo[i] == "tavern" || player.beenTo[i] == "old_house"){
+      fr_hard = false;
+    }
+  }
   if(fr_hard){
     swimv = -21
     streamforce = 2.5
@@ -69,13 +76,14 @@ function fr_draw(){
      camera.position.x = width/2;
      camera.position.y = height/2;
      winScreen();
+     if(clearVar){fr_deleteVar();}
    }
 }
 
 function fr_deleteVar(){
   bird.remove();
   logs.removeSprites();
-//  shore.remove();
+  shore.remove();
 
 }
 
