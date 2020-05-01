@@ -411,6 +411,8 @@ function changeArea(area) {
   let newAreaImage = getBackgroundImageFromArea( currentArea );
   let newSong = getSongFromArea( currentArea )
 
+  changeBoxColor()
+
   return [newAreaImage, newSong]
 
 }
@@ -755,6 +757,7 @@ function option(ref){
         console.log('IN MOVE SWITCH AREA');
 
         fade(newAssets[1], function() {
+          changeBoxColor()
           changeBackgroundImage(newAssets[0]);
           self.moveToNewPlace(move, true);
         })
@@ -766,6 +769,7 @@ function option(ref){
         let self = this;
 
         fade(false, function() {
+          changeBoxColor()
           changeBackgroundImage(self.values.slice(2,3)[0], false);
           self.moveToNewPlace(self.values.slice(0,2), true);
         })
@@ -780,6 +784,7 @@ function option(ref){
         let song = music[this.values[3]];
 
         fade(song, function() {
+          changeBoxColor()
           // self.moveToNewPlace(self.values.slice(0,2));
           changeBackgroundImage(self.values.slice(2)[0], false);
           self.moveToNewPlace(self.values.slice(0,2), true);
