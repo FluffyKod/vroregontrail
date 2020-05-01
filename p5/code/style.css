@@ -145,13 +145,13 @@ body {
   color: red;
 }
 
-#gameover.active, #endscreen .active {
+#gameover.active, #endscreen.active {
   opacity: 1;
   pointer-events: all;
   z-index: 10;
 }
 
-#gameover.active .menu, #endscreen .active .menu {
+#gameover.active .menu, #endscreen.active .menu {
   z-index: 14;
 }
 
