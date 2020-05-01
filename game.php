@@ -51,7 +51,7 @@
       <audio id="choice-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/choice.wav"></audio>
       <audio id="select-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/select.wav"></audio>
 
-      <button id="toggle-sound" type="button" name="button">TOGGLE MUSIC</button>
+      <button id="toggle-sound" type="button" name="button">TOGGLE MUSIC!</button>
 
       <div id="overlay"></div>
 
