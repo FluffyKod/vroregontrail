@@ -48,10 +48,10 @@ let timer;
 
 // GAME ASSETS
 let backgrounds = {
-  beach: 'beach.png',
-  creepyHouse: 'creepyhouse.png',
-  scottish: 'scottish.png',
-  tavern: 'tavern.png'
+  beach: 'beach.gif',
+  creepyHouse: 'creepyhouse.gif',
+  scottish: 'scottish.gif',
+  tavern: 'tavern.gif'
 }
 
 // DEV SITE MUSIC
