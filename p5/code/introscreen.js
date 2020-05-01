@@ -52,15 +52,31 @@ $('#main-choice').click(function() {
           paused = false;
         }, 2000)
 
-        // Change music
-        $('#audio-holder').attr('src', player.music)
-        $('#audio-holder').animate({
-            volume: 0.3
-        }, 3000)
-
         $('#overlay').animate({
             opacity: 0
         }, 5000)
+
+        // Change music
+        $('#audio-holder').attr('src', player.music)
+
+        if (hasSound == true) {
+          $('#audio-holder').animate({
+              volume: 0.3
+          }, 3000)
+        } else {
+          $('#audio-holder').prop('volume', 0);
+        }
+
     })
 
+})
+
+$('#toggle-sound').click(function() {
+  hasSound = (hasSound == true) ? false : true;
+
+  if (hasSound == true) {
+    $('#audio-holder').prop('volume', 0.3);
+  } else {
+    $('#audio-holder').prop('volume', 0);
+  }
 })

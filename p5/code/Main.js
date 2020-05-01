@@ -12,10 +12,12 @@ let load;
 let grandparent;
 let canvas;
 let write = true; //kontrollerar om det som står i rummet ska skrivas eller inte
+let leftWriteOn = false;
 var gameOver;
 var startSc;
 var drawText;
 let drawCanvas;
+let hasSound = true;
 
 let spriteImgSrc;
 

@@ -258,3 +258,10 @@ body {
 .player-stats p {
   margin: 0;
 }
+
+#toggle-sound {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+}

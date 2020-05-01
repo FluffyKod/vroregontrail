@@ -1,16 +1,24 @@
 function fade(music = false, continueGame = false) {
 
   if (music != false) {
-    $('#audio-holder').animate({
-          volume: 0
-      }, 3000, function() {
-          // Change music
-          player.music = music
-          $('#audio-holder').attr('src', music)
-          $('#audio-holder').animate({
-              volume: 0.3
-          }, 3000)
-      })
+
+    if (hasSound == false) {
+      $('#audio-holder').prop('volume', 0);
+      player.music = music
+      $('#audio-holder').attr('src', music)
+    } else {
+      $('#audio-holder').animate({
+            volume: 0
+        }, 3000, function() {
+            // Change music
+            player.music = music
+            $('#audio-holder').attr('src', music)
+            $('#audio-holder').animate({
+                volume: 0.3
+            }, 3000)
+        })
+    }
+
   }
 
   $('#overlay').animate({
