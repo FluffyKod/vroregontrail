@@ -7,13 +7,13 @@ function startScreen(title, description){
   fill(255);
   this.title = title;
 
-  textSize(50);
+  textFont(pixel_font, 50)
   textAlign(CENTER, BOTTOM)
   text(this.title, width/2,height/2);
 
   blinkingText();
   if(enterTextShow){
-    textSize(20)
+    textFont(pixel_font, 30)
     textAlign(CENTER, TOP);
     text("press 'r' to start",width/2,height/2)
   }
@@ -27,32 +27,33 @@ function startScreen(title, description){
 function winScreen(){
   background(51);
   fill(255);
-  textSize(50);
+  textFont(pixel_font, 50)
   textAlign(CENTER, BOTTOM);
   text("Congratulations!", width/2,height/2);
   blinkingText();
 
   if(enterTextShow){
-    textSize(20)
+    textFont(pixel_font, 30)
     textAlign(CENTER,TOP);
     text("press 'q' to continue",width/2,height/2);
   }
   if(keyWentDown('q')){
-    print(minigameWin)
     changeRoom(currentArea, Number(minigameWin[0]), Number(minigameWin[1]));
+    switchToText();
+    clearVar = true;
   }
 }
 
 function gameOverScreen(){
   background(51);
   fill(255);
-  textSize(50);
+  textFont(pixel_font, 50)
   textAlign(CENTER, BOTTOM);
-  text("Game Over", width/2,height/2);
+  text("You failed!", width/2,height/2);
   blinkingText();
 
   if(enterTextShow){
-    textSize(20)
+    textFont(pixel_font, 30)
     textAlign(CENTER,TOP);
     text("press 'q' to go back",width/2,height/2)
 

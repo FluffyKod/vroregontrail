@@ -12,9 +12,11 @@ var win = false;
 
 function fr_preload(){
   //spriteImgSrc sätts i Main
-  img_riverplayer_falling = loadImage(spriteImgSrc + 'riverplayer-falling.png');
-  img_riverplayer_swim = loadImage(spriteImgSrc + 'riverplayer-swim.png');
-  img_riverplayer_up = loadImage(spriteImgSrc + 'riverplayer-up.png');
+  riverplayer_swim = loadAnimation(spriteImgSrc + 'riverplayer-falling.png', spriteImgSrc + 'riverplayer-swim.png', spriteImgSrc + 'riverplayer-up.png',spriteImgSrc + 'riverplayer-up.png',spriteImgSrc + 'riverplayer-up.png', spriteImgSrc + 'riverplayer-falling.png')
+  riverplayer_swim.frameDelay = 3;
+  riverplayer_swim.looping = false;
+  log_anim = loadAnimation(spriteImgSrc + "log1.png",spriteImgSrc + "log2.png",spriteImgSrc + "log3.png" )
+  log_anim.frameDelay = 12
 }
 
 
@@ -27,13 +29,13 @@ function fr_defineVar(){
     swimv = -11
   }
   shore = createSprite(8000, height/2, width, height+200 );
+  shore.shapeColor = color(255)
   logv = -3
   rockv = 10
   score = 0;
   win = false;
   bird = createSprite(width/2,height/2, 50, 50);
-  bird.addAnimation('idle', img_riverplayer_falling)
-  bird.addAnimation('swim', img_riverplayer_falling, img_riverplayer_swim, img_riverplayer_up)
+  bird.addAnimation('swim', riverplayer_swim)
 
 
 
@@ -51,7 +53,7 @@ function fr_defineVar(){
 
 function fr_draw(){
     if(startSc){
-      startScreen("Flappy River")
+      startScreen("River Swim")
 
     }
     if(!gameOver && !win){
@@ -104,10 +106,13 @@ function flappyDraw(){
   background(51);
   drawSprites();
 
+
+  if(bird.animation.getFrame()!=bird.animation.getLastFrame() && frameCount % 3 == 0)
+    bird.animation.nextFrame();
   if(keyWentDown(UP_ARROW)){
-    bird.changeAnimation('swim')
+    bird.animation.changeFrame(0)
     bird.velocity.y = swimv;
-  }else {bird.changeAnimation('idle');}
+  }else {}
   bird.velocity.y += streamforce
 
   if(bird.overlap(logs) || bird.position.y > height+30 || (bird.position.y < -200)){
@@ -118,10 +123,12 @@ function flappyDraw(){
   }
 
   if(frameCount%120 == 0 && (bird.position.x +2*width < shore.position.x)){
-    Logt = createSprite(bird.position.x + width, random(-200,200), 100, 400)
-    Logt.setCollider('rectangle',0,0,100,400);
-    Logb = createSprite(Logt.position.x, Logt.position.y + 600, 100, 400)
-    Logb.setCollider('rectangle',0,0,100,400);
+    Logt = createSprite(bird.position.x + width, random(-200,200), 140, 560)
+    Logt.addAnimation('idle', log_anim)
+    Logt.setCollider('rectangle',0,0,100,520);
+    Logb = createSprite(Logt.position.x, Logt.position.y + 720, 140, 560)
+    Logb.addAnimation('idle', log_anim)
+    Logb.setCollider('rectangle',0,0,100,520);
     logs.add(Logt)
     logs.add(Logb)
 

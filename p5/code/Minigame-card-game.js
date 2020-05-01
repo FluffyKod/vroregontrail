@@ -129,7 +129,6 @@ function drawCardGame(){
     }
     drawSprites();
     cg_playerMove();
-    print(cg_player.animation.getFrame())
     if(cg_player.animation.getFrame()!=cg_player.animation.getLastFrame() && frameCount % 12 == 0)
       cg_player.animation.nextFrame();
 
