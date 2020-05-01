@@ -61,6 +61,12 @@
 
         <div class="menu">
             <button id="main-choice" class="blink">[ <?php echo $menu_text ?> ]</button>
+
+            <?php if ($menu_text == 'CONTINUE ADVENTURE'): ?>
+                <button id="restart-game" type="button" name="button" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill starta om spelet? Du kommer att förlora all din progress.');">[ RESTART GAME ]</button>
+            <?php endif; ?>
+
+
             <button onclick="window.location.href = '/';">[ QUIT ]</button>
         </div>
       </div>
