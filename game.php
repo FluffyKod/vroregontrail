@@ -106,7 +106,7 @@
             <button id="main-choice" class="blink">[ <?php echo $menu_text ?> ]</button>
 
             <?php if ($has_played): ?>
-                <button id="restart-game" type="button" name="button" onclick="holdup('Är du säker?', 'Om du startar om spelet kommer all din progress nollställas.')">[ RESTART GAME ]</button>
+                <button id="restart-game-2" type="button" name="button" onclick="holdup('Är du säker?', 'Om du startar om spelet kommer all din progress nollställas.')">[ RESTART GAME ]</button>
             <?php endif; ?>
 
             <button onclick="window.location.href = '/';">[ QUIT ]</button>

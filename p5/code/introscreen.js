@@ -72,9 +72,9 @@ $('#main-choice').click(function() {
 
 })
 
-// $('#restart-game').click(function() {
-//   clearPlayer();
-// });
+$('#restart-game').click(function() {
+  clearPlayer();
+});
 
 $('#toggle-sound').click(function() {
   hasSound = (hasSound == true) ? false : true;
