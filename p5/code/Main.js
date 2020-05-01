@@ -620,6 +620,7 @@ function option(ref){
       clearVar = false;
       startSc = true;
       gameOver = true;
+      write = false;
       score = 0;
       if(suppliedValues[1]){fr_hard = true;}//slarvigt måste ändras
       if(!suppliedValues[1]){er_hard = true;}
