@@ -4,10 +4,14 @@
 }
 
 :root {
-  --intro: rgba(95,97,92, 0.8);
-  --highlands: rgba(95,97,92, 0.8);
-  --tavern: rgba(137,38,12, 0.8);
-  --creepyhouse: rgba(79,20,28, 0.8);
+  --introHex: #416fb7;
+  --intro: rgba(65,111,183, 0.7);
+  --highlandsHex: #3a8530;
+  --highlands: rgba(58,133,48, 0.7);
+  --tavernHex: #89260c;
+  --tavern: rgba(137,38,12, 0.7);
+  --creepyhouseHex: #4f141c;
+  --creepyhouse: rgba(79,20,28, 0.7);
 }
 
 /******************************
@@ -297,3 +301,15 @@ body {
   left: 0;
   width: 70px;
 }
+
+/* #tutorial {
+  width: 500px;
+  height: 500px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+  background-color: var(--intro);
+  text-align: center;
+} */

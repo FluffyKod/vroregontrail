@@ -52,6 +52,7 @@ let timer;
 // GAME ASSETS
 let backgrounds = {
   beach: 'beach.gif',
+  castle: 'castle.png',
   creepyHouse: 'creepyhouse.gif',
   highlands: 'scottish.gif',
   tavern: 'tavern.gif'
@@ -68,8 +69,8 @@ let backgrounds = {
 // }
 
 let colors = {
-  intro: '#5F615C',
-  highlands: '#5F615C',
+  intro: '#416fb7',
+  highlands: '#3a8530',
   tavern: '#89260c',
   creepyHouse: '#4f141c',
 }

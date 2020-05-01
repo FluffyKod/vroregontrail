@@ -45,6 +45,7 @@ $('#main-choice').click(function() {
     $('#overlay').animate({
         opacity: 1
     }, 3000, function() {
+
         $('#game-img').css('opacity', 1);
         $('#grandparent').css('z-index', 2);
 

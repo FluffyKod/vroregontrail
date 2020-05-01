@@ -62,7 +62,7 @@
         }).then((result) => {
           if (result.value) {
             clearPlayer();
-          } 
+          }
         })
       }
 
@@ -77,6 +77,15 @@
 
       <div id="overlay"></div>
 
+      <p id="has-played" hidden><?php echo ($has_played == true) ? 'yes' : 'no' ?></p>
+
+      <!-- <div id="overlay-black"></div>
+
+      <div id="tutorial" class="box">
+        <h1>Welcome!</h1>
+        <p>This is text adventure game</p>
+      </div> -->
+
       <div id="intro-screen">
         <img id="intro-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/beach.png" alt="test">
         <img id="logo" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/curseofthecircle.png" alt="">
@@ -84,7 +93,7 @@
         <div class="menu">
             <button id="main-choice" class="blink">[ <?php echo $menu_text ?> ]</button>
 
-            <?php if ($menu_text == 'CONTINUE ADVENTURE'): ?>
+            <?php if ($has_played): ?>
                 <button id="restart-game" type="button" name="button" onclick="holdup('Är du säker?', 'Om du startar om spelet kommer all din progress nollställas.')">[ RESTART GAME ]</button>
             <?php endif; ?>
 
@@ -129,8 +138,6 @@
           </div>
 
           <div id="dev-box" class="box">
-
-            <h3>Ruminfo</h3>
             <h4 id="room-info"></h4>
 
             <h3>Inventory</h3>
