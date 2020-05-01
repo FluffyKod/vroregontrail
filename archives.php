@@ -4,7 +4,10 @@
  * Template Name: Arkiv
  */
 
-// In register link
+ // Do not show page for gamers only
+ if (current_user_can('gamer')){
+   wp_redirect( '/' );
+ }
 
 // Show this page only to admin or Elevkåren
 if (! is_user_logged_in() ){

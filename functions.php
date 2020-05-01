@@ -105,6 +105,8 @@ add_role( 'elevkaren', 'Elevkåren', array(
   'edit_dashboard' => false
 ) );
 
+add_role( 'gamer', 'Gamer' );
+
 /*****************************************
 * Database
 *****************************************/

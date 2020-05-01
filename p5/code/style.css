@@ -338,7 +338,15 @@ body {
   padding: 20px 40px;
   border-radius: 20px;
   text-decoration: none;
+  margin: 20px auto;
   display: block;
   width: 50%;
-  margin: 100px auto;
+}
+
+#login .box p {
+  font-size: 18px;
+}
+
+#login .box p:nth-child(3) {
+  margin-top: 50px;
 }

@@ -455,6 +455,46 @@ elseif (isset($_POST['link_new_user'])) {
 
 }
 
+elseif (isset($_POST['add-game-user'])) {
+
+  global $wpdb;
+
+  $return = '/register-gamer?add_user';
+  $success_return = '/game';
+
+  // Get the values
+  $email_address = check_post( $_POST['email_address'], $return . '=empty' );
+  $password = $_POST['password'];
+  check_if_empty( array($password), $return . "=empty&email=$email_address" );
+
+  // Create a new wp_user
+  $user_id = wp_create_user($email_address, $password, $email_address);
+
+  wp_update_user(
+    array(
+      'ID'       => $user_id,
+      'nickname' => $email_address
+    )
+  );
+
+  // Set user role
+  $user = new WP_User( $user_id );
+  $user->set_role( 'gamer' );
+
+  // Log them in
+  wp_set_current_user( $user_id, $user->user_login );
+  wp_set_auth_cookie( $user_id );
+  do_action( 'wp_login', $user->user_login );
+
+  // Logg action
+  $log_description = 'Registrerade spelkontot med mailen ' . $email_address;
+  add_log( 'Medlemmar', $log_description, get_current_user_id() );
+
+  // Send to dashboard. Success!
+  send_header( $success_return );
+
+}
+
 elseif(isset($_POST['quit_being_member'])) {
 
   $return = 'Location: /panel/medlemmar?quitmember=';
