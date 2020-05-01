@@ -25,7 +25,7 @@
 
   <?php
   // Only show game to logged in users
-  if (! is_student_admin() ){
+  if (! is_user_logged_in() ){
     ?>
 
     <div id="login">
