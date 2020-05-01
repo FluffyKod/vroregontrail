@@ -3,7 +3,7 @@
 var cg_player, cg_playersize, cg_playerspeed, cg_playerhp;
 var cg_bullets, cg_bulletspeed;
 var cards, cardwidth, cardheight, cardspeed, cardrate;
-var score = 0;
+var cg_score = 52;
 
 function cg_preload(){
   //spriteImgSrc sätts i Main
@@ -97,7 +97,7 @@ function spawnCards(){
   if(frameCount % spawnrate == 0){
     card = createSprite(random(cardwidth,width-cardwidth), -20, cardwidth, cardheight)
     card.addImage(random(card_images))
-    card.velocity.y = random(5, cardspeed+score*0.15);
+    card.velocity.y = random(5, cardspeed+cg_score*0.15);
     cards.add(card);
   }
 
@@ -108,24 +108,26 @@ function newGame() {
   cg_bullets.removeSprites();
   gameOver = false;
   updateSprites(true);
-  score = 0;
+  cg_score = 52;
   cg_playerhp = 3;
 }
 
 function cardHit(card, bullet) {
   bullet.remove();
   card.remove();
-  score++;
+  cg_score-=1;
 }
 
 
 function drawCardGame(){
 
     background(51);
-    fill(255)
-    text(score, width-100, 50);
-    cardspeed = 2 + 0.1*score;
-    if(score >= 52){
+    fill(200)
+    textFont(pixel_font, 40)
+    text("Cards left: " + cg_score, 20, 50);
+    text("Lives left: " + cg_playerhp, 20, 100 )
+    cardspeed = 2 - 0.03*cg_score;
+    if(cg_score <= 0){
       win = true;
     }
     drawSprites();
