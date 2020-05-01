@@ -79,9 +79,7 @@ function er_defineVar(){
   er_player.setCollider('rectangle', 0, 0, er_playersize, er_playersize)
   er_ground = createSprite(width/2,3*height/4+er_playersize/2,width,height/2);
   er_ground.draw = function(){
-    strokeWeight(6)
-    stroke(255)
-    noFill();
+    fill(255)
     rect(0,0,width, height/2);
   }
   birds = new Group();

@@ -7,7 +7,7 @@ let maxOptionLength = 5;
 
 // All rooms
 let allAreaRooms;
-
+let pixel_font;
 let load;
 let grandparent;
 let canvas;
@@ -83,11 +83,14 @@ let colors = {
 function preload(){
 
   if(!usingRoomDraw){
-    spriteImgSrc = document.getElementById('game-asset-folder').innerText + 'Sprites/Png/';
+    assetFolderSrc = document.getElementById('game-asset-folder').innerText
+    pixel_font = loadFont(assetFolderSrc+"Fonts/VPPixel-Simplified.otf")
+    spriteImgSrc = assetFolderSrc + 'Sprites/Png/';
 
     fr_preload();
     cg_preload();
-    er_preload()
+    er_preload();
+    pb_preload();
   }
 }
 

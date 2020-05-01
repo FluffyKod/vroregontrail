@@ -4,8 +4,8 @@
 }
 
 :root {
-  --intro: rgba(95,97,92, 0.8);
-  --highlands: rgba(95,97,92, 0.8);
+  --intro: rgba(65,111,183, 0.6);
+  --highlands: rgba(65,111,183, 0.6);
 }
 
 /******************************
@@ -182,7 +182,7 @@ body {
 }
 
 /* PRODUCTION LAYOUT */
-/* #parent {
+ /*#parent {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 3fr 1fr;
@@ -203,7 +203,7 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-} */
+}*/
 
 
 #textbox {
