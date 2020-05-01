@@ -64,7 +64,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 </header>
 
 <!-- LAUNCH -->
-<section id="notice" class="green">
+<!-- <section id="notice" class="green">
 
   <div class="news">
     <h2>Nyheter!</h2>
@@ -72,7 +72,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
   </div>
 
   <a href="/game" class="btn lg">Till Spelet</a>
-</section>
+</section> -->
 
 <section id="about-us">
 
@@ -319,7 +319,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
   }
 
   window.addEventListener('scroll', function() {
-    scrollAppear('news');
+    // scrollAppear('news'); LAUNCH
     scrollAppear('about-us-text');
     scrollAppearAll('box');
     fillNavigationBar('v-header');
