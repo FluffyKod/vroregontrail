@@ -338,16 +338,16 @@ function changeBackgroundImage( suppliedImage, isFileName = true ) {
 function changeBoxColor() {
   let classes = 'box';
 
-  if (player.background = backgrounds['highlands']) {
+  if (player.background == backgrounds['highlands']) {
     classes += ' highlands';
   }
-  if (player.background = backgrounds['intro']) {
+  if (player.background == backgrounds['intro']) {
     classes += ' intro';
   }
-  if (player.background = backgrounds['creepyHouse']) {
+  if (player.background == backgrounds['creepyHouse']) {
     classes += ' creepyhouse';
   }
-  if (player.background = backgrounds['tavern']) {
+  if (player.background == backgrounds['tavern']) {
     classes += ' tavern';
   }
 
