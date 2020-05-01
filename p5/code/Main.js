@@ -75,7 +75,7 @@ let colors = {
 
 // PRODUCTION SITE MUSIC
 let music = {
-  highlandsAmbient: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
+  highlands: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsAmbient.mp3',
   creepyHouse: 'http://vroelevkar.se/wp-content/uploads/2020/04/creepyHouse.mp3',
   highlandsBoss: 'http://vroelevkar.se/wp-content/uploads/2020/04/highlandsBoss.mp3',
   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
@@ -296,7 +296,7 @@ function player(){
   this.kindness = 0;
   this.area = currentArea;
   this.background = backgrounds.highlandsMain;
-  this.music = music.highlandsAmbient;
+  this.music = music.highlands;
 
 }
 
@@ -341,7 +341,7 @@ function getBackgroundImageFromArea( area ) {
 
   switch (area) {
     case 'highlands':
-      imageName = backgrounds.scottish;
+      imageName = backgrounds.highlands;
       break;
 
     case 'intro':
@@ -349,7 +349,7 @@ function getBackgroundImageFromArea( area ) {
       break;
 
     default:
-      imageName = backgrounds.scottish;
+      imageName = backgrounds.highlands;
   }
 
   return imageName;
@@ -367,11 +367,11 @@ function getSongFromArea( area ) {
       break;
 
     case 'highlands':
-      song = music.highlandsAmbient;
+      song = music.highlands;
       break;
 
     default:
-      song = music.highlandsAmbient;
+      song = music.highlands;
   }
 
   return song;
@@ -613,6 +613,7 @@ function option(ref){
       score = 0;
       if(suppliedValues[1]){fr_hard = true;}//slarvigt måste ändras
       if(!suppliedValues[1]){er_hard = true;}
+      $('#intro-screen').css('display', 'none');
       switchToEncounter();
     } else {
       console.log('ERROR: Not enough values supplied to encounter command');
@@ -760,7 +761,7 @@ function option(ref){
 
         fade(song, function() {
           // self.moveToNewPlace(self.values.slice(0,2));
-          changeBackgroundImage(self.values.slice(2)[0]);
+          changeBackgroundImage(self.values.slice(2)[0], false);
           self.moveToNewPlace(self.values.slice(0,2), true);
 
         })
@@ -889,6 +890,8 @@ function Room( x, y, mainText, options ){
   function switchToText(){
     drawText = true;
     drawCanvas = false;
+    document.getElementById('grandparent').style = '';
+    document.getElementById('grandparent').style.display = 'flex';
     grandparent.show();
     canvas.hide();
 
