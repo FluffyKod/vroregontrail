@@ -2,13 +2,6 @@
 /**
  * Template Name: Game
  */
-
- // Only show game to logged in users
- if (! is_student_admin() ){
-   echo "<h1>Du måste logga in som admin för att se spelet</h1>";
-   echo '<a href="/wp-login.php">Logga In</a>';
- } else {
-
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +22,24 @@
 
   </head>
   <body>
+
+  <?php
+  // Only show game to logged in users
+  if (! is_student_admin() ){
+    ?>
+
+    <div id="login">
+      <div class="box">
+
+        <h1>Du måste vara inloggad för att se spelet!</h1>
+        <a href="/wp-login.php?redirect=game">Logga In</a>
+      </div>
+    </div>
+
+    <?php
+  } else {
+
+ ?>
 
     <!-- ***********************************
     * ERROR HANDLING
