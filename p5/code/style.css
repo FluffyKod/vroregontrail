@@ -6,6 +6,8 @@
 :root {
   --intro: rgba(95,97,92, 0.8);
   --highlands: rgba(95,97,92, 0.8);
+  --tavern: rgba(137,38,12, 0.8);
+  --creepyhouse: rgba(79,20,28, 0.8);
 }
 
 /******************************
@@ -140,8 +142,12 @@ body {
   background-color: var(--highlands);
 }
 
-.box.bog {
-  background-color: var(--intro);
+.box.tavern {
+  background-color: var(--tavern);
+}
+
+.box.creepyhouse {
+  background-color: var(--creepyhouse);
 }
 
 #grandparent {

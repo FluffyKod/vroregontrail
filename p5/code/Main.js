@@ -66,7 +66,9 @@ let backgrounds = {
 
 let colors = {
   intro: '#5F615C',
-  highlands: '#5F615C'
+  highlands: '#5F615C',
+  tavern: '#89260c',
+  creepyHouse: '#4f141c',
 }
 
 // PRODUCTION SITE MUSIC
