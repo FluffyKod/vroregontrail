@@ -44,6 +44,7 @@ function cg_draw(){
 }
 
 function cg_defineVar(){
+    win = false;
     gameOver = true;
     startSc = true;
     spawnrate = 80; //higher -> lower rate

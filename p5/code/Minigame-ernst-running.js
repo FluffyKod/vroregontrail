@@ -65,6 +65,7 @@ function er_deleteVar(){
 }
 
 function er_defineVar(){
+  win = false;
   score = 0;
   er_spawnrate = 40
   er_playersize = 50;
