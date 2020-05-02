@@ -53,7 +53,7 @@ function newGame() {
   er_player.velocity.y = 0;
   jump = false;
   slide = false;
-  er_score = 0;
+  er_score = 100;
 }
 
 function er_deleteVar(){
@@ -62,12 +62,12 @@ function er_deleteVar(){
   birds.removeSprites();
   er_rocks.removeSprites();
   frameCount = 0;
-  er_score = 0;
+  er_score = 100;
 }
 
 function er_defineVar(){
   win = false;
-  er_score = 0;
+  er_score = 100;
   er_spawnrate = 40
   er_playersize = 50;
   er_playerv = 8;
@@ -105,10 +105,11 @@ function drawErnstRunning(){
   drawSprites();
   textFont(pixel_font,40)
   fill(255);
-  text("Distance run: "+420*floor(er_score)+195+'m', er_player.position.x- width/2 +210, -50);
-  er_player.velocity.x = er_playerv + 0.01*er_score;
+  print(er_score)
+  text("Distance left: "+Number((420*floor(er_score))+195)+'m', er_player.position.x- width/2 +210, -50);
+  er_player.velocity.x = er_playerv - 0.01*er_score;
 
-  if(er_score >= 100){
+  if(er_score <= 0){
     win = true;
   }
 
@@ -150,13 +151,13 @@ function drawErnstRunning(){
     rock.addImage(random(img_signs))
     rock.setCollider('rectangle',0,0,er_playersize,er_playersize);
     er_rocks.add(rock);
-    er_score++
+    er_score-= 1
     }else if(rint == 1){
     bird = createSprite(er_player.position.x + width+ random(0,120), height/2- er_playersize/2-10, er_playersize, er_playersize);
     bird.addImage(random(img_signs))
     bird.rotation = 180;
     birds.add(bird);
-    er_score++
+    er_score-= 1
     }
   }
 
