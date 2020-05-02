@@ -32,7 +32,14 @@
       <div class="box">
 
         <h1>Du måste vara inloggad för att se spelet!</h1>
+
         <a href="/wp-login.php?redirect=game">Logga In</a>
+
+        <p>Är du elev på skolan men har inget konto?</p>
+        <a href="/register">Registrera dig för ett elevkonto här!</a>
+
+        <p>Går du inte på skolan men vill fortfarande kunna spela spelet?</p>
+        <a href="/register-gamer">Registrera dig för ett spelkonto här!</a>
       </div>
     </div>
 
@@ -106,7 +113,7 @@
             <button id="main-choice" class="blink">[ <?php echo $menu_text ?> ]</button>
 
             <?php if ($has_played): ?>
-                <button id="restart-game" type="button" name="button" onclick="holdup('Är du säker?', 'Om du startar om spelet kommer all din progress nollställas.')">[ RESTART GAME ]</button>
+                <button id="restart-game-2" type="button" name="button" onclick="holdup('Är du säker?', 'Om du startar om spelet kommer all din progress nollställas.')">[ RESTART GAME ]</button>
             <?php endif; ?>
 
             <button onclick="window.location.href = '/';">[ QUIT ]</button>

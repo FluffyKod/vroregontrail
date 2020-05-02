@@ -4,6 +4,11 @@
  * Template Name: Projektgrupper
  */
 
+ // Do not show page for gamers only
+ if (current_user_can('gamer')){
+   wp_redirect( '/' );
+ }
+
  // CHECK IF LOGGED IN SND ADMIN
  if (! is_user_logged_in() ){
    wp_redirect( '/panel' );

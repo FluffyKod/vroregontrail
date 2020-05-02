@@ -4,6 +4,11 @@
  * Template Name: Visselpipan
  */
 
+ // Do not show page for gamers only
+ if (current_user_can('gamer')){
+   wp_redirect( '/' );
+ }
+
 // CHECK IF LOGGED IN
 if (! is_user_logged_in() ){
   wp_redirect( '/wp-login.php' );

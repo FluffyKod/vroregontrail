@@ -3,10 +3,11 @@
 /**
  * Template Name: Kåren
  */
-
-?>
-
-<?php
+ 
+ // Do not show page for gamers only
+ if (current_user_can('gamer')){
+   wp_redirect( '/' );
+ }
 
 // Show this page to all logged in users
 if (! is_user_logged_in() ){

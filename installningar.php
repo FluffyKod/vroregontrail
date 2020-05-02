@@ -4,9 +4,10 @@
  * Template Name: Inställningar
  */
 
-?>
-
-<?php
+ // Do not show page for gamers only
+ if (current_user_can('gamer')){
+   wp_redirect( '/' );
+ }
 
 // Show this page only to admin
 if (! is_user_logged_in() || !(current_user_can('administrator') || current_user_can('elevkaren') ) ){

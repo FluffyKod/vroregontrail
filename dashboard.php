@@ -4,7 +4,12 @@
  * Template Name: Admin
  */
 
-// Show this page only to admin or Elevkåren
+// Do not show page for gamers only
+if (current_user_can('gamer')){
+  wp_redirect( '/' );
+}
+
+// Check if logged in
 if (! is_user_logged_in() ){
   wp_redirect( '/wp-login.php' );
 } else {

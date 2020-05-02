@@ -11,6 +11,11 @@
 //   wp_redirect( '/' );
 // } else {
 
+// Do not show page for gamers only
+if (current_user_can('gamer')){
+  wp_redirect( '/' );
+}
+
 if (! is_user_logged_in() ){
   wp_redirect( '/wp-login.php' );
 } else {

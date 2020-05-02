@@ -338,8 +338,17 @@ function changeBackgroundImage( suppliedImage, isFileName = true ) {
 function changeBoxColor() {
   let classes = 'box';
 
-  if (player.background = backgrounds['highlands']) {
+  if (player.background == backgrounds['highlands']) {
     classes += ' highlands';
+  }
+  if (player.background == backgrounds['intro']) {
+    classes += ' intro';
+  }
+  if (player.background == backgrounds['creepyHouse']) {
+    classes += ' creepyhouse';
+  }
+  if (player.background == backgrounds['tavern']) {
+    classes += ' tavern';
   }
 
   $('.box').attr('class', classes);
@@ -401,6 +410,8 @@ function changeArea(area) {
   // Change background image
   let newAreaImage = getBackgroundImageFromArea( currentArea );
   let newSong = getSongFromArea( currentArea )
+
+  changeBoxColor()
 
   return [newAreaImage, newSong]
 
@@ -746,6 +757,7 @@ function option(ref){
         console.log('IN MOVE SWITCH AREA');
 
         fade(newAssets[1], function() {
+          changeBoxColor()
           changeBackgroundImage(newAssets[0]);
           self.moveToNewPlace(move, true);
         })
@@ -757,6 +769,7 @@ function option(ref){
         let self = this;
 
         fade(false, function() {
+          changeBoxColor()
           changeBackgroundImage(self.values.slice(2,3)[0], false);
           self.moveToNewPlace(self.values.slice(0,2), true);
         })
@@ -771,6 +784,7 @@ function option(ref){
         let song = music[this.values[3]];
 
         fade(song, function() {
+          changeBoxColor()
           // self.moveToNewPlace(self.values.slice(0,2));
           changeBackgroundImage(self.values.slice(2)[0], false);
           self.moveToNewPlace(self.values.slice(0,2), true);
