@@ -359,7 +359,7 @@ function roomSprite(x,y){
 
 
 
-// Hide all guis for alla areas
+// Hide all guis for all areas
 function hideGuis(areaIndex = 0){
   let spriteArrays =
   [
