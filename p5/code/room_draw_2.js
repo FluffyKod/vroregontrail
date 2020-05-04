@@ -158,30 +158,6 @@ function drawGrid(){
     line(x,0,x,height)
   }
 }
-//TODO: fungerar inte för någon anledning
-function outlineZeroRoom(){
-  stroke(activeArea.lightColor)
-  noFill()
-  rect((floor(width/2)*roomBoxSize+roomBoxSize/2),(floor(height/2)*roomBoxSize+roomBoxSize/2), roomBoxSize, roomBoxSize)
-}
-
-function highlightOverMouse(){
-  if(!guiMouseIsOver){
-    hx = mouseX + (32-(mouseX%64));
-    hy = mouseY + (32-(mouseY%64));
-    fill(color(255,255,255,50));
-    noStroke();
-    rectMode(CENTER);
-    rect(hx,hy,roomBoxSize, roomBoxSize);
-    if(showCoordinatesHighlight){
-      indexCoordinates = screenToIndexCoordinates(hx,hy);
-      fill(activeArea.darkColor);
-      coordinateStr= "(" + indexCoordinates.x + ", " + indexCoordinates.y + ")"
-      textSize(15);
-      text(coordinateStr, hx-roomBoxSize/2+10,hy-roomBoxSize/2+25);
-    };
-  }
-}
 
 function keyPressed(){
   /* tog bort var jobbigt, kanske kan byta till annan knapp
