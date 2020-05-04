@@ -132,7 +132,7 @@ function setup(){
 
   }); // End load rooms
   drawScene()
-  drawZeroIndicator();
+  //drawZeroIndicator();
 
 }
 
@@ -174,14 +174,17 @@ function keyPressed(){
 }
 
 function mousePressed(){
-
+  //borde inte behöva gömma alla, borde göras bättre
+  hideGuis(getAreaIndex(selectedArea))
   if(activeRoom){ //kollar om något rum ens finns
     showValueAmountControl();
     optionShowControl();
   } //lite spray and pray måste nog inte kallas här
-  let mouseIndexCoordinates = screenToIndexCoordinates(mouseX, mouseY);
+  let mouseScreenCoordinates = {x: mouseX + (roomBoxSize/2-(mouseX%roomBoxSize)), y: mouseY + (roomBoxSize/2-(mouseY%roomBoxSize)) }
+  let mouseIndexCoordinates = screenToIndexCoordinates(mouseScreenCoordinates.x, mouseScreenCoordinates.y);
 
   let onSprite = false;
+  print(mouseIndexCoordinates)
   for (var i = 0; i < activeRoomSpriteArray.length; i++) {
     if(mouseIndexCoordinates.x == activeRoomSpriteArray[i].indexX && mouseIndexCoordinates.y == activeRoomSpriteArray[i].indexY){
       activeRoomSpriteArray[i].onMousePressed();
@@ -189,7 +192,7 @@ function mousePressed(){
     }
   }
   if(!onSprite && !guiMouseIsOver){
-    createRoomSprite(mouseX + (roomBoxSize/2-(mouseX%roomBoxSize)), mouseY + (roomBoxSize/2-(mouseY%roomBoxSize)) ); //modulo skiten gör så att den hamnar på  sitt grid
+    createRoomSprite(mouseScreenCoordinates.x, mouseScreenCoordinates.y); //modulo skiten gör så att den hamnar på  sitt grid
   }
   drawScene()
 }
@@ -224,20 +227,21 @@ function createRoomSprite(x, y){
     optionShowControl(); //lite spray and pray måste nog inte kallas här
     activeRoom.gui.hide();
   }
+  //egentligen bara en dubbelkoll, ska aldrig kunna kallas så länge det inte råkar finnas kopior i databasen.
   ableToCreateRoom = true;
   for (var i = 0; i < activeRoomSpriteArray.length; i++) {
-    if(activeRoomSpriteArray[i].indexX == (this.x-floor(width/2)-roomBoxSize/2)/roomBoxSize && activeRoomSpriteArray[i].indexY ==  (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize){
+    if(activeRoomSpriteArray[i].indexX == (x-floor(width/2)-roomBoxSize/2)/roomBoxSize && activeRoomSpriteArray[i].indexY ==  (y-floor(height/2)-roomBoxSize/2)/roomBoxSize){
       print("error: stupid code tried to make a room where one already existed");
       ableToCreateRoom = false;
 
     }
   }
   if(ableToCreateRoom){
-    roomSprite = new roomSprite(x,y)
+    rs = new roomSprite(x,y);
     if(activeRoom){activeRoom.active = false;} //sätter den gamla aktiva till inaktiv om den existerar
-    roomSprite.active = true;
-    activeRoom = roomSprite;
-    activeRoomSpriteArray.push(roomSprite);
+    rs.active = true;
+    activeRoom = rs;
+    activeRoomSpriteArray.push(rs);
   }
 
 
@@ -261,36 +265,26 @@ function roomSprite(x,y){
   this.gui.setDraggable(false);
   this.gui.setWidth(250);
   this.gui.addTextArea('main_text', "");
-  this.gui.addNumber('option_amount', 0,maxOptionAmount,0,1, function(value)
-  {
-    for (var i = 0; i < maxOptionAmount; i++) {
-      this.optionGuis[i].hide()
-    }
-    for (var i = 0; i < value; i++) {
-      this.optionGuis[i].show()
-    }
-  });
+  this.gui.addNumber('option_amount', 0 ,maxOptionAmount,0,1);
   this.gui.addButton('delete',function(){deleteRoom(); drawScene()});
 
-
   for (var i = 1; i <= maxOptionAmount; i++) {
-    this.optionGui = QuickSettings.create( 210*i+60,10,'option_'+i, guiParent).hide();//borde parenta till en egen.
-    this.optionGui.setDraggable(false);
-    this.optionGui.addText('option_text', '' );
-    this.optionGui.addText('option_command', ['','move', 'info']);
-    this.optionGui.addHTML('command_description', 'test');
+    let optGui = QuickSettings.create( 210*i+60,10,'option_'+i, guiParent).hide();
+    optGui.setDraggable(false);
+    optGui.addText('option_text', '' );
+    optGui.addText('option_command', ['','move', 'info']);
+    optGui.addHTML('command_description', 'test');
 
     for (var j = 0; j < maxCommandValues; j++) {
-      this.optionGui.addText('command_value_'+j);
-      this.optionGui.hideControl('command_value_'+j);
+      optGui.addText('command_value_'+j);
+      optGui.hideControl('command_value_'+j);
     }
 
-    this.optionGuis.push(this.optionGui);
+    this.optionGuis.push(optGui);
   }
 
   this.draw = function(){
     rectMode(CENTER);
-
     if(this.active){
       fillColor = activeArea.lightColor
       strokeColor = activeArea.darkColor
@@ -305,7 +299,7 @@ function roomSprite(x,y){
     textSize(15);
     noStroke();
     fill(strokeColor);
-    text(this.coordinateString, -roomBoxSize/2+10,-roomBoxSize/2+25)
+    text(this.coordinateString, this.x-roomBoxSize/2+10, this.y-roomBoxSize/2+25)
 
   }
   this.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
@@ -489,16 +483,19 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
   activeRoomSpriteArray = [];
   for (var i = 0; i < this.inputRoomArray.length; i++) {
     createCoordinate = indexToScreenCoordinates(this.inputRoomArray[i].x, this.inputRoomArray[i].y);
-    print(createCoordinate);
     //creates a room and pushes it to the activeRoomSpriteArray
     createRoomSprite(createCoordinate.x, createCoordinate.y);
     //hides all guis created
+    print(activeRoomSpriteArray[i])
     activeRoomSpriteArray[i].gui.hide();
+
     for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
       activeRoomSpriteArray[i].optionGuis[j].hide();
     }
     //set values
     activeRoomSpriteArray[i].gui.setValue("main_text", this.inputRoomArray[i].mainText);
+    console.log(this.inputRoomArray[i].options.length);
+    console.log(activeRoomSpriteArray[i].gui);
     activeRoomSpriteArray[i].gui.setValue("option_amount", this.inputRoomArray[i].options.length);
 
     for (var j = 0; j < this.inputRoomArray[i].options.length; j++) {
@@ -510,10 +507,10 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
       }
     }
     this.SpriteArray.push(activeRoomSpriteArray[i]);
-
   }
   hideGuis(getAreaIndex(selectedArea));
   return this.SpriteArray;
+
 }
 
 function deleteRoom(){
@@ -531,7 +528,6 @@ function deleteRoom(){
       for (var j = 0; j < activeRoom.optionGuis.length; j++) {
         activeRoom.optionGuis[j].hide();
       }
-      activeRoom.remove();
       activeRoomSpriteArray.splice(i,1);
       break;
     }
@@ -563,7 +559,7 @@ function drawConnectionsFromRoom(roomSprite){
 
         if(connection.x!=null && connection.y != null){
           //stroke(color(255,255,255));
-          line(roomSprite.position.x-10+z*4, roomSprite.position.y-10+z*4, connection.x-10+z*4, connection.y-10+z*4)
+          line(roomSprite.x-10+z*4, roomSprite.y-10+z*4, connection.x-10+z*4, connection.y-10+z*4)
         }
       }
     }
