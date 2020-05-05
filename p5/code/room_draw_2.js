@@ -521,7 +521,6 @@ function createGeneralGui(){
   generalGui.addDropDown('area' ,['test','intro', 'highlands', 'bog', 'city', 'mountain', 'core'], function(value){
       deselectSpriteObj(activeRoom);
       selectedArea = value.label;
-
       for (var i = 0; i < 7; i++) { //om det går borde man hämta antal värden i objektet istället för att hårdkoda 7
         if (i == value.index){
           activeArea = roomArrays[value.value];
