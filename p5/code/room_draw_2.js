@@ -126,14 +126,22 @@ function setup(){
 }
 
 function drawScene(){
+  console.time("drawBackground")
   background(activeArea.darkColor);
+  console.timeEnd("drawBackground")
   if(showGrid){
+    console.time("drawGrid")
     drawGrid();
+    console.timeEnd("drawGrid")
   }
+  console.time("drawRooms")
   for (var i = 0; i < activeRoomSpriteArray.length; i++) {
     activeRoomSpriteArray[i].draw();
   }
+  console.timeEnd("drawRooms")
+  console.time("drawConnections")
   drawConnections();
+  console.timeEnd("drawConnections")
 }
 
 function drawGrid(){
@@ -173,7 +181,9 @@ function mousePressed(){
   if(!onSprite && !guiMouseIsOver){
     createRoomSprite(mouseScreenCoordinates.x, mouseScreenCoordinates.y);
   }
+  console.time("drawScene")
   drawScene()
+  console.timeEnd("drawScene")
 }
 
 function drawZeroIndicator(){
