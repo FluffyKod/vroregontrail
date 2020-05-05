@@ -176,10 +176,6 @@ function mousePressed(){
   drawScene()
 }
 
-function mouseReleased(){
-  //drawScene()
-}
-
 function drawZeroIndicator(){
   frX = floor(width/2) + (32-(floor(width/2)%64));
   frY = floor(height/2) + (32-(floor(height/2)%64));
