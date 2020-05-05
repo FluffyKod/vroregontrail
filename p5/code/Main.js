@@ -98,6 +98,7 @@ function preload(){
     cg_preload();
     er_preload();
     pb_preload();
+    i_preload();
   }
 }
 
@@ -201,8 +202,14 @@ function draw(){
         pb_draw();
         break;
       case 'sheep_invaders':
+        sheep = true;
+        if(define){i_defineVar(); define = false;}
+        i_draw();
         break;
       case 'wasp_attack':
+        wasp = true;
+        if(define){i_defineVar(); define = false;}
+        i_draw();
         break;
     }
   }

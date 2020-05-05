@@ -6,11 +6,17 @@ var bullets, bulletsize, bulletspeed;
 var i_enemysize;
 var playerdmg;
 var espacing;
+let sheep = false;
+let wasp = false;
 
 var score;
 var gameOver = true;
 var startSc = true;
 
+function i_preload(){
+  sheep_img = loadImage(spriteImgSrc + 'sheep.png');
+  wasp_img = loadImage(spriteImgSrc + 'wasp.png');
+}
 
 function i_defineVar(){
   i_enemysize = 60;
@@ -23,11 +29,17 @@ function i_defineVar(){
   i_playersize = 60;
   i_playerspeed = 10;
   espacing = 10;
-
+  camera.position.x = width/2;
+  camera.position.y = height/2;
+  let crossbow_idle_animation = loadAnimation(crossbow_idle);
+  let crossbow_reload_animation = loadAnimation(crossbow_shoot, crossbow_reload1, crossbow_reload2, crossbow_idle);
+  crossbow_reload_animation.looping = false;
 
   i_enemies = new Group();
   bullets = new Group();
   i_player = createSprite(width/2, height-i_playersize, i_playersize, i_playersize);
+  i_player.addAnimation('shoot', crossbow_reload_animation)
+
   i_player.setCollider("rectangle",0,0,i_playersize,i_playersize);
   spawnEnemies();
 
@@ -90,6 +102,11 @@ function spawnEnemies(){
   for (var i = 0; i < 4; i++) {
     for (var j = 0; j < 7; j++) {
       i_enemy = createSprite((j*(i_enemysize+espacing)+i_enemysize/2 +espacing) , i*(i_enemysize+espacing)+(i_enemysize/2 +espacing) , i_enemysize, i_enemysize)
+      if(sheep){
+        i_enemy.addImage(sheep_img);
+      }else if(wasp){
+        i_enemy.addImage(wasp_img)
+      }
       i_enemy.velocity.x = i_enemyspeed;
       i_enemies.add(i_enemy)
 
@@ -110,9 +127,12 @@ function invadersDraw(){
   text(score, width-100, 50);
   i_playerMove();
   enemyMove();
+  if(i_player.animation.getFrame()!=i_player.animation.getLastFrame() && frameCount % 12 == 0)
+    i_player.animation.nextFrame();
   if(keyWentDown(' ') && bullets.length < 1){
-
-    bullet = createSprite(i_player.position.x, i_player.position.y, bulletsize, bulletsize);
+    i_player.animation.changeFrame(0)
+    bullet = createSprite(i_player.position.x, i_player.position.y, 12, 38);
+    bullet.addImage(crossbow_arrow)
     bullet.velocity.y = -bulletspeed;
     bullet.setCollider("circle",0,0,bulletsize);
     bullets.add(bullet);

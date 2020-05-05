@@ -15,11 +15,11 @@ let activeArea;
 let activeRoomArray;
 let activeRoomSpriteArray;
 
-let guiBackgroundHidden = false;
 let guiMouseIsOver = false;
 
 let showGrid = true;
 let showAllConnections = false;
+let showCoordinateText = true;
 
 let guiParent
 let maxCommandValues = 6;
@@ -217,11 +217,6 @@ function roomSprite(x,y){
   this.indexY = (this.y-floor(height/2)-roomBoxSize/2)/roomBoxSize;
   this.optionGuis = [];
   this.coordinateString = "(" + this.indexX + ", " + this.indexY + ")";
-
-  if (guiBackgroundHidden) {
-    guiBackground.show();
-    guiBackgroundHidden =false;
-  }
   this.gui = QuickSettings.create(10, 10, "Room "+ this.coordinateString, guiParent);
   this.gui.setDraggable(false);
   this.gui.setWidth(250);
@@ -255,10 +250,12 @@ function roomSprite(x,y){
     fill(fillColor);
     stroke(strokeColor);
     rect(this.x,this.y, roomBoxSize, roomBoxSize);
-    textSize(15);
-    noStroke();
-    fill(strokeColor);
-    text(this.coordinateString, this.x-roomBoxSize/2+10, this.y-roomBoxSize/2+25)
+    if(showCoordinateText){
+      textSize(15);
+      noStroke();
+      fill(strokeColor);
+      text(this.coordinateString, this.x-roomBoxSize/2+10, this.y-roomBoxSize/2+25)
+    }
   }
   this.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
     if(!guiMouseIsOver){
@@ -355,7 +352,6 @@ function saveRoom(roomSpriteToSave, spriteArray, roomArray){
           }
           //tar bort om det finns options utöver option amount
           if(j > roomSpriteToSave.gui.getValue("option_amount")){
-            console.log("pop");
             roomArray[i].options.pop()
           }
         }
@@ -427,7 +423,6 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
     //creates a room and pushes it to the activeRoomSpriteArray
     createRoomSprite(createCoordinate.x, createCoordinate.y);
     //hides all guis created
-    print(activeRoomSpriteArray[i])
     activeRoomSpriteArray[i].gui.hide();
 
     for (var j = 0; j < activeRoomSpriteArray[i].optionGuis.length; j++) {
@@ -455,8 +450,6 @@ function createSpriteArrayFromRoomArray(inputRoomArray){
 }
 
 function deleteRoom(){
-  print(activeRoom);
-  print(activeRoomSpriteArray);
   for (var i = 0; i < activeRoomArray.length; i++) {
     if(activeRoomArray[i].x == activeRoom.indexX && activeRoomArray[i].y == activeRoom.indexY){
       activeRoomArray.splice(i,1);
@@ -546,6 +539,10 @@ function createGeneralGui(){
   });
   generalGui.addBoolean('show_grid',true,  function(value){
     showGrid = value;
+    drawScene();
+  });
+  generalGui.addBoolean('show_coordinates', true, function(value){
+    showCoordinateText = value;
     drawScene();
   });
   generalGui.addBoolean('show_command_descriptions', true,  function(value){
