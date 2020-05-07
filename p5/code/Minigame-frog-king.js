@@ -1,144 +1,200 @@
+let fk_player;
+let fk_playerValues = {};
+let fk_toungeActive = false
+let fk_hasShotTounge = false;
+let fk_startedToungeRetraction = false;
+let fk_mouseVector;
 
-var player, playersize, playerspeed;
-var enemies, enemyspeed;
-var bullets, bulletsize, bulletspeed;
+let fk_flies;
+let fk_flySpeed;
+let fk_fliesOnTounge;
+let fk_timeBetweenEnemySpawn;
+let canvas;
 
-var enemysize;
-var playerdmg;
-var espacing;
+let fk_time;
 
-var score;
-var gameOver;
-
-
-
-function setup(){
-  enemysize = 60;
-  enemyspeed = 0.5;
-  bulletsize = 10;
-  bulletspeed = 5;
-  playerdmg = 1;
-  gameOver = false;
-  score = 0;
-  playersize = 60;
-  playerspeed = 10;
-  espacing = 10;
-
-  textSize(40);
-  defineCanvas();
-
-  enemies = new Group();
-  bullets = new Group();
-  player = createSprite(width/2, height-playersize, playersize, playersize);
-  player.setCollider("rectangle",0,0,playersize,playersize);
-  spawnEnemies();
-
-
-
-
+function fk_preload(){
+  let spriteImgSrc = '../../game-assets/Sprites/Png/'
+  fly_animation = loadAnimation(spriteImgSrc + 'fly1.png',spriteImgSrc + 'fly2.png')
+  frog_animation = loadAnimation(spriteImgSrc + 'frog_look_left.png', spriteImgSrc + 'frog_look_up.png', spriteImgSrc + 'frog_look_right.png')
 }
 
-function draw(){
-  if(!gameOver){
-    background(51);
-    fill(255);
+function fk_setup(){
 
-    drawSprites();
-    text(score, width-100, 50);
-    playerMove();
-    enemyMove();
+  //general setup
+  defineCanvas();
+  fk_time = 0;
+  mouseVector = createVector(mouseX, mouseY)
 
-    enemyspeed = 0.5+0.005*score;
+  //difficulty parameters
+  fk_timeBetweenEnemySpawn = 500;//ms
+  fk_playerValues = {x:width/2 , y:(height-30) , width: 152, height: 108, toungeSpeed: 15, toungeColliderRadius: 20};
+  fk_flySpeed = 3;
 
-    //collision
-    if(player.overlap(enemies)){
-      gameOver = true
+  //camera
+  camera.position.x = width/2;
+  camera.position.y = height/2;
+
+  //player setup
+  fk_player = createSprite(fk_playerValues.x, fk_playerValues.y, fk_playerValues.width, fk_playerValues.height);
+  fk_player.addAnimation('look_direction', frog_animation)
+  fk_player.animation.looping = false;
+  fk_player.tounge = new tounge(fk_player.position.x, fk_player.position.y-fk_playerValues.height/2);
+
+  //enemy setup
+  fk_flies = [];
+  fk_fliesOnTounge = [];
+}
+
+function fk_draw(){
+
+  //general updates
+  background(51);
+  fk_time += deltaTime
+  console.log(fk_time);
+  spawnFlies(fk_timeBetweenEnemySpawn)
+  drawSprites();
+  fk_player.tounge.draw();
+  for (var i = 0; i < fk_flies.length; i++) {
+    fk_flies[i].draw();
+  }
+  for (var i = 0; i < fk_fliesOnTounge.length; i++) {
+    fk_fliesOnTounge[i].draw();
+  }
+  //collision checks
+  checkEnemyCollisionWithTounge();
+
+  //tounge movement
+  updateToungeMovement();
+}
+
+//update checks
+function checkEnemyCollisionWithTounge(){
+  for (var i = 0; i < fk_flies.length; i++) {
+    if(fk_flies[i].sprite.overlap(fk_player.tounge.endPoint)){
+      addFlyToTounge(fk_flies[i])
+      fk_flies.splice(i,1)
     }
-    bullets.overlap(enemies, enemyHit);
+  }
+}
+function checkFrogAnimationState(){
+  if(mouseX < width/3){
+    fk_player.animation.changeFrame(0)
+  }
+  if(mouseX >width/3 && mouseX < 2*width/3){
+    fk_player.animation.changeFrame(1)
+  }
+  if(mouseX > 2*width/3){
+    fk_player.animation.changeFrame(2)
+  }
+}
+function updateToungeMovement(){
+  let mPressed = true
+  if(mPressed){
+    updateMouseVector();
+  }
+  if(mouseIsPressed && !fk_toungeActive && fk_player.tounge.endPoint.velocity.y == 0){
+    fk_toungeActive = true;
+    fk_startedToungeRetraction = false;
 
-    //cleanup
-    for (var i = 0; i < bullets.length; i++) {
-      if(bullets[i].position.y < 0){
-        bullets[i].remove();
+  }else if(!mouseIsPressed){
+    fk_toungeActive = false;
+  }
+
+  if(fk_toungeActive && !fk_hasShotTounge ){
+    fk_player.tounge.endPoint.moveTowards(mouseVector, fk_playerValues.toungeSpeed)
+
+    fk_hasShotTounge = true;
+  }else if(!fk_toungeActive){
+    if(!fk_startedToungeRetraction){
+      fk_player.tounge.endPoint.moveTowards(fk_player.tounge.startPoint, fk_playerValues.toungeSpeed*1.5)
+      fk_startedToungeRetraction = true;
+    }
+    if(fk_player.tounge.endPoint.position.dist(fk_player.tounge.startPoint) < 60 || fk_player.tounge.endPoint.position.y > height){
+      fk_player.tounge.endPoint.position.x = fk_player.tounge.startPoint.x;
+      fk_player.tounge.endPoint.position.y = fk_player.tounge.startPoint.y;
+      for (var i = 0; i < fk_fliesOnTounge.length; i++) {
+        fk_fliesOnTounge[i].sprite.remove()
       }
-    }
-    //restart
-    if(enemies.length == 0){
-      spawnEnemies();
+      fk_fliesOnTounge = [];
+      fk_player.tounge.endPoint.setVelocity(0,0)
+      fk_hasShotTounge = false
     }
   }
-}//end function draw()
+}
 
-function keyPressed(){
-
-  if(key == ' '){
-
-    bullet = createSprite(player.position.x, player.position.y, bulletsize, bulletsize);
-    bullet.velocity.y = -bulletspeed;
-    bullet.setCollider("circle",0,0,bulletsize);
-    bullets.add(bullet);
-    gameOver = false;
+//classes
+function fly(x, y, speed){
+  this.size = 60;
+  this.gitter = true;
+  this.onTounge = false;
+  this.downSpeed = -speed;
+  this.sprite = createSprite(x,y,this.size,this.size);
+  this.sprite.setCollider("circle", 0, 0, this.size/2, this.size/2);
+  this.sprite.setVelocity(0,-this.downSpeed);
+  this.draw = function(){
+    if(this.gitter){
+      this.sprite.position.x = this.sprite.position.x + random(-2,2);
+      this.sprite.position.y = this.sprite.position.y + random(-2,2);
+    }
+    if(this.onTounge){
+      this.sprite.position.x = fk_player.tounge.endPoint.position.x;
+      this.sprite.position.y = fk_player.tounge.endPoint.position.y;
+    }
   }
+}
+function tounge(startX, startY){
+  this.startPoint = createVector(startX, startY)
+  this.endPoint = createSprite(startX, startY, this.colliderRadius, this.colliderRadius);
+  this.colliderRadius = fk_playerValues.toungeColliderRadius;
+  this.endPoint.setCollider('circle', 0, 0, this.colliderRadius, this.colliderRadius);
+  this.endPoint.draw = function(){};
+  this.endPoint.moveTowards = function(vector2,mag){
+    let spriteVector = createVector(this.position.x, this.position.y)
+    let newVector = p5.Vector.sub(vector2, spriteVector)
+    newVector.setMag(mag)
+    this.setVelocity(newVector.x, newVector.y)
+  }
+  this.endPoint.debug = true;
 
-}//end keypressed
+  this.draw = function(){
+    stroke(255);
+    strokeWeight(6);
+    line(this.startPoint.x, this.startPoint.y, this.endPoint.position.x, this.endPoint.position.y);
 
-function keyReleased(){
+  }
+}
 
-}//end key released,jhgljhgkhjnöyrg.,vjhtfsdj,.kfdk.jgv nkhgj
+//other
+function spawnFlies(rate){
+  if(floor(fk_time) > rate){
+    let f = new fly(random(60,width-60), -100, random(fk_flySpeed-1, fk_flySpeed+1))
+    fk_flies.push(f)
+    fk_time = 0
+  }
+}
+function addFlyToTounge(fly){
+  fly.sprite.setVelocity(0,0)
+  fly.gitter = false;
+  fly.onTounge = true;
+  fk_fliesOnTounge.push(fly)
+}
+function updateMouseVector(){
+  mouseVector.x = mouseX
+  mouseVector.y = mouseY
+}
 
 
+
+//TESTING
+function preload(){fk_preload()}
+function setup(){fk_setup()}
+function draw(){fk_draw()}
 function defineCanvas(){
   canvas = createCanvas(600, 600);
-  canvas.position(windowWidth/2-300, windowHeight/2-300)
-  canvas.style('outline', '1px');
-  canvas.style('outline-color', '#fff');
-  canvas.style('outline-style', 'solid');
-}
-
-function playerMove(){
-
-  if(keyIsDown(LEFT_ARROW) && player.position.x > (playersize/2) ){
-    player.velocity.x = -playerspeed;
-
-  } else if(keyIsDown(RIGHT_ARROW) && player.position.x < (width-(playersize/2)) ){
-    player.velocity.x = playerspeed;
-  } else {
-    player.velocity.x = 0;
-
-  }
-
-}
-function enemyMove(){
-  for (var i = 0; i < enemies.length; i++) {
-    if(enemies[i].position.x > width-enemysize/2){
-      for (var j = 0; j < enemies.length; j++) {
-        enemies[j].position.y += (enemysize + espacing);
-        enemies[j].position.x -= 10;
-        enemies[j].velocity.x = -enemyspeed;
-      }
-    }
-    if(enemies[i].position.x < enemysize/2){
-      for (var j = 0; j < enemies.length; j++) {
-        enemies[j].position.y += (enemysize + espacing);
-        enemies[j].position.x += 10;
-        enemies[j].velocity.x = enemyspeed;
-      }
-    }
-  }
-}
-
-function spawnEnemies(){
-  for (var i = 0; i < 4; i++) {
-    for (var j = 0; j < 7; j++) {
-      enemy = createSprite((j*(enemysize+espacing)+enemysize/2 +espacing) , i*(enemysize+espacing)+(enemysize/2 +espacing) , enemysize, enemysize)
-      enemy.velocity.x = enemyspeed;
-      enemies.add(enemy)
-
-    }
-  }
-}
-function enemyHit(enemy, bullet) {
-  bullet.remove();
-  enemy.remove();
-  score++;
+  canvas.style('position: static');
+  canvas.style('margin: auto');
+  canvas.style('margin-top: 140px');
+  canvas.style('margin-left: 500px')
+  canvas.class('box');
 }
