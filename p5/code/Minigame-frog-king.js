@@ -9,27 +9,32 @@ let fk_flies;
 let fk_flySpeed;
 let fk_fliesOnTounge;
 let fk_timeBetweenEnemySpawn;
-let canvas;
 
 let fk_time;
+let fk_score;
+let flyAmount;
+let flySpawnCount;
 
 function fk_preload(){
-  let spriteImgSrc = '../../game-assets/Sprites/Png/'
   fly_animation = loadAnimation(spriteImgSrc + 'fly1.png',spriteImgSrc + 'fly2.png')
   frog_animation = loadAnimation(spriteImgSrc + 'frog_look_left.png', spriteImgSrc + 'frog_look_up.png', spriteImgSrc + 'frog_look_right.png')
 }
-
-function fk_setup(){
+function fk_defineVar(){
 
   //general setup
-  defineCanvas();
   fk_time = 0;
+  fk_score = 0;
   mouseVector = createVector(mouseX, mouseY)
+  win = false
+  gameOver = false
+  startSc = true
 
   //difficulty parameters
-  fk_timeBetweenEnemySpawn = 500;//ms
+  fk_timeBetweenEnemySpawn = 650;//ms
   fk_playerValues = {x:width/2 , y:(height-30) , width: 152, height: 108, toungeSpeed: 15, toungeColliderRadius: 20};
-  fk_flySpeed = 3;
+  fk_flySpeed = 2;
+  flyAmount = 150;
+  flySpawnCount = 0;
 
   //camera
   camera.position.x = width/2;
@@ -45,18 +50,80 @@ function fk_setup(){
   fk_flies = [];
   fk_fliesOnTounge = [];
 }
-
 function fk_draw(){
+  if(startSc){
+    startScreen("Frog King")
+  }
+  if(!gameOver && !win && !startSc){
+    fk_game();
+  }
+  if(!startSc && gameOver && !win){
+   camera.position.x = width/2;
+   camera.position.y = height/2;
+   gameOverScreen();
+   if(clearVar){fk_resetVar();}
+  }
+  if(win && !gameOver && !startSc){
+   camera.position.x = width/2;
+   camera.position.y = height/2;
+   winScreen();
+  if(clearVar){fk_resetVar();}
+  }
+}
+function fk_resetVar(){
+  //reset general variables
+  fk_time = 0
+  fk_flySpeed = 2
+  fk_score = 0;
+  camera.position.x = width/2
+  camera.position.y = height/2
+  flySpawnCount = 0;
+
+
+  //delete player
+  fk_player.tounge.endPoint.remove()
+  fk_player.remove()
+
+  //delete all enemies
+  for(const fly of fk_flies){fly.sprite.remove()}
+  for(const fly of fk_fliesOnTounge){fly.sprite.remove()}
+  fk_flies = [];
+  fk_fliesOnTounge = [];
+}
+function fk_game(){
 
   //general updates
   background(51);
   fk_time += deltaTime
-  console.log(fk_time);
-  spawnFlies(fk_timeBetweenEnemySpawn)
+  if(fk_score < 20){
+    spawnFlies(1500)
+  }else{
+    spawnFlies(fk_timeBetweenEnemySpawn-fk_score*2)
+
+  }
   drawSprites();
+  checkFrogAnimationState();
   fk_player.tounge.draw();
+
+  if(fk_score>=flyAmount){
+    win = true
+  }
+
+  noStroke()
+  //fill(51, 51, 51, 50)
+  //rect(0,0, 300, 80)
+  fill(255)
+  textFont(pixel_font, 40)
+  let fliesLeftText = flyAmount-fk_score
+  text("Flies left: "+fliesLeftText, 12, 50);
+
   for (var i = 0; i < fk_flies.length; i++) {
     fk_flies[i].draw();
+    if(fk_flies[i].sprite.position.y > height+100){
+      fk_flies[i].sprite.remove()
+      fk_flies.splice(i,1)
+      gameOver = true
+    }
   }
   for (var i = 0; i < fk_fliesOnTounge.length; i++) {
     fk_fliesOnTounge[i].draw();
@@ -78,14 +145,33 @@ function checkEnemyCollisionWithTounge(){
   }
 }
 function checkFrogAnimationState(){
-  if(mouseX < width/3){
-    fk_player.animation.changeFrame(0)
-  }
-  if(mouseX >width/3 && mouseX < 2*width/3){
-    fk_player.animation.changeFrame(1)
-  }
-  if(mouseX > 2*width/3){
-    fk_player.animation.changeFrame(2)
+  if(mouseX < width/4){
+    fk_player.animation.goToFrame(0)
+    //move tounge
+    fk_player.tounge.startPoint.x = fk_player.position.x-fk_playerValues.width/2+4
+    fk_player.tounge.startPoint.y = fk_player.position.y-fk_playerValues.height/2+16
+    if(!mouseIsPressed && !fk_hasShotTounge){
+      fk_player.tounge.endPoint.position.x = fk_player.tounge.startPoint.x
+      fk_player.tounge.endPoint.position.y = fk_player.tounge.startPoint.y
+    }
+  }else if(mouseX >width/4 && mouseX < 3*width/4){
+    fk_player.animation.goToFrame(1)
+    //move tounge
+    fk_player.tounge.startPoint.x = fk_player.position.x
+    fk_player.tounge.startPoint.y = fk_player.position.y-fk_playerValues.height/2
+    if(!mouseIsPressed && !fk_hasShotTounge){
+      fk_player.tounge.endPoint.position.x = fk_player.tounge.startPoint.x
+      fk_player.tounge.endPoint.position.y = fk_player.tounge.startPoint.y
+    }
+  }else if(mouseX > 3*width/4){
+    fk_player.animation.goToFrame(2)
+    //move tounge
+    fk_player.tounge.startPoint.x = fk_player.position.x+fk_playerValues.width/2-4
+    fk_player.tounge.startPoint.y = fk_player.position.y-fk_playerValues.height/2+16
+    if(!mouseIsPressed && !fk_hasShotTounge){
+      fk_player.tounge.endPoint.position.x = fk_player.tounge.startPoint.x
+      fk_player.tounge.endPoint.position.y = fk_player.tounge.startPoint.y
+    }
   }
 }
 function updateToungeMovement(){
@@ -115,6 +201,7 @@ function updateToungeMovement(){
       fk_player.tounge.endPoint.position.y = fk_player.tounge.startPoint.y;
       for (var i = 0; i < fk_fliesOnTounge.length; i++) {
         fk_fliesOnTounge[i].sprite.remove()
+        fk_score++
       }
       fk_fliesOnTounge = [];
       fk_player.tounge.endPoint.setVelocity(0,0)
@@ -130,8 +217,10 @@ function fly(x, y, speed){
   this.onTounge = false;
   this.downSpeed = -speed;
   this.sprite = createSprite(x,y,this.size,this.size);
-  this.sprite.setCollider("circle", 0, 0, this.size/2, this.size/2);
+  this.sprite.setCollider("circle", 0, 0, this.size/2);
   this.sprite.setVelocity(0,-this.downSpeed);
+  this.sprite.addAnimation('flying', fly_animation)
+
   this.draw = function(){
     if(this.gitter){
       this.sprite.position.x = this.sprite.position.x + random(-2,2);
@@ -147,7 +236,7 @@ function tounge(startX, startY){
   this.startPoint = createVector(startX, startY)
   this.endPoint = createSprite(startX, startY, this.colliderRadius, this.colliderRadius);
   this.colliderRadius = fk_playerValues.toungeColliderRadius;
-  this.endPoint.setCollider('circle', 0, 0, this.colliderRadius, this.colliderRadius);
+  this.endPoint.setCollider('circle', 0, 0, this.colliderRadius);
   this.endPoint.draw = function(){};
   this.endPoint.moveTowards = function(vector2,mag){
     let spriteVector = createVector(this.position.x, this.position.y)
@@ -155,11 +244,11 @@ function tounge(startX, startY){
     newVector.setMag(mag)
     this.setVelocity(newVector.x, newVector.y)
   }
-  this.endPoint.debug = true;
 
   this.draw = function(){
     stroke(255);
     strokeWeight(6);
+    strokeCap(SQUARE)
     line(this.startPoint.x, this.startPoint.y, this.endPoint.position.x, this.endPoint.position.y);
 
   }
@@ -167,10 +256,11 @@ function tounge(startX, startY){
 
 //other
 function spawnFlies(rate){
-  if(floor(fk_time) > rate){
+  if(floor(fk_time) > rate && flySpawnCount < flyAmount){
     let f = new fly(random(60,width-60), -100, random(fk_flySpeed-1, fk_flySpeed+1))
     fk_flies.push(f)
     fk_time = 0
+    flySpawnCount++
   }
 }
 function addFlyToTounge(fly){
@@ -184,9 +274,8 @@ function updateMouseVector(){
   mouseVector.y = mouseY
 }
 
-
-
 //TESTING
+/*
 function preload(){fk_preload()}
 function setup(){fk_setup()}
 function draw(){fk_draw()}
@@ -198,3 +287,4 @@ function defineCanvas(){
   canvas.style('margin-left: 500px')
   canvas.class('box');
 }
+*/

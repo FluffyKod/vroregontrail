@@ -2,14 +2,16 @@
 var i_player, i_playersize, i_playerspeed;
 var i_enemies, i_enemyspeed;
 var bullets, bulletsize, bulletspeed;
+let i_ground;
 
 var i_enemysize;
 var playerdmg;
 var espacing;
 let sheep = false;
 let wasp = false;
+let waveAmount;
 
-var score;
+var i_score;
 var gameOver = true;
 var startSc = true;
 
@@ -20,15 +22,16 @@ function i_preload(){
 
 function i_defineVar(){
   i_enemysize = 60;
-  i_enemyspeed = 0.5;
+  i_enemyspeed = 0.15;
   bulletsize = 10;
   bulletspeed = 5;
   playerdmg = 1;
   gameOver = true;
-  score = 0;
+  i_score = 0;
   i_playersize = 60;
   i_playerspeed = 10;
   espacing = 10;
+  waveAmount = 4
   camera.position.x = width/2;
   camera.position.y = height/2;
   let crossbow_idle_animation = loadAnimation(crossbow_idle);
@@ -41,9 +44,9 @@ function i_defineVar(){
   i_player.addAnimation('shoot', crossbow_reload_animation)
 
   i_player.setCollider("rectangle",0,0,i_playersize,i_playersize);
+  i_ground = createSprite(width/2, height+50, width, 100)
+
   spawnEnemies();
-
-
 }
 
 function i_deleteVar(){
@@ -112,11 +115,11 @@ function spawnEnemies(){
 
     }
   }
+  i_score++;
 }
 function enemyHit(i_enemy, bullet) {
   bullet.remove();
   i_enemy.remove();
-  score++;
 }
 
 function invadersDraw(){
@@ -124,7 +127,15 @@ function invadersDraw(){
   fill(255);
 
   drawSprites();
-  text(score, width-100, 50);
+
+  noStroke()
+  //fill(51)
+  //rect(0,0, 300, 80)
+  fill(255)
+  textFont(pixel_font, 40)
+  let scoretext = waveAmount-i_score
+  text("Herds left: " + scoretext, 12, 50);
+
   i_playerMove();
   enemyMove();
   if(i_player.animation.getFrame()!=i_player.animation.getLastFrame() && frameCount % 12 == 0)
@@ -138,7 +149,6 @@ function invadersDraw(){
     bullets.add(bullet);
     gameOver = false;
   }
-  i_enemyspeed = 0.5+0.005*score;
 
   //collision
   if(i_player.overlap(i_enemies)){
@@ -154,7 +164,12 @@ function invadersDraw(){
   }
   //restart
   if(i_enemies.length == 0){
-    spawnEnemies();
+    if(i_score < waveAmount ){
+      i_enemyspeed += 0.2
+      spawnEnemies();
+    }else{
+      win = true;
+    }
   }
 }
 
@@ -163,7 +178,7 @@ function newGame(){
   i_enemies.removeSprites();
   gameOver = false;
   spawnEnemies();
-  score = 0;
+  i_score = 0;
 }
 
 
@@ -175,7 +190,7 @@ function setup(){
   bulletspeed = 5;
   playerdmg = 1;
   gameOver = true;
-  score = 0;
+  i_score = 0;
   i_playersize = 60;
   i_playerspeed = 10;
   espacing = 10;

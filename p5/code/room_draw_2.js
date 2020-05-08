@@ -627,7 +627,7 @@ function showValueAmountControl(){
           showAmount = 3;
           break;
         case 'encounter':
-          activeRoom.optionGuis[i].setValue('command_description', 'plays minigame with name (value 0), move to win room (value 1, value 2), move to game over room (value 3, value 4)')
+          activeRoom.optionGuis[i].setValue('command_description', 'plays minigame with name (value 4), move to win room (value 0, value 1), move to game over room (value 2, value 3)')
           showAmount = 5;
           break;
         case 'move-item-switchArea':
