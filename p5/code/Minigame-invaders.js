@@ -14,13 +14,25 @@ let waveAmount;
 var i_score;
 var gameOver = true;
 var startSc = true;
+let bulletAmount;
+let has_crossbow;
 
 function i_preload(){
   sheep_img = loadImage(spriteImgSrc + 'sheep.png');
   wasp_img = loadImage(spriteImgSrc + 'wasp.png');
+  bow_idle = loadImage(spriteImgSrc + 'bow_loaded.png');
+  bow_shoot = loadImage(spriteImgSrc + 'bow_shot.png');
+  bow_reload = loadImage(spriteImgSrc + 'bow_reload.png');
 }
 
 function i_defineVar(){
+  has_crossbow = false;
+  for (var i = 0; i < player.inventory.length; i++) {
+    if(player.inventory[i] == 'Crossbow'){
+      has_crossbow = true;
+    }
+  }
+
   i_enemysize = 60;
   i_enemyspeed = 0.15;
   bulletsize = 10;
@@ -34,14 +46,24 @@ function i_defineVar(){
   waveAmount = 4
   camera.position.x = width/2;
   camera.position.y = height/2;
-  let crossbow_idle_animation = loadAnimation(crossbow_idle);
-  let crossbow_reload_animation = loadAnimation(crossbow_shoot, crossbow_reload1, crossbow_reload2, crossbow_idle);
-  crossbow_reload_animation.looping = false;
+
+  let weapon_reload_animation
+  if(has_crossbow){
+    weapon_reload_animation = loadAnimation(crossbow_shoot, crossbow_reload1, crossbow_reload2, crossbow_idle);
+    weapon_reload_animation.looping = false;
+    bulletAmount = 2
+  }else{
+    weapon_reload_animation = loadAnimation(bow_shoot, bow_reload, bow_idle)
+    weapon_reload_animation.looping = false;
+
+    bulletAmount = 1
+  }
+
 
   i_enemies = new Group();
   bullets = new Group();
   i_player = createSprite(width/2, height-i_playersize, i_playersize, i_playersize);
-  i_player.addAnimation('shoot', crossbow_reload_animation)
+  i_player.addAnimation('shoot', weapon_reload_animation)
 
   i_player.setCollider("rectangle",0,0,i_playersize,i_playersize);
   i_ground = createSprite(width/2, height+50, width, 100)
@@ -138,9 +160,10 @@ function invadersDraw(){
 
   i_playerMove();
   enemyMove();
+
   if(i_player.animation.getFrame()!=i_player.animation.getLastFrame() && frameCount % 12 == 0)
     i_player.animation.nextFrame();
-  if(keyWentDown(' ') && bullets.length < 1){
+  if(keyWentDown(' ') && bullets.length < bulletAmount){
     i_player.animation.changeFrame(0)
     bullet = createSprite(i_player.position.x, i_player.position.y, 12, 38);
     bullet.addImage(crossbow_arrow)

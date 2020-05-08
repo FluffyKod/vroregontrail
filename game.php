@@ -248,6 +248,7 @@ $completedChapters = 2;
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-mountain-jump.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-frog-king.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-clean_your_plate.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
 
       <script type="text/javascript">

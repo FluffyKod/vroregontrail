@@ -6,6 +6,9 @@ var pepe, looktimer, pepecolors, pepe_state;
 var gameOver;
 var startSc;
 
+let swallowing = false;
+let cyp_bread = false;
+
 var cyp_background_img;
 
 function cyp_preload(){
@@ -15,27 +18,36 @@ function cyp_preload(){
     spriteImgSrc + 'mouth_open_2.png',
     spriteImgSrc + 'mouth_open_3.png'
   )
+  mouth_open.looping = false;
   mouth_swallow = loadAnimation(
     spriteImgSrc + 'mouth_swallow.png',
     spriteImgSrc + 'mouth_closed.png'
   )
-  mouth_swallow.frameDelay = 30
+  mouth_swallow.frameDelay = 50
+
 
   spoon = loadAnimation(
-    spriteImgSrc + 'spoon_full.png',
-    spriteImgSrc + 'spoon_empty.png'
+    spriteImgSrc + 'spoon_empty.png',
+    spriteImgSrc + 'spoon_full.png'
   )
+  spoon.looping = false;
+
 }
 
 function cyp_setup(){
 
   cyp_defineVar();
-
 }
 
 function cyp_draw(){
   if(startSc){
-    startScreen("Clean your wooden bowl!");
+    let cyp_startText;
+    if(cyp_bread){
+      cyp_startText = "Eat your mouldy bread!"
+    }else{
+      cyp_startText = "Clean your plate!"
+    }
+    startScreen(cyp_startText);
   }
   if(!gameOver){
     drawPepe();
@@ -57,8 +69,19 @@ function cyp_draw(){
 }
 
 function cyp_defineVar(){
-
-  cyp_food = 15;
+  cyp_bread = false;
+  for (var i = 0; i < player.beenTo.length; i++) {
+    if(player.beenTo[i] == "clean_plate_bread"){
+      cyp_bread = true;
+    }
+  }
+  if(cyp_bread){
+    cyp_food = 1
+    foodResistance = 3.6;
+  }else{
+    cyp_food = 15;
+    foodResistance = 1.2;
+  }
   camera.position.x = width/2;
   camera.position.y = height/2;
   gameOver = true;
@@ -66,13 +89,16 @@ function cyp_defineVar(){
   cyp_playersize = 50;
   cyp_playerwidth = width/2
   cyp_playerspeed = 10;
-  foodResistance = 1.2;
-  cyp_mouthCollider = createSprite(width/2, height/2, 50,50);
+
+  cyp_mouthCollider = createSprite(width/2+30, height/2, 50,50);
   cyp_mouthCollider.visible = false
 
   cyp_mouthVisual = createSprite(width/2, height/2, width, height)
+  cyp_mouthVisual.addAnimation('swallow', mouth_swallow)
   cyp_mouthVisual.addAnimation('open', mouth_open)
-  cyp_mouthVisual.addAnimation('swallow', mout_swallow)
+  cyp_mouthVisual.changeAnimation('open')
+  cyp_mouthVisual.animation.changeFrame(0)
+  cyp_mouthVisual.animation.stop()
 
   cyp_player = createSprite(-cyp_playerwidth/3, height/2, cyp_playerwidth, cyp_playersize);
   cyp_player.addAnimation('spoon', spoon);
@@ -81,16 +107,26 @@ function cyp_defineVar(){
 
 function cyp_deleteVar(){
   cyp_mouthCollider.remove();
+  cyp_mouthVisual.remove()
   cyp_player.remove();
+  gameOver = false;
+  win = false;
+  cyp_food = 0;
 }
 
 function drawPepe(){
   background(51);
-  image(cyp_background_img,0,0);
   fill(255);
   drawSprites();
   textFont(pixel_font, 40)
-  text("Food left: "+cyp_food, 12, 50);
+  if(cyp_bread){
+    text("Food left: "+cyp_food + " bread", 12, 50);
+
+  }else{
+    text("Food left: "+cyp_food + " spoons", 12, 50);
+  }
+  cyp_mouthAnimationController()
+
   if(cyp_food<=0){
     win = true;
   }
@@ -100,20 +136,36 @@ function drawPepe(){
   if(keyWentDown(RIGHT_ARROW)){
     cyp_player.velocity.x = 10;
   }
-  cyp_player.animation.changeFrame(0);
+
+  if(cyp_player.animation.getFrame() < 1 && frameCount % 30 == 0){
+    cyp_player.animation.nextFrame();
+  }
+
   if(cyp_player.overlap(cyp_mouthCollider)){
-    cyp_player.animation.changeFrame(1);
+    cyp_player.animation.changeFrame(0);
     cyp_food-=1
     cyp_player.position.x = -cyp_playerwidth/3;
+    cyp_mouthVisual.changeAnimation('swallow')
+    swallowing = true
     foodResistance += 0.1
   }
+
 }
 
-function newGame(){
-  cyp_player.position.x = -cyp_playerwidth/3
-  cyp_player.position.y = height/2;
-  gameOver = false;
-  foodResistance = 1.5
-  looktimer = floor(random(120, 60*5));
-  cyp_food = 0;
+function cyp_mouthAnimationController(){
+  if(cyp_mouthVisual.animation.getFrame() > 0 && swallowing){
+    cyp_mouthVisual.changeAnimation('open')
+    cyp_mouthVisual.animation.changeFrame(0)
+    swallowing = false;
+  }
+  if(cyp_player.position.x < -cyp_playerwidth/3+10 && frameCount % 15 == 0){
+    cyp_mouthVisual.animation.changeFrame(0)
+  }else if(cyp_player.position.x > -cyp_playerwidth/3+10 && cyp_player.position.x < -cyp_playerwidth/3 + 70 && frameCount % 15 == 0){
+    cyp_mouthVisual.animation.changeFrame(1)
+  }else if(cyp_player.position.x > -cyp_playerwidth/3 + 70 && cyp_player.position.x < -cyp_playerwidth/3 + 70*2 && frameCount % 15 == 0){
+    cyp_mouthVisual.animation.changeFrame(2)
+  }else if(cyp_player.position.x > -cyp_playerwidth/3 + 70*2 && frameCount % 15 == 0){
+    cyp_mouthVisual.animation.changeFrame(3)
+  }
+
 }

@@ -115,6 +115,7 @@ function preload(){
     pb_preload();
     i_preload();
     fk_preload();
+    cyp_preload();
   }
 }
 
@@ -122,12 +123,9 @@ function preload(){
 // SETUP
 ////////////////////////////////////////////
 
-
-
 function setup(){
   // Get all saved rooms from the database
   loadRoomsFromDatabase(currentArea, function(returnedRooms) {
-
 
     // Set all rooms
     allAreaRooms = returnedRooms;
@@ -169,9 +167,6 @@ function setup(){
     updateDebug();
 
   });
-
-
-
 }
 
 ////////////////////////////////////////////
@@ -306,12 +301,7 @@ function keyPressed(){
       blip = loadSound("menu_blip.wav")
       soundEnabled = true;
     }
-
   }
-
-
-
-
 }
 
 ////////////////////////////////////////////

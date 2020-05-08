@@ -21,6 +21,7 @@ function fk_preload(){
 }
 function fk_defineVar(){
 
+
   //general setup
   fk_time = 0;
   fk_score = 0;
