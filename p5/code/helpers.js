@@ -62,6 +62,35 @@ function getPlayer() {
       updateInventoryGui()
       updateStatGui('', true);
 
+      // ADD COMPLETED TO OLD STRUCTURE:
+      if (player.completed.length == 1 && player.completed[0] == 1) {
+        let self = this;
+
+        let completed = {
+          chapter: 1,
+          inventory: player.inventory,
+          beenTo: player.beenTo,
+          charisma: player.charisma,
+          dexterity: player.dexterity,
+          grit: player.grit,
+          kindness: player.kindness,
+        }
+
+        player.completed = [];
+        player.completed.push(completed);
+
+        let newAssets = changeArea( 'bog' );
+
+        paused = true;
+
+        changeBoxColor()
+        changeBackgroundImage(newAssets[0]);
+        changeRoom('bog', 0, 23);
+
+        // Save player
+        savePlayer();
+      }
+
       return;
 
       // rooms = getRoomsFromArea( allAreaRooms, currentArea );
@@ -223,6 +252,11 @@ function getAreaRooms(allRooms, area) {
 function getAreaIndex( areaName ) {
   const areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
   return areas.indexOf(areaName);
+}
+
+function getAreaNameFromIndex( areaIndex ) {
+  const areas = ['test', 'intro', 'highlands', 'bog', 'city', 'mountain', 'core'];
+  return areas[areaIndex];
 }
 
 function getRoomsFromArea( rooms, area ) {

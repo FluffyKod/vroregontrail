@@ -89,3 +89,20 @@ $('#toggle-sound').click(function() {
     $('#audio-holder').prop('volume', 0);
   }
 })
+
+$("#toggle-admin").click(function() {
+  $('#parent').toggleClass('admin');
+})
+
+$('#chapter-select-btn').click(function(e) {
+  $('.chapter-select').removeClass('hidden');
+  $('#chapter-select-btn').addClass('hidden');
+
+  // Go through and show chapters which are released AND unlocked
+  for (let chapter = 2; chapter <= 5; chapter++) {
+    if (chapter <= completedChapters && player.completed.length >= chapter - 1) {
+      $(`#chapter-${chapter}`).removeClass('hidden');
+    }
+  }
+
+})

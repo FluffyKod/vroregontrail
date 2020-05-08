@@ -73,6 +73,7 @@ let colors = {
   highlands: '#3a8530',
   tavern: '#89260c',
   creepyHouse: '#4f141c',
+  bog: '#4f141c',
 }
 
 // PRODUCTION SITE MUSIC
@@ -85,6 +86,19 @@ let music = {
   introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav',
   gameOver: 'http://vroelevkar.se/wp-content/uploads/2020/05/sheep-calm.mp3'
 }
+
+// Chapter release
+let completedChapters = 2;
+
+let chapterCoordinates = [
+  {
+    start: [0, 0],
+    end: [0, 0]
+  },
+  {
+    start: [0, 23]
+  }
+]
 
 //loads sprites for games, called before setup p5 shenanigans
 function preload(){
@@ -533,6 +547,11 @@ function getUnlockedOptions(options) {
           unlockedOptions.push(option);
         }
       }
+      else if (option.command == 'move-beenTo') {
+        if (player.beenTo.indexOf(option.values[2]) != -1) {
+          unlockedOptions.push(option);
+        }
+      }
        else {
         unlockedOptions.push(option)
       }
@@ -678,10 +697,6 @@ function option(ref){
 
   this.runCommand = function() {
 
-      // SINGLE COMMANDS
-      console.log('COMMAND', this.command);
-      console.log('VALUES', this.values);
-
       // Give player an item
       if(this.command == 'item'){
         this.addItemToInventory(this.values)
@@ -761,7 +776,6 @@ function option(ref){
         let self = this;
 
         let newAssets = changeArea( newArea );
-        console.log('IN MOVE SWITCH AREA');
 
         fade(newAssets[1], function() {
           changeBoxColor()
@@ -849,6 +863,10 @@ function option(ref){
         this.moveToNewPlace(this.values.slice(0,2));
       }
 
+      if(this.command == 'move-beenTo'){
+        this.moveToNewPlace(this.values.slice(0,2));
+      }
+
       if(this.command == 'gameover'){
         // Show game over screen
         $('#audio-holder').attr('src', music['gameOver']);
@@ -857,11 +875,38 @@ function option(ref){
 
       if(this.command == 'endscreen'){
         // Show end screen
-        let chapterCompleted = this.values[0];
+        let chapterCompleted = Number(this.values[0]);
+        let self = this;
+        let song = music['gameOver'];
+        let move = this.values.slice(1, 3);
 
-        $('#audio-holder').attr('src', music['gameOver']);
-        $('#endscreen').addClass('active');
-        player.completed.push(1);
+        let completed = {
+          chapter: 1,
+          inventory: player.inventory,
+          beenTo: player.beenTo,
+          charisma: player.charisma,
+          dexterity: player.dexterity,
+          grit: player.grit,
+          kindness: player.kindness,
+        }
+
+        player.completed.push(completed);
+
+        let newArea = getAreaNameFromIndex(chapterCompleted + 2);
+        let newAssets = changeArea( newArea );
+
+        paused = true;
+
+        fade(newAssets[1], function() {
+          changeBoxColor()
+          changeBackgroundImage(newAssets[0]);
+          self.moveToNewPlace(move, true);
+          changeRoom(newArea, move[0], move[1]);
+          $('#endscreen').addClass('active');
+        })
+
+        location.reload();
+
       }
   }
 
@@ -1053,6 +1098,9 @@ function changeRoomDebug() {
   // Got all values
   if (switchArea && switchX && switchY) {
     changeRoom(switchArea, switchX, switchY);
+    let newAssets = changeArea(switchArea);
+    changeBackgroundImage(newAssets[0]);
+    changeBoxColor()
   }
 
 }
@@ -1129,5 +1177,62 @@ function updateStatGui(stat = '', all = false) {
   if (stat == 'dexterity' || all == true) {
     document.getElementById('dexterity').innerText = player.dexterity;
   }
+
+}
+
+function startFromChapter(chapter) {
+  // If chapter one, reset player
+  if (chapter == 1) {
+    clearPlayer();
+  }
+
+  // Check if player has saved completed
+  if (player.completed.length < chapter - 1) {
+    return;
+  }
+
+  // Reset player properties to that chapter
+  player.inventory = player.completed[chapter - 2].inventory;
+  player.beenTo = player.completed[chapter - 2].beenTo;
+  player.charisma = player.completed[chapter - 2].charisma;
+  player.dexterity = player.completed[chapter - 2].dexterity;
+  player.grit = player.completed[chapter - 2].grit;
+  player.kindness = player.completed[chapter - 2].kindness;
+
+  // Remove completed at and after given chapter
+  let newCompleted = [];
+  for (let i = 0; i < chapter - 1; i++) {
+    newCompleted.push(player.completed[i]);
+  }
+
+  player.completed = newCompleted;
+
+  // Change area to chapter
+  let newArea = getAreaNameFromIndex(chapter + 1);
+  let startX = chapterCoordinates[chapter - 1].start[0];
+  let startY = chapterCoordinates[chapter - 1].start[1];
+
+  let newAssets = changeArea(newArea);
+
+  // Change background and music
+  fade(newAssets[1], function() {
+
+    // Set player to start coordinates for that chapter
+    changeRoom(newArea, startX, startY);
+    changeBackgroundImage(newAssets[0]);
+    resetTextbox();
+    changeBoxColor()
+    $('#intro-screen').addClass('hidden');
+    $('#game-img').css('opacity', 1);
+    $('#grandparent').css('z-index', 2);
+
+    savePlayer();
+
+    setTimeout(function() {
+      paused = false;
+
+    }, 2000)
+
+  })
 
 }

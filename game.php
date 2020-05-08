@@ -2,6 +2,10 @@
 /**
  * Template Name: Game
  */
+
+
+$completedChapters = 2;
+
 ?>
 
 <!DOCTYPE html>
@@ -14,6 +18,8 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" charset="utf-8"></script>
+
 
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/p5.min.js"></script>
     <script src="<?php echo get_bloginfo('template_directory') ?>/p5/addons/p5.dom.min.js"></script>
@@ -66,7 +72,7 @@
 
     <script type="text/javascript">
 
-      function holdup(title, text) {
+      function holdup(title, text, command) {
         event.stopPropagation();
 
         Swal.fire({
@@ -80,7 +86,16 @@
           cancelButtonText: "Avbryt",
         }).then((result) => {
           if (result.value) {
-            clearPlayer();
+            if (command == 'restart-game') {
+              clearPlayer();
+            }
+
+            if (command.includes('chapter')) {
+
+              let chapter = Number(command.substring(8));
+              startFromChapter(chapter);
+            }
+
           }
         })
       }
@@ -93,6 +108,9 @@
       <audio id="select-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/select.wav"></audio>
 
       <img id="toggle-sound" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/mini-assets/musicON.png" />
+      <?php if (is_student_admin()): ?>
+        <button type="button" name="button" id="toggle-admin">Toggle admin view</button>
+      <?php endif; ?>
 
       <div id="overlay"></div>
 
@@ -105,22 +123,31 @@
         <p>This is text adventure game</p>
       </div> -->
 
-      <div id="intro-screen">
+      <div id="intro-screen" class="cover">
         <img id="intro-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/beach.png" alt="test">
         <img id="logo" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/curseofthecircle.png" alt="">
 
         <div class="menu">
             <button id="main-choice" class="blink">[ <?php echo $menu_text ?> ]</button>
 
+            <button id="chapter-select-btn">[ CHAPTER SELECT ]</button>
+            <div class="chapter-select hidden">
+              <button id="chapter-1" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-1')">[ CHAPTER 1 ]</button>
+              <button id="chapter-2" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-2')">[ CHAPTER 2 ]</button>
+              <button id="chapter-3" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-3')">[ CHAPTER 3 ]</button>
+              <button id="chapter-4" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-4')">[ CHAPTER 4 ]</button>
+              <button id="chapter-5" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-5')">[ CHAPTER 5 ]</button>
+            </div>
+
             <?php if ($has_played): ?>
-                <button id="restart-game-2" type="button" name="button" onclick="holdup('Är du säker?', 'Om du startar om spelet kommer all din progress nollställas.')">[ RESTART GAME ]</button>
+                <button id="restart-game-2" type="button" name="button" onclick="holdup('Är du säker?', 'Om du startar om spelet kommer all din progress nollställas.', 'restart-game')">[ RESTART GAME ]</button>
             <?php endif; ?>
 
             <button onclick="window.location.href = '/';">[ QUIT ]</button>
         </div>
       </div>
 
-      <div id="gameover">
+      <div id="gameover" class="cover">
         <img id="gameover-img" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/gameover.gif" alt="">
 
         <div class="menu">
@@ -129,10 +156,11 @@
 
       </div>
 
-      <div id="endscreen">
+      <div id="endscreen" class="cover">
         <img id="endscreen-img" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/chapter1finished.png" alt="">
 
         <div class="menu">
+          <button id="continue-next-chapter" type="button" name="button">[ CONTINUE TO NEXT CHAPTER ]</button>
           <button onclick="window.location.href = '/game';">[ BACK TO MAIN MENU ]</button>
         </div>
 
@@ -223,7 +251,7 @@
 
       <script type="text/javascript">
         setTimeout(function() {
-          if (player.completed && player.completed.length > 0) {
+          if (player.completed && player.completed.length > completedChapters) {
             // Hide continueGame button
             $('#main-choice').remove();
 
