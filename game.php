@@ -32,7 +32,7 @@ $completedChapters = 2;
   <?php
 
   // Game in progress, show work in progress screen
-  if (is_student_admin() )  { ?>
+  if (!is_student_admin() )  { ?>
 
       <div id="work-in-progress">
         <div class="box">
