@@ -329,14 +329,14 @@ body {
   text-align: center;
 } */
 
-#login, #work-in-progress {
+#login {
   background-image: url('../../game-assets/backgrounds/beach.gif');
   background-color: #333;
   height: 100vh;
   width: 100vw;
 }
 
-#login .box, #work-in-progress .box {
+#login .box {
   width: 70%;
   height: 60%;
   min-width: 500px;
@@ -346,12 +346,6 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-#work-in-progress .box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #login a {
