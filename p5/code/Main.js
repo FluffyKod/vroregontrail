@@ -20,6 +20,7 @@ var drawText;
 let drawCanvas;
 let hasSound = true;
 
+
 let spriteImgSrc;
 
 var player;
@@ -113,6 +114,8 @@ function preload(){
     er_preload();
     pb_preload();
     i_preload();
+    fk_preload();
+    cyp_preload();
   }
 }
 
@@ -120,12 +123,9 @@ function preload(){
 // SETUP
 ////////////////////////////////////////////
 
-
-
 function setup(){
   // Get all saved rooms from the database
   loadRoomsFromDatabase(currentArea, function(returnedRooms) {
-
 
     // Set all rooms
     allAreaRooms = returnedRooms;
@@ -167,9 +167,6 @@ function setup(){
     updateDebug();
 
   });
-
-
-
 }
 
 ////////////////////////////////////////////
@@ -210,20 +207,30 @@ function draw(){
         i_draw();
         break;
       case 'frog_king':
+        if(define){fk_defineVar(); define = false}
+        fk_draw();
         break;
       case 'pepes_bread':
+        pepe = true;
+        clean_plate = false;
         if(define){pb_defineVar(); define = false;}
         pb_draw();
         break;
       case 'sheep_invaders':
         sheep = true;
+        wasp = false
         if(define){i_defineVar(); define = false;}
         i_draw();
         break;
       case 'wasp_attack':
         wasp = true;
+        sheep = false;
         if(define){i_defineVar(); define = false;}
         i_draw();
+        break;
+      case 'clean_your_plate':
+        if(define){cyp_defineVar(); define = false;}
+        cyp_draw();
         break;
     }
   }
@@ -294,12 +301,7 @@ function keyPressed(){
       blip = loadSound("menu_blip.wav")
       soundEnabled = true;
     }
-
   }
-
-
-
-
 }
 
 ////////////////////////////////////////////

@@ -5,11 +5,10 @@ var enterTextShow = true;
 function startScreen(title, description){
   background(51);
   fill(255);
-  this.title = title;
 
   textFont(pixel_font, 50)
   textAlign(CENTER, BOTTOM)
-  text(this.title, width/2,height/2);
+  text(title, width/2,height/2);
 
   blinkingText();
   if(enterTextShow){
