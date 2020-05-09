@@ -56,7 +56,14 @@ let backgrounds = {
   castle: 'castle.png',
   creepyHouse: 'creepyhouse.gif',
   highlands: 'scottish.gif',
-  tavern: 'tavern.gif'
+  tavern: 'tavern.gif',
+  bogGeneral: 'bogGeneral.gif',
+  sheep: '',
+  swampCrossroads: 'crossroads.gif',
+  mudriver: 'muddyRiver.gif',
+  witchAbode: 'witchAbode.jpg',
+  flies: '',
+  throneRoom: 'frogKing.gif',
 }
 
 // DEV SITE MUSIC
@@ -85,7 +92,9 @@ let music = {
   tavern: 'http://vroelevkar.se/wp-content/uploads/2020/04/tavern.mp3',
   mainThemeIntro: 'http://vroelevkar.se/wp-content/uploads/2020/04/harKommerJag.mp3',
   introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav',
-  gameOver: 'http://vroelevkar.se/wp-content/uploads/2020/05/sheep-calm.mp3'
+  gameOver: 'http://vroelevkar.se/wp-content/uploads/2020/05/sheep-calm.mp3',
+  swamp: 'http://vroelevkar.se/wp-content/uploads/2020/05/swamp.wav',
+  roomOfFlies: 'http://vroelevkar.se/wp-content/uploads/2020/05/roomOfFlies.wav'
 }
 
 // Chapter release
@@ -390,6 +399,10 @@ function getBackgroundImageFromArea( area ) {
       imageName = backgrounds.beach;
       break;
 
+    case 'bog':
+      imageName = backgrounds.bogGeneral;
+      break;
+
     default:
       imageName = backgrounds.highlands;
   }
@@ -410,6 +423,10 @@ function getSongFromArea( area ) {
 
     case 'highlands':
       song = music.highlands;
+      break;
+
+    case 'bog':
+      song = music.swamp;
       break;
 
     default:
@@ -828,6 +845,7 @@ function option(ref){
       if(this.command == 'move-addBeenTo'){
         this.moveToNewPlace(this.values.slice(0,2));
         player.beenTo.push(this.values.slice(2)[0]);
+        updateBeenToGui();
       }
 
       if (this.command == 'move-ifStat') {
@@ -899,15 +917,18 @@ function option(ref){
 
         paused = true;
 
-        fade(newAssets[1], function() {
+        fade(music.gameOver, function() {
           changeBoxColor()
           changeBackgroundImage(newAssets[0]);
           self.moveToNewPlace(move, true);
           changeRoom(newArea, move[0], move[1]);
           $('#endscreen').addClass('active');
-        })
 
-        location.reload();
+          // Remove continue to next chapter if it has not been released yet
+          // if (player.completed.length >= completedChapters) {
+          //   $('#continue-next-chapter').addClass('hidden');
+          // }
+        })
 
       }
   }
@@ -1081,6 +1102,7 @@ function changeRoom( area, x, y ) {
   resetTextbox()
   updateDebug();
   updateInventoryGui()
+  updateBeenToGui();
   updateStatGui('', true);
 
   // Save to database
@@ -1105,6 +1127,42 @@ function changeRoomDebug() {
     changeBoxColor()
   }
 
+}
+
+function clearInventory() {
+  player.inventory = [];
+  savePlayer();
+  updateDebug();
+  updateInventoryGui();
+}
+
+function addItemDebug(inputId) {
+  let input = document.getElementById(inputId);
+
+  player.inventory.push(input.value);
+  savePlayer();
+  updateDebug();
+  updateInventoryGui();
+
+  input.value = '';
+}
+
+function clearBeenTo() {
+  player.beenTo = [];
+  savePlayer();
+  updateDebug();
+  updateBeenToGui();
+}
+
+function addBeenToDebug(inputId) {
+  let input = document.getElementById(inputId);
+
+  player.beenTo.push(input.value);
+  savePlayer();
+  updateDebug();
+  updateBeenToGui();
+
+  input.value = '';
 }
 
 function resetPlayer() {
@@ -1135,6 +1193,7 @@ function resetPlayer() {
   savePlayer();
 
   resetTextbox();
+  updateBeenToGui();
 
   updateDebug();
 
@@ -1159,6 +1218,20 @@ function updateInventoryGui() {
     var li = document.createElement("li");
     li.appendChild(document.createTextNode(item));
     inventoryUl.appendChild(li);
+  }
+}
+
+function updateBeenToGui() {
+  const beenToUl = document.getElementById('beenTo');
+
+  // Remove all children
+  beenToUl.innerHTML = '';
+
+  // Add a list item for every inventory item
+  for (const beenTo of player.beenTo) {
+    var li = document.createElement("li");
+    li.appendChild(document.createTextNode(beenTo));
+    beenToUl.appendChild(li);
   }
 }
 

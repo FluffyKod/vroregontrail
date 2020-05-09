@@ -24,6 +24,43 @@ function blink() {
     }
 }
 
+function transition() {
+  $('#overlay').animate({
+      opacity: 1
+  }, 3000, function() {
+
+      $('#game-over').removeClass('active');
+      $('#game-img').css('opacity', 1);
+      $('#grandparent').css('z-index', 2);
+
+      setTimeout(function() {
+        paused = false;
+      }, 2000)
+
+      $('#overlay').animate({
+          opacity: 0
+      }, 5000)
+
+      // CHANGE IF STSRT NEW CHAPTER
+      if (player.completed.length == 1 && player.area == 'bog' && player.x == 0 && player.y == 23 ) {
+        player.background = backgrounds.bogGeneral;
+        player.music = music.swamp;
+      }
+
+      // Change music
+      $('#audio-holder').attr('src', player.music)
+
+      if (hasSound == true) {
+        $('#audio-holder').animate({
+            volume: 0.3
+        }, 3000)
+      } else {
+        $('#audio-holder').prop('volume', 0);
+      }
+
+  })
+}
+
 $('#main-choice').mouseover(function() {
     $('#main-choice').css('opacity', 1);
     $('#main-choice').removeClass('blink');
@@ -41,35 +78,7 @@ $('#main-choice').click(function() {
           volume: 0
       }, 3000)
 
-    // $('#overlay').css('background', 'black');
-    $('#overlay').animate({
-        opacity: 1
-    }, 3000, function() {
-
-        $('#game-img').css('opacity', 1);
-        $('#grandparent').css('z-index', 2);
-
-        setTimeout(function() {
-          paused = false;
-        }, 2000)
-
-        $('#overlay').animate({
-            opacity: 0
-        }, 5000)
-
-        // Change music
-        $('#audio-holder').attr('src', player.music)
-
-        if (hasSound == true) {
-          $('#audio-holder').animate({
-              volume: 0.3
-          }, 3000)
-        } else {
-          $('#audio-holder').prop('volume', 0);
-        }
-
-    })
-
+    transition();
 })
 
 $('#restart-game').click(function() {
@@ -106,3 +115,33 @@ $('#chapter-select-btn').click(function(e) {
   }
 
 })
+
+// $('#continue-next-chapter').click(function(e) {
+//   let newArea = player.area;
+//   let startX = player.x;
+//   let startY = player.y;
+//
+//   let newAssets = changeArea(newArea);
+//
+//   // Change background and music
+//   fade(newAssets[1], function() {
+//
+//     // Set player to start coordinates for that chapter
+//     changeRoom(newArea, startX, startY);
+//     changeBackgroundImage(newAssets[0]);
+//     resetTextbox();
+//     changeBoxColor()
+//     $('#endscreen').removeClass('active');
+//     $('#intro-screen').addClass('hidden');
+//     $('#game-img').css('opacity', 1);
+//     $('#grandparent').css('z-index', 2);
+//
+//     savePlayer();
+//
+//     setTimeout(function() {
+//       paused = false;
+//
+//     }, 2000)
+//
+//   })
+// })

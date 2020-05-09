@@ -60,36 +60,11 @@ function getPlayer() {
 
       updateDebug();
       updateInventoryGui()
+      updateBeenToGui();
       updateStatGui('', true);
 
-      // ADD COMPLETED TO OLD STRUCTURE:
-      if (player.completed.length == 1 && player.completed[0] == 1) {
-        let self = this;
-
-        let completed = {
-          chapter: 1,
-          inventory: player.inventory,
-          beenTo: player.beenTo,
-          charisma: player.charisma,
-          dexterity: player.dexterity,
-          grit: player.grit,
-          kindness: player.kindness,
-        }
-
-        player.completed = [];
-        player.completed.push(completed);
-
-        let newAssets = changeArea( 'bog' );
-
-        paused = true;
-
-        changeBoxColor()
-        changeBackgroundImage(newAssets[0]);
-        changeRoom('bog', 0, 23);
-
-        // Save player
-        savePlayer();
-      }
+      // ADD COMPLETED TO OLD STRUCTURE: AND FIX BACKGROUND
+      fixChapterRelease();
 
       return;
 
@@ -294,4 +269,40 @@ function getRoomsFromArea( rooms, area ) {
       return Array()
 
   }
+}
+
+function fixChapterRelease() {
+  if (player.completed.length == 1 && player.completed[0] == 1) {
+    let self = this;
+
+    let completed = {
+      chapter: 1,
+      inventory: player.inventory,
+      beenTo: player.beenTo,
+      charisma: player.charisma,
+      dexterity: player.dexterity,
+      grit: player.grit,
+      kindness: player.kindness,
+    }
+
+    player.completed = [];
+    player.completed.push(completed);
+
+    let newAssets = changeArea( 'bog' );
+
+    paused = true;
+
+    changeBoxColor()
+    changeBackgroundImage(newAssets[0]);
+    changeRoom('bog', 0, 23);
+
+    player.background = newAssets[0];
+    player.music = newAssets[1];
+
+    $('#audio-holder').attr('src', player.music)
+
+    // Save player
+    savePlayer();
+  }
+
 }
