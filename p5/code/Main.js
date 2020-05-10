@@ -58,11 +58,11 @@ let backgrounds = {
   highlands: 'scottish.gif',
   tavern: 'tavern.gif',
   bogGeneral: 'bogGeneral.gif',
-  sheep: '',
+  sheep: 'sheep.gif',
   swampCrossroads: 'crossroads.gif',
   mudriver: 'muddyRiver.gif',
-  witchAbode: 'witchAbode.jpg',
-  flies: '',
+  witchAbode: 'witchAbode.gif',
+  flies: 'roomOfFlies.png',
   throneRoom: 'frogKing.gif',
 }
 
@@ -94,7 +94,9 @@ let music = {
   introBeach: 'http://vroelevkar.se/wp-content/uploads/2020/04/wakup.wav',
   gameOver: 'http://vroelevkar.se/wp-content/uploads/2020/05/sheep-calm.mp3',
   swamp: 'http://vroelevkar.se/wp-content/uploads/2020/05/swamp.wav',
-  roomOfFlies: 'http://vroelevkar.se/wp-content/uploads/2020/05/roomOfFlies.wav'
+  roomOfFlies: 'http://vroelevkar.se/wp-content/uploads/2020/05/roomOfFlies.wav',
+  confusedSheep: 'http://vroelevkar.se/wp-content/uploads/2020/05/confusedSheep.mp3',
+  witchAbode: 'http://vroelevkar.se/wp-content/uploads/2020/05/witchAbode2.mp3'
 }
 
 // Chapter release
