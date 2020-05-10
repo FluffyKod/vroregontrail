@@ -80,7 +80,6 @@ function fk_resetVar(){
   camera.position.y = height/2
   flySpawnCount = 0;
 
-
   //delete player
   fk_player.tounge.endPoint.remove()
   fk_player.remove()
@@ -274,18 +273,3 @@ function updateMouseVector(){
   mouseVector.x = mouseX
   mouseVector.y = mouseY
 }
-
-//TESTING
-/*
-function preload(){fk_preload()}
-function setup(){fk_setup()}
-function draw(){fk_draw()}
-function defineCanvas(){
-  canvas = createCanvas(600, 600);
-  canvas.style('position: static');
-  canvas.style('margin: auto');
-  canvas.style('margin-top: 140px');
-  canvas.style('margin-left: 500px')
-  canvas.class('box');
-}
-*/
