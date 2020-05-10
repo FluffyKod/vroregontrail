@@ -82,12 +82,12 @@ let colors = {
   tavern: '#89260c',
   creepyHouse: '#4f141c',
   bog: '#26290A',
-  sheep: '',
-  muddyRiver: '',
-  crossroads: '',
-  frogKing: '',
-  roomOfFlies: '',
-  witchAbode: ''
+  sheep: '#52812F',
+  muddyRiver: '#3C3F4A',
+  crossroads: '#4E4614',
+  frogKing: '#C6A92D',
+  roomOfFlies: '#9D7366',
+  witchAbode: '#5C2F62'
 }
 
 // PRODUCTION SITE MUSIC
@@ -390,6 +390,27 @@ function changeBoxColor() {
   }
   if (player.background == backgrounds['tavern']) {
     classes += ' tavern';
+  }
+  if (player.background == backgrounds['bogGeneral']) {
+    classes += ' bog';
+  }
+  if (player.background == backgrounds['sheep']) {
+    classes += ' sheep';
+  }
+  if (player.background == backgrounds['swampCrossroads']) {
+    classes += ' crossroads';
+  }
+  if (player.background == backgrounds['mudriver']) {
+    classes += ' river';
+  }
+  if (player.background == backgrounds['witchHouse']) {
+    classes += ' witchAbode';
+  }
+  if (player.background == backgrounds['flies']) {
+    classes += ' flies';
+  }
+  if (player.background == backgrounds['throneRoom']) {
+    classes += ' throneRoom';
   }
 
   $('.box').attr('class', classes);

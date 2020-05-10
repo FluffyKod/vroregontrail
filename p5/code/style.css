@@ -12,6 +12,74 @@
   --tavern: rgba(137,38,12, 0.7);
   --creepyhouseHex: #4f141c;
   --creepyhouse: rgba(79,20,28, 0.7);
+  --bogHex: #26290A;
+  --bog: ;
+  --sheepHex: #52812F;
+  --sheep: ;
+  --riverHex: #3C3F4A;
+  --river: ;
+  --crossroadsHex: #4E4614;
+  --crossroads: ;
+  --frogKingHex: #C6A92D;
+  --frogKing: ;
+  --fliesHex: #9D7366;
+  --flies: ;
+  --witchAbodeHex: #5C2F62;
+  --witchAbode: ;
+}
+
+.box {
+  background-color: var(--intro);
+  font-family: pixel;
+  color: #ebebeb;
+  outline-style: solid;
+  outline-width: 4px;
+  padding: 6px;
+  margin: 0px;
+}
+
+.box.intro {
+  background-color: var(--intro);
+}
+
+.box.highlands {
+  background-color: var(--highlands);
+}
+
+.box.tavern {
+  background-color: var(--tavern);
+}
+
+.box.creepyhouse {
+  background-color: var(--creepyhouse);
+}
+
+.box.bog {
+  background-color: var(--bog);
+}
+
+.box.sheep {
+  background-color: var(--sheep);
+}
+
+.box.crossroads {
+  background-color: var(--crossroads);
+}
+
+.box.river {
+  background-color: var(--river);
+}
+
+.box.witchAbode {
+  background-color: var(--witchAbode);
+}
+
+.box.flies {
+  background-color: var(--flies);
+}
+
+.box.throneRoom {
+  background-color: var(--throneRoom);
 }
 
 /******************************
@@ -164,31 +232,7 @@ body {
 * TEXTGAME STYLES
 ******************************/
 
-.box {
-  background-color: var(--intro);
-  font-family: pixel;
-  color: #ebebeb;
-  outline-style: solid;
-  outline-width: 4px;
-  padding: 6px;
-  margin: 0px;
-}
 
-.box.intro {
-  background-color: var(--intro);
-}
-
-.box.highlands {
-  background-color: var(--highlands);
-}
-
-.box.tavern {
-  background-color: var(--tavern);
-}
-
-.box.creepyhouse {
-  background-color: var(--creepyhouse);
-}
 
 #grandparent {
   display: flex;
