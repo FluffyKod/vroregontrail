@@ -111,7 +111,11 @@ function cyp_deleteVar(){
   cyp_player.remove();
   gameOver = false;
   win = false;
-  cyp_food = 0;
+  if(cyp_bread){
+    cyp_food = 1;
+  }else {
+    cyp_food = 15;
+  }
 }
 
 function drawPepe(){

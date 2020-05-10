@@ -76,8 +76,6 @@ function mj_deleteVar(){
 
 
 function mountainJumpDraw(){
-
-
     drawSprites();
     textSize(40);
     fill(255);
@@ -103,14 +101,9 @@ function mountainJumpDraw(){
     if(score > 7500){
       difficulty = 4;
     }
-
-
-
-
     if(mj_player.overlap(ground)){
       mj_player.velocity.y = -2*mj_jumpv;
     }
-
 
     if(keyDown(LEFT_ARROW) && mj_player.velocity.x >-2*mj_playerv){
       mj_player.velocity.x -= 0.3*mj_playerv;
@@ -136,8 +129,6 @@ function mountainJumpDraw(){
       //pen.velocity.y = penv*difficulty;
 
       pens.add(pen);
-
-
     }
 
     for (var i = 0; i < pens.length; i++) {
@@ -154,8 +145,6 @@ function mountainJumpDraw(){
       if(pens[i].position.y > mj_player.position.y+height){
         pens[i].remove();
       }
-
-
     }
 
     if(mj_player.position.y < currentheight){
@@ -207,11 +196,9 @@ function mountainJumpDraw(){
           case 3:
             mj_player.velocity.y = -mj_jumpv;
             break;
-
         }
       }
     }
-
 }
 
 function newGame(){

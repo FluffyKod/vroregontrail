@@ -1371,8 +1371,8 @@ function playVideo(callback) {
   document.getElementById('video').src = 'https://www.youtube.com/embed/D_d7zcckIwA?start=1&autoplay=1&showinfo=0&rel=0&iv_load_policy=3&controls=0&disablekb=1';
 
   // Check if there is a local storage
-  // let videoDuration = 60 * 38 + 29;
-  let videoDuration = 10;
+  let videoDuration = 60 * 38 + 29;
+  //let videoDuration = 10;
 
   let localTimeLeft = localStorage.getItem('video-time-left')
   if (localTimeLeft != null) {
