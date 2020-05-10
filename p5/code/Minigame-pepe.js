@@ -17,13 +17,10 @@ function pb_preload(){
   hand_animation = loadAnimation(spriteImgSrc +'pepe-hand-idle.png',spriteImgSrc +'Pepe-hand-stretch.png',spriteImgSrc +'pepe-hand-grabbed.png');
   hand_animation.playing = false;
   pb_background_img = loadImage(spriteImgSrc +'Pepe-bakgrund.png')
-
 }
 
 function pb_setup(){
-
   pb_defineVar();
-
 }
 
 function pb_draw(){
@@ -32,7 +29,6 @@ function pb_draw(){
   }
   if(!gameOver){
     drawPepe();
-
   }
   if(gameOver && !startSc){
     gameOverScreen();
@@ -167,7 +163,7 @@ function drawPepe(){
   }
 }
 
-function newGame(){
+function pepe_newGame(){
   pb_player.position.x = -pb_playerwidth/3
   pb_player.position.y = height/2;
   gameOver = false;
