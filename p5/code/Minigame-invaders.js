@@ -34,7 +34,7 @@ function i_defineVar(){
   }
 
   i_enemysize = 60;
-  i_enemyspeed = 0.15;
+  i_enemyspeed = 0.2;
   bulletsize = 10;
   bulletspeed = 5;
   playerdmg = 1;
@@ -79,13 +79,17 @@ function i_deleteVar(){
 
 function i_draw(){
   if(startSc){
-    startScreen("Invaders");
+    startScreen("Sheep Attack");
   }
   if(!gameOver){
     invadersDraw();
   }
   if(gameOver && !startSc){
     gameOverScreen();
+    if(clearVar){i_deleteVar();}
+  }
+  if(!gameOver && win && !startSc){
+    winScreen();
     if(clearVar){i_deleteVar();}
   }
 }
@@ -188,7 +192,7 @@ function invadersDraw(){
   //restart
   if(i_enemies.length == 0){
     if(i_score < waveAmount ){
-      i_enemyspeed += 0.2
+      i_enemyspeed += 0.15
       spawnEnemies();
     }else{
       win = true;
