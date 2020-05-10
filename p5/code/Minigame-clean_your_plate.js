@@ -1,12 +1,11 @@
 var cyp_player, cyp_playersize, cyp_playerspeed;
 var cyp_food = 0;
-var foodResistance;
+var cyp_foodResistance;
 var cyp_mouthCollider;
-var pepe, looktimer, pepecolors, pepe_state;
 var gameOver;
 var startSc;
 
-let swallowing = false;
+let cyp_swallowing = false;
 let cyp_bread = false;
 
 var cyp_background_img;
@@ -50,7 +49,7 @@ function cyp_draw(){
     startScreen(cyp_startText);
   }
   if(!gameOver){
-    drawPepe();
+    cyp_game();
   }
   if(gameOver && !startSc){
     gameOverScreen();
@@ -77,10 +76,10 @@ function cyp_defineVar(){
   }
   if(cyp_bread){
     cyp_food = 1
-    foodResistance = 3.6;
+    cyp_foodResistance = 3.6;
   }else{
     cyp_food = 15;
-    foodResistance = 1.2;
+    cyp_foodResistance = 1.2;
   }
   camera.position.x = width/2;
   camera.position.y = height/2;
@@ -118,7 +117,7 @@ function cyp_deleteVar(){
   }
 }
 
-function drawPepe(){
+function cyp_game(){
   background(51);
   fill(255);
   drawSprites();
@@ -135,7 +134,7 @@ function drawPepe(){
     win = true;
   }
   if(cyp_player.position.x > -cyp_playerwidth/3){
-    cyp_player.velocity.x += -foodResistance;
+    cyp_player.velocity.x += -cyp_foodResistance;
   } else { cyp_player.velocity.x = 0; cyp_player.position.x = -cyp_playerwidth/3}
   if(keyWentDown(RIGHT_ARROW)){
     cyp_player.velocity.x = 10;
@@ -150,17 +149,17 @@ function drawPepe(){
     cyp_food-=1
     cyp_player.position.x = -cyp_playerwidth/3;
     cyp_mouthVisual.changeAnimation('swallow')
-    swallowing = true
-    foodResistance += 0.1
+    cyp_swallowing = true
+    cyp_foodResistance += 0.1
   }
 
 }
 
 function cyp_mouthAnimationController(){
-  if(cyp_mouthVisual.animation.getFrame() > 0 && swallowing){
+  if(cyp_mouthVisual.animation.getFrame() > 0 && cyp_swallowing){
     cyp_mouthVisual.changeAnimation('open')
     cyp_mouthVisual.animation.changeFrame(0)
-    swallowing = false;
+    cyp_swallowing = false;
   }
   if(cyp_player.position.x < -cyp_playerwidth/3+10 && frameCount % 15 == 0){
     cyp_mouthVisual.animation.changeFrame(0)

@@ -222,8 +222,6 @@ function draw(){
         fk_draw();
         break;
       case 'pepes_bread':
-        pepe = true;
-        clean_plate = false;
         if(define){pb_defineVar(); define = false;}
         pb_draw();
         break;
