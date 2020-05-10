@@ -1,7 +1,7 @@
 function fade(music = false, continueGame = false) {
 
   // ENTER LOCKDOWN
-  enterLockdown(4500);
+  enterLockdown(5000);
 
   if (music != false) {
 
