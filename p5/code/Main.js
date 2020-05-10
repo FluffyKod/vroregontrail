@@ -61,7 +61,7 @@ let backgrounds = {
   sheep: 'sheep.gif',
   swampCrossroads: 'crossroads.gif',
   mudriver: 'muddyRiver.gif',
-  witchAbode: 'witchAbode.gif',
+  witchHouse: 'witchAbode.gif',
   flies: 'roomOfFlies.png',
   throneRoom: 'frogKing.gif',
 }
