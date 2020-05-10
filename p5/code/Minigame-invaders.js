@@ -34,7 +34,7 @@ function i_defineVar(){
   }
 
   i_enemysize = 60;
-  i_enemyspeed = 0.3;
+  i_enemyspeed = 0.2;
   bulletsize = 10;
   bulletspeed = 5;
   playerdmg = 1;
@@ -79,7 +79,7 @@ function i_deleteVar(){
 
 function i_draw(){
   if(startSc){
-    startScreen("Invaders");
+    startScreen("Sheep Attack");
   }
   if(!gameOver){
     invadersDraw();
