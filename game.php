@@ -170,6 +170,15 @@ $completedChapters = 2;
 
       </div>
 
+      <!-- <div id="win" class="cover">
+        <img id="gameover-img" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/gameover.gif" alt="">
+
+        <div class="menu">
+          <button onclick="window.location.href = '/game';">[ BACK TO MAIN MENU ]</button>
+        </div>
+
+      </div> -->
+
       <div id="endscreen" class="cover">
         <img id="endscreen-img" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/chapter1finished.png" alt="">
 
