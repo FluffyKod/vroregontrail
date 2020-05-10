@@ -19,7 +19,7 @@ var startSc;
 var drawText;
 let drawCanvas;
 let hasSound = true;
-
+let enterPause = false;
 
 let spriteImgSrc;
 
@@ -296,23 +296,27 @@ function keyPressed(){
       $('#choice-holder').get(0).play();
     }
     if(keyCode == ENTER){
-      textbox = select('#textbox');
-      textbox.html("")
-      counter = 0;
-      displayedOptions[currentoption].runCommand();
-      currentoption = 0;
-      load = false;
+      if (enterPause == false) {
+        textbox = select('#textbox');
+        textbox.html("")
+        counter = 0;
+        displayedOptions[currentoption].runCommand();
+        currentoption = 0;
+        load = false;
 
-      // Play select sound
-      $('#select-holder').get(0).play();
+        // Play select sound
+        $('#select-holder').get(0).play();
 
-      // SAVE PLAYER PROGRESS
-      savePlayer()
+        // SAVE PLAYER PROGRESS
+        savePlayer()
 
-      // DEBUG
-      updateDebug();
+        // DEBUG
+        updateDebug();
 
+        // ENTER LOCKDOWN
+        enterLockdown(1500);
       }
+    }
     if(keyCode == SHIFT && !soundEnabled){
       blip = loadSound("menu_blip.wav")
       soundEnabled = true;
@@ -1420,4 +1424,13 @@ function playVideo(callback) {
 
   $('#video-player').removeClass('hidden');
   startTimer(videoDuration, display, callback);
+}
+
+function enterLockdown(time) {
+  if (enterPause == false) {
+    enterPause = true;
+    setTimeout(function() {
+      enterPause = false;
+    }, time)
+  }
 }
