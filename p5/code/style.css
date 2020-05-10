@@ -372,7 +372,41 @@ body {
   margin-top: 50px;
 }
 
+#video-player {
+  z-index: 15;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #333;
+  flex-direction: column;
+  color: #fff;
+}
+
+#video-player p {
+  font-size: 22px;
+  margin: 0;
+}
+
+#video-player p#timer-label {
+  font-size: 35px;
+  margin: 10px 0 30px;
+}
+
+#video-player iframe {
+  width: 60vw;
+  height: 50vh;
+  max-width: 800px;
+  max-height: 700px;
+  padding: 20px;
+  border: 2px solid #eee;
+}
+
 /* CHAPTER SELECT */
-.hidden {
+.hidden, #video-player.hidden {
   display: none;
 }

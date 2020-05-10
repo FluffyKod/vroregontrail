@@ -717,6 +717,11 @@ function showValueAmountControl(){
           showAmount = 3;
           break;
 
+        case 'video':
+          activeRoom.optionGuis[i].setValue('command_description', 'plays the annoying video and then moves to coordinates (value 0, value1)')
+          showAmount = 1;
+          break;
+
         default:
           activeRoom.optionGuis[i].setValue('command_description', 'ERROR: command not found')
           showAmount = 0;

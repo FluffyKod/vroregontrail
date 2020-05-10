@@ -24,6 +24,33 @@ function blink() {
     }
 }
 
+function fader() {
+  $('#overlay').animate({
+      opacity: 1
+  }, 3000, function() {
+
+      setTimeout(function() {
+        paused = false;
+      }, 2000)
+
+      $('#overlay').animate({
+          opacity: 0
+      }, 5000)
+
+      if (hasSound == true) {
+        $('#audio-holder').animate({
+            volume: 0.3
+        }, 3000)
+      } else {
+        $('#audio-holder').prop('volume', 0);
+      }
+  })
+
+  $('#audio-holder').animate({
+      volume: 0.
+  }, 3000)
+}
+
 function transition() {
   $('#overlay').animate({
       opacity: 1

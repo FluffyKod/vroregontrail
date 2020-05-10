@@ -931,6 +931,14 @@ function option(ref){
         })
 
       }
+
+      if(this.command == 'video'){
+        // Play the video sequence
+        let self = this;
+        playVideo(function() {
+          self.moveToNewPlace(self.values);
+        });
+      }
   }
 
 }
@@ -1310,4 +1318,74 @@ function startFromChapter(chapter) {
 
   })
 
+}
+
+function startTimer(duration, display, callback) {
+    var timer = duration, minutes, seconds;
+    let intervalId = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        // Update local storage
+        localStorage.setItem('video-time-left', timer);
+
+        if (--timer < 0) {
+            $('#video-player').addClass('hidden');
+            clearInterval(intervalId);
+
+            // Stop video
+            document.getElementById('video').src = 'https://www.youtube.com/embed/D_d7zcckIwA?start=1&autoplay=0&showinfo=0&rel=0&iv_load_policy=3&controls=0&disablekb=1';
+
+            // Start game again
+            paused = false;
+
+            // Start music
+            if (hasSound) {
+              $('#audio-holder').animate({
+                  volume: 0.3
+              }, 3000)
+            }
+
+            callback();
+
+        }
+    }, 1000);
+}
+
+function playVideo(callback) {
+  paused = true;
+
+  // Pause music
+  $('#audio-holder').animate({
+      volume: 0
+  }, 3000)
+
+  // Restart and play video
+  document.getElementById('video').src = 'https://www.youtube.com/embed/D_d7zcckIwA?start=1&autoplay=1&showinfo=0&rel=0&iv_load_policy=3&controls=0&disablekb=1';
+
+  // Check if there is a local storage
+  // let videoDuration = 60 * 38 + 29;
+  let videoDuration = 10;
+
+  let localTimeLeft = localStorage.getItem('video-time-left')
+  if (localTimeLeft != null) {
+    if (localTimeLeft != '0') {
+      // Set to saved value
+      videoDuration = Number(localTimeLeft);
+      let atTime = (60 * 38 + 29) - videoDuration;
+
+      // Start video att that time
+      document.getElementById('video').src = `https://www.youtube.com/embed/D_d7zcckIwA?start=${atTime}&autoplay=1&showinfo=0&rel=0&iv_load_policy=3&controls=0&disablekb=1`;
+    }
+  }
+
+  display = document.querySelector('#timer-label');
+
+  $('#video-player').removeClass('hidden');
+  startTimer(videoDuration, display, callback);
 }

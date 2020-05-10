@@ -257,6 +257,12 @@ $completedChapters = 2;
 
       </div>
 
+      <div id="video-player" class="hidden">
+        <p>TIME REMAINING:</p>
+        <p id="timer-label">39:38</p>
+        <iframe id="video" src="https://www.youtube.com/embed/D_d7zcckIwA?start=1&autoplay=0&showinfo=0&rel=0&iv_load_policy=3&controls=0&disablekb=1" width="560" height="315" frameborder="0"></iframe>
+      </div>
+
       <!-- SCRIPTS -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.2/gsap.min.js" charset="utf-8"></script>
 
