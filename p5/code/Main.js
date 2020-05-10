@@ -313,8 +313,7 @@ function keyPressed(){
         // DEBUG
         updateDebug();
 
-        // ENTER LOCKDOWN
-        enterLockdown(1500);
+
       }
     }
     if(keyCode == SHIFT && !soundEnabled){
@@ -844,6 +843,7 @@ function option(ref){
           changeBoxColor()
           changeBackgroundImage(self.values.slice(2,3)[0], false);
           self.moveToNewPlace(self.values.slice(0,2), true);
+
         })
 
         // this.moveToNewPlace(this.values.slice(0,2));

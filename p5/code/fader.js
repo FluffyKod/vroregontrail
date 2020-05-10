@@ -1,5 +1,8 @@
 function fade(music = false, continueGame = false) {
 
+  // ENTER LOCKDOWN
+  enterLockdown(4500);
+
   if (music != false) {
 
     if (hasSound == false) {
