@@ -81,7 +81,13 @@ let colors = {
   highlands: '#3a8530',
   tavern: '#89260c',
   creepyHouse: '#4f141c',
-  bog: '#4f141c',
+  bog: '#26290A',
+  sheep: '',
+  muddyRiver: '',
+  crossroads: '',
+  frogKing: '',
+  roomOfFlies: '',
+  witchAbode: ''
 }
 
 // PRODUCTION SITE MUSIC
@@ -1273,6 +1279,10 @@ function startFromChapter(chapter) {
   }
 
   // Check if player has saved completed
+  if (!player.completed) {
+    player.completed = [];
+  }
+
   if (player.completed.length < chapter - 1) {
     return;
   }

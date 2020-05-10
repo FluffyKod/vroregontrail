@@ -66,6 +66,11 @@ function getPlayer() {
       // ADD COMPLETED TO OLD STRUCTURE: AND FIX BACKGROUND
       fixChapterRelease();
 
+      // Player fix
+      if (!player.completed) {
+        player.completed = [];
+      }
+
       return;
 
       // rooms = getRoomsFromArea( allAreaRooms, currentArea );
