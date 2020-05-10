@@ -314,7 +314,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
   window.onload = function() {
     if (window.innerWidth > 800) {
-      document.querySelector("#video-background").src = "<?php echo get_bloginfo('template_directory') . '/img/vrgkampen.mp4'; ?>";
+      document.querySelector("#video-background").src = "<?php echo get_bloginfo('template_directory') . '/img/vrgkampen.MP4'; ?>";
     }
   }
 

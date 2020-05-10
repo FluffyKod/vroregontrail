@@ -30,6 +30,20 @@ $completedChapters = 2;
   <body>
 
   <?php
+
+  // Game in progress, show work in progress screen
+  if (!is_student_admin() )  { ?>
+
+      <div id="work-in-progress">
+        <div class="box">
+          <h1>Spelet är just nu under konstruktion! Kapitel 2 släpps senare idag.</h1>
+        </div>
+      </div>
+
+  <?php
+    exit();
+  }
+
   // Only show game to logged in users
   if (! is_user_logged_in() ){
     ?>
@@ -160,7 +174,7 @@ $completedChapters = 2;
         <img id="endscreen-img" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/chapter1finished.png" alt="">
 
         <div class="menu">
-          <button id="continue-next-chapter" type="button" name="button">[ CONTINUE TO NEXT CHAPTER ]</button>
+          <!-- <button id="continue-next-chapter" type="button" name="button">[ CONTINUE TO NEXT CHAPTER ]</button> -->
           <button onclick="window.location.href = '/game';">[ BACK TO MAIN MENU ]</button>
         </div>
 
@@ -189,6 +203,16 @@ $completedChapters = 2;
 
             <h3>Inventory</h3>
             <ul id="inventory"></ul>
+
+            <input type="text" name="" value="" id="item-input" placeholder="Item to add...">
+            <button type="button" name="button" id="add-item" onclick="addItemDebug('item-input')">Add item</button>
+            <button type="button" name="button" id="clear-inventory" onclick="clearInventory()">Clear inventory</button>
+
+            <h3>BeenTo's</h3>
+            <ul id="beenTo"></ul>
+            <input type="text" name="" value="" id="beenTo-input" placeholder="BeenTo to add...">
+            <button type="button" name="button" onclick="addBeenToDebug('beenTo-input')">Add beenTo</button>
+            <button type="button" name="button" onclick="clearBeenTo()">Clear beenTo's</button>
 
             <h3>Player stats</h3>
             <div class="player-stats">
@@ -253,14 +277,24 @@ $completedChapters = 2;
 
       <script type="text/javascript">
         setTimeout(function() {
-          if (player.completed && player.completed.length > completedChapters) {
+          if (player.completed && player.completed.length >= completedChapters) {
             // Hide continueGame button
             $('#main-choice').remove();
 
+            let chapterText;
+            switch (player.completed.length) {
+              case 1:
+                chapterText = 'Kapitel 1: Highlands';
+                break;
+              case 2:
+                chapterText = 'Kapitel 2: The Bog';
+                break;
+            }
+
             // Popup with info
             Swal.fire(
-              'Kapitel 1 Avklarat!',
-              'Du har spelat klart kapitel 1: Highlands. Vänta på nästa release för att kunna fortsätta spela!',
+              `Kapitel ${player.completed.length} Avklarat!`,
+              `Du har spelat klart ${chapterText}. Vänta på nästa release för att kunna fortsätta spela!`,
               'success'
             )
           }
