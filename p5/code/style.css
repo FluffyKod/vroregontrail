@@ -13,19 +13,19 @@
   --creepyhouseHex: #4f141c;
   --creepyhouse: rgba(79,20,28, 0.7);
   --bogHex: #26290A;
-  --bog: ;
+  --bog: rgb(38,41,10);
   --sheepHex: #52812F;
-  --sheep: ;
+  --sheep: rgb(82,129,47);
   --riverHex: #3C3F4A;
-  --river: ;
+  --river: rgb(60,63,74);
   --crossroadsHex: #4E4614;
-  --crossroads: ;
+  --crossroads: rgb(78,70,20);
   --frogKingHex: #C6A92D;
-  --frogKing: ;
+  --frogKing: rgb(198,169,45);
   --fliesHex: #9D7366;
-  --flies: ;
+  --flies: rgb(157,115,102);
   --witchAbodeHex: #5C2F62;
-  --witchAbode: ;
+  --witchAbode: rgb(92,47,98);
 }
 
 .box {
@@ -79,7 +79,7 @@
 }
 
 .box.throneRoom {
-  background-color: var(--throneRoom);
+  background-color: var(--frogKing);
 }
 
 /******************************
