@@ -82,11 +82,11 @@ let colors = {
   tavern: '#89260c',
   creepyHouse: '#4f141c',
   bog: '#26290A',
-  sheep: '#52812F',
+  sheep: '#38200B',
   muddyRiver: '#3C3F4A',
   crossroads: '#4E4614',
   frogKing: '#C6A92D',
-  roomOfFlies: '#9D7366',
+  roomOfFlies: '#275A52',
   witchAbode: '#5C2F62'
 }
 
