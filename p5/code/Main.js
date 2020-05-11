@@ -60,11 +60,16 @@ let backgrounds = {
   bogGeneral: 'bogGeneral.gif',
   sheep: 'sheep.gif',
   swampCrossroads: 'crossroads.gif',
-  mudriver: 'muddyRiver.gif',
+  mudriver: 'muddyriver2.gif',
   witchHouse: 'witchAbode.gif',
-  flies: 'roomOfFlies.png',
+  flies: 'roomOfFlies.gif',
   throneRoom: 'frogKing.gif',
 }
+
+let endscreens = [
+  'chapter1finished.png',
+  'chapter2finished.png'
+]
 
 // DEV SITE MUSIC
 // let music = {
@@ -82,11 +87,11 @@ let colors = {
   tavern: '#89260c',
   creepyHouse: '#4f141c',
   bog: '#26290A',
-  sheep: '#52812F',
+  sheep: '#38200B',
   muddyRiver: '#3C3F4A',
   crossroads: '#4E4614',
   frogKing: '#C6A92D',
-  roomOfFlies: '#9D7366',
+  roomOfFlies: '#275A52',
   witchAbode: '#5C2F62'
 }
 
@@ -350,6 +355,18 @@ function player(){
 ////////////////////////////////////////////
 // AREA FUNCTIONS
 ////////////////////////////////////////////
+function getBackgroundFilePath(fileName) {
+  // Get path to the game-assets/backgrounds/ folder
+  let backgroundAssetFolder = document.getElementById('game-asset-folder').innerText + 'backgrounds/';
+
+  // Get the html element which displays the image
+  let backgroundElement = document.getElementById('background-image');
+
+  let newImagePath = backgroundAssetFolder + fileName;
+
+  return newImagePath;
+}
+
 function changeBackgroundImage( suppliedImage, isFileName = true ) {
 
   // Get path to the game-assets/backgrounds/ folder
@@ -954,6 +971,8 @@ function option(ref){
           changeBackgroundImage(newAssets[0]);
           self.moveToNewPlace(move, true);
           changeRoom(newArea, move[0], move[1]);
+
+          $('#endscreen').attr('src', getBackgroundFilePath(endscreens[chapterCompleted - 1]));
           $('#endscreen').addClass('active');
 
           // Remove continue to next chapter if it has not been released yet
