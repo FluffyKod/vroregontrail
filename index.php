@@ -122,7 +122,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
     <div class="box white hl frescati">
       <div class="see-more">
         <h3>Nästa buss Frescati</h3>
-        <button onclick="toggleClass('frescatis', 'all', 'one');">See alla &#8594;</button>
+        <button onclick="toggleClass('frescatis', 'all', 'one');">Se alla &#8594;</button>
       </div>
 
 
@@ -147,7 +147,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
     <div class="box white hl frescati">
       <div class="see-more">
         <h3>Nästa buss Odenplan</h3>
-        <button onclick="toggleClass('odenplans', 'all', 'one');">See alla &#8594;</button>
+        <button onclick="toggleClass('odenplans', 'all', 'one');">Se alla &#8594;</button>
       </div>
 
 
