@@ -18,7 +18,8 @@ let bulletAmount;
 let has_crossbow;
 
 function i_preload(){
-  sheep_img = loadImage(spriteImgSrc + 'sheep.png');
+  sheep_anim = loadAnimation(spriteImgSrc + 'sheep1.png', spriteImgSrc + 'sheep2.png');
+  sheep_anim.frameDelay = 13;
   wasp_img = loadImage(spriteImgSrc + 'wasp.png');
   bow_idle = loadImage(spriteImgSrc + 'bow_loaded.png');
   bow_shoot = loadImage(spriteImgSrc + 'bow_shot.png');
@@ -132,7 +133,7 @@ function spawnEnemies(){
     for (var j = 0; j < 7; j++) {
       i_enemy = createSprite((j*(i_enemysize+espacing)+i_enemysize/2 +espacing) , i*(i_enemysize+espacing)+(i_enemysize/2 +espacing) , i_enemysize, i_enemysize)
       if(sheep){
-        i_enemy.addImage(sheep_img);
+        i_enemy.addAnimation('walk', sheep_anim);
       }else if(wasp){
         i_enemy.addImage(wasp_img)
       }
