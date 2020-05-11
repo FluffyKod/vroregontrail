@@ -142,7 +142,7 @@ function drawErnstRunning(){
   }
 
 
-  if(frameCount%er_spawnrate == 0 && er_score >5){
+  if(frameCount%er_spawnrate == 0){
     rint = floor(random(0,2));
 
     if(rint == 0){
