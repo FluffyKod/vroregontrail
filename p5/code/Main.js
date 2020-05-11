@@ -108,7 +108,9 @@ let music = {
   roomOfFlies: 'http://vroelevkar.se/wp-content/uploads/2020/05/roomOfFlies.wav',
   confusedSheep: 'http://vroelevkar.se/wp-content/uploads/2020/05/confusedSheep.mp3',
   witchAbode: 'http://vroelevkar.se/wp-content/uploads/2020/05/witchAbode2.mp3',
-  stream: 'http://vroelevkar.se/wp-content/uploads/2020/05/streamBit.wav'
+  stream: 'http://vroelevkar.se/wp-content/uploads/2020/05/streamBit.wav',
+  frogeCalm: 'http://vroelevkar.se/wp-content/uploads/2020/05/froge.wav',
+  frogeFight: 'http://vroelevkar.se/wp-content/uploads/2020/05/frogefight.wav'
 }
 
 // Chapter release
