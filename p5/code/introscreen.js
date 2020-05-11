@@ -69,23 +69,9 @@ function transition() {
       }, 5000)
 
       // CHANGE IF STSRT NEW CHAPTER
-      if (player.completed.length == 1 && player.area == 'bog' && player.x == 0 && player.y == 23 ) {
+      if (player.completed.length == 1 && player.area == 'bog' && player.x == -1 && player.y == 23 ) {
         player.background = backgrounds.bogGeneral;
         player.music = music.swamp;
-      }
-
-      if (player.completed.length == 1 && player.x == -1 && player.y == 23) {
-        let newAssets = changeArea( 'bog' );
-
-        paused = true;
-
-        changeBoxColor()
-        changeBackgroundImage(newAssets[0]);
-        changeRoom('bog', 0, 23);
-
-        player.background = newAssets[0];
-        player.music = newAssets[1];
-
         $('#audio-holder').attr('src', player.music)
       }
 
