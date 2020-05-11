@@ -988,7 +988,7 @@ function option(ref){
           changeRoom(newArea, move[0], move[1]);
 
           $('#endscreen').addClass('active');
-          document.getElementById('endscreen').src = getBackgroundFilePath(endscreens[chapterCompleted - 1])
+          document.getElementById('endscreen-img').src = getBackgroundFilePath(endscreens[chapterCompleted - 1])
 
           // Remove continue to next chapter if it has not been released yet
           // if (player.completed.length >= completedChapters) {
