@@ -60,9 +60,9 @@ let backgrounds = {
   bogGeneral: 'bogGeneral.gif',
   sheep: 'sheep.gif',
   swampCrossroads: 'crossroads.gif',
-  mudriver: 'muddyRiver.gif',
+  mudriver: 'muddyriver2.gif',
   witchHouse: 'witchAbode.gif',
-  flies: 'roomOfFlies.png',
+  flies: 'roomOfFlies.gif',
   throneRoom: 'frogKing.gif',
 }
 
