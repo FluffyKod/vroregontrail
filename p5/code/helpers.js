@@ -309,19 +309,5 @@ function fixChapterRelease() {
     // Save player
     savePlayer();
   }
-  if (player.completed.length == 1 && player.x == -1 && player.y == 23) {
-    let newAssets = changeArea( 'bog' );
-
-    paused = true;
-
-    changeBoxColor()
-    changeBackgroundImage(newAssets[0]);
-    changeRoom('bog', 0, 23);
-
-    player.background = newAssets[0];
-    player.music = newAssets[1];
-
-    $('#audio-holder').attr('src', player.music)
-  }
 
 }
