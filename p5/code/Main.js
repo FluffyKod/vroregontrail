@@ -66,6 +66,11 @@ let backgrounds = {
   throneRoom: 'frogKing.gif',
 }
 
+let endscreens = [
+  'chapter1finished.png',
+  'chapter2finished.png'
+]
+
 // DEV SITE MUSIC
 // let music = {
 //   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3',
@@ -350,6 +355,18 @@ function player(){
 ////////////////////////////////////////////
 // AREA FUNCTIONS
 ////////////////////////////////////////////
+function getBackgroundFilePath(fileName) {
+  // Get path to the game-assets/backgrounds/ folder
+  let backgroundAssetFolder = document.getElementById('game-asset-folder').innerText + 'backgrounds/';
+
+  // Get the html element which displays the image
+  let backgroundElement = document.getElementById('background-image');
+
+  let newImagePath = backgroundAssetFolder + fileName;
+
+  return newImagePath;
+}
+
 function changeBackgroundImage( suppliedImage, isFileName = true ) {
 
   // Get path to the game-assets/backgrounds/ folder
@@ -954,6 +971,8 @@ function option(ref){
           changeBackgroundImage(newAssets[0]);
           self.moveToNewPlace(move, true);
           changeRoom(newArea, move[0], move[1]);
+
+          $('#endscreen').attr('src', getBackgroundFilePath(endscreens[chapterCompleted - 1]));
           $('#endscreen').addClass('active');
 
           // Remove continue to next chapter if it has not been released yet
