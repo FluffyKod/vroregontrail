@@ -31,10 +31,10 @@ function fk_defineVar(){
   startSc = true
 
   //difficulty parameters
-  fk_timeBetweenEnemySpawn = 650;//ms
+  fk_timeBetweenEnemySpawn = 800;//ms
   fk_playerValues = {x:width/2 , y:(height-30) , width: 152, height: 108, toungeSpeed: 15, toungeColliderRadius: 20};
   fk_flySpeed = 2;
-  flyAmount = 150;
+  flyAmount = 100;
   flySpawnCount = 0;
 
   //camera

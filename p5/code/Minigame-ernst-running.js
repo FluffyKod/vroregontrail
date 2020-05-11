@@ -67,7 +67,7 @@ function er_deleteVar(){
 
 function er_defineVar(){
   win = false;
-  er_score = 100;
+  er_score = 75;
   er_spawnrate = 48
   er_playersize = 50;
   er_playerv = 8;
@@ -106,7 +106,7 @@ function drawErnstRunning(){
   textFont(pixel_font,40)
   fill(255);
   print(er_score)
-  text("Distance left: "+Number((420*floor(er_score))+195)+'m', er_player.position.x- width/2 +210, -50);
+  text("Distance left: "+Number((420*(4/3)*floor(er_score))+195)+'m', er_player.position.x- width/2 +210, -50);
   er_player.velocity.x = er_playerv - 0.01*er_score;
 
   if(er_score <= 0){
