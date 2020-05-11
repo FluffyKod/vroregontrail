@@ -888,7 +888,6 @@ function option(ref){
 
       if(this.command == 'move-ifNotItem'){
         this.moveToNewPlace(this.values.slice(0, 2));
-        this.addItemToInventory(this.values.slice(2));
       }
 
       if(this.command == 'move-addBeenTo'){
