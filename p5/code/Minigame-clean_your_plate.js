@@ -24,17 +24,14 @@ function cyp_preload(){
   )
   mouth_swallow.frameDelay = 50
 
-
   spoon = loadAnimation(
     spriteImgSrc + 'spoon_empty.png',
     spriteImgSrc + 'spoon_full.png'
   )
   spoon.looping = false;
-
 }
 
 function cyp_setup(){
-
   cyp_defineVar();
 }
 
@@ -124,9 +121,9 @@ function cyp_game(){
   textFont(pixel_font, 40)
   if(cyp_bread){
     text("Food left: "+cyp_food + " bread", 12, 50);
-
   }else{
     text("Food left: "+cyp_food + " spoons", 12, 50);
+    text("Press 'x' to give up", 12, height-30)
   }
   cyp_mouthAnimationController()
 
@@ -151,6 +148,9 @@ function cyp_game(){
     cyp_mouthVisual.changeAnimation('swallow')
     cyp_swallowing = true
     cyp_foodResistance += 0.1
+  }
+  if(keyWentDown('x') && !cyp_bread){
+    gameOver = true;
   }
 
 }
