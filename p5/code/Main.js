@@ -803,8 +803,12 @@ function option(ref){
           minigameGameOver = this.values.slice(2, 4);
 
           let encounterCmd = this.values.slice(4);
-          let encounterSong = encounterCmd.split(' ');
-          this.doEncounter(encounterSong[0], encounterSong[1]);
+          let copy = encounterCmd;
+          let encounterSong = copy[0].split(" ");
+          console.log({encounterSong});
+
+          let encounterYes = [encounterSong[0], '']
+          this.doEncounter(encounterYes, encounterSong[1]);
 
         } else {
           console.log('ERROR: TO FEW VALUES IN ENCOUNTER COMMAND');
