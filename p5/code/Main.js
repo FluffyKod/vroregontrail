@@ -991,6 +991,8 @@ function option(ref){
           self.moveToNewPlace(move, true);
           changeRoom(newArea, move[0], move[1]);
 
+          player.music = newAssets[1];
+
           $('#endscreen').addClass('active');
           document.getElementById('endscreen-img').src = getBackgroundFilePath(endscreens[chapterCompleted - 1])
 
