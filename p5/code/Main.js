@@ -718,7 +718,7 @@ function option(ref){
       console.log('ERROR: Not enough values supplied to info command');
     }
   }
-  this.doEncounter = function(suppliedValues) {
+  this.doEncounter = function(suppliedValues, song = false) {
     // Check that there are enough values
     if (suppliedValues.length >= 2) {
       current_encounter = suppliedValues[0]
@@ -731,7 +731,7 @@ function option(ref){
       if(suppliedValues[1]){fr_hard = true;}//slarvigt måste ändras
       if(!suppliedValues[1]){er_hard = true;}
       $('#intro-screen').css('display', 'none');
-      switchToEncounter();
+      switchToEncounter(song);
     } else {
       console.log('ERROR: Not enough values supplied to encounter command');
     }
@@ -792,6 +792,20 @@ function option(ref){
           minigameWin = this.values.slice(0, 2);
           minigameGameOver = this.values.slice(2, 4);
           this.doEncounter(this.values.slice(4));
+        } else {
+          console.log('ERROR: TO FEW VALUES IN ENCOUNTER COMMAND');
+        }
+      }
+
+      if(this.command == 'encounter-music'){
+        if (this.values.length >= 5) {
+          minigameWin = this.values.slice(0, 2);
+          minigameGameOver = this.values.slice(2, 4);
+
+          let encounterCmd = this.values.slice(4);
+          let encounterSong = encounterCmd.split(' ');
+          this.doEncounter(encounterSong[0], encounterSong[1]);
+
         } else {
           console.log('ERROR: TO FEW VALUES IN ENCOUNTER COMMAND');
         }
@@ -973,8 +987,8 @@ function option(ref){
           self.moveToNewPlace(move, true);
           changeRoom(newArea, move[0], move[1]);
 
-          $('#endscreen').attr('src', getBackgroundFilePath(endscreens[chapterCompleted - 1]));
           $('#endscreen').addClass('active');
+          document.getElementById('endscreen-img').src = getBackgroundFilePath(endscreens[chapterCompleted - 1])
 
           // Remove continue to next chapter if it has not been released yet
           // if (player.completed.length >= completedChapters) {
@@ -1055,9 +1069,13 @@ function Room( x, y, mainText, options ){
 
   }
 
-  function switchToEncounter(){
+  function switchToEncounter(song = false){
     // Switch to boss music
-    $('#audio-holder').attr('src', music['boss'])
+    if (song != false) {
+      $('#audio-holder').attr('src', music[song])
+    } else {
+      $('#audio-holder').attr('src', music['boss'])
+    }
 
     drawText = false;
     drawCanvas = true;

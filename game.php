@@ -44,6 +44,7 @@ $completedChapters = 2;
     exit();
   }
 
+
   // Only show game to logged in users
   if (! is_user_logged_in() ){
     ?>
@@ -147,10 +148,10 @@ $completedChapters = 2;
             <button id="chapter-select-btn">[ CHAPTER SELECT ]</button>
             <div class="chapter-select hidden">
               <button id="chapter-1" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-1')">[ CHAPTER 1 ]</button>
-              <button id="chapter-2" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-2')">[ CHAPTER 2 ]</button>
-              <button id="chapter-3" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-3')">[ CHAPTER 3 ]</button>
-              <button id="chapter-4" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-4')">[ CHAPTER 4 ]</button>
-              <button id="chapter-5" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från detta kapitel din progress efter detta kapitel att nollställas.', 'chapter-5')">[ CHAPTER 5 ]</button>
+              <button id="chapter-2" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från BÖRJAN av detta kapitel kommer din progress från detta och efterföljande kapitel att nollställas.', 'chapter-2')">[ CHAPTER 2 ]</button>
+              <button id="chapter-3" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från BÖRJAN av detta kapitel kommer din progress från detta och efterföljande kapitel att nollställas.', 'chapter-3')">[ CHAPTER 3 ]</button>
+              <button id="chapter-4" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från BÖRJAN av detta kapitel kommer din progress från detta och efterföljande kapitel att nollställas.', 'chapter-4')">[ CHAPTER 4 ]</button>
+              <button id="chapter-5" class="hidden" onclick="holdup('Är du säker?', 'Om du startar om spelet från BÖRJAN av detta kapitel kommer din progress från detta och efterföljande kapitel att nollställas.', 'chapter-5')">[ CHAPTER 5 ]</button>
             </div>
 
             <?php if ($has_played): ?>

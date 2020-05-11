@@ -556,7 +556,7 @@ function createGeneralGui(){
     let areaRoomsToSave = getAreaRoomsFromRoomArrays();
     saveRoomsToDatabase(areaRoomsToSave);
   })
-  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifNotItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br><b>move-notBeenTo</b><br><b>move-beenTo</b><br><b>move-addBeenTo</b><br><b>gameover</b><br><b>endscreen</b><br><b>video</b>')
+  generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>encounter-music</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifNotItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br><b>move-notBeenTo</b><br><b>move-beenTo</b><br><b>move-addBeenTo</b><br><b>gameover</b><br><b>endscreen</b><br><b>video</b>')
   generalGui.addHTML('Player stats', 'intelligence<br>charisma<br>grit<br>kindness<br>dexterity' )
 }
 
@@ -618,6 +618,10 @@ function showValueAmountControl(){
           break;
         case 'encounter':
           activeRoom.optionGuis[i].setValue('command_description', 'plays minigame with name (value 4), move to win room (value 0, value 1), move to game over room (value 2, value 3)')
+          showAmount = 5;
+          break;
+        case 'encounter-music':
+          activeRoom.optionGuis[i].setValue('command_description', 'plays minigame with name and music (SEPPARATED BY SPACE!) (value 4) , move to win room (value 0, value 1), move to game over room (value 2, value 3)')
           showAmount = 5;
           break;
         case 'move-item-switchArea':
