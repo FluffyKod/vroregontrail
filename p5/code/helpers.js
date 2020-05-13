@@ -2,6 +2,49 @@
 // HELPER FUNCTIONS
 ////////////////////////////////////////////
 
+function fixChapterRelease() {
+
+
+  if ((player.completed.length == 1 && player.completed[0] == 1) || (player.completed.length == 2 && player.completed[0] == 1 && player.completed[1] == 1)) {
+
+    console.log('IN FIX CHAPTER');
+    let self = this;
+
+    let completed = {
+      chapter: 1,
+      inventory: player.inventory,
+      beenTo: player.beenTo,
+      charisma: player.charisma,
+      dexterity: player.dexterity,
+      grit: player.grit,
+      kindness: player.kindness,
+    }
+
+    player.completed = [];
+    player.completed.push(completed);
+
+    player.x = -1;
+    player.y = 23;
+
+    let newAssets = changeArea( 'bog' );
+
+    paused = true;
+
+    changeBoxColor()
+    changeBackgroundImage(newAssets[0]);
+    changeRoom('bog', -1, 23);
+
+    player.background = newAssets[0];
+    player.music = newAssets[1];
+
+    // $('#audio-holder').attr('src', player.music)
+
+    // Save player
+    savePlayer();
+  }
+
+}
+
 function sendAjax( parameters, callbackFunction) {
 
   jQuery.ajax({
@@ -47,6 +90,10 @@ function getPlayer() {
 
       player = JSON.parse(response.player);
 
+      // ADD COMPLETED TO OLD STRUCTURE: AND FIX BACKGROUND
+      fixChapterRelease();
+      console.log('IN LOAD PLAYER');
+
       changeBackgroundImage(player.background);
       currentArea = player.area;
       rooms = getRoomsFromArea( allAreaRooms, currentArea );
@@ -62,9 +109,6 @@ function getPlayer() {
       updateInventoryGui()
       updateBeenToGui();
       updateStatGui('', true);
-
-      // ADD COMPLETED TO OLD STRUCTURE: AND FIX BACKGROUND
-      fixChapterRelease();
 
       // Player fix
       if (!player.completed) {
@@ -274,40 +318,4 @@ function getRoomsFromArea( rooms, area ) {
       return Array()
 
   }
-}
-
-function fixChapterRelease() {
-  if (player.completed.length == 1 && player.completed[0] == 1) {
-    let self = this;
-
-    let completed = {
-      chapter: 1,
-      inventory: player.inventory,
-      beenTo: player.beenTo,
-      charisma: player.charisma,
-      dexterity: player.dexterity,
-      grit: player.grit,
-      kindness: player.kindness,
-    }
-
-    player.completed = [];
-    player.completed.push(completed);
-
-    let newAssets = changeArea( 'bog' );
-
-    paused = true;
-
-    changeBoxColor()
-    changeBackgroundImage(newAssets[0]);
-    changeRoom('bog', 0, 23);
-
-    player.background = newAssets[0];
-    player.music = newAssets[1];
-
-    $('#audio-holder').attr('src', player.music)
-
-    // Save player
-    savePlayer();
-  }
-
 }
