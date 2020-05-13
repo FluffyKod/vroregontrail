@@ -31,7 +31,7 @@ $completedChapters = 2;
 
   <?php
 
-  
+
 
 
   // Only show game to logged in users
@@ -278,6 +278,8 @@ $completedChapters = 2;
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-ddr.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-frog-king.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-clean_your_plate.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/wasp_drama_words.js"></script>
+      <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-type-racer.js"></script>
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
 
       <script type="text/javascript">

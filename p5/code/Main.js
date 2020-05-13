@@ -141,6 +141,7 @@ function preload(){
     i_preload();
     fk_preload();
     cyp_preload();
+    tr_preload()
   }
 }
 
@@ -255,6 +256,10 @@ function draw(){
         if(define){cyp_defineVar(); define = false;}
         cyp_draw();
         break;
+      case 'type_racer':
+        if(define){tr_defineVar();define=false;}
+        tr_draw();
+        break;
     }
   }
 }
@@ -262,7 +267,6 @@ function draw(){
 ////////////////////////////////////////////
 // KEY PRESSED
 ////////////////////////////////////////////
-
 function keyPressed(){
   timer = 0;
 
@@ -303,7 +307,7 @@ function keyPressed(){
       $('#choice-holder').get(0).play();
     }
     if(keyCode == ENTER){
-      if (enterPause == false) {
+      if (enterPause == false && !drawCanvas) {
         textbox = select('#textbox');
         textbox.html("")
         counter = 0;
@@ -327,6 +331,12 @@ function keyPressed(){
       blip = loadSound("menu_blip.wav")
       soundEnabled = true;
     }
+  }
+}
+
+function keyTyped(){
+  if(current_encounter == "type_racer"){
+    tr_keyTyped();
   }
 }
 
