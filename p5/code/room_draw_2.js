@@ -20,6 +20,8 @@ let guiMouseIsOver = false;
 let showGrid = true;
 let showAllConnections = false;
 let showCoordinateText = true;
+let selectButtonPressed = false;
+
 
 let guiParent
 let maxCommandValues = 6;
@@ -31,7 +33,6 @@ let generalGuiParent;
 let connectionColors;
 
 let selectedArea = 'test';
-
 
 function getAreaRoomsFromRoomArrays() {
   // Go through roomArrays and extract only the rooms from each area.
@@ -149,7 +150,7 @@ function drawGrid(){
 
 function keyPressed(){
 
-  if(keyCode === 70){
+  if(keyCode === 70){ //f
     centerAt(activeRoom.x, activeRoom.y);
   }
   if(keyCode === ENTER){
@@ -247,8 +248,9 @@ function roomSprite(x,y){
       text(this.coordinateString, this.x-roomBoxSize/2+10, this.y-roomBoxSize/2+25)
     }
   }
-  this.onMousePressed = function(){ //maybe this is retarded and should be called in mousePressed() instead
-    if(!guiMouseIsOver){
+  this.onMousePressed = function(){
+    if(!guiMouseIsOver || selectButtonPressed){
+      selectButtonPressed = false;
       //hide active room
       if(activeRoom){
         deselectSpriteObj(activeRoom);
@@ -373,6 +375,23 @@ function saveRoom(roomSpriteToSave, spriteArray, roomArray){
         break;
       }
     }
+  }
+}
+
+function selectRoom(indexX, indexY){
+  let roomExists = false;
+  for (var i = 0; i < activeRoomSpriteArray.length; i++) {
+    if(indexX == activeRoomSpriteArray[i].indexX && indexY == activeRoomSpriteArray[i].indexY){
+      activeRoomSpriteArray[i].onMousePressed();
+      roomExists = true
+      console.log(activeRoomSpriteArray[i]);
+      console.log(activeRoom);
+      drawScene()
+      break;
+    }
+  }
+  if(!roomExists){
+    console.log("ERROR: Room you tried to select does not exist");
   }
 }
 
@@ -509,6 +528,7 @@ function selectSpriteObj(roomSprite){
 function createGeneralGui(){
   generalGui = QuickSettings.create( 0,0,'Settings', generalGuiParent);
   generalGui.setDraggable(false);
+  //generalGui.setKey('h')
   generalGui.addButton('center (0,0)', function(){centerAt(width/2, height/2)});
   generalGui.addButton('center to active (f)', function(){centerAt(activeRoom.x,activeRoom.y);});
   generalGui.addDropDown('area' ,['test','intro', 'highlands', 'bog', 'city', 'mountain', 'core'], function(value){
@@ -555,6 +575,15 @@ function createGeneralGui(){
     // Get all areas rooms
     let areaRoomsToSave = getAreaRoomsFromRoomArrays();
     saveRoomsToDatabase(areaRoomsToSave);
+  });
+  generalGui.addText('select_coordinate (space between numbers)')
+  generalGui.addButton('select', function(){
+    let coordinateText = [generalGui.getValue('select_coordinate (space between numbers)')];
+    let coordinateArray = coordinateText.join(' ').split(' ');
+    selectButtonPressed = true;
+    selectRoom(Number(coordinateArray[0]), Number(coordinateArray[1]))
+    centerAt(activeRoom.x,activeRoom.y)
+
   })
   generalGui.addHTML('Available Commands', '<i>Type in option command to see full description.</i><br><br><b>move</b><br><b>move-y</b><br><b>move-x</b><br><b>info</b><br><b>move-item</b><br><b>encounter</b><br><b>encounter-music</b><br><b>move-item-switchArea</b><br><b>move-background</b><br><b>move-stat</b><br><b>move-switchArea</b><br><b>move-background-music</b><br><b>info-stat</b><br><b>info-item</b><br><b>move-ifItem</b><br><b>move-ifNotItem</b><br><b>move-ifStat</b><br><b>item-ifStat</b><br><b>move-item-ifStat</b><br><b>info-item-ifStat</b><br><b>info-ifStat</b><br><b>info-ifItem</b><br><b>move-notBeenTo</b><br><b>move-beenTo</b><br><b>move-addBeenTo</b><br><b>gameover</b><br><b>endscreen</b><br><b>video</b>')
   generalGui.addHTML('Player stats', 'intelligence<br>charisma<br>grit<br>kindness<br>dexterity' )
