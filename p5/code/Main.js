@@ -141,7 +141,8 @@ function preload(){
     i_preload();
     fk_preload();
     cyp_preload();
-    tr_preload()
+    tr_preload();
+    wr_preload();
   }
 }
 
@@ -259,6 +260,10 @@ function draw(){
       case 'type_racer':
         if(define){tr_defineVar();define=false;}
         tr_draw();
+        break;
+      case 'wasp_runner':
+        if(define){wr_defineVar();define=false;}
+        wr_draw();
         break;
     }
   }

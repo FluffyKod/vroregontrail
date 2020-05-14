@@ -8,10 +8,10 @@ let tr_timeBetweenEnemySpawn
 let tr_time
 
 let showUnderline;
-let wasp_image;
+let wasp_anim;
 
 function tr_preload(){
-  wasp_image = loadAnimation(spriteImgSrc + 'wasp.png')
+  wasp_anim = loadAnimation(spriteImgSrc + 'wasp_anim/wasp0000.png',spriteImgSrc + 'wasp_anim/wasp0010.png' )
 }
 
 function tr_defineVar(){
@@ -26,6 +26,8 @@ function tr_defineVar(){
   tr_typedWord = ""
   showUnderline = false
   tr_spawnWord()
+  // tr_spawnWord()
+  // tr_enemies[1].y = -300
 
   startSc = true;
   gameOver = false;
@@ -42,7 +44,7 @@ function tr_resetVar(){
   tr_enemies = []
   tr_typedWord = ""
   showUnderline = false
-  tr_spawnWord()
+
 }
 
 function tr_draw(){
@@ -72,6 +74,7 @@ function tr_draw(){
 function tr_game(){
   background(51)
   tr_time += deltaTime;
+
   //tr_spawnEnemies(tr_timeBetweenEnemySpawn)
   for (var i = 0; i < tr_enemies.length; i++) {
     tr_enemies[i].update()
@@ -121,7 +124,7 @@ function wordWasp(x, y, speed, displayText){
   this.downSpeed = speed;
   this.x = x;
   this.y = y;
-  this.animation = wasp_image
+  this.animation = wasp_anim
   this.display = function(){
     fill(255)
     textSize(40)
@@ -153,7 +156,7 @@ function tr_spawnWord(){
 }
 
 function tr_spawnEnemies(rate){
-  if(tr_time > rate && tr_currentWordIndex < tr_wordArray.length){
+  if(tr_time > rate){
     tr_spawnWord()
   }
 }

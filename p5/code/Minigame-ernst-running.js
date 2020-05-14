@@ -62,7 +62,7 @@ function er_deleteVar(){
   birds.removeSprites();
   er_rocks.removeSprites();
   frameCount = 0;
-  er_score = 100;
+  er_score = 75;
 }
 
 function er_defineVar(){
