@@ -23,7 +23,7 @@ function wr_preload(){
   wr_run = loadAnimation(
     spriteImgSrc + 'wasp_runner_anims/wasp_runner_run0000.png',
     spriteImgSrc + 'wasp_runner_anims/wasp_runner_run0007.png')
-  wasp_dead_anim = loadImage(spriteImgSrc +"wasp_anim/wasp0000.png")
+  wasp_dead_anim = loadImage(spriteImgSrc +"wasp_dead.png")
 }
 
 
@@ -84,6 +84,7 @@ function wr_defineVar(){
   wr_player.frameDelay = 6
   wr_player.velocity.x = wr_playerv + 0.01*wr_waspsLeft;
   wr_player.setCollider('rectangle', 0, 0, wr_playersize, wr_playersize)
+  //wr_player.debug = true
 
   //ground
   wr_ground = createSprite(width/2,3*height/4+wr_playersize/2+4,width,height/2);
@@ -131,14 +132,29 @@ function wr_createWasp(type){
   }
 
   let wasp = createSprite(wr_player.position.x + width+random(0,120), spawnHeight, wr_playersize, wr_playersize);
-  wasp.addAnimation('dead', wasp_anim)
+  wasp.addAnimation('dead', wasp_dead_anim)
   wasp.addAnimation('idle', wasp_anim)
+  wasp.changeAnimation('idle')
+  wasp.setCollider('circle', 0, 0, wr_playersize)
   wasp.type = waspType
+  wasp.acceleration = 0.5
+  wasp.isDead = false;
 
   wasp.die = function(){
     this.changeAnimation('dead')
-    this.remove();
+    if(this.type == 1){
+      this.setVelocity(10,-10)
+    }else{
+      this.setVelocity(0,-10)
+    }
+    this.isDead = true;
     //add gravity nice die thingie
+  }
+  wasp.accelerate = function(){
+    this.velocity.y += this.acceleration
+    if(this.position.y > height){
+      this.remove()
+    }
   }
   wr_enemies.push(wasp);
 
@@ -161,24 +177,28 @@ function wr_updatePlayerState(){
   if(keyIsDown(DOWN_ARROW) && wr_player_state == 0){
     wr_player_state = 2;
     wr_player.changeAnimation("slide")
+    wr_player.setCollider('rectangle', -80, 0, wr_playersize/2, wr_playersize)
   }else if(keyWentUp(DOWN_ARROW)){
     wr_player_state = 0;
+    wr_player.setCollider('rectangle', 0, 0, wr_playersize, wr_playersize)
     wr_player.changeAnimation("run")
   }
 
   //forward attack handling
   if(keyWentDown(RIGHT_ARROW) && wr_player_state == 0){
     wr_player.changeAnimation("forward_attack")
+    wr_player.setCollider('rectangle', 0, 0, wr_playersize+20, wr_playersize)
     wr_player_state = 1;
   }else if(keyWentUp(RIGHT_ARROW)){
     wr_player.changeAnimation("run")
+    wr_player.setCollider('rectangle', 0, 0, wr_playersize, wr_playersize)
     wr_player_state = 0;
   }
 }
 
 function wr_checkCollision(player, enemies){
   for (var i = 0; i < enemies.length; i++) {
-    if(enemies[i].overlap(player)){
+    if(enemies[i].overlap(player) && enemies[i].isDead == false){
       if(wr_player_state == enemies[i].type){
         enemies[i].die()
         wr_waspsLeft-=1
@@ -186,9 +206,11 @@ function wr_checkCollision(player, enemies){
         gameOver = true;
       }
     }
+    if (wr_enemies[i].isDead) {
+      wr_enemies[i].accelerate();
+    }
   }
 }
-
 
 function wr_checkWin(){
   if(wr_waspsLeft <= 0){
