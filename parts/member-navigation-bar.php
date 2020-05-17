@@ -102,6 +102,15 @@ if (count($kommitees) == 0){
 
   </nav>
 
+  <div class="drive">
+
+    <img src="<?php echo get_bloginfo('template_directory') ?>/img/protocolfolder.png" alt="">
+    <p>Öppna <strong>DRIVE</strong> för att se de senaste protokollen!</p>
+
+    <a href="https://drive.google.com/drive/folders/0B-UL6CSzT9I0bXUzUXVCRFNVZVk?usp=sharing" target="_blank" class="btn sm">Drive</a>
+
+  </div>
+
 </section>
 
 <script>
