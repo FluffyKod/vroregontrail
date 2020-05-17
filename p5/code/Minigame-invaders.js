@@ -46,18 +46,11 @@ function i_defineVar(){
     waveAmount = 4
     i_enemyRows = 4
   }else if (wasp){
-    i_enemyspeed = 0.6;
+    i_enemyspeed = 0.7;
     waveAmount = 3
     i_enemyRows = 3
   }
   bulletsize = 10;
-  if(has_crossbow){
-    bulletspeed = 8;
-  }else if(has_bow){
-    bulletspeed = 6;
-  }else {
-    bulletspeed = 4
-  }
   playerdmg = 1;
   gameOver = true;
   win = false;
@@ -71,6 +64,7 @@ function i_defineVar(){
 
   let weapon_reload_animation
   if(has_crossbow){
+    bulletspeed = 8;
     weapon_reload_animation = loadAnimation(crossbow_shoot, crossbow_reload1, crossbow_reload2, crossbow_idle);
     weapon_reload_animation.looping = false;
     bulletAmount = 1
@@ -78,10 +72,12 @@ function i_defineVar(){
     weapon_reload_animation = loadAnimation(bow_shoot, bow_reload, bow_idle)
     weapon_reload_animation.looping = false;
     bulletAmount = 1
+    bulletspeed = 6;
   }else{
     weapon_reload_animation = loadAnimation(rock_shoot, rock_reload, rock_idle)
     weapon_reload_animation.looping = false;
     bulletAmount = 1
+    bulletspeed = 4
   }
 
 
