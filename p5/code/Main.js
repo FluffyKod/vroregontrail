@@ -144,6 +144,7 @@ function preload(){
     tr_preload();
     wr_preload();
     wc_preload();
+    ddr_preload();
   }
 }
 
