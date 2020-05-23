@@ -1121,9 +1121,9 @@ function Room( x, y, mainText, options ){
 
 function defineCanvas(){
   canvas = createCanvas(600, 600);
-  canvas.style('position: static')
-  canvas.style('margin: auto')
-  canvas.style('margin-top: 140px')
+  // canvas.style('position: absolute')
+  // canvas.style('margin: auto')
+  // canvas.style('margin: auto')
 
   canvas.class('box');
   canvas.hide();
