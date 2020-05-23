@@ -417,6 +417,44 @@ function changeBackgroundImage( suppliedImage, isFileName = true ) {
 
 }
 
+function getColorFromBackground() {
+  if (player.background == backgrounds['highlands']) {
+    return colors.highlands;
+  }
+  if (player.background == backgrounds['intro']) {
+    return colors.intro
+  }
+  if (player.background == backgrounds['creepyHouse']) {
+    return colors.creepyHouse
+  }
+  if (player.background == backgrounds['tavern']) {
+    return colors.tavern
+  }
+  if (player.background == backgrounds['bogGeneral']) {
+    return colors.bog
+  }
+  if (player.background == backgrounds['sheep']) {
+    return colors.sheep
+  }
+  if (player.background == backgrounds['swampCrossroads']) {
+    return colors.crossroads
+  }
+  if (player.background == backgrounds['mudriver']) {
+    return colors.muddyRiver
+  }
+  if (player.background == backgrounds['witchHouse']) {
+    return colors.witchAbode
+  }
+  if (player.background == backgrounds['flies']) {
+    return colors.roomOfFlies
+  }
+  if (player.background == backgrounds['throneRoom']) {
+    return colors.frogKing
+  } else {
+    return colors.default
+  }
+}
+
 function changeBoxColor() {
   let classes = 'box';
 
@@ -452,6 +490,8 @@ function changeBoxColor() {
   }
   if (player.background == backgrounds['throneRoom']) {
     classes += ' throneRoom';
+  } else {
+    classes += ' default'
   }
 
   $('.box').attr('class', classes);
@@ -682,7 +722,9 @@ function option(ref){
   this.highlight = function(){
       this.ref.style('background-color','#fff');
       this.ref.style('padding-color', '#fff');
-      this.ref.style('color', colors[currentArea]);
+
+      highlightColor = getColorFromBackground()
+      this.ref.style('color', highlightColor);
   }
   this.unhighlight = function(){
       this.ref.style('background','none');
