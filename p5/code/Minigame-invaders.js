@@ -1,6 +1,6 @@
 
 var i_player, i_playersize, i_playerspeed;
-var i_enemies, i_enemyspeed;
+var i_enemies, i_enemyspeed, i_enemyRows
 var bullets, bulletsize, bulletspeed;
 let i_ground;
 
@@ -16,48 +16,68 @@ var gameOver = true;
 var startSc = true;
 let bulletAmount;
 let has_crossbow;
+let has_bow;
 
 function i_preload(){
   sheep_anim = loadAnimation(spriteImgSrc + 'sheep1.png', spriteImgSrc + 'sheep2.png');
   sheep_anim.frameDelay = 13;
-  wasp_img = loadImage(spriteImgSrc + 'wasp.png');
   bow_idle = loadImage(spriteImgSrc + 'bow_loaded.png');
   bow_shoot = loadImage(spriteImgSrc + 'bow_shot.png');
   bow_reload = loadImage(spriteImgSrc + 'bow_reload.png');
+  rock_idle = loadImage(spriteImgSrc + 'rock_thrower/rock_thrower-0002.png')
+  rock_shoot = loadImage(spriteImgSrc + 'rock_thrower/rock_thrower-0003.png')
+  rock_reload = loadImage(spriteImgSrc + 'rock_thrower/rock_thrower-0001.png')
 }
 
 function i_defineVar(){
   has_crossbow = false;
+  has_bow = false;
   for (var i = 0; i < player.inventory.length; i++) {
     if(player.inventory[i] == 'Crossbow'){
       has_crossbow = true;
+    }else if (player.inventory[i] == 'Bow'){
+      has_bow = true;
     }
   }
 
   i_enemysize = 60;
-  i_enemyspeed = 0.2;
+  if(sheep){
+    i_enemyspeed = 0.2;
+    waveAmount = 4
+    i_enemyRows = 4
+  }else if (wasp){
+    i_enemyspeed = 0.7;
+    waveAmount = 3
+    i_enemyRows = 3
+  }
   bulletsize = 10;
-  bulletspeed = 5;
   playerdmg = 1;
   gameOver = true;
+  win = false;
+
   i_score = 0;
   i_playersize = 60;
   i_playerspeed = 10;
   espacing = 10;
-  waveAmount = 4
   camera.position.x = width/2;
   camera.position.y = height/2;
 
   let weapon_reload_animation
   if(has_crossbow){
+    bulletspeed = 8;
     weapon_reload_animation = loadAnimation(crossbow_shoot, crossbow_reload1, crossbow_reload2, crossbow_idle);
     weapon_reload_animation.looping = false;
-    bulletAmount = 2
-  }else{
+    bulletAmount = 1
+  }else if (has_bow){
     weapon_reload_animation = loadAnimation(bow_shoot, bow_reload, bow_idle)
     weapon_reload_animation.looping = false;
-
     bulletAmount = 1
+    bulletspeed = 6;
+  }else{
+    weapon_reload_animation = loadAnimation(rock_shoot, rock_reload, rock_idle)
+    weapon_reload_animation.looping = false;
+    bulletAmount = 1
+    bulletspeed = 4
   }
 
 
@@ -80,7 +100,12 @@ function i_deleteVar(){
 
 function i_draw(){
   if(startSc){
-    startScreen("Sheep Attack");
+    if(sheep){
+      startScreen("Sheep Attack");
+
+    }else if(wasp){
+      startScreen("Wasp Attack")
+    }
   }
   if(!gameOver){
     invadersDraw();
@@ -129,13 +154,13 @@ function enemyMove(){
 }
 
 function spawnEnemies(){
-  for (var i = 0; i < 4; i++) {
+  for (var i = 0; i < i_enemyRows; i++) {
     for (var j = 0; j < 7; j++) {
       i_enemy = createSprite((j*(i_enemysize+espacing)+i_enemysize/2 +espacing) , i*(i_enemysize+espacing)+(i_enemysize/2 +espacing) , i_enemysize, i_enemysize)
       if(sheep){
         i_enemy.addAnimation('walk', sheep_anim);
       }else if(wasp){
-        i_enemy.addImage(wasp_img)
+        i_enemy.addAnimation('idle', wasp_anim);
       }
       i_enemy.velocity.x = i_enemyspeed;
       i_enemies.add(i_enemy)
@@ -170,8 +195,14 @@ function invadersDraw(){
     i_player.animation.nextFrame();
   if(keyWentDown(' ') && bullets.length < bulletAmount){
     i_player.animation.changeFrame(0)
-    bullet = createSprite(i_player.position.x, i_player.position.y, 12, 38);
-    bullet.addImage(crossbow_arrow)
+    if(has_bow || has_crossbow){
+      bullet = createSprite(i_player.position.x, i_player.position.y, 12, 38);
+      bullet.addImage(crossbow_arrow)
+    }else{
+      bullet = createSprite(i_player.position.x+20, i_player.position.y, 12, 12)
+      bullet.shapeColor = color(255)
+    }
+
     bullet.velocity.y = -bulletspeed;
     bullet.setCollider("circle",0,0,bulletsize);
     bullets.add(bullet);

@@ -143,6 +143,8 @@ function preload(){
     cyp_preload();
     tr_preload();
     wr_preload();
+    wc_preload();
+    ddr_preload();
   }
 }
 
@@ -264,6 +266,10 @@ function draw(){
       case 'wasp_runner':
         if(define){wr_defineVar();define=false;}
         wr_draw();
+        break;
+      case 'wasp_click':
+        if(define){wc_defineVar();define=false;}
+        wc_draw();
         break;
     }
   }

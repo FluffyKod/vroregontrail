@@ -63,7 +63,7 @@ function wr_defineVar(){
 
   //general variables
   wr_waspsLeft = 75;
-  wr_spawnrate = 1000 //ms between spawn
+  wr_spawnrate = 650 //ms between spawn
   wr_playersize = 50;
   wr_playerv = 8;
   wr_jumpv = 15;
@@ -104,7 +104,6 @@ function wr_game(){
 
   background(51);
   wr_time += deltaTime
-
   drawSprites();
   wr_checkCollision(wr_player, wr_enemies);
   wr_scoreText();
@@ -153,6 +152,7 @@ function wr_createWasp(type){
   wasp.accelerate = function(){
     this.velocity.y += this.acceleration
     if(this.position.y > height){
+      if(!this.removed){wr_waspsLeft-=1}
       this.remove()
     }
   }
@@ -161,7 +161,7 @@ function wr_createWasp(type){
 }
 
 function wr_spawnEnemies(rate){
-  if(wr_time>rate){
+  if(wr_time>rate && wr_waspsLeft > 1){
     rint = floor(random(0,2));
     if(rint == 0){
     wr_createWasp(1);
@@ -187,11 +187,9 @@ function wr_updatePlayerState(){
   //forward attack handling
   if(keyWentDown(RIGHT_ARROW) && wr_player_state == 0){
     wr_player.changeAnimation("forward_attack")
-    wr_player.setCollider('rectangle', 0, 0, wr_playersize+20, wr_playersize)
     wr_player_state = 1;
   }else if(keyWentUp(RIGHT_ARROW)){
     wr_player.changeAnimation("run")
-    wr_player.setCollider('rectangle', 0, 0, wr_playersize, wr_playersize)
     wr_player_state = 0;
   }
 }
@@ -201,7 +199,6 @@ function wr_checkCollision(player, enemies){
     if(enemies[i].overlap(player) && enemies[i].isDead == false){
       if(wr_player_state == enemies[i].type){
         enemies[i].die()
-        wr_waspsLeft-=1
       }else{
         gameOver = true;
       }
