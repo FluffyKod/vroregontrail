@@ -281,31 +281,42 @@ $completedChapters = 2;
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
 
       <script type="text/javascript">
-        setTimeout(function() {
-          let isAdmin = $('#is-admin').text == 'true' ? true : false;
 
-          if (isAdmin == false && player.completed && player.completed.length >= completedChapters) {
-            // Hide continueGame button
-            $('#main-choice').remove();
+      window.onload = function(){
 
-            let chapterText;
-            switch (player.completed.length) {
-              case 1:
-                chapterText = 'Kapitel 1: Highlands';
-                break;
-              case 2:
-                chapterText = 'Kapitel 2: The Bog';
-                break;
+        let isAdmin = document.getElementById('is-admin').innerText == 'true' ? true : false;
+        console.log(isAdmin);
+
+        if (isAdmin == false) {
+          setTimeout(function() {
+
+
+            if (player.completed && player.completed.length >= completedChapters) {
+              // Hide continueGame button
+              $('#main-choice').remove();
+
+              let chapterText;
+              switch (player.completed.length) {
+                case 1:
+                  chapterText = 'Kapitel 1: Highlands';
+                  break;
+                case 2:
+                  chapterText = 'Kapitel 2: The Bog';
+                  break;
+              }
+
+              // Popup with info
+              Swal.fire(
+                `Kapitel ${player.completed.length} Avklarat!`,
+                `Du har spelat klart ${chapterText}. Vänta på nästa release för att kunna fortsätta spela!`,
+                'success'
+              )
             }
+          }, 3000)
+        }
+      }
 
-            // Popup with info
-            Swal.fire(
-              `Kapitel ${player.completed.length} Avklarat!`,
-              `Du har spelat klart ${chapterText}. Vänta på nästa release för att kunna fortsätta spela!`,
-              'success'
-            )
-          }
-        }, 3000)
+
 
       </script>
 
