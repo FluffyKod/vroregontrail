@@ -231,10 +231,6 @@ function draw(){
         if(define){mj_defineVar(); define = false;}
         mj_draw();
         break;
-      case 'wasp_invaders':
-        if(define){i_defineVar(); define= false}
-        i_draw();
-        break;
       case 'frog_king':
         if(define){fk_defineVar(); define = false}
         fk_draw();
@@ -249,7 +245,7 @@ function draw(){
         if(define){i_defineVar(); define = false;}
         i_draw();
         break;
-      case 'wasp_attack':
+      case 'wasp_invaders':
         wasp = true;
         sheep = false;
         if(define){i_defineVar(); define = false;}

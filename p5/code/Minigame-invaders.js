@@ -7,9 +7,10 @@ let i_ground;
 var i_enemysize;
 var playerdmg;
 var espacing;
-let sheep = false;
-let wasp = false;
+
 let waveAmount;
+
+let wasp, sheep = false;
 
 var i_score;
 var gameOver = true;
@@ -52,7 +53,9 @@ function i_defineVar(){
   }
   bulletsize = 10;
   playerdmg = 1;
-  gameOver = true;
+
+  startSc = true;
+  gameOver = false;
   win = false;
 
   i_score = 0;
@@ -68,7 +71,7 @@ function i_defineVar(){
     weapon_reload_animation = loadAnimation(crossbow_shoot, crossbow_reload1, crossbow_reload2, crossbow_idle);
     weapon_reload_animation.looping = false;
     bulletAmount = 1
-  }else if (has_bow){
+  }else if(has_bow){
     weapon_reload_animation = loadAnimation(bow_shoot, bow_reload, bow_idle)
     weapon_reload_animation.looping = false;
     bulletAmount = 1
@@ -79,8 +82,6 @@ function i_defineVar(){
     bulletAmount = 1
     bulletspeed = 4
   }
-
-
   i_enemies = new Group();
   bullets = new Group();
   i_player = createSprite(width/2, height-i_playersize, i_playersize, i_playersize);
@@ -99,22 +100,21 @@ function i_deleteVar(){
 }
 
 function i_draw(){
-  if(startSc){
+  if(startSc && !win && !gameOver){
     if(sheep){
       startScreen("Sheep Attack");
-
     }else if(wasp){
       startScreen("Wasp Attack")
     }
   }
-  if(!gameOver){
+  if(!gameOver && !win && !startSc){
     invadersDraw();
   }
-  if(gameOver && !startSc){
+  if(gameOver && !win){
     gameOverScreen();
     if(clearVar){i_deleteVar();}
   }
-  if(!gameOver && win && !startSc){
+  if(!gameOver && win){
     winScreen();
     if(clearVar){i_deleteVar();}
   }
@@ -122,7 +122,6 @@ function i_draw(){
 
 
 function i_playerMove(){
-
   if(keyIsDown(LEFT_ARROW) && i_player.position.x > (i_playersize/2) ){
     i_player.velocity.x = -i_playerspeed;
 
@@ -130,10 +129,9 @@ function i_playerMove(){
     i_player.velocity.x = i_playerspeed;
   } else {
     i_player.velocity.x = 0;
-
   }
-
 }
+
 function enemyMove(){
   for (var i = 0; i < i_enemies.length; i++) {
     if(i_enemies[i].position.x > width-i_enemysize/2){
@@ -231,52 +229,3 @@ function invadersDraw(){
     }
   }
 }
-
-function newGame(){
-  bullets.removeSprites();
-  i_enemies.removeSprites();
-  gameOver = false;
-  spawnEnemies();
-  i_score = 0;
-}
-
-
-/*
-function setup(){
-  i_enemysize = 60;
-  i_enemyspeed = 0.5;
-  bulletsize = 10;
-  bulletspeed = 5;
-  playerdmg = 1;
-  gameOver = true;
-  i_score = 0;
-  i_playersize = 60;
-  i_playerspeed = 10;
-  espacing = 10;
-
-  textSize(40);
-  defineCanvas();
-
-  i_enemies = new Group();
-  bullets = new Group();
-  i_player = createSprite(width/2, height-i_playersize, i_playersize, i_playersize);
-  i_player.setCollider("rectangle",0,0,i_playersize,i_playersize);
-  spawnEnemies();
-
-
-
-
-}
-
-function draw(){
-  if(startSc){
-    startScreen("Invaders");
-  }
-  if(!gameOver){
-    invadersDraw();
-  }
-  if(gameOver && !startSc){
-    gameOverScreen();
-  }
-}//end function draw()
-*/
