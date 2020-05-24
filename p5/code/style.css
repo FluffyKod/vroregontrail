@@ -15,19 +15,19 @@
   --creepyhouseHex: #4f141c;
   --creepyhouse: rgba(79,20,28, 0.7);
   --bogHex: #26290A;
-  --bog: rgb(38,41,10, 0.7);
+  --bog: rgba(38,41,10, 0.7);
   --sheepHex: #38200B;
-  --sheep: rgb(56,32,11, 0.7);
+  --sheep: rgba(56,32,11, 0.7);
   --riverHex: #3C3F4A;
-  --river: rgb(60,63,74, 0.7);
+  --river: rgba(60,63,74, 0.7);
   --crossroadsHex: #4E4614;
-  --crossroads: rgb(78,70,20, 0.7);
-  --frogKingHex: #C6A92D;
-  --frogKing: rgb(198,169,45, 0.7);
+  --crossroads: rgba(78,70,20, 0.7);
+  --frogKingHex: #2D2608;
+  --frogKing: rgba(45,38,8,0.7);
   --fliesHex: #275A52;
-  --flies: rgb(39,90,82, 0.7);
+  --flies: rgba(39,90,82, 0.7);
   --witchAbodeHex: #5C2F62;
-  --witchAbode: rgb(92,47,98, 0.7);
+  --witchAbode: rgba(92,47,98, 0.7);
 }
 
 .box {

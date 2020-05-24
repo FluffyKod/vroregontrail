@@ -64,6 +64,7 @@ let backgrounds = {
   witchHouse: 'witchAbode.gif',
   flies: 'roomOfFlies.gif',
   throneRoom: 'frogKing.gif',
+  waspKing: 'waspKing.gif'
 }
 
 let endscreens = [
@@ -91,7 +92,7 @@ let colors = {
   sheep: '#38200B',
   muddyRiver: '#3C3F4A',
   crossroads: '#4E4614',
-  frogKing: '#C6A92D',
+  frogKing: '#2D2608',
   roomOfFlies: '#275A52',
   witchAbode: '#5C2F62',
   default: '#000'
@@ -112,7 +113,10 @@ let music = {
   witchAbode: 'http://vroelevkar.se/wp-content/uploads/2020/05/witchAbode2.mp3',
   stream: 'http://vroelevkar.se/wp-content/uploads/2020/05/streamBit.wav',
   frogeCalm: 'http://vroelevkar.se/wp-content/uploads/2020/05/froge.wav',
-  frogeFight: 'http://vroelevkar.se/wp-content/uploads/2020/05/frogefight.wav'
+  frogeFight: 'http://vroelevkar.se/wp-content/uploads/2020/05/frogefight.wav',
+  library: 'http://vroelevkar.se/wp-content/uploads/2020/05/library.wav',
+  ravine: 'http://vroelevkar.se/wp-content/uploads/2020/05/ravine.wav',
+  dance: 'http://vroelevkar.se/wp-content/uploads/2020/05/dance.wav'
 }
 
 // Chapter release
