@@ -285,7 +285,6 @@ $completedChapters = 2;
       window.onload = function(){
 
         let isAdmin = document.getElementById('is-admin').innerText == 'true' ? true : false;
-        console.log(isAdmin);
 
         if (isAdmin == false) {
           setTimeout(function() {

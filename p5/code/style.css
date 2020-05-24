@@ -6,6 +6,8 @@
 :root {
   --introHex: #416fb7;
   --intro: rgba(65,111,183, 0.7);
+  --castleHex: #A25210;
+  --castle: rgba(162,82,16, 0.7);
   --highlandsHex: #3a8530;
   --highlands: rgba(58,133,48, 0.7);
   --tavernHex: #89260c;
@@ -40,6 +42,10 @@
 
 .box.intro {
   background-color: var(--intro);
+}
+
+.box.castle {
+  background-color: var(--castle);
 }
 
 .box.highlands {

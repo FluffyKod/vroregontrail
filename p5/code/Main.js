@@ -83,6 +83,7 @@ let endscreens = [
 
 let colors = {
   intro: '#416fb7',
+  castle: '#A25210',
   highlands: '#3a8530',
   tavern: '#89260c',
   creepyHouse: '#4f141c',
@@ -92,7 +93,8 @@ let colors = {
   crossroads: '#4E4614',
   frogKing: '#C6A92D',
   roomOfFlies: '#275A52',
-  witchAbode: '#5C2F62'
+  witchAbode: '#5C2F62',
+  default: '#000'
 }
 
 // PRODUCTION SITE MUSIC
@@ -122,7 +124,16 @@ let chapterCoordinates = [
     end: [0, 0]
   },
   {
-    start: [0, 23]
+    start: [-1, 23],
+    end: [0, -17]
+  },
+  {
+    start: [0, 22],
+    end: []
+  },
+  {
+    start: [0, 23],
+    end: []
   }
 ]
 
@@ -421,8 +432,11 @@ function getColorFromBackground() {
   if (player.background == backgrounds['highlands']) {
     return colors.highlands;
   }
-  if (player.background == backgrounds['intro']) {
+  if (player.background == backgrounds['beach']) {
     return colors.intro
+  }
+  if (player.background == backgrounds['castle']) {
+    return colors.castle
   }
   if (player.background == backgrounds['creepyHouse']) {
     return colors.creepyHouse
@@ -461,8 +475,11 @@ function changeBoxColor() {
   if (player.background == backgrounds['highlands']) {
     classes += ' highlands';
   }
-  if (player.background == backgrounds['intro']) {
+  if (player.background == backgrounds['beach']) {
     classes += ' intro';
+  }
+  if (player.background == backgrounds['castle']) {
+    classes += ' castle';
   }
   if (player.background == backgrounds['creepyHouse']) {
     classes += ' creepyhouse';
@@ -868,7 +885,7 @@ function option(ref){
           let encounterCmd = this.values.slice(4);
           let copy = encounterCmd;
           let encounterSong = copy[0].split(" ");
-          console.log({encounterSong});
+          // console.log({encounterSong});
 
           let encounterYes = [encounterSong[0], '']
           this.doEncounter(encounterYes, encounterSong[1]);
@@ -1439,6 +1456,8 @@ function startFromChapter(chapter) {
   let startY = chapterCoordinates[chapter - 1].start[1];
 
   let newAssets = changeArea(newArea);
+
+  // console.log({player, chapter, newCompleted, newArea, startX, startY, newAssets});
 
   // Change background and music
   fade(newAssets[1], function() {
