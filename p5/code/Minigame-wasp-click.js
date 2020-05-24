@@ -82,7 +82,7 @@ function wc_game(){
   if(wc_waspsLeft <= 0){
     win = true;
   }
-  if(mouseWentUP(LEFT)){wc_mouseHasBeenPressed = false;}
+  if(mouseWentUp(LEFT)){wc_mouseHasBeenPressed = false;}
   wc_time += deltaTime;
   wc_spawnEnemies(wc_timeBetweenEnemySpawn-((wc_waspAmount-wc_waspsLeft)*15))
   for (var i = 0; i < wc_enemies.length; i++) {
@@ -112,10 +112,12 @@ function wc_createWasp(x,y){
   this.sprite.isDead = false;
   this.sprite.acceleration = 0.5
   this.sprite.onMousePressed = function(){
-    this.isDead = true
-    this.changeAnimation('dead')
-    this.setVelocity(random(-5*this.scale,5*this.scale), -10*this.scale)
-    wc_mouseHasBeenPressed = true
+    if(!wc_mouseHasBeenPressed){
+      this.isDead = true
+      this.changeAnimation('dead')
+      this.setVelocity(random(-5*this.scale,5*this.scale), -10*this.scale)
+      wc_mouseHasBeenPressed = true
+    }
   }
   this.sprite.updateSize = function(){
     this.scale += wc_resizeSpeed
@@ -123,7 +125,6 @@ function wc_createWasp(x,y){
     if(frameCount % 6 == 0){
       this.animation.nextFrame()
     }
-    console.log("update");
   }
   this.sprite.updateGravity = function(){
     this.velocity.y += this.acceleration*this.scale
@@ -132,7 +133,6 @@ function wc_createWasp(x,y){
       wc_enemies.remove(this);
       this.remove();
     }
-    console.log("gravity");
   }
   wc_enemies.add(this.sprite)
 }
