@@ -64,6 +64,7 @@ let backgrounds = {
   witchHouse: 'witchAbode.gif',
   flies: 'roomOfFlies.gif',
   throneRoom: 'frogKing.gif',
+  waspKing: 'waspKing.gif'
 }
 
 let endscreens = [
@@ -83,6 +84,7 @@ let endscreens = [
 
 let colors = {
   intro: '#416fb7',
+  castle: '#A25210',
   highlands: '#3a8530',
   tavern: '#89260c',
   creepyHouse: '#4f141c',
@@ -90,9 +92,10 @@ let colors = {
   sheep: '#38200B',
   muddyRiver: '#3C3F4A',
   crossroads: '#4E4614',
-  frogKing: '#C6A92D',
+  frogKing: '#2D2608',
   roomOfFlies: '#275A52',
-  witchAbode: '#5C2F62'
+  witchAbode: '#5C2F62',
+  default: '#000'
 }
 
 // PRODUCTION SITE MUSIC
@@ -110,7 +113,10 @@ let music = {
   witchAbode: 'http://vroelevkar.se/wp-content/uploads/2020/05/witchAbode2.mp3',
   stream: 'http://vroelevkar.se/wp-content/uploads/2020/05/streamBit.wav',
   frogeCalm: 'http://vroelevkar.se/wp-content/uploads/2020/05/froge.wav',
-  frogeFight: 'http://vroelevkar.se/wp-content/uploads/2020/05/frogefight.wav'
+  frogeFight: 'http://vroelevkar.se/wp-content/uploads/2020/05/frogefight.wav',
+  library: 'http://vroelevkar.se/wp-content/uploads/2020/05/library.wav',
+  ravine: 'http://vroelevkar.se/wp-content/uploads/2020/05/ravine.wav',
+  dance: 'http://vroelevkar.se/wp-content/uploads/2020/05/dance.wav'
 }
 
 // Chapter release
@@ -122,7 +128,16 @@ let chapterCoordinates = [
     end: [0, 0]
   },
   {
-    start: [0, 23]
+    start: [-1, 23],
+    end: [0, -17]
+  },
+  {
+    start: [0, 22],
+    end: []
+  },
+  {
+    start: [0, 23],
+    end: []
   }
 ]
 
@@ -413,14 +428,58 @@ function changeBackgroundImage( suppliedImage, isFileName = true ) {
 
 }
 
+function getColorFromBackground() {
+  if (player.background == backgrounds['highlands']) {
+    return colors.highlands;
+  }
+  if (player.background == backgrounds['beach']) {
+    return colors.intro
+  }
+  if (player.background == backgrounds['castle']) {
+    return colors.castle
+  }
+  if (player.background == backgrounds['creepyHouse']) {
+    return colors.creepyHouse
+  }
+  if (player.background == backgrounds['tavern']) {
+    return colors.tavern
+  }
+  if (player.background == backgrounds['bogGeneral']) {
+    return colors.bog
+  }
+  if (player.background == backgrounds['sheep']) {
+    return colors.sheep
+  }
+  if (player.background == backgrounds['swampCrossroads']) {
+    return colors.crossroads
+  }
+  if (player.background == backgrounds['mudriver']) {
+    return colors.muddyRiver
+  }
+  if (player.background == backgrounds['witchHouse']) {
+    return colors.witchAbode
+  }
+  if (player.background == backgrounds['flies']) {
+    return colors.roomOfFlies
+  }
+  if (player.background == backgrounds['throneRoom']) {
+    return colors.frogKing
+  } else {
+    return colors.default
+  }
+}
+
 function changeBoxColor() {
   let classes = 'box';
 
   if (player.background == backgrounds['highlands']) {
     classes += ' highlands';
   }
-  if (player.background == backgrounds['intro']) {
+  if (player.background == backgrounds['beach']) {
     classes += ' intro';
+  }
+  if (player.background == backgrounds['castle']) {
+    classes += ' castle';
   }
   if (player.background == backgrounds['creepyHouse']) {
     classes += ' creepyhouse';
@@ -448,6 +507,8 @@ function changeBoxColor() {
   }
   if (player.background == backgrounds['throneRoom']) {
     classes += ' throneRoom';
+  } else {
+    classes += ' default'
   }
 
   $('.box').attr('class', classes);
@@ -678,7 +739,9 @@ function option(ref){
   this.highlight = function(){
       this.ref.style('background-color','#fff');
       this.ref.style('padding-color', '#fff');
-      this.ref.style('color', colors[currentArea]);
+
+      highlightColor = getColorFromBackground()
+      this.ref.style('color', highlightColor);
   }
   this.unhighlight = function(){
       this.ref.style('background','none');
@@ -822,7 +885,7 @@ function option(ref){
           let encounterCmd = this.values.slice(4);
           let copy = encounterCmd;
           let encounterSong = copy[0].split(" ");
-          console.log({encounterSong});
+          // console.log({encounterSong});
 
           let encounterYes = [encounterSong[0], '']
           this.doEncounter(encounterYes, encounterSong[1]);
@@ -1123,9 +1186,9 @@ function Room( x, y, mainText, options ){
 
 function defineCanvas(){
   canvas = createCanvas(600, 600);
-  canvas.style('position: static')
-  canvas.style('margin: auto')
-  canvas.style('margin-top: 140px')
+  // canvas.style('position: absolute')
+  // canvas.style('margin: auto')
+  // canvas.style('margin: auto')
 
   canvas.class('box');
   canvas.hide();
@@ -1393,6 +1456,8 @@ function startFromChapter(chapter) {
   let startY = chapterCoordinates[chapter - 1].start[1];
 
   let newAssets = changeArea(newArea);
+
+  // console.log({player, chapter, newCompleted, newArea, startX, startY, newAssets});
 
   // Change background and music
   fade(newAssets[1], function() {

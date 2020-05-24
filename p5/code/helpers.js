@@ -7,7 +7,6 @@ function fixChapterRelease() {
 
   if ((player.completed.length == 1 && player.completed[0] == 1) || (player.completed.length == 2 && player.completed[0] == 1 && player.completed[1] == 1)) {
 
-    console.log('IN FIX CHAPTER');
     let self = this;
 
     let completed = {
@@ -92,7 +91,6 @@ function getPlayer() {
 
       // ADD COMPLETED TO OLD STRUCTURE: AND FIX BACKGROUND
       fixChapterRelease();
-      console.log('IN LOAD PLAYER');
 
       changeBackgroundImage(player.background);
       currentArea = player.area;
@@ -128,7 +126,6 @@ function getPlayer() {
 }
 
 function clearPlayer() {
-  console.log('IN CLEAR PLAYER');
 
   parameters = {
     action: 'clear_player'
@@ -162,13 +159,11 @@ function saveRoomsToDatabase(roomsToSave) {
 }
 
 function saveSprites(spriteArrayToSave) {
-  console.log('In the function saveSprites');
 
   let spriteArray = spriteArrayToSave;
 
   for (var i = 0; i < spriteArray.length; i++) {
     let spriteGuis = {gui: "", optionGuis: []};
-    console.log(spriteArray[i]);
     spriteGuis.gui = spriteArray[i].gui.getValuesAsJSON(true);
     spriteArray[i].gui = spriteGuis.gui;
 
@@ -179,9 +174,6 @@ function saveSprites(spriteArrayToSave) {
     }
   }
   let spriteString = JSON.stringify(spriteArray);
-
-  console.log(spriteArrayToSave);
-  console.log(spriteString);
 
   // parameters = {
   //   action: 'save_sprites',
@@ -221,7 +213,7 @@ function loadRoomsFromDatabase(area, callback){
     allAreaRooms = []
 
     parsedRooms = JSON.parse(response.rooms);
-    console.log('DATABASE RESPONSE: ', parsedRooms);
+    // console.log('DATABASE RESPONSE: ', parsedRooms);
 
     parsedRooms.forEach(roomArray => {
       rooms = []

@@ -112,20 +112,16 @@ $completedChapters = 2;
       <audio id="select-holder" hidden src="<?php echo get_bloginfo('template_directory') ?>/game-assets/soundeffects/select.wav"></audio>
 
       <img id="toggle-sound" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/mini-assets/musicON.png" />
-      <?php if (is_student_admin()): ?>
+      <?php if (is_student_admin()) { ?>
         <button type="button" name="button" id="toggle-admin">Toggle admin view</button>
-      <?php endif; ?>
+        <p id="is-admin" hidden>true</p>
+      <?php } else {
+        echo '<p id="is-admin" hidden>false</p>';
+      }?>
 
       <div id="overlay"></div>
 
       <p id="has-played" hidden><?php echo ($has_played == true) ? 'yes' : 'no' ?></p>
-
-      <!-- <div id="overlay-black"></div>
-
-      <div id="tutorial" class="box">
-        <h1>Welcome!</h1>
-        <p>This is text adventure game</p>
-      </div> -->
 
       <div id="intro-screen" class="cover">
         <img id="intro-image" src="<?php echo get_bloginfo('template_directory') ?>/game-assets/backgrounds/beach.png" alt="test">
@@ -285,29 +281,41 @@ $completedChapters = 2;
       <script src="<?php echo get_bloginfo('template_directory') ?>/p5/code/Minigame-start-end.js"></script>
 
       <script type="text/javascript">
-        setTimeout(function() {
-          if (player.completed && player.completed.length >= completedChapters) {
-            // Hide continueGame button
-            $('#main-choice').remove();
 
-            let chapterText;
-            switch (player.completed.length) {
-              case 1:
-                chapterText = 'Kapitel 1: Highlands';
-                break;
-              case 2:
-                chapterText = 'Kapitel 2: The Bog';
-                break;
+      window.onload = function(){
+
+        let isAdmin = document.getElementById('is-admin').innerText == 'true' ? true : false;
+
+        if (isAdmin == false) {
+          setTimeout(function() {
+
+
+            if (player.completed && player.completed.length >= completedChapters) {
+              // Hide continueGame button
+              $('#main-choice').remove();
+
+              let chapterText;
+              switch (player.completed.length) {
+                case 1:
+                  chapterText = 'Kapitel 1: Highlands';
+                  break;
+                case 2:
+                  chapterText = 'Kapitel 2: The Bog';
+                  break;
+              }
+
+              // Popup with info
+              Swal.fire(
+                `Kapitel ${player.completed.length} Avklarat!`,
+                `Du har spelat klart ${chapterText}. Vänta på nästa release för att kunna fortsätta spela!`,
+                'success'
+              )
             }
+          }, 3000)
+        }
+      }
 
-            // Popup with info
-            Swal.fire(
-              `Kapitel ${player.completed.length} Avklarat!`,
-              `Du har spelat klart ${chapterText}. Vänta på nästa release för att kunna fortsätta spela!`,
-              'success'
-            )
-          }
-        }, 3000)
+
 
       </script>
 

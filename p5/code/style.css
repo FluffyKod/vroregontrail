@@ -6,6 +6,8 @@
 :root {
   --introHex: #416fb7;
   --intro: rgba(65,111,183, 0.7);
+  --castleHex: #A25210;
+  --castle: rgba(162,82,16, 0.7);
   --highlandsHex: #3a8530;
   --highlands: rgba(58,133,48, 0.7);
   --tavernHex: #89260c;
@@ -13,19 +15,19 @@
   --creepyhouseHex: #4f141c;
   --creepyhouse: rgba(79,20,28, 0.7);
   --bogHex: #26290A;
-  --bog: rgb(38,41,10, 0.7);
+  --bog: rgba(38,41,10, 0.7);
   --sheepHex: #38200B;
-  --sheep: rgb(56,32,11, 0.7);
+  --sheep: rgba(56,32,11, 0.7);
   --riverHex: #3C3F4A;
-  --river: rgb(60,63,74, 0.7);
+  --river: rgba(60,63,74, 0.7);
   --crossroadsHex: #4E4614;
-  --crossroads: rgb(78,70,20, 0.7);
-  --frogKingHex: #C6A92D;
-  --frogKing: rgb(198,169,45, 0.7);
+  --crossroads: rgba(78,70,20, 0.7);
+  --frogKingHex: #2D2608;
+  --frogKing: rgba(45,38,8,0.7);
   --fliesHex: #275A52;
-  --flies: rgb(39,90,82, 0.7);
+  --flies: rgba(39,90,82, 0.7);
   --witchAbodeHex: #5C2F62;
-  --witchAbode: rgb(92,47,98, 0.7);
+  --witchAbode: rgba(92,47,98, 0.7);
 }
 
 .box {
@@ -40,6 +42,10 @@
 
 .box.intro {
   background-color: var(--intro);
+}
+
+.box.castle {
+  background-color: var(--castle);
 }
 
 .box.highlands {
@@ -97,6 +103,15 @@ body {
   overflow: hidden;
   font-family: pixel;
   letter-spacing: 2px;
+}
+
+canvas#defaultCanvas0 {
+  width: 600px;
+  height: 600px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /******************************
