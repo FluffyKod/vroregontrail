@@ -63,7 +63,7 @@ function wr_defineVar(){
 
   //general variables
   wr_waspsLeft = 75;
-  wr_spawnrate = 650 //ms between spawn
+  wr_spawnrate = 750 //ms between spawn
   wr_playersize = 50;
   wr_playerv = 8;
   wr_jumpv = 15;
@@ -84,7 +84,6 @@ function wr_defineVar(){
   wr_player.frameDelay = 6
   wr_player.velocity.x = wr_playerv + 0.01*wr_waspsLeft;
   wr_player.setCollider('rectangle', 0, 0, wr_playersize, wr_playersize)
-  //wr_player.debug = true
 
   //ground
   wr_ground = createSprite(width/2,3*height/4+wr_playersize/2+4,width,height/2);
@@ -134,7 +133,7 @@ function wr_createWasp(type){
   wasp.addAnimation('dead', wasp_dead_anim)
   wasp.addAnimation('idle', wasp_anim)
   wasp.changeAnimation('idle')
-  wasp.setCollider('circle', 0, 0, wr_playersize)
+  wasp.setCollider('circle', 0, 0, wr_playersize/2)
   wasp.type = waspType
   wasp.acceleration = 0.5
   wasp.isDead = false;
@@ -177,7 +176,7 @@ function wr_updatePlayerState(){
   if(keyIsDown(DOWN_ARROW) && wr_player_state == 0){
     wr_player_state = 2;
     wr_player.changeAnimation("slide")
-    wr_player.setCollider('rectangle', -80, 0, wr_playersize/2, wr_playersize)
+    wr_player.setCollider('rectangle', -40, 0, wr_playersize/2, wr_playersize)
   }else if(keyWentUp(DOWN_ARROW)){
     wr_player_state = 0;
     wr_player.setCollider('rectangle', 0, 0, wr_playersize, wr_playersize)

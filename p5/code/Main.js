@@ -235,7 +235,21 @@ function draw(){
         cg_draw();
         break;
       case 'ernst_running':
-        if(define){er_defineVar(); define= false;}
+        if(define){
+          ernstRun = true;
+          waspRun = false;
+          er_defineVar();
+          define= false;
+        }
+        er_draw();
+        break;
+      case 'wasp_library_running':
+        if(define){
+          ernstRun = false;
+          waspRun = true;
+          er_defineVar();
+          define= false;
+        }
         er_draw();
         break;
       case 'ddr':
@@ -255,15 +269,21 @@ function draw(){
         pb_draw();
         break;
       case 'sheep_invaders':
-        sheep = true;
-        wasp = false
-        if(define){i_defineVar(); define = false;}
+        if(define){
+          sheep = true;
+          wasp = false;
+          i_defineVar();
+          define = false;
+        }
         i_draw();
         break;
       case 'wasp_invaders':
-        wasp = true;
-        sheep = false;
-        if(define){i_defineVar(); define = false;}
+        if(define){
+          wasp = true;
+          sheep = false;
+          i_defineVar();
+          define = false;
+        }
         i_draw();
         break;
       case 'clean_your_plate':

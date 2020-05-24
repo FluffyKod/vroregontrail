@@ -5,6 +5,7 @@ var er_score;
 var er_ground;
 var jump, slide;
 
+let waspRun, ernstRun = false;
 
 var gameOver = true;
 var startSc = true;
@@ -15,7 +16,7 @@ function er_preload(){
   runner_slide = loadAnimation(spriteImgSrc + 'ernstrunner-slide.png')
   runner_jump = loadAnimation(spriteImgSrc + 'ernstrunner-jump.png')
   runner_run_anim = loadAnimation(spriteImgSrc + 'ernstrunner-run1.png',spriteImgSrc + 'ernstrunner-run2.png', spriteImgSrc + 'ernstrunner-run3.png', spriteImgSrc + 'ernstrunner-run4.png')
-
+  bookshelf_img = loadImage(spriteImgSrc + 'bookshelf.png')
   img_signs = [
     loadImage(spriteImgSrc + 'ernstrunner_sign1.png'),
     loadImage(spriteImgSrc + 'ernstrunner_sign2.png'),
@@ -28,7 +29,13 @@ function er_preload(){
 
 
 function er_draw(){
-  if(startSc){startScreen("Gate Run"); }
+  if(startSc){
+    if(ernstRun){
+      startScreen("Gate Run");
+    }else if(waspRun){
+      startScreen("Run To The Exit!");
+    }
+  }
   if(!gameOver){drawErnstRunning();}
   if(!startSc && gameOver){
     camera.position.x = width/2;
@@ -66,9 +73,16 @@ function er_deleteVar(){
 }
 
 function er_defineVar(){
+
+  if(ernstRun){
+    er_score = 75;
+    er_spawnrate = 48
+  }else if (waspRun){
+    er_score = 50;
+    er_spawnrate = 40;
+  }
+
   win = false;
-  er_score = 75;
-  er_spawnrate = 48
   er_playersize = 50;
   er_playerv = 8;
   jumpv = 15;
@@ -90,6 +104,8 @@ function er_defineVar(){
 
   jump = false;
   slide = false;
+
+
 
   er_player.position.x = width/2;
   er_player.position.y = height/2;
@@ -147,14 +163,22 @@ function drawErnstRunning(){
 
     if(rint == 0){
     rock = createSprite(er_player.position.x + width+random(0,120), height/2, er_playersize, er_playersize);
-    rock.addImage(random(img_signs))
+    if(ernstRun){
+      rock.addImage(random(img_signs))
+    }else{
+      rock.addImage(bookshelf_img)
+    }
     rock.setCollider('rectangle',0,0,er_playersize,er_playersize);
     er_rocks.add(rock);
     er_score-= 1
     }else if(rint == 1){
     bird = createSprite(er_player.position.x + width+ random(0,120), height/2- er_playersize/2-10, er_playersize, er_playersize);
-    bird.addImage(random(img_signs))
-    bird.rotation = 180;
+    if(ernstRun){
+      bird.addImage(random(img_signs))
+      bird.rotation = 180;
+    }else{
+      bird.addAnimation('idle', wasp_anim)
+    }
     birds.add(bird);
     er_score-= 1
     }
