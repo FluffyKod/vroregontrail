@@ -6,15 +6,20 @@ var startSc;
 var gameOver;
 let ddr_time;
 let dock_img, arrow_dock_img;
+let niklas_elena_anim;
+let frame_rate;
 
 function ddr_preload(){
   arrow_img = loadImage(spriteImgSrc + 'arrow_left.png')
-  arrow_dock_img = loadImage(spriteImgSrc + 'arrow_dock.png')
-  arrow_dock_selected_img = loadImage(spriteImgSrc + 'arrow_dock_selected.png')
+  arrow_dock_img = loadAnimation(spriteImgSrc + 'arrow_dock_selected.png', spriteImgSrc + 'arrow_dock.png')
+  arrow_dock_img.looping = false;
+  arrow_dock_img.frameDelay = 12
+  niklas_elena_anim = loadAnimation(spriteImgSrc + 'niklas_elena_anim/elena_och_niklas_0000.png', spriteImgSrc + 'niklas_elena_anim/elena_och_niklas_0007.png')
+  niklas_elena_anim.frameDelay = 2;
 }
 
 function ddr_draw(){
-  frameRate(30)
+  frameRate(frame_rate)
   ddr_time += deltaTime
   if(startSc){startScreen("Dj G&E's DDR")}
   if(!gameOver && !startSc){drawDDR();}
@@ -48,7 +53,7 @@ function ddr_deleteVar(){
 
   function ddr_collisionCheck(key, index){
   if(keyWentDown(key)){
-    docks[index].changeImage('selected')
+    docks[index].animation.changeFrame(0)
     checkScore(index);
     for (var i = 0; i < arrows[index].length; i++) {
       if(abs(docks[index].position.y-arrows[index][i].position.y)<docksize){
@@ -57,7 +62,7 @@ function ddr_deleteVar(){
     }
   }
   if(keyWentUp(key)){
-    docks[index].changeImage('unselected')
+    docks[index].animation.changeFrame(1)
   }
 }
 
@@ -70,6 +75,8 @@ function ddr_keyCommands(){
 
 
 function ddr_defineVar(){
+
+  frame_rate = 24;
   let playAreaWidth = 280
   resizeCanvas(1200, 700)
   ddr_time = 0;
@@ -83,15 +90,14 @@ function ddr_defineVar(){
   spawnrate = 40; //higher -> lower rate
   arrowspacing = 2*(docksize+spacing)
   bps = 3; // f
-  arrowspeed = arrowspacing*(bps/30) //v = lambda * f
+  arrowspeed = arrowspacing*bps //v = lambda * f
   arrows = [new Group(), new Group(), new Group(), new Group()] //0- right, 1-down, 2- up, 3-left
   docks = new Group();
 
   let dockStartXCoordinate = (width-playAreaWidth)/2
   for (var i = 0; i < 4; i++) {
     dock = createSprite(dockStartXCoordinate+i*(spacing+docksize)+docksize/2+spacing, height-spacing-docksize/2, docksize, docksize)
-    dock.addImage('unselected', arrow_dock_img)
-    dock.addImage('selected', arrow_dock_selected_img)
+    dock.addAnimation('idle', arrow_dock_img)
     switch (i) {
       case 0:
         dock.rotation = 0;
@@ -109,41 +115,7 @@ function ddr_defineVar(){
     //dock.addImage(dock_img)
     docks.add(dock);
   }
-  level =[
-    [1,1,0,0],
-    [1,0,0,0],
-    [0,1,0,0],
-    [0,0,1,0],
-    [0,0,0,1],
-    [1,1,0,0],
-    [1,0,0,0],
-    [1,0,0,0],
-    [0,1,0,0],
-    [0,0,1,0],
-    [0,0,0,1],
-    [1,1,0,0],
-    [1,1,0,0],
-    [1,0,0,0],
-    [0,1,0,0],
-    [0,0,1,0],
-    [0,0,0,1],
-    [1,1,0,0],
-    [1,0,0,0],
-    [0,1,0,0],
-    [0,0,1,0],
-    [0,0,0,1],
-    [1,1,0,0],
-    [1,0,0,0],
-    [1,0,0,0],
-    [0,1,0,0],
-    [0,0,1,0],
-    [0,0,0,1],
-    [1,1,0,0],
-    [1,1,0,0],
-    [1,0,0,0],
-    [0,1,0,0],
-    [0,0,0,1]
-  ]
+  level = ddr_getLevel();
   levelpos = 0;
   fill(255)
 }
@@ -180,14 +152,24 @@ function drawDDR(){
   background(51);
   fill(255)
   drawSprites();
+  for (var i = 0; i < 4; i++) {
+    for (var j = 0; j < arrows[i].length; j++) {
+      arrows[i][j].moveY()
+    }
+  }
+
+  niklas_elena_anim.draw(niklas_elena_anim.getWidth()/2,niklas_elena_anim.getHeight()/2+100)
   sec = floor(millis())/1000;
   text(ddr_score, width-100, 50);
   ddr_keyCommands();
-  if(frameCount%((1/bps)*30) == 0 && levelpos < level.length){
+  if(ddr_time > (1/bps)*1000 && levelpos < level.length){
     for (var i = 0; i < 4; i++) {
       if(level[levelpos][i] == 1){
         arrow = createSprite(docks[i].position.x, 0, docksize, docksize);
-        arrow.velocity.y = arrowspeed;
+        arrow.moveY = function(){
+          this.position.y += floor(deltaTime*arrowspeed/1000)
+          console.log("hmm");
+        }
         arrow.addImage(arrow_img)
         switch (i) {
           case 0:
@@ -215,5 +197,6 @@ function drawDDR(){
       }
     }
     levelpos+=1
+    ddr_time = 0
   }
 }
