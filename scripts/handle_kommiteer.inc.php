@@ -335,21 +335,31 @@
 
     $return = "/panel/kommiteer?k_id=$k_id&alter_information";
 
-    $new_description = check_post( test_input( $_POST['kommitee_description'] ), $return);
-    $new_name = check_post( test_input( $_POST['kommitte_name'] ), $return );
+    $kommitte = $wpdb->get_row('SELECT * FROM vro_kommiteer WHERE id='. $k_id );
 
-    check_if_empty( array($new_description), "Location: /panel/kommiteer?k_id=$k_id&alter_information=empty" );
+    $new_name = test_input( $_POST['kommitte_name'] );
 
-    // Check if new name exists¨
-    check_if_entry_exists('vro_kommiteer', 'name', $new_name, $return);
+    if (!empty($new_name) && $kommitte->name != $new_name) {
+      // Check if new name exists¨
+      check_if_entry_exists('vro_kommiteer', 'name', $new_name, $return);
+      update_record( 'vro_kommiteer', 'name', $new_name, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_information=failed");
 
-    // Update the kommitté with new information
-    update_record( 'vro_kommiteer', 'description', $new_description, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_information=failed");
-    update_record( 'vro_kommiteer', 'name', $new_name, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_information=failed");
+      // Logg action
+      $log_description = 'Information av kommitté ' . $k_id . ' ändrades till namnet ' . $new_name;
+      add_log( 'Kommittéer', $log_description, get_current_user_id() );
+    }
 
-    // Logg action
-    $log_description = 'Information av kommitté ' . $k_id . ' ändrades till namnet ' . $new_name . ' med beskrivningen ' . $new_description;
-    add_log( 'Kommittéer', $log_description, get_current_user_id() );
+    $new_description = test_input( $_POST['kommitee_description'] );
+
+    if (!empty($new_description)) {
+
+      // Update the kommitté with new information
+      update_record( 'vro_kommiteer', 'description', $new_description, 'id', $k_id, "/panel/kommiteer?k_id=$k_id&alter_information=failed");
+
+      // Logg action
+      $log_description = 'Information av kommitté ' . $k_id . ' ändrade beskrivning till ' . $new_description;
+      add_log( 'Kommittéer', $log_description, get_current_user_id() );
+    }
 
     send_header( "/panel/kommiteer?k_id=$k_id&alter_information=success" );
 

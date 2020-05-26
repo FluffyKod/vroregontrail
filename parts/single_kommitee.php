@@ -150,8 +150,8 @@ foreach ($waiting_members as $wait_member)
 
             <p class="form-label">Beskrivning av kommittén</p>
             <div class="text-limited-root">
-              <textarea name="kommitee_description" placeholder="Ny beskrivning..." required onkeyup="checkForm(this, event_description_char_count, 300)"></textarea>
-              <p id="event_description_char_count">300</p>
+              <textarea name="kommitee_description" placeholder="Ny beskrivning..." required onkeyup="checkForm(this, event_description_char_count, 600)"></textarea>
+              <p id="event_description_char_count">600</p>
             </div>
             <input name="k_id" value="<?php echo $k_id; ?>" hidden>
 

@@ -151,7 +151,7 @@ let chapterCoordinates = [
     end: []
   },
   {
-    start: [0, 23],
+    start: [0, 22],
     end: []
   }
 ]
