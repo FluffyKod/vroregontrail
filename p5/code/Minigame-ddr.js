@@ -38,6 +38,7 @@ function ddr_draw(){
     camera.position.x = width/2;
     camera.position.y = height/2;
     resizeCanvas(600, 600)
+    frameRate(60)
     gameOverScreen();
     if(clearVar){ddr_deleteVar();}
   }
@@ -45,6 +46,7 @@ function ddr_draw(){
     camera.position.x = width/2;
     camera.position.y = height/2;
     resizeCanvas(600, 600)
+    frameRate(60)
     winScreen();
     if(clearVar){ddr_deleteVar();}
   }
@@ -171,7 +173,9 @@ function ddr_game(){
   ddr_updateArrowsAndDocks();
   niklas_anim.draw(niklas_anim.getWidth()/2,niklas_anim.getHeight()/2+100);
   elena_anim.draw(width-(elena_anim.getWidth()/2), elena_anim.getHeight()/2+100)
-
+  if(levelpos >= level.length && arrows[0].length == 0 && arrows[1].length == 0 && arrows[2].length == 0 && arrows[3].length == 0){
+    win = true;
+  }
   text(ddr_score, width-100, 50);
   ddr_keyCommands();
 

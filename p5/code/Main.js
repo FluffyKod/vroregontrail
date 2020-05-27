@@ -175,6 +175,7 @@ function preload(){
     wr_preload();
     wc_preload();
     ddr_preload();
+    mj_preload();
   }
 }
 

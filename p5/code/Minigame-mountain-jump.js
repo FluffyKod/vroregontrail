@@ -1,7 +1,8 @@
 var mj_player, mj_playersize, mj_playerv, mj_jumpv;
+let mj_ground;
 var mj_gravity;
 var spawnrate;
-var score;
+var mj_score;
 var currentheight;
 var rockwidth;
 var friction;
@@ -14,55 +15,90 @@ var startSc = true;
 var gameOver = true;
 
 var difficulty;
+var rockheight;
+var mj_jumpedOnBoost = false;
 
+let mj_startedFalling = false;
+function mj_preload(){
+  mj_pen_images = [
+    loadImage(spriteImgSrc +'mountain_jump/pen_red.png'),
+    loadImage(spriteImgSrc +'mountain_jump/pen_blue.png'),
+    loadImage(spriteImgSrc +'mountain_jump/pen_green.png'),
+    loadImage(spriteImgSrc +'mountain_jump/pen_black.png')
+  ]
 
+  mj_platforms = [
+    [loadImage(spriteImgSrc +'mountain_jump/regular_platform.png'),loadImage(spriteImgSrc +'mountain_jump/regular_platform_2.png'),loadImage(spriteImgSrc +'mountain_jump/regular_platform_3.png')],
+    loadImage(spriteImgSrc +'mountain_jump/bouncy_platform.png'),
+    loadImage(spriteImgSrc +'mountain_jump/cracky_platform.png')
+  ]
+  mj_jump_anim = loadAnimation(spriteImgSrc + 'mountain_jump/player_jump_0002.png',spriteImgSrc + 'mountain_jump/player_jump_0004.png')
+  mj_jump_anim.looping = false;
+  mj_falling_anim = loadAnimation(spriteImgSrc + 'mountain_jump/player_falling.png')
+  mj_falling_anim.looping = false;
+}
 
 function mj_draw(){
-  if(startSc){
+  if(startSc && !gameOver && !win){
     startScreen("Mountain Jump");
   }
 
-  if(!gameOver){
+  if(!gameOver && !startSc && !win){
     background(51);
     mountainJumpDraw();
 
  }
-  if(gameOver && !startSc){
+  if(gameOver && !startSc && !win){
     gameOverScreen();
     camera.position.x = width/2;
     camera.position.y = height/2;
-    if(clearVar){mj_deleteVar();}
 
+    if(clearVar){
+      mj_deleteVar();
+      resizeCanvas(600,600);}
+
+  }if(win && !startSc && !gameOver){
+    winScreen();
+    camera.position.x = width/2
+    camera.position.y = height/2
+    if(clearVar){
+      mj_deleteVar();
+      resizeCanvas(600,600)
+    }
   }
 }
 
-
-
-
 function mj_defineVar(){
+  mj_time = 0;
   friction = 0.08;
-  score = 0;
+  mj_score = 0;
   difficulty = 1; //3 = max
   oldscore = 0;
   currentheight = 0;
   penv = 2;
-
-  rockwidth = 100;
+  mj_jumpedOnBoost = false;
+  rockwidth = 74;
+  rockheight = 32
   spawnrate = floor(random(20,40));
-  mj_playersize = 50;
+  mj_playersize = 40;
   mj_playerv = 4;
   mj_jumpv = 20;
   mj_gravity = 0.4;
   mj_player = createSprite(width/2,height/2, mj_playersize, mj_playersize);
-  mj_player.shapeColor = color(255);
-  mj_player.velocity.x = mj_playerv + 0.01*score;
+  mj_player.addAnimation('falling', mj_falling_anim);
+  mj_player.addAnimation('jump', mj_jump_anim);
+  mj_player.velocity.x = mj_playerv + 0.01*mj_score;
   mj_player.setCollider('circle', 0, 0, mj_playersize/2)
-  ground = createSprite(0,height, width*5, 1000);
+  mj_ground = createSprite(0,height, width*5, 1000);
+  mj_ground.shapeColor = color(255)
   rocks = new Group();
   pens = new Group();
   positive = 1;
 
-
+  startSc = true;
+  win = false;
+  gameOver = false;
+  resizeCanvas(400,720)
   camera.position.y = height/2;
   camera.position.x = width/2
 }
@@ -70,179 +106,143 @@ function mj_deleteVar(){
   rocks.removeSprites();
   pens.removeSprites();
   mj_player.remove();
-  ground.remove();
+  mj_ground.remove();
 }
-
-
 
 function mountainJumpDraw(){
-    drawSprites();
-    textSize(40);
-    fill(255);
+  drawSprites();
+  textSize(40);
+  fill(255);
 
-    if(mj_player.velocity.y < 0 && mj_player.position.y <= camera.position.y){
-      camera.position.y = mj_player.position.y
+  if(mj_player.velocity.y < 0 && mj_player.position.y <= camera.position.y){
+    camera.position.y = mj_player.position.y
+  }
+  if(mj_player.position.y > camera.position.y+width){
+    gameOver = true;
+  }
+  text(mj_score,  width -100, camera.position.y-height/2+100)
+  if(mj_player.velocity.y > 0){
+    if(!mj_startedFalling){
+      mj_player.changeAnimation('falling')
+      mj_startedFalling = true;
     }
-    if(mj_player.position.y > camera.position.y+width){
+  }
+
+  mj_player.velocity.y += mj_gravity
+  if(mj_score > 2500){
+    difficulty = 2;
+  }
+  if(mj_score > 5000){
+    difficulty = 3;
+  }
+  if(mj_score > 7500){
+    difficulty = 4;
+  }
+  if(mj_player.overlap(mj_ground)){
+    mj_player.velocity.y = -2*mj_jumpv;
+  }
+  if(mj_score >8000){
+    win = true;
+  }
+
+  if(keyDown(LEFT_ARROW) && mj_player.velocity.x >-2*mj_playerv){
+    mj_player.velocity.x -= 0.3*mj_playerv;
+  }else if(!keyDown(LEFT_ARROW) &&mj_player.velocity.x < 0){
+    mj_player.velocity.x +=-1*friction*mj_player.velocity.x
+  }
+  if(keyDown(RIGHT_ARROW)&& mj_player.velocity.x <2*mj_playerv){
+    mj_player.velocity.x += 0.3*mj_playerv;
+  }else if(!keyDown(RIGHT_ARROW) && mj_player.velocity.x > 0){
+      mj_player.velocity.x -=friction*mj_player.velocity.x
+  }
+  if(mj_player.position.x < 0){
+    mj_player.position.x = width;
+  }
+  if(mj_player.position.x > width){
+    mj_player.position.x = 0;
+  }
+  if (frameCount % floor(400/difficulty) == 0 && mj_player.velocity.y >-10) {
+
+    pen = createSprite(random(10,width-10),mj_player.position.y-height,12,64);
+    pen.addImage(random(mj_pen_images))
+  //  pen.setCollider('c',0,0,10,60);
+    pen.rotationSpeed = random(-1,2)*10;
+    pen.velocity.y = penv*difficulty;
+
+    pens.add(pen);
+  }
+
+  for (var i = 0; i < pens.length; i++) {
+    if(mj_player.overlap(pens[i]) && !mj_jumpedOnBoost){
       gameOver = true;
+      //pens[i].remove();
+      //i-=1
     }
-    text(score,  width -100, mj_player.position.y-height/2+100)
-    if(mj_player.velocity.y < 0){
+    // } else if(mj_player.overlap(pens[i])&& mj_player.velocity.y> 0){
+    //   mj_player.velocity.y = -0.5*mj_jumpv;
+    //   //pens[i].remove();
+    //   //i-=1
+    // }
+    if(pens[i].position.y > mj_player.position.y+height){
+      pens[i].remove();
     }
-    mj_player.debug = true;
-
-    mj_player.velocity.y += mj_gravity
-    if(score > 2500){
-      difficulty = 2;
-    }
-    if(score > 5000){
-      difficulty = 3;
-    }
-    if(score > 7500){
-      difficulty = 4;
-    }
-    if(mj_player.overlap(ground)){
-      mj_player.velocity.y = -2*mj_jumpv;
-    }
-
-    if(keyDown(LEFT_ARROW) && mj_player.velocity.x >-2*mj_playerv){
-      mj_player.velocity.x -= 0.3*mj_playerv;
-    }else if(!keyDown(LEFT_ARROW) &&mj_player.velocity.x < 0){
-      mj_player.velocity.x +=-1*friction*mj_player.velocity.x
-    }
-    if(keyDown(RIGHT_ARROW)&& mj_player.velocity.x <2*mj_playerv){
-      mj_player.velocity.x += 0.3*mj_playerv;
-    }else if(!keyDown(RIGHT_ARROW) && mj_player.velocity.x > 0){
-        mj_player.velocity.x -=friction*mj_player.velocity.x
-    }
-    if(mj_player.position.x < 0){
-      mj_player.position.x = width;
-    }
-    if(mj_player.position.x > width){
-      mj_player.position.x = 0;
-    }
-    if (frameCount % floor(400/difficulty) == 0 && mj_player.velocity.y >-10) {
-
-      pen = createSprite(random(10,width-10),mj_player.position.y-height,10,60);
-    //  pen.setCollider('c',0,0,10,60);
-      pen.rotationSpeed = random(-1,2)*10;
-      //pen.velocity.y = penv*difficulty;
-
-      pens.add(pen);
-    }
-
-    for (var i = 0; i < pens.length; i++) {
-      if(mj_player.overlap(pens[i])){
-        gameOver = true;
-        //pens[i].remove();
-        //i-=1
-      }
-      // } else if(mj_player.overlap(pens[i])&& mj_player.velocity.y> 0){
-      //   mj_player.velocity.y = -0.5*mj_jumpv;
-      //   //pens[i].remove();
-      //   //i-=1
-      // }
-      if(pens[i].position.y > mj_player.position.y+height){
-        pens[i].remove();
-      }
-    }
-
-    if(mj_player.position.y < currentheight){
-      currentheight = mj_player.position.y - 400;
-      score += 100;
-      for (var i = 0; i < 5-difficulty; i++) {
-        randint = floor(random(0, 20));
-        if(difficulty<3){
-          rock = createSprite(random(rockwidth/2+width*i/3, width*(i+1)/3), random(currentheight-width/2-50, currentheight-width/2-200), rockwidth, 40);
-        }else{
-          rock = createSprite(random(rockwidth/2, width-rockwidth/2), random(currentheight-width/2-50, currentheight-width/2-200), rockwidth, 40);
-
-        }
-        rock.setCollider('rectangle',0,0,rockwidth,50);
-
-        if(randint >=0 && randint <17-difficulty){rock.type = 0;rock.shapeColor= color(150);}
-        if(randint ==17-difficulty ){rock.type = 1; rock.shapeColor = color(100,100,200);}//jump
-        if(randint > 17-difficulty && randint< 20-difficulty){rock.type = 2; rock.shapeColor = color(200,100,100);}//break
-        if(randint >= 20-difficulty){rock.type = 3; rock.shapeColor = color(200,100,200); rock.dir = random(-difficulty,difficulty)}//move
-
-        rocks.add(rock);
-
-
-      }
-    }
-
-    for (var i = 0; i < rocks.length; i++) {
-      if(rocks[i].position.y > mj_player.position.y+height){
-        rocks[i].remove();
-      }
-      if(rocks[i].type == 3){
-        if(rocks[i].position.x > width -rockwidth/2){rocks[i].dir = -1}
-        if(rocks[i].position.x < rockwidth/2){rocks[i].dir = 1}
-        rocks[i].velocity.x = rocks[i].dir*0.7*difficulty;
-
-      }
-      if(mj_player.overlap(rocks[i])&& mj_player.velocity.y >0){
-        switch (rocks[i].type) {
-          case 0:
-            mj_player.velocity.y = -mj_jumpv;
-            break;
-          case 1:
-            mj_player.velocity.y = -2*mj_jumpv
-            break;
-          case 2:
-            mj_player.velocity.y = -mj_jumpv;
-            rocks[i].remove();
-            break;
-          case 3:
-            mj_player.velocity.y = -mj_jumpv;
-            break;
-        }
-      }
-    }
-}
-
-function newGame(){
-  currentheight = 0;
-  difficulty = 1;
-  oldscore = 0;
-  rocks.removeSprites();
-  score = 0;
-  pens.removeSprites();
-  gameOver = false;
-  mj_player.position.x = width/2
-  mj_player.position.y = height/2
-  camera.position.x = height/2
-  camera.position.y = width/2
-}
-
-
-
-/*
-function setup(){
-  defineCanvas();
-  defineVar();
-
-
-
-  //updateSprites(false);
-
-} // setup()
-
-function draw(){
-  if(startSc){
-    startScreen("Mountain Jump");
   }
 
-  if(!gameOver){
-    background(51);
-    mountainJumpDraw();
+  if(mj_player.position.y < currentheight){
+    currentheight = mj_player.position.y - 400;
+    mj_score += 100;
+    for (var i = 0; i < 5-difficulty; i++) {
+      randint = floor(random(0, 20));
+      if(difficulty<3){
+        rock = createSprite(random(rockwidth/2+width*i/3, width*(i+1)/3), random(currentheight-width/2-50, currentheight-width/2-200), rockwidth, rockheight);
+      }else{
+        rock = createSprite(random(rockwidth/2, width-rockwidth/2), random(currentheight-width/2-50, currentheight-width/2-200), rockwidth, rockheight);
 
- }
-  if(gameOver && !startSc){
-    gameOverScreen();
-    camera.position.x = width/2;
-    camera.position.y = height/2;
+      }
+      rock.setCollider('rectangle',0,0,rockwidth,rockheight);
+
+      if(randint >=0 && randint <17-difficulty){rock.type = 0;rock.addImage(random(mj_platforms[0]));}
+      if(randint ==17-difficulty ){rock.type = 1; rock.addImage(mj_platforms[1]);}//jump
+      if(randint > 17-difficulty && randint< 20-difficulty){rock.type = 2; rock.addImage(mj_platforms[2]);}//break
+      if(randint >= 20-difficulty){rock.type = 3; rock.addImage(random(mj_platforms[0])); rock.dir = random(-difficulty,difficulty)}//move
+
+      rocks.add(rock);
+    }
   }
-}// function draw()
 
-*/
+  for (var i = 0; i < rocks.length; i++) {
+    if(rocks[i].position.y > mj_player.position.y+height){
+      rocks[i].remove();
+    }
+    if(rocks[i].type == 3){
+      if(rocks[i].position.x > width -rockwidth/2){rocks[i].dir = -1}
+      if(rocks[i].position.x < rockwidth/2){rocks[i].dir = 1}
+      rocks[i].velocity.x = rocks[i].dir*0.7*difficulty;
+
+    }
+    if(mj_player.overlap(rocks[i])&& mj_player.velocity.y >0){
+      mj_player.changeAnimation('jump');
+      mj_player.animation.changeFrame(0);
+      mj_startedFalling = false;
+      switch (rocks[i].type) {
+        case 0:
+          mj_player.velocity.y = -mj_jumpv;
+          mj_jumpedOnBoost = false;
+          break;
+        case 1:
+          mj_player.velocity.y = -2.5*mj_jumpv
+          mj_jumpedOnBoost = true;
+          break;
+        case 2:
+          mj_player.velocity.y = -mj_jumpv;
+          mj_jumpedOnBoost = false;
+          rocks[i].remove();
+          break;
+        case 3:
+          mj_player.velocity.y = -mj_jumpv;
+          mj_jumpedOnBoost = false;
+          break;
+      }
+    }
+  }
+}
