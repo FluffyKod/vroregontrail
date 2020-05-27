@@ -51,6 +51,13 @@ let keypressed = false;
 let timer;
 
 // GAME ASSETS
+// let backgrounds = {
+//   capLibrary: '',
+//   beegRavine: '',
+//   survivorCamp: '',
+//   cityGeneral: ''
+// }
+
 let backgrounds = {
   beach: 'beach.gif',
   castle: 'castle.png',
@@ -64,7 +71,9 @@ let backgrounds = {
   witchHouse: 'witchAbode.gif',
   flies: 'roomOfFlies.gif',
   throneRoom: 'frogKing.gif',
-  waspKing: 'waspKing.gif'
+  waspKing: 'waspKing.gif',
+  capitolStreets: 'capitol.gif',
+  generalSunset: 'generalSunset.gif'
 }
 
 let endscreens = [
@@ -116,8 +125,14 @@ let music = {
   frogeFight: 'http://vroelevkar.se/wp-content/uploads/2020/05/frogefight.wav',
   library: 'http://vroelevkar.se/wp-content/uploads/2020/05/library.wav',
   ravine: 'http://vroelevkar.se/wp-content/uploads/2020/05/ravine.wav',
-  dance: 'http://vroelevkar.se/wp-content/uploads/2020/05/dance.wav'
+  dance: 'http://vroelevkar.se/wp-content/uploads/2020/05/dance.wav',
+  camp: 'http://vroelevkar.se/wp-content/uploads/2020/05/survivorCamp.mp3'
 }
+
+// let music = {
+//
+//   throneMusic: '',
+// }
 
 // Chapter release
 let completedChapters = 2;
@@ -136,7 +151,7 @@ let chapterCoordinates = [
     end: []
   },
   {
-    start: [0, 23],
+    start: [0, 22],
     end: []
   }
 ]
