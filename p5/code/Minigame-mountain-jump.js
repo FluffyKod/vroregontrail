@@ -17,6 +17,7 @@ var gameOver = true;
 var difficulty;
 var rockheight;
 var mj_jumpedOnBoost = false;
+let warning_img;
 
 let mj_startedFalling = false;
 function mj_preload(){
@@ -32,6 +33,8 @@ function mj_preload(){
     loadImage(spriteImgSrc +'mountain_jump/bouncy_platform.png'),
     loadImage(spriteImgSrc +'mountain_jump/cracky_platform.png')
   ]
+
+  warning_img = loadImage(spriteImgSrc +'mountain_jump/warning.png')
   mj_jump_anim = loadAnimation(spriteImgSrc + 'mountain_jump/player_jump_0002.png',spriteImgSrc + 'mountain_jump/player_jump_0004.png')
   mj_jump_anim.looping = false;
   mj_falling_anim = loadAnimation(spriteImgSrc + 'mountain_jump/player_falling.png')
@@ -113,6 +116,12 @@ function mountainJumpDraw(){
   drawSprites();
   textSize(40);
   fill(255);
+  for (var i = 0; i < pens.length; i++) {
+    if(pens[i].position.y < camera.position.y -360){
+      imageMode(CENTER)
+      image(warning_img, pens[i].position.x, camera.position.y-300)
+    }
+  }
 
   if(mj_player.velocity.y < 0 && mj_player.position.y <= camera.position.y){
     camera.position.y = mj_player.position.y
@@ -163,7 +172,7 @@ function mountainJumpDraw(){
   }
   if (frameCount % floor(400/difficulty) == 0 && mj_player.velocity.y >-10) {
 
-    pen = createSprite(random(10,width-10),mj_player.position.y-height,12,64);
+    pen = createSprite(random(10,width-10),camera.position.y-height-200,12,64);
     pen.addImage(random(mj_pen_images))
   //  pen.setCollider('c',0,0,10,60);
     pen.rotationSpeed = random(-1,2)*10;
@@ -230,8 +239,12 @@ function mountainJumpDraw(){
           mj_jumpedOnBoost = false;
           break;
         case 1:
-          mj_player.velocity.y = -2.5*mj_jumpv
+          mj_player.velocity.y = -2*mj_jumpv
           mj_jumpedOnBoost = true;
+          rock = createSprite(mj_player.position.x, mj_player.position.y-1900, rockwidth, rockheight); //skapar en där man hamnar
+          rock.type = 0
+          rock.addImage(random(mj_platforms[0]));
+          rocks.add(rock)
           break;
         case 2:
           mj_player.velocity.y = -mj_jumpv;
