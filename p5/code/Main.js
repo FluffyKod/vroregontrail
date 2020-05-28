@@ -126,7 +126,8 @@ let music = {
   library: 'http://vroelevkar.se/wp-content/uploads/2020/05/library.wav',
   ravine: 'http://vroelevkar.se/wp-content/uploads/2020/05/ravine.wav',
   dance: 'http://vroelevkar.se/wp-content/uploads/2020/05/dance.wav',
-  camp: 'http://vroelevkar.se/wp-content/uploads/2020/05/survivorCamp.mp3'
+  camp: 'http://vroelevkar.se/wp-content/uploads/2020/05/survivorCamp.mp3',
+  streetsCapitol: 'http://vroelevkar.se/wp-content/uploads/2020/05/streetsGeneral.wav',
 }
 
 // let music = {
