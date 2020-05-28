@@ -568,6 +568,10 @@ function getBackgroundImageFromArea( area ) {
       imageName = backgrounds.bogGeneral;
       break;
 
+    case 'city':
+      imageName = backgrounds.capitolStreets;
+      break;
+
     default:
       imageName = backgrounds.highlands;
   }
@@ -592,6 +596,10 @@ function getSongFromArea( area ) {
 
     case 'bog':
       song = music.swamp;
+      break;
+
+    case 'city':
+      song = music.streetsCapitol;
       break;
 
     default:

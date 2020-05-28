@@ -2,6 +2,46 @@
 // HELPER FUNCTIONS
 ////////////////////////////////////////////
 
+function startPlayer(x, y, newArea) {
+  player.completed = [];
+  player.completed.push(completed);
+
+  player.x = x;
+  player.y = y;
+
+  let newAssets = changeArea( newArea );
+
+  paused = true;
+
+  changeBoxColor()
+  changeBackgroundImage(newAssets[0]);
+  changeRoom( newArea, x, y);
+
+  player.background = newAssets[0];
+  player.music = newAssets[1];
+
+  // Save player
+  savePlayer();
+}
+
+function jumpCompletedChapter(chapter) {
+  let startX = chapterCoordinates[chapter - 1]['start'][0];
+  let startY = chapterCoordinates[chapter - 1]['start'][1]
+
+  if (player.completed && player.completed.length == chapter && player.x == startX && player.y == startY) {
+
+    if (chapter == 2) {
+      startPlayer(startX, startY, 'city');
+    }
+    else if (chapter == 3) {
+      startPlayer(startX, startY, 'mountain');
+    }
+    else if (chapter == 4) {
+      startPlayer(startX, startY, 'core');
+    }
+  }
+}
+
 function fixChapterRelease() {
 
 
@@ -22,25 +62,14 @@ function fixChapterRelease() {
     player.completed = [];
     player.completed.push(completed);
 
-    player.x = -1;
-    player.y = 23;
-
-    let newAssets = changeArea( 'bog' );
-
-    paused = true;
-
-    changeBoxColor()
-    changeBackgroundImage(newAssets[0]);
-    changeRoom('bog', -1, 23);
-
-    player.background = newAssets[0];
-    player.music = newAssets[1];
-
-    // $('#audio-holder').attr('src', player.music)
-
-    // Save player
-    savePlayer();
+    startPlayer(-1, 23, 'bog');
   }
+
+  //  Jump if completed chapter 2
+  jumpCompletedChapter(2)
+
+  //  Jump if completed chapter 3
+  jumpCompletedChapter(3)
 
 }
 
