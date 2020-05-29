@@ -1533,6 +1533,9 @@ function startFromChapter(chapter) {
     $('#game-img').css('opacity', 1);
     $('#grandparent').css('z-index', 2);
 
+    // SHow toggle admin
+    document.getElementById('toggle-admin').style.opacity = 1;
+
     savePlayer();
 
     setTimeout(function() {
