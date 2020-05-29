@@ -31,6 +31,8 @@
   --capitol: rgba(129,118,99, 0.7);
   --library: rgba(91,36,7, 0.7);
   --cityStreets: rgba(114,86,41, 0.7);
+  --ravine: rgba(42,69,40, 0.7);
+  --survivorCamp: rgba(98,98,98, 0.7);
 }
 
 .box {
@@ -101,6 +103,14 @@
 
 .box.library {
   background-color: var(--library);
+}
+
+.box.ravine {
+  background-color: var(--ravine);
+}
+
+.box.survivorCamp {
+  background-color: var(--survivorCamp);
 }
 
 /******************************
