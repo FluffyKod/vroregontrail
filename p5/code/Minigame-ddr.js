@@ -9,6 +9,9 @@ let dock_img, arrow_dock_img;
 let niklas_anim;
 let elena_anim;
 let frame_rate;
+let ddr_musicStarted
+let ddr_timerMultiplier
+let ddr_musicDelayTimer;
 
 function ddr_preload(){
   arrow_images = [
@@ -25,13 +28,12 @@ function ddr_preload(){
   ]
   elena_anim = loadAnimation(spriteImgSrc + 'niklas_elena_anim/separat/elena_0001.png', spriteImgSrc + 'niklas_elena_anim/separat/elena_0008.png')
   niklas_anim = loadAnimation(spriteImgSrc + 'niklas_elena_anim/separat/niklas_0001.png', spriteImgSrc + 'niklas_elena_anim/separat/niklas_0008.png')
-  niklas_anim.frameDelay = 2;
-  elena_anim.frameDelay = 2;
+  niklas_anim.frameDelay = 4;
+  elena_anim.frameDelay = 4;
 }
 
 function ddr_draw(){
   frameRate(frame_rate)
-  ddr_time += deltaTime
   if(startSc){startScreen("Dj G&E's DDR")}
   if(!gameOver && !startSc){ddr_game();}
   if(!startSc && gameOver && !win){
@@ -58,6 +60,7 @@ function ddr_deleteVar(){
   ddr_time = 0;
   levelpos = 0;
   ddr_score = 0
+  $('#audio-holder').get(0).pause();
 }
 
 function ddr_keyCommands(){
@@ -81,16 +84,20 @@ function ddr_collisionCheck(key, index){
 
 function ddr_defineVar(){
   resizeCanvas(1200, 700)
-
-
+  $('#audio-holder').attr('src', music['dance'])
+  $('#audio-holder').get(0).pause();
+  ddr_musicStarted = false;
+  win = false
   startSc = true;
-  gameOver = true;
+  gameOver = false;
   camera.position.x = width/2;
   camera.position.y = height/2;
 
-  frame_rate = 24;
+  ddr_musicDelayTimer = 0;
+  frame_rate = 48;
   let playAreaWidth = 280
   ddr_time = 0;
+  ddr_timerMultiplier = 0
   docksize = 60;
   spacing = 10;
   ddr_score = 0;
@@ -124,7 +131,6 @@ function ddr_checkScore(index){
       ddr_score +=25
     }
   }
-
 }
 
 function ddr_drawLanes(){
@@ -166,6 +172,12 @@ function ddr_drawLanes(){
 }
 
 function ddr_game(){
+  ddr_time += deltaTime
+  if(!ddr_musicStarted){ddr_musicDelayTimer += deltaTime}
+  if(!ddr_musicStarted && ddr_musicDelayTimer > 1500){
+    $('#audio-holder').get(0).play();
+    ddr_musicStarted = true;
+  }
   background(51);
   fill(255)
   ddr_drawLanes()
@@ -200,7 +212,7 @@ function ddr_arrow(index){
 
 function ddr_arrowDock(index, startX){
   this.x = startX+index*(spacing+docksize)+docksize/2+spacing
-  this.y = height-spacing-docksize/2
+  this.y = 630 //arrowspeed*1.5
 
   this.draw = function(){
     imageMode(CENTER)
@@ -228,7 +240,7 @@ function ddr_rotateArrowToIndex(index){
 }
 
 function ddr_spawnAndDespawnArrows(){
-  if(ddr_time > (1/bps)*1000 && levelpos < level.length){
+  if(ddr_time > (1/bps)*1000*ddr_timerMultiplier && levelpos < level.length){
     for (var i = 0; i < 4; i++) {
       if(level[levelpos][i] == 1){
         arrow = new ddr_arrow(i)
@@ -243,7 +255,8 @@ function ddr_spawnAndDespawnArrows(){
       }
     }
     levelpos+=1
-    ddr_time = 0
+    console.log(ddr_time)
+    ddr_timerMultiplier +=1
   }
 }
 
