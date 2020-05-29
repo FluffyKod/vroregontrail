@@ -12,6 +12,8 @@
      <meta charset="utf-8">
      <meta name="viewport" content="width=device-width; initial-scale=1.0;">
      <title></title>
+
+     <link rel="icon" href="<?php echo get_bloginfo('template_directory') ?>/img/logga.png" type="image/icon type">
      <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
      <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
      <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/front.css">

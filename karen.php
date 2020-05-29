@@ -3,7 +3,7 @@
 /**
  * Template Name: Kåren
  */
- 
+
  // Do not show page for gamers only
  if (current_user_can('gamer')){
    wp_redirect( '/' );
@@ -24,6 +24,7 @@ if (! is_user_logged_in() ){
 
     <title>VRO Elevkår</title>
 
+    <link rel="icon" href="<?php echo get_bloginfo('template_directory') ?>/img/logga.png" type="image/icon type">
     <link rel="stylesheet" href="<?php echo get_bloginfo('template_directory') ?>/css/admin.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" rel="stylesheet">
     <script src="<?php echo get_bloginfo('template_directory') ?>/js/autocomplete.js" charset="utf-8"></script>

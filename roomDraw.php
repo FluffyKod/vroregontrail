@@ -16,7 +16,7 @@
   <head>
     <meta charset="utf-8">
     <LINK REL=StyleSheet HREF="<?php echo get_bloginfo('template_directory') ?>/p5/addons/quicksettings.css" TYPE="text/css" MEDIA=screen>
-
+      <link rel="icon" href="<?php echo get_bloginfo('template_directory') ?>/img/logga.png" type="image/icon type">
 
   </head>
   <body>

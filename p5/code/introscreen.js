@@ -14,7 +14,9 @@ tl.from('#logo', 3, {
 })
 .from('.menu', 2, {
     opacity: 0,
-    onComplete: setTimeout(blink, 2000)
+    onComplete: function() {
+      setTimeout(blink, 2000)
+    }
 }, '-=1')
 
 function blink() {
@@ -85,6 +87,9 @@ function transition() {
       } else {
         $('#audio-holder').prop('volume', 0);
       }
+
+      // SHow toggle admin
+      document.getElementById('toggle-admin').style.opacity = 1;
 
   })
 }
