@@ -52,10 +52,9 @@ let timer;
 
 // GAME ASSETS
 // let backgrounds = {
-//   capLibrary: '',
 //   beegRavine: '',
 //   survivorCamp: '',
-//   cityGeneral: ''
+//
 // }
 
 let backgrounds = {
@@ -72,24 +71,18 @@ let backgrounds = {
   flies: 'roomOfFlies.gif',
   throneRoom: 'frogKing.gif',
   waspKing: 'waspKing.gif',
-  capitolStreets: 'capitol.gif',
-  generalSunset: 'generalSunset.gif'
+  capitolStreets: 'streetsofoldcapitol.gif',
+  generalSunset: 'generalSunset.gif',
+  capLibrary: 'library.png',
+  cityGeneral: 'capitol.gif',
+  beegRavine: 'streetsofoldcapitol.gif', // NEED UPDATE
+  survivorCamp: 'streetsofoldcapitol.gif', // NEED UPDATE
 }
 
 let endscreens = [
   'chapter1finished.png',
   'chapter2finished.png'
 ]
-
-// DEV SITE MUSIC
-// let music = {
-//   highlandsAmbient: 'http://vroregon.local/wp-content/uploads/highlandsAmbient.mp3',
-//   creepyHouse: 'http://vroregon.local/wp-content/uploads/creepyHouse.mp3',
-//   highlandsBoss: 'http://vroregon.local/wp-content/uploads/highlandsBoss.mp3',
-//   tavern: 'http://vroregon.local/wp-content/uploads/tavern.mp3',
-//   mainThemeIntro: 'http://vroregon.local/wp-content/uploads/harKommerJag.mp3',
-//   introBeach: 'http://vroregon.local/wp-content/uploads/wakup.wav'
-// }
 
 let colors = {
   intro: '#416fb7',
@@ -104,6 +97,8 @@ let colors = {
   frogKing: '#2D2608',
   roomOfFlies: '#275A52',
   witchAbode: '#5C2F62',
+  capitolStreets: '#725629',
+  library: '#5B2407',
   default: '#000'
 }
 
@@ -128,12 +123,8 @@ let music = {
   dance: 'http://vroelevkar.se/wp-content/uploads/2020/05/dance.wav',
   camp: 'http://vroelevkar.se/wp-content/uploads/2020/05/survivorCamp.mp3',
   streetsCapitol: 'http://vroelevkar.se/wp-content/uploads/2020/05/streetsGeneral.wav',
+  throneMusic: 'http://vroelevkar.se/wp-content/uploads/2020/05/streetsGeneral.wav' // NEED UPDATE
 }
-
-// let music = {
-//
-//   throneMusic: '',
-// }
 
 // Chapter release
 let completedChapters = 2;
@@ -149,13 +140,183 @@ let chapterCoordinates = [
   },
   {
     start: [0, 22],
-    end: []
+    end: [0, -17]
   },
   {
     start: [0, 22],
     end: []
   }
 ]
+
+///////////////////////////////////////////
+// ASSET FUNCTIONS
+///////////////////////////////////////////
+
+function getColorFromBackground() {
+  if (player.background == backgrounds['highlands']) {
+    return colors.highlands;
+  }
+  if (player.background == backgrounds['beach']) {
+    return colors.intro
+  }
+  if (player.background == backgrounds['castle']) {
+    return colors.castle
+  }
+  if (player.background == backgrounds['creepyHouse']) {
+    return colors.creepyHouse
+  }
+  if (player.background == backgrounds['tavern']) {
+    return colors.tavern
+  }
+  if (player.background == backgrounds['bogGeneral']) {
+    return colors.bog
+  }
+  if (player.background == backgrounds['sheep']) {
+    return colors.sheep
+  }
+  if (player.background == backgrounds['swampCrossroads']) {
+    return colors.crossroads
+  }
+  if (player.background == backgrounds['mudriver']) {
+    return colors.muddyRiver
+  }
+  if (player.background == backgrounds['witchHouse']) {
+    return colors.witchAbode
+  }
+  if (player.background == backgrounds['flies']) {
+    return colors.roomOfFlies
+  }
+  if (player.background == backgrounds['throneRoom']) {
+    return colors.frogKing
+  }
+  if (player.background == backgrounds['capitolStreets']) {
+    return colors.capitolStreets
+  }
+  if (player.background == backgrounds['cityGeneral']) {
+    return colors.capitolStreets
+  }
+  if (player.background == backgrounds['capLibrary']) {
+    return colors.library
+  }
+  else {
+    return colors.default
+  }
+}
+
+function changeBoxColor() {
+  let classes = 'box';
+
+  if (player.background == backgrounds['highlands']) {
+    classes += ' highlands';
+  }
+  if (player.background == backgrounds['beach']) {
+    classes += ' intro';
+  }
+  if (player.background == backgrounds['castle']) {
+    classes += ' castle';
+  }
+  if (player.background == backgrounds['creepyHouse']) {
+    classes += ' creepyhouse';
+  }
+  if (player.background == backgrounds['tavern']) {
+    classes += ' tavern';
+  }
+  if (player.background == backgrounds['bogGeneral']) {
+    classes += ' bog';
+  }
+  if (player.background == backgrounds['sheep']) {
+    classes += ' sheep';
+  }
+  if (player.background == backgrounds['swampCrossroads']) {
+    classes += ' crossroads';
+  }
+  if (player.background == backgrounds['mudriver']) {
+    classes += ' river';
+  }
+  if (player.background == backgrounds['witchHouse']) {
+    classes += ' witchAbode';
+  }
+  if (player.background == backgrounds['flies']) {
+    classes += ' flies';
+  }
+  if (player.background == backgrounds['throneRoom']) {
+    classes += ' throneRoom';
+  }
+  if (player.background == backgrounds['capitolStreets']) {
+    classes += ' capitolStreets';
+  }
+  if (player.background == backgrounds['cityGeneral']) {
+    classes += ' capitolStreets';
+  }
+  if (player.background == backgrounds['capLibrary']) {
+    classes += ' library';
+  }
+  else {
+    classes += ' default'
+  }
+
+  $('.box').attr('class', classes);
+}
+
+function getBackgroundImageFromArea( area ) {
+
+  let imageName = backgrounds.highlands;
+
+  switch (area) {
+    case 'highlands':
+      imageName = backgrounds.highlands;
+      break;
+
+    case 'intro':
+      imageName = backgrounds.beach;
+      break;
+
+    case 'bog':
+      imageName = backgrounds.bogGeneral;
+      break;
+
+    case 'city':
+      imageName = backgrounds.cityGeneral;
+      break;
+
+    default:
+      imageName = backgrounds.highlands;
+  }
+
+  return imageName;
+
+}
+
+
+function getSongFromArea( area ) {
+
+  let song = music.highlandsMain;
+
+  switch (area) {
+    case 'intro':
+      song = music.introBeach;
+      break;
+
+    case 'highlands':
+      song = music.highlands;
+      break;
+
+    case 'bog':
+      song = music.swamp;
+      break;
+
+    case 'city':
+      song = music.streetsCapitol;
+      break;
+
+    default:
+      song = music.highlands;
+  }
+
+  return song;
+
+}
+
 
 //loads sprites for games, called before setup p5 shenanigans
 function preload(){
@@ -462,151 +623,6 @@ function changeBackgroundImage( suppliedImage, isFileName = true ) {
 
   // console.log('SUPPLIED FILENAME: ', fileName);
   // console.log('BACKGROUND ELEMENT SRC:', backgroundElement.src);
-
-}
-
-function getColorFromBackground() {
-  if (player.background == backgrounds['highlands']) {
-    return colors.highlands;
-  }
-  if (player.background == backgrounds['beach']) {
-    return colors.intro
-  }
-  if (player.background == backgrounds['castle']) {
-    return colors.castle
-  }
-  if (player.background == backgrounds['creepyHouse']) {
-    return colors.creepyHouse
-  }
-  if (player.background == backgrounds['tavern']) {
-    return colors.tavern
-  }
-  if (player.background == backgrounds['bogGeneral']) {
-    return colors.bog
-  }
-  if (player.background == backgrounds['sheep']) {
-    return colors.sheep
-  }
-  if (player.background == backgrounds['swampCrossroads']) {
-    return colors.crossroads
-  }
-  if (player.background == backgrounds['mudriver']) {
-    return colors.muddyRiver
-  }
-  if (player.background == backgrounds['witchHouse']) {
-    return colors.witchAbode
-  }
-  if (player.background == backgrounds['flies']) {
-    return colors.roomOfFlies
-  }
-  if (player.background == backgrounds['throneRoom']) {
-    return colors.frogKing
-  } else {
-    return colors.default
-  }
-}
-
-function changeBoxColor() {
-  let classes = 'box';
-
-  if (player.background == backgrounds['highlands']) {
-    classes += ' highlands';
-  }
-  if (player.background == backgrounds['beach']) {
-    classes += ' intro';
-  }
-  if (player.background == backgrounds['castle']) {
-    classes += ' castle';
-  }
-  if (player.background == backgrounds['creepyHouse']) {
-    classes += ' creepyhouse';
-  }
-  if (player.background == backgrounds['tavern']) {
-    classes += ' tavern';
-  }
-  if (player.background == backgrounds['bogGeneral']) {
-    classes += ' bog';
-  }
-  if (player.background == backgrounds['sheep']) {
-    classes += ' sheep';
-  }
-  if (player.background == backgrounds['swampCrossroads']) {
-    classes += ' crossroads';
-  }
-  if (player.background == backgrounds['mudriver']) {
-    classes += ' river';
-  }
-  if (player.background == backgrounds['witchHouse']) {
-    classes += ' witchAbode';
-  }
-  if (player.background == backgrounds['flies']) {
-    classes += ' flies';
-  }
-  if (player.background == backgrounds['throneRoom']) {
-    classes += ' throneRoom';
-  } else {
-    classes += ' default'
-  }
-
-  $('.box').attr('class', classes);
-}
-
-function getBackgroundImageFromArea( area ) {
-
-  let imageName = backgrounds.highlands;
-
-  switch (area) {
-    case 'highlands':
-      imageName = backgrounds.highlands;
-      break;
-
-    case 'intro':
-      imageName = backgrounds.beach;
-      break;
-
-    case 'bog':
-      imageName = backgrounds.bogGeneral;
-      break;
-
-    case 'city':
-      imageName = backgrounds.capitolStreets;
-      break;
-
-    default:
-      imageName = backgrounds.highlands;
-  }
-
-  return imageName;
-
-}
-
-
-function getSongFromArea( area ) {
-
-  let song = music.highlandsMain;
-
-  switch (area) {
-    case 'intro':
-      song = music.introBeach;
-      break;
-
-    case 'highlands':
-      song = music.highlands;
-      break;
-
-    case 'bog':
-      song = music.swamp;
-      break;
-
-    case 'city':
-      song = music.streetsCapitol;
-      break;
-
-    default:
-      song = music.highlands;
-  }
-
-  return song;
 
 }
 
@@ -1094,7 +1110,7 @@ function option(ref){
         let move = this.values.slice(1, 3);
 
         let completed = {
-          chapter: 1,
+          chapter: chapterCompleted,
           inventory: player.inventory,
           beenTo: player.beenTo,
           charisma: player.charisma,

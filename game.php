@@ -13,6 +13,8 @@ $completedChapters = 2;
   <head>
     <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
     <style> body {padding: 0; margin: 0;} </style>
+
+    <link rel="icon" href="<?php echo get_bloginfo('template_directory') ?>/img/logga.png" type="image/icon type">
     <LINK REL=StyleSheet HREF="<?php echo get_bloginfo('template_directory') ?>/p5/code/style.css" TYPE="text/css" MEDIA=screen>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
@@ -291,7 +293,7 @@ $completedChapters = 2;
           setTimeout(function() {
 
 
-            if (player.completed && player.completed.length >= completedChapters) {
+            if (player.completed && hasCompleted(completedChapters)) {
               // Hide continueGame button
               $('#main-choice').remove();
 
@@ -302,6 +304,9 @@ $completedChapters = 2;
                   break;
                 case 2:
                   chapterText = 'Kapitel 2: The Bog';
+                  break;
+                case 2:
+                  chapterText = 'Kapitel 3: City';
                   break;
               }
 

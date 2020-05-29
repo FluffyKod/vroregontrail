@@ -19,7 +19,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
     <div class="video-container">
 
-      <video id="video-background" autoplay muted loop poster="<?php echo get_bloginfo('template_directory') . '/img/vrgkampenOptimized.jpg'; ?>"></video>
+      <video id="video-background" autoplay muted loop poster="<?php echo get_bloginfo('template_directory') . '/img/vrgkampenOptimized.jpg'?>"></video>
 
     </div>
 
@@ -122,7 +122,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
     <div class="box white hl frescati">
       <div class="see-more">
         <h3>Nästa buss Frescati</h3>
-        <button onclick="toggleClass('frescatis', 'all', 'one');">Se alla &#8594;</button>
+        <button onclick="toggleClass('frescatis', 'all', 'one')">Se alla &#8594;</button>
       </div>
 
 

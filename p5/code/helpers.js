@@ -2,9 +2,21 @@
 // HELPER FUNCTIONS
 ////////////////////////////////////////////
 
+function hasCompleted(chapter) {
+  let completedChapters = []
+
+  for (let completed of player.completed) {
+    completedChapters.push(completed.chapter)
+  }
+
+  if (completedChapters.includes(chapter)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function startPlayer(x, y, newArea) {
-  player.completed = [];
-  player.completed.push(completed);
 
   player.x = x;
   player.y = y;
@@ -25,10 +37,10 @@ function startPlayer(x, y, newArea) {
 }
 
 function jumpCompletedChapter(chapter) {
-  let startX = chapterCoordinates[chapter - 1]['start'][0];
-  let startY = chapterCoordinates[chapter - 1]['start'][1]
+  let startX = chapterCoordinates[chapter + 1]['start'][0];
+  let startY = chapterCoordinates[chapter + 1]['start'][1]
 
-  if (player.completed && player.completed.length == chapter && player.x == startX && player.y == startY) {
+  if (player.completed && hasCompleted(chapter) && player.x == startX && player.y == startY) {
 
     if (chapter == 2) {
       startPlayer(startX, startY, 'city');
@@ -44,9 +56,7 @@ function jumpCompletedChapter(chapter) {
 
 function fixChapterRelease() {
 
-
   if ((player.completed.length == 1 && player.completed[0] == 1) || (player.completed.length == 2 && player.completed[0] == 1 && player.completed[1] == 1)) {
-
     let self = this;
 
     let completed = {
@@ -65,11 +75,14 @@ function fixChapterRelease() {
     startPlayer(-1, 23, 'bog');
   }
 
+  // Jump if completed chapter 1
+  jumpCompletedChapter(1)
+
   //  Jump if completed chapter 2
   jumpCompletedChapter(2)
 
   //  Jump if completed chapter 3
-  jumpCompletedChapter(3)
+  // jumpCompletedChapter(3)
 
 }
 
@@ -100,7 +113,8 @@ function savePlayer() {
   }
 
   sendAjax(parameters, function(response) {
-    console.log(response);
+    // DEBUG console.log(response);
+    return;
   });
 
 }
@@ -138,9 +152,9 @@ function getPlayer() {
       updateStatGui('', true);
 
       // Player fix
-      if (!player.completed) {
-        player.completed = [];
-      }
+      // if (typeof(player.completed) == 'undefined') {
+      //   player.completed = [];
+      // }
 
       return;
 

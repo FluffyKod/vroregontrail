@@ -28,6 +28,8 @@
   --flies: rgba(39,90,82, 0.7);
   --witchAbodeHex: #5C2F62;
   --witchAbode: rgba(92,47,98, 0.7);
+  --capitol: rgba(114,86,41, 0.7);
+  --library: rgba(91,36,7, 0.7);
 }
 
 .box {
@@ -86,6 +88,14 @@
 
 .box.throneRoom {
   background-color: var(--frogKing);
+}
+
+.box.capitolStreets {
+  background-color: var(--capitol);
+}
+
+.box.library {
+  background-color: var(--library);
 }
 
 /******************************
@@ -334,7 +344,8 @@ canvas#defaultCanvas0 {
 .option {
   padding: 6px;
   font-size: 20px;
-  height: 42px;
+  min-height: 42px;
+  height: min-content;
   color: #ebebeb;
   background: none;
 }
@@ -380,6 +391,7 @@ canvas#defaultCanvas0 {
   height: 30px;
   padding: 0 10px;
   cursor: pointer;
+  opacity: 0;
 }
 
 /* #tutorial {
