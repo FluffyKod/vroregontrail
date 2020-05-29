@@ -298,14 +298,14 @@ $completedChapters = 2;
               $('#main-choice').remove();
 
               let chapterText;
-              switch (player.completed.length) {
+              switch (maxChapterCompleted()) {
                 case 1:
                   chapterText = 'Kapitel 1: Highlands';
                   break;
                 case 2:
                   chapterText = 'Kapitel 2: The Bog';
                   break;
-                case 2:
+                case 3:
                   chapterText = 'Kapitel 3: City';
                   break;
               }

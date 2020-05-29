@@ -5,6 +5,10 @@
 function hasCompleted(chapter) {
   let completedChapters = []
 
+  if (player.completed.length == 0) {
+    return false
+  }
+
   for (let completed of player.completed) {
     completedChapters.push(completed.chapter)
   }
@@ -13,6 +17,26 @@ function hasCompleted(chapter) {
     return true;
   } else {
     return false;
+  }
+}
+
+function maxChapterCompleted() {
+  if (hasCompleted(5)) {
+    return 5;
+  }
+  else if (hasCompleted(4)) {
+    return 4
+  }
+  else if (hasCompleted(3)) {
+    return 3
+  }
+  else if (hasCompleted(2)) {
+    return 2
+  }
+  else if (hasCompleted(1)) {
+    return 1
+  } else {
+    return 0
   }
 }
 

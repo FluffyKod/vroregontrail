@@ -98,6 +98,7 @@ let colors = {
   roomOfFlies: '#275A52',
   witchAbode: '#5C2F62',
   capitolStreets: '#725629',
+  cityGeneral: '#817663',
   library: '#5B2407',
   default: '#000'
 }
@@ -193,7 +194,7 @@ function getColorFromBackground() {
     return colors.capitolStreets
   }
   if (player.background == backgrounds['cityGeneral']) {
-    return colors.capitolStreets
+    return colors.cityGeneral
   }
   if (player.background == backgrounds['capLibrary']) {
     return colors.library
@@ -246,7 +247,7 @@ function changeBoxColor() {
     classes += ' capitolStreets';
   }
   if (player.background == backgrounds['cityGeneral']) {
-    classes += ' capitolStreets';
+    classes += ' cityGeneral';
   }
   if (player.background == backgrounds['capLibrary']) {
     classes += ' library';

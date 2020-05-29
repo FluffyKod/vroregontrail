@@ -28,8 +28,9 @@
   --flies: rgba(39,90,82, 0.7);
   --witchAbodeHex: #5C2F62;
   --witchAbode: rgba(92,47,98, 0.7);
-  --capitol: rgba(114,86,41, 0.7);
+  --capitol: rgba(129,118,99, 0.7);
   --library: rgba(91,36,7, 0.7);
+  --cityStreets: rgba(114,86,41, 0.7);
 }
 
 .box {
@@ -91,6 +92,10 @@
 }
 
 .box.capitolStreets {
+  background-color: var(--cityStreets);
+}
+
+.box.cityGeneral {
   background-color: var(--capitol);
 }
 
