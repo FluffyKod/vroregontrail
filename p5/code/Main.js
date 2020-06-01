@@ -75,8 +75,8 @@ let backgrounds = {
   generalSunset: 'generalSunset.gif',
   capLibrary: 'library.png',
   cityGeneral: 'capitol.gif',
-  beegRavine: 'streetsofoldcapitol.gif', // NEED UPDATE
-  survivorCamp: 'streetsofoldcapitol.gif', // NEED UPDATE
+  beegRavine: 'ravine.gif', // NEED UPDATE
+  survivorCamp: 'survivorCamp.png', // NEED UPDATE
 }
 
 let endscreens = [
@@ -100,6 +100,8 @@ let colors = {
   capitolStreets: '#725629',
   cityGeneral: '#817663',
   library: '#5B2407',
+  survivorCamp: '#626262',
+  ravine: '#2A4528',
   default: '#000'
 }
 
@@ -199,6 +201,12 @@ function getColorFromBackground() {
   if (player.background == backgrounds['capLibrary']) {
     return colors.library
   }
+  if (player.background == backgrounds['beegRavine']) {
+    return colors.ravine
+  }
+  if (player.background == backgrounds['survivorCamp']) {
+    return colors.survivorCamp
+  }
   else {
     return colors.default
   }
@@ -251,6 +259,12 @@ function changeBoxColor() {
   }
   if (player.background == backgrounds['capLibrary']) {
     classes += ' library';
+  }
+  if (player.background == backgrounds['beegRavine']) {
+    classes += ' ravine';
+  }
+  if (player.background == backgrounds['survivorCamp']) {
+    classes += ' survivorCamp';
   }
   else {
     classes += ' default'
@@ -1532,6 +1546,9 @@ function startFromChapter(chapter) {
     $('#intro-screen').addClass('hidden');
     $('#game-img').css('opacity', 1);
     $('#grandparent').css('z-index', 2);
+
+    // SHow toggle admin
+    document.getElementById('toggle-admin').style.opacity = 1;
 
     savePlayer();
 

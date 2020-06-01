@@ -46,6 +46,9 @@ function fader() {
       } else {
         $('#audio-holder').prop('volume', 0);
       }
+
+      // SHow toggle admin
+      document.getElementById('toggle-admin').style.opacity = 1;
   })
 
   $('#audio-holder').animate({
