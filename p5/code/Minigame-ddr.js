@@ -12,6 +12,10 @@ let frame_rate;
 let ddr_musicStarted
 let ddr_timerMultiplier
 let ddr_musicDelayTimer;
+let ddr_lives;
+let ddr_missed;
+let ddr_multiplier, ddr_multiplierCounter;
+let ddr_textEffectProgression, ddr_textEffectType, ddr_textEffectStarted;
 
 function ddr_preload(){
   arrow_images = [
@@ -26,6 +30,7 @@ function ddr_preload(){
     loadImage(spriteImgSrc +'ddr_arrows/dock_up.png'),
     loadImage(spriteImgSrc +'ddr_arrows/dock_right.png'),
   ]
+  hear_icon = loadImage(spriteImgSrc + 'heart10px.png')
   elena_anim = loadAnimation(spriteImgSrc + 'niklas_elena_anim/separat/elena_0001.png', spriteImgSrc + 'niklas_elena_anim/separat/elena_0008.png')
   niklas_anim = loadAnimation(spriteImgSrc + 'niklas_elena_anim/separat/niklas_0001.png', spriteImgSrc + 'niklas_elena_anim/separat/niklas_0008.png')
   niklas_anim.frameDelay = 4;
@@ -63,24 +68,6 @@ function ddr_deleteVar(){
   $('#audio-holder').get(0).pause();
 }
 
-function ddr_keyCommands(){
-  ddr_collisionCheck(LEFT_ARROW, 0);
-  ddr_collisionCheck(DOWN_ARROW, 1);
-  ddr_collisionCheck(UP_ARROW, 2);
-  ddr_collisionCheck(RIGHT_ARROW, 3);
-}// keyCommands()
-
-function ddr_collisionCheck(key, index){
-  if(keyWentDown(key)){
-    //docks[index].animation.changeFrame(0)
-    ddr_checkScore(index);
-    for (var i = 0; i < arrows[index].length; i++) {
-      if(abs(docks[index].y-arrows[index][i].y)<docksize){
-        arrows[index].splice(i,1);
-      }
-    }
-  }
-}
 
 function ddr_defineVar(){
   resizeCanvas(1200, 700)
@@ -93,6 +80,11 @@ function ddr_defineVar(){
   camera.position.x = width/2;
   camera.position.y = height/2;
 
+  ddr_multiplier = 1;
+  ddr_textEffectStarted = false;
+  ddr_multiplierCounter = 0;
+  ddr_missed = 0;
+  ddr_lives = 6;
   ddr_musicDelayTimer = 0;
   frame_rate = 48;
   let playAreaWidth = 280
@@ -121,16 +113,127 @@ function ddr_defineVar(){
   fill(255)
 }
 
+function ddr_game(){
+  ddr_time += deltaTime
+  if(!ddr_musicStarted){ddr_musicDelayTimer += deltaTime}
+  if(!ddr_musicStarted && ddr_musicDelayTimer > 1500){
+    $('#audio-holder').get(0).play();
+    ddr_musicStarted = true;
+  }
+  background(51);
+  fill(255)
+  ddr_drawTexts()
+  ddr_drawLanes()
+  ddr_updateTextEffects()
+  ddr_spawnAndDespawnArrows();
+  ddr_updateArrowsAndDocks();
+  niklas_anim.draw(niklas_anim.getWidth()/2,niklas_anim.getHeight()/2+100);
+  elena_anim.draw(width-(elena_anim.getWidth()/2), elena_anim.getHeight()/2+100)
+  ddr_checkWinFail()
+
+  ddr_keyCommands();
+
+}
+
+function ddr_keyCommands(){
+  ddr_collisionCheck(LEFT_ARROW, 0);
+  ddr_collisionCheck(DOWN_ARROW, 1);
+  ddr_collisionCheck(UP_ARROW, 2);
+  ddr_collisionCheck(RIGHT_ARROW, 3);
+}
+
+function ddr_collisionCheck(key, index){
+  if(keyWentDown(key)){
+    ddr_checkScore(index);
+    let hit = false;
+    for (var i = 0; i < arrows[index].length; i++) {
+      if(abs(docks[index].y-arrows[index][i].y)<docksize){
+        arrows[index].splice(i,1);
+        hit = true;
+      }
+    }
+    if(!hit){
+      ddr_missed++
+      ddr_multiplier = 1
+      ddr_multiplierCounter = 0
+      ddr_startTextEffect(3)
+    }
+    ddr_checkMultiplier()
+  }
+}
+
 function ddr_checkScore(index){
   for (var i = 0; i < arrows[index].length; i++) {
     if(abs(docks[0].y-arrows[index][i].y)<(docksize/4) && docks[index].x == arrows[index][i].x){
-      ddr_score += 100
+      ddr_score += 100*ddr_multiplier
+      ddr_multiplierCounter ++
+      ddr_startTextEffect(0)
     }else if(abs(docks[0].y-arrows[index][i].y)<(docksize/2)&& docks[index].x == arrows[index][i].x){
-      ddr_score += 75
+      ddr_score += 75*ddr_multiplier
+      ddr_startTextEffect(1)
     }else if(abs(docks[0].y-arrows[index][i].y)<(docksize)&& docks[index].x == arrows[index][i].x){
-      ddr_score +=25
+      ddr_score +=25*ddr_multiplier
+      ddr_startTextEffect(2)
     }
   }
+}
+
+function ddr_checkMultiplier(){
+  if(ddr_multiplierCounter >= 3 && ddr_multiplier <= 3){
+    ddr_multiplier++
+    ddr_multiplierCounter = 0;
+  }
+}
+
+function ddr_drawTexts(){
+  fill(255)
+  let xPos = width-400
+  let yPos = 50
+  let spacing = 50
+  textFont(pixel_font, 40)
+  text('Score: '+ddr_score, xPos, yPos);
+  text('Multiplier: '+ddr_multiplier+'X', xPos, yPos+spacing)
+  imageMode(CORNER)
+  image(hear_icon, xPos, yPos+spacing*2-35)
+  text('x'+ddr_lives, xPos+50, yPos+spacing*2)
+}
+
+function ddr_startTextEffect(type){
+  ddr_textEffectProgression = 0;
+  ddr_textEffectType = type
+}
+
+function ddr_updateTextEffects(){
+  let textString = ""
+  let yPos = height/2-150;
+  let xPos = width/2-200
+  textAlign(CENTER)
+  switch (ddr_textEffectType) {
+    case 0:
+      fill(106,190,48)
+      textString = "PERFECT"
+      break;
+    case 1:
+      fill(251,242,54)
+      textString = "ok!"
+      break;
+    case 2:
+      fill(172, 50, 50)
+      textString = "bad."
+      break;
+    case 3:
+      fill(155,173,183)
+      textString = "MISS!"
+  }
+  if(ddr_textEffectProgression < 10){
+    let textSize = floor(ddr_textEffectProgression*5)
+    textFont(pixel_font, textSize)
+    text(textString, xPos, yPos )
+  }else if (ddr_textEffectProgression >= 10 && ddr_textEffectProgression <= 50 ){
+    textFont(pixel_font, 50)
+    text(textString, xPos, yPos )
+  }
+  ddr_textEffectProgression++
 }
 
 function ddr_drawLanes(){
@@ -171,26 +274,16 @@ function ddr_drawLanes(){
   }
 }
 
-function ddr_game(){
-  ddr_time += deltaTime
-  if(!ddr_musicStarted){ddr_musicDelayTimer += deltaTime}
-  if(!ddr_musicStarted && ddr_musicDelayTimer > 1500){
-    $('#audio-holder').get(0).play();
-    ddr_musicStarted = true;
-  }
-  background(51);
-  fill(255)
-  ddr_drawLanes()
-  ddr_spawnAndDespawnArrows();
-  ddr_updateArrowsAndDocks();
-  niklas_anim.draw(niklas_anim.getWidth()/2,niklas_anim.getHeight()/2+100);
-  elena_anim.draw(width-(elena_anim.getWidth()/2), elena_anim.getHeight()/2+100)
+function ddr_checkWinFail(){
+  //win
   if(levelpos >= level.length && arrows[0].length == 0 && arrows[1].length == 0 && arrows[2].length == 0 && arrows[3].length == 0){
     win = true;
   }
-  text(ddr_score, width-100, 50);
-  ddr_keyCommands();
-
+  //fail
+  if(ddr_lives <= 0){
+    win = false;
+    gameOver = true;
+  }
 }
 
 function ddr_arrow(index){
@@ -251,11 +344,11 @@ function ddr_spawnAndDespawnArrows(){
       for (var j = 0; j < arrows[i].length; j++) {
         if(arrows[i][j].y > height){
           arrows[i].splice(j,1)
+          ddr_lives -= 1;
         }
       }
     }
     levelpos+=1
-    console.log(ddr_time)
     ddr_timerMultiplier +=1
   }
 }
