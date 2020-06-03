@@ -151,33 +151,3 @@ $('#chapter-select-btn').click(function(e) {
   }
 
 })
-
-// $('#continue-next-chapter').click(function(e) {
-//   let newArea = player.area;
-//   let startX = player.x;
-//   let startY = player.y;
-//
-//   let newAssets = changeArea(newArea);
-//
-//   // Change background and music
-//   fade(newAssets[1], function() {
-//
-//     // Set player to start coordinates for that chapter
-//     changeRoom(newArea, startX, startY);
-//     changeBackgroundImage(newAssets[0]);
-//     resetTextbox();
-//     changeBoxColor()
-//     $('#endscreen').removeClass('active');
-//     $('#intro-screen').addClass('hidden');
-//     $('#game-img').css('opacity', 1);
-//     $('#grandparent').css('z-index', 2);
-//
-//     savePlayer();
-//
-//     setTimeout(function() {
-//       paused = false;
-//
-//     }, 2000)
-//
-//   })
-// })

@@ -272,8 +272,6 @@ canvas#defaultCanvas0 {
 * TEXTGAME STYLES
 ******************************/
 
-
-
 #grandparent {
   display: flex;
   position: fixed;
@@ -495,4 +493,46 @@ canvas#defaultCanvas0 {
 /* CHAPTER SELECT */
 .hidden, #video-player.hidden {
   display: none;
+}
+
+
+/******************************
+* CREDITS
+******************************/
+
+#credits {
+  width: 60%;
+  height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  padding: 10% 0;
+  max-height: 100vh;
+  grid-gap: 100px;
+}
+
+.creators {
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.creators img {
+  width: 220px;
+}
+
+.creator {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 12rem;
+  color: #ddd;
+}
+
+.creator.left {
+  align-items: flex-start;
+}
+
+.creator.right {
+  align-items: flex-end;
 }

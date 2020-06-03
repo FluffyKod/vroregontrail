@@ -50,13 +50,6 @@ let soundEnabled;
 let keypressed = false;
 let timer;
 
-// GAME ASSETS
-// let backgrounds = {
-//   beegRavine: '',
-//   survivorCamp: '',
-//
-// }
-
 let backgrounds = {
   beach: 'beach.gif',
   castle: 'castle.png',
@@ -76,7 +69,7 @@ let backgrounds = {
   capLibrary: 'library.png',
   cityGeneral: 'capitol.gif',
   beegRavine: 'ravine.gif', // NEED UPDATE
-  survivorCamp: 'survivorCamp.png', // NEED UPDATE
+  survivorCamp: 'survivorCamp.gif'
 }
 
 let endscreens = [
@@ -123,10 +116,10 @@ let music = {
   frogeFight: 'http://vroelevkar.se/wp-content/uploads/2020/05/frogefight.wav',
   library: 'http://vroelevkar.se/wp-content/uploads/2020/05/library.wav',
   ravine: 'http://vroelevkar.se/wp-content/uploads/2020/05/ravine.wav',
-  dance: 'http://vroelevkar.se/wp-content/uploads/2020/05/dance.wav',
+  dance: 'http://vroelevkar.se/wp-content/uploads/2020/06/Dance2.wav',
   camp: 'http://vroelevkar.se/wp-content/uploads/2020/05/survivorCamp.mp3',
   streetsCapitol: 'http://vroelevkar.se/wp-content/uploads/2020/05/streetsGeneral.wav',
-  throneMusic: 'http://vroelevkar.se/wp-content/uploads/2020/05/streetsGeneral.wav' // NEED UPDATE
+  throneMusic: 'http://vroelevkar.se/wp-content/uploads/2020/06/waspdrama.wav'
 }
 
 // Chapter release
