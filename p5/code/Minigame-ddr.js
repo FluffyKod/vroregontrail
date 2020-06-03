@@ -30,7 +30,7 @@ function ddr_preload(){
     loadImage(spriteImgSrc +'ddr_arrows/dock_up.png'),
     loadImage(spriteImgSrc +'ddr_arrows/dock_right.png'),
   ]
-  hear_icon = loadImage(spriteImgSrc + 'heart10px.png')
+  heart_icon = loadImage(spriteImgSrc + 'heart10px.png')
   elena_anim = loadAnimation(spriteImgSrc + 'niklas_elena_anim/separat/elena_0001.png', spriteImgSrc + 'niklas_elena_anim/separat/elena_0008.png')
   niklas_anim = loadAnimation(spriteImgSrc + 'niklas_elena_anim/separat/niklas_0001.png', spriteImgSrc + 'niklas_elena_anim/separat/niklas_0008.png')
   niklas_anim.frameDelay = 4;
@@ -194,7 +194,7 @@ function ddr_drawTexts(){
   text('Score: '+ddr_score, xPos, yPos);
   text('Multiplier: '+ddr_multiplier+'X', xPos, yPos+spacing)
   imageMode(CORNER)
-  image(hear_icon, xPos, yPos+spacing*2-35)
+  image(heart_icon, xPos, yPos+spacing*2-35)
   text('x'+ddr_lives, xPos+50, yPos+spacing*2)
 }
 
@@ -278,6 +278,32 @@ function ddr_checkWinFail(){
   //win
   if(levelpos >= level.length && arrows[0].length == 0 && arrows[1].length == 0 && arrows[2].length == 0 && arrows[3].length == 0){
     win = true;
+    let arrowAmount = 0;
+    for (var i = 0; i < level.length; i++) {
+      if(level[i]== 1){
+        arrowAmount++
+      }
+    }
+    let perfectScore = (arrowAmount-9)*4*100+1800;
+    let veryGoodScore = 60000;
+    let goodScore = 40000;
+    let okayScore = 30000;
+    let badScore = 15000;
+    player.beenTo.push("ddr_very_bad_score")
+    if (ddr_score >= prefectScore) {
+      player.beenTo[player.beenTo.length-1] = "ddr_perfect_score"
+    }else if(ddr_score >= veryGoodScore){
+      player.beenTo[player.beenTo.length-1] = "ddr_very_good_score"
+    }else if(ddr_score >= goodScore){
+      player.beenTo[player.beenTo.length-1] = "ddr_good_score"
+    }else if(ddr_score >= okayScore){
+      player.beenTo[player.beenTo.length-1] = "ddr_okay_score"
+    }else if(ddr_score >= badScore){
+      player.beenTo[player.beenTo.length-1] = "ddr_bad_score"
+    }
+    if(ddr_missed > 30){
+      player.beenTo[player.beenTo.length-1] = "ddr_missed_alot"
+    }
   }
   //fail
   if(ddr_lives <= 0){
