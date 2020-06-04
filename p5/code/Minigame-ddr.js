@@ -285,15 +285,12 @@ function ddr_checkWinFail(){
       }
     }
     let perfectScore = (arrowAmount-9)*4*100+1800;
-    let veryGoodScore = 60000;
-    let goodScore = 40000;
+    let goodScore = 60000;
     let okayScore = 30000;
     let badScore = 15000;
     player.beenTo.push("ddr_very_bad_score")
     if (ddr_score >= prefectScore) {
       player.beenTo[player.beenTo.length-1] = "ddr_perfect_score"
-    }else if(ddr_score >= veryGoodScore){
-      player.beenTo[player.beenTo.length-1] = "ddr_very_good_score"
     }else if(ddr_score >= goodScore){
       player.beenTo[player.beenTo.length-1] = "ddr_good_score"
     }else if(ddr_score >= okayScore){
