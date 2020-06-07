@@ -9,7 +9,6 @@ var friction;
 
 var rocks;
 var pens, penv;
-var positive;
 
 var startSc = true;
 var gameOver = true;
@@ -18,8 +17,13 @@ var difficulty;
 var rockheight;
 var mj_jumpedOnBoost = false;
 let warning_img;
-
+let mj_diff_increase1, mj_diff_increase2, mj_diff_increase3, mj_win_score;
+let mj_rod_spawn_rate;
 let mj_startedFalling = false;
+
+let mj_short_path = false;
+let mj_long_path = false;
+
 function mj_preload(){
   mj_pen_images = [
     loadImage(spriteImgSrc +'mountain_jump/pen_red.png'),
@@ -72,6 +76,40 @@ function mj_draw(){
 }
 
 function mj_defineVar(){
+  for (var i = 0; i < player.beenTo.length; i++) {
+    if(player.beenTo[i]== "mj_short_path"){
+      mj_short_path = true;
+    }
+    if(player.beenTo[i]== "mj_long_path"){
+      mj_long_path = true;
+    }
+  }
+  for (var i = 0; i < player.beenTo.length; i++) {
+    if(player.beenTo[i] == "mj_final_ascent"){
+      mj_long_path = false;
+      mj_short_path = false;
+    }
+  }
+
+  if(mj_long_path){
+    mj_diff_increase1 = 5000;
+    mj_win_score = 15000;
+    mj_diff_increase2 = mj_win_score +1
+    mj_diff_increase3 = mj_win_score +1
+    mj_rod_spawn_rate = 800
+  }else if(mj_short_path){
+    mj_diff_increase1 = 0;
+    mj_diff_increase2 = 1000
+    mj_diff_increase3 = 3000;
+    mj_win_score = 5000;
+    mj_rod_spawn_rate = 1200
+  }else{
+    mj_diff_increase1 = 2500;
+    mj_diff_increase2 = 5000;
+    mj_diff_increase3 = 6500;
+    mj_win_score = 8000;
+    mj_rod_spawn_rate = 300
+  }
   mj_time = 0;
   friction = 0.08;
   mj_score = 0;
@@ -96,7 +134,6 @@ function mj_defineVar(){
   mj_ground.shapeColor = color(255)
   rocks = new Group();
   pens = new Group();
-  positive = 1;
 
   startSc = true;
   win = false;
@@ -114,7 +151,7 @@ function mj_deleteVar(){
 
 function mountainJumpDraw(){
   drawSprites();
-  textSize(40);
+
   fill(255);
   for (var i = 0; i < pens.length; i++) {
     if(pens[i].position.y < camera.position.y -360){
@@ -129,7 +166,9 @@ function mountainJumpDraw(){
   if(mj_player.position.y > camera.position.y+width){
     gameOver = true;
   }
-  text(mj_score,  width -100, camera.position.y-height/2+100)
+  textFont(pixel_font, 40)
+  textAlign(RIGHT)
+  text(mj_score + "m",  width -20, camera.position.y-height/2+100)
   if(mj_player.velocity.y > 0){
     if(!mj_startedFalling){
       mj_player.changeAnimation('falling')
@@ -138,19 +177,19 @@ function mountainJumpDraw(){
   }
 
   mj_player.velocity.y += mj_gravity
-  if(mj_score > 2500){
+  if(mj_score > mj_diff_increase1){
     difficulty = 2;
   }
-  if(mj_score > 5000){
+  if(mj_score > mj_diff_increase2){
     difficulty = 3;
   }
-  if(mj_score > 7500){
+  if(mj_score > mj_diff_increase3){
     difficulty = 4;
   }
   if(mj_player.overlap(mj_ground)){
     mj_player.velocity.y = -2*mj_jumpv;
   }
-  if(mj_score >8000){
+  if(mj_score > mj_win_score){
     win = true;
   }
 
@@ -170,7 +209,7 @@ function mountainJumpDraw(){
   if(mj_player.position.x > width){
     mj_player.position.x = 0;
   }
-  if (frameCount % floor(400/difficulty) == 0 && mj_player.velocity.y >-10) {
+  if (frameCount % floor(mj_rod_spawn_rate/difficulty) == 0 && mj_player.velocity.y >-10) {
 
     pen = createSprite(random(10,width-10),camera.position.y-height-200,12,64);
     pen.addImage(random(mj_pen_images))

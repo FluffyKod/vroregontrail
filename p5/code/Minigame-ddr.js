@@ -17,6 +17,8 @@ let ddr_missed;
 let ddr_multiplier, ddr_multiplierCounter;
 let ddr_textEffectProgression, ddr_textEffectType, ddr_textEffectStarted;
 
+
+
 function ddr_preload(){
   arrow_images = [
     loadImage(spriteImgSrc +'ddr_arrows/arrow_left.png'),
@@ -35,6 +37,7 @@ function ddr_preload(){
   niklas_anim = loadAnimation(spriteImgSrc + 'niklas_elena_anim/separat/niklas_0001.png', spriteImgSrc + 'niklas_elena_anim/separat/niklas_0008.png')
   niklas_anim.frameDelay = 4;
   elena_anim.frameDelay = 4;
+
 }
 
 function ddr_draw(){
@@ -70,6 +73,7 @@ function ddr_deleteVar(){
 
 
 function ddr_defineVar(){
+
   resizeCanvas(1200, 700)
   $('#audio-holder').attr('src', music['dance'])
   $('#audio-holder').get(0).pause();
@@ -79,7 +83,8 @@ function ddr_defineVar(){
   gameOver = false;
   camera.position.x = width/2;
   camera.position.y = height/2;
-
+  niklas_anim.stop();
+  elena_anim.stop();
   ddr_multiplier = 1;
   ddr_textEffectStarted = false;
   ddr_multiplierCounter = 0;
@@ -119,6 +124,8 @@ function ddr_game(){
   if(!ddr_musicStarted && ddr_musicDelayTimer > 1500){
     $('#audio-holder').get(0).play();
     ddr_musicStarted = true;
+    niklas_anim.play();
+    elena_anim.play();
   }
   background(51);
   fill(255)
@@ -278,6 +285,7 @@ function ddr_checkWinFail(){
   //win
   if(levelpos >= level.length && arrows[0].length == 0 && arrows[1].length == 0 && arrows[2].length == 0 && arrows[3].length == 0){
     win = true;
+    $('#audio-holder').get(0).pause()
     let arrowAmount = 0;
     for (var i = 0; i < level.length; i++) {
       if(level[i]== 1){
@@ -289,7 +297,7 @@ function ddr_checkWinFail(){
     let okayScore = 30000;
     let badScore = 15000;
     player.beenTo.push("ddr_very_bad_score")
-    if (ddr_score >= prefectScore) {
+    if (ddr_score >= perfectScore) {
       player.beenTo[player.beenTo.length-1] = "ddr_perfect_score"
     }else if(ddr_score >= goodScore){
       player.beenTo[player.beenTo.length-1] = "ddr_good_score"
@@ -306,6 +314,7 @@ function ddr_checkWinFail(){
   if(ddr_lives <= 0){
     win = false;
     gameOver = true;
+    $('#audio-holder').get(0).pause()
   }
 }
 
