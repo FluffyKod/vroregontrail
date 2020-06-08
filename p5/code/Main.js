@@ -361,6 +361,7 @@ function preload(){
     wc_preload();
     ddr_preload();
     mj_preload();
+    fb_preload();
   }
 }
 
@@ -502,6 +503,10 @@ function draw(){
       case 'wasp_click':
         if(define){wc_defineVar();define=false;}
         wc_draw();
+        break;
+      case 'final_boss':
+        if(define){fb_defineVar();define=false;}
+        fb_draw();
         break;
     }
   }

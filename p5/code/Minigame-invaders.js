@@ -47,8 +47,8 @@ function i_defineVar(){
     waveAmount = 4
     i_enemyRows = 4
   }else if (wasp){
-    i_enemyspeed = 0.7;
-    waveAmount = 3
+    i_enemyspeed = 0.9;
+    waveAmount = 1
     i_enemyRows = 3
   }
   bulletsize = 10;
