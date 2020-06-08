@@ -50,6 +50,9 @@ let soundEnabled;
 let keypressed = false;
 let timer;
 
+// Chapter release
+let completedChapters = 2;
+
 let backgrounds = {
   beach: 'beach.gif',
   castle: 'castle.png',
@@ -68,13 +71,14 @@ let backgrounds = {
   generalSunset: 'generalSunset.gif',
   capLibrary: 'library.png',
   cityGeneral: 'capitol.gif',
-  beegRavine: 'ravine.gif', // NEED UPDATE
+  beegRavine: 'ravine.gif',
   survivorCamp: 'survivorCamp.gif'
 }
 
 let endscreens = [
   'chapter1finished.png',
-  'chapter2finished.png'
+  'chapter2finished.png',
+  'chapter3finished.png'
 ]
 
 let colors = {
@@ -95,6 +99,8 @@ let colors = {
   library: '#5B2407',
   survivorCamp: '#626262',
   ravine: '#2A4528',
+  waspKing: '#734209',
+  generalSunset: '#462A32',
   default: '#000'
 }
 
@@ -117,13 +123,10 @@ let music = {
   library: 'http://vroelevkar.se/wp-content/uploads/2020/05/library.wav',
   ravine: 'http://vroelevkar.se/wp-content/uploads/2020/05/ravine.wav',
   dance: 'http://vroelevkar.se/wp-content/uploads/2020/06/Dance2.wav',
-  camp: 'http://vroelevkar.se/wp-content/uploads/2020/05/survivorCamp.mp3',
+  camp: 'http://vroelevkar.se/wp-content/uploads/2020/06/campHigher.mp3',
   streetsCapitol: 'http://vroelevkar.se/wp-content/uploads/2020/05/streetsGeneral.wav',
   throneMusic: 'http://vroelevkar.se/wp-content/uploads/2020/06/waspdrama.wav'
 }
-
-// Chapter release
-let completedChapters = 2;
 
 let chapterCoordinates = [
   {
@@ -200,6 +203,12 @@ function getColorFromBackground() {
   if (player.background == backgrounds['survivorCamp']) {
     return colors.survivorCamp
   }
+  if (player.background == backgrounds['waspKing']) {
+    return colors.waspKing
+  }
+  if (player.background == backgrounds['generalSunset']) {
+    return colors.generalSunset
+  }
   else {
     return colors.default
   }
@@ -258,6 +267,12 @@ function changeBoxColor() {
   }
   if (player.background == backgrounds['survivorCamp']) {
     classes += ' survivorCamp';
+  }
+  if (player.background == backgrounds['waspKing']) {
+    classes += ' waspKing';
+  }
+  if (player.background == backgrounds['generalSunset']) {
+    classes += ' generalSunset';
   }
   else {
     classes += ' default'
