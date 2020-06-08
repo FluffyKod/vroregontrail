@@ -33,6 +33,8 @@
   --cityStreets: rgba(114,86,41, 0.7);
   --ravine: rgba(42,69,40, 0.7);
   --survivorCamp: rgba(98,98,98, 0.7);
+  --waspKing: rgba(115,66,9,0.7);
+  --generalSunset: rgba(70,42,50, 0.7);
 }
 
 .box {
@@ -112,6 +114,15 @@
 .box.survivorCamp {
   background-color: var(--survivorCamp);
 }
+
+.box.waspKing {
+  background-color: var(--waspKing);
+}
+
+.box.generalSunset {
+  background-color: var(--generalSunset);
+}
+
 
 /******************************
 * GENERAL

@@ -289,7 +289,7 @@ $completedChapters = 2;
 
         let isAdmin = document.getElementById('is-admin').innerText == 'true' ? true : false;
 
-        if (isAdmin == false) {
+        // if (isAdmin == false) {
           setTimeout(function() {
 
 
@@ -317,8 +317,8 @@ $completedChapters = 2;
                 'success'
               )
             }
-          }, 3000)
-        }
+          }, 2500)
+        // } // End isdmin
       }
 
 
