@@ -79,7 +79,7 @@ function er_defineVar(){
     er_spawnrate = 48
   }else if (waspRun){
     er_score = 50;
-    er_spawnrate = 40;
+    er_spawnrate = 44;
   }
 
   win = false;
@@ -105,8 +105,6 @@ function er_defineVar(){
   jump = false;
   slide = false;
 
-
-
   er_player.position.x = width/2;
   er_player.position.y = height/2;
   camera.position.y = height/2;
@@ -121,7 +119,12 @@ function drawErnstRunning(){
   drawSprites();
   textFont(pixel_font,40)
   fill(255);
-  text("Distance left: "+Number((420*(4/3)*floor(er_score))+195)+'m', er_player.position.x- width/2 +210, -50);
+  if(ernstRun){
+    text("Distance left: "+Number((420*(4/3)*floor(er_score))+195)+'m', er_player.position.x- width/2 +210, -50);
+
+  }else{
+    text("Distance left: "+Number((10*floor(er_score)))+'m', er_player.position.x- width/2 +210, -50);
+  }
   er_player.velocity.x = er_playerv - 0.01*er_score;
 
   if(er_score <= 0){
@@ -156,7 +159,6 @@ function drawErnstRunning(){
   if(er_player.overlap(er_rocks) || er_player.overlap(birds)){
     gameOver = true;
   }
-
 
   if(frameCount%er_spawnrate == 0){
     rint = floor(random(0,2));

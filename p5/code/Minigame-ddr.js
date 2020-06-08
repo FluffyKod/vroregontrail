@@ -16,7 +16,7 @@ let ddr_lives;
 let ddr_missed;
 let ddr_multiplier, ddr_multiplierCounter;
 let ddr_textEffectProgression, ddr_textEffectType, ddr_textEffectStarted;
-
+let ddr_hasSetScoreBeenTo, ddr_indexOfPreviousScoreBeenTo;
 
 
 function ddr_preload(){
@@ -86,6 +86,7 @@ function ddr_defineVar(){
   niklas_anim.stop();
   elena_anim.stop();
   ddr_multiplier = 1;
+  ddr_hasSetScoreBeenTo = false;
   ddr_textEffectStarted = false;
   ddr_multiplierCounter = 0;
   ddr_missed = 0;
@@ -284,30 +285,48 @@ function ddr_drawLanes(){
 function ddr_checkWinFail(){
   //win
   if(levelpos >= level.length && arrows[0].length == 0 && arrows[1].length == 0 && arrows[2].length == 0 && arrows[3].length == 0){
-    win = true;
-    $('#audio-holder').get(0).pause()
-    let arrowAmount = 0;
-    for (var i = 0; i < level.length; i++) {
-      if(level[i]== 1){
-        arrowAmount++
+    if(!ddr_hasSetScoreBeenTo){
+      win = true;
+      $('#audio-holder').get(0).pause()
+      let ddr_hasPlayed = false;
+      player.beenTo.push("ddr_this_should_not_get_added_if_so_something_is_wrong")
+      let beenToIndex = player.beenTo.length-1
+      console.log(beenToIndex);
+      for (var i = 0; i < player.beenTo.length; i++) {
+        if(player.beenTo[i] == "ddr_perfect_score" || player.beenTo[i] == "ddr_good_score" || player.beenTo[i] == "ddr_okay_score" || player.beenTo[i] == "ddr_bad_score" || player.beenTo[i] == "ddr_missed_alot"){
+          ddr_hasPlayed = true;
+          beenToIndex = i
+        }
       }
-    }
-    let perfectScore = (arrowAmount-9)*4*100+1800;
-    let goodScore = 60000;
-    let okayScore = 30000;
-    let badScore = 15000;
-    player.beenTo.push("ddr_very_bad_score")
-    if (ddr_score >= perfectScore) {
-      player.beenTo[player.beenTo.length-1] = "ddr_perfect_score"
-    }else if(ddr_score >= goodScore){
-      player.beenTo[player.beenTo.length-1] = "ddr_good_score"
-    }else if(ddr_score >= okayScore){
-      player.beenTo[player.beenTo.length-1] = "ddr_okay_score"
-    }else if(ddr_score >= badScore){
-      player.beenTo[player.beenTo.length-1] = "ddr_bad_score"
-    }
-    if(ddr_missed > 30){
-      player.beenTo[player.beenTo.length-1] = "ddr_missed_alot"
+      console.log(beenToIndex);
+      let arrowAmount = 0;
+
+        for (var i = 0; i < level.length; i++) {
+          for (var j = 0; j < 4; j++) {
+            if(level[i][j]== 1){
+              arrowAmount++
+            }
+          }
+        }
+      console.log(arrowAmount);;
+      let perfectScore = (arrowAmount-9)*4*100+1800;
+      let goodScore = 60000;
+      let okayScore = 30000;
+      let badScore = 15000;
+      console.log(perfectScore);
+      if (ddr_score >= perfectScore) {
+        player.beenTo[beenToIndex] = "ddr_perfect_score"
+      }else if(ddr_score >= goodScore){
+        player.beenTo[beenToIndex] = "ddr_good_score"
+      }else if(ddr_score >= okayScore){
+        player.beenTo[beenToIndex] = "ddr_okay_score"
+      }else if(ddr_score >= badScore){
+        player.beenTo[beenToIndex] = "ddr_bad_score"
+      }
+      if(ddr_missed > 30){
+        player.beenTo[beenToIndex] = "ddr_missed_alot"
+      }
+      ddr_hasSetScoreBeenTo = true;
     }
   }
   //fail
