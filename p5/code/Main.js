@@ -51,7 +51,7 @@ let keypressed = false;
 let timer;
 
 // Chapter release
-let completedChapters = 3;
+let completedChapters = 2;
 
 let backgrounds = {
   beach: 'beach.gif',
