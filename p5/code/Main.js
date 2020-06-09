@@ -586,6 +586,9 @@ function keyTyped(){
   if(current_encounter == "type_racer"){
     tr_keyTyped();
   }
+  if(current_encounter == "final_boss"){
+    fb_keyTyped();
+  }
 }
 
 ////////////////////////////////////////////
