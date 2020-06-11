@@ -6,8 +6,10 @@ let fb_mouseOnUrlBox;
 let fb_activeCircleAnimation;
 let fb_urlText;
 
-let fb_wordTimer, fb_circleLoadingTime;
+let fb_wordTimer, fb_circleLoadingTime, fb_timeUntilFail;
 let fb_standardWordArray,fb_wordToDisplay,fb_activeWordFromWordArray, fb_wordAppearFrequency, fb_typedCounter;
+
+let fb_changeToWordArrayAfterFinished;
 
 let fb_hasSwitched;
 
@@ -43,6 +45,7 @@ function fb_defineVar(){
   //general
   fb_wordTimer = 0;
   fb_activeWordArray = fb_standardWordArray;
+  fb_timeUntilFail = 60000
 
   //animation variables
   fb_circleLoading = false;
@@ -96,6 +99,13 @@ function fb_game(){
   //time updates
   fb_wordTimer+=deltaTime
   fb_circleLoadingTime+=deltaTime
+  if(!fb_circleLoading){fb_timeUntilFail -= deltaTime}
+  fb_countdownText()
+
+  //fail check
+  if(fb_timeUntilFail < 0){
+    gameOver = true;
+  }
 
   //other updates
   drawSprites()
@@ -144,6 +154,10 @@ function fb_updateWordArray(){
       fb_activeWordFromWordArray = fb_activeWordArray[fb_wordArrayIndex]
     }else{
       fb_activeWordFromWordArray = ""
+      if(fb_changeToWordArrayAfterFinished){
+        fb_switchWordArray(fb_standardWordArray)
+        fb_changeToWrodArrayAfterFinished = false
+      }
     }
     fb_wordArrayIndex++
     fb_typedCounter = 0;
@@ -187,6 +201,9 @@ function fb_defineTopButtons(){
   close_button.setCollider('circle',0,0,8)
   close_button.mouseActive = true;
   close_button.onMousePressed= function(){
+    let response = ["HAH! Like I would let you do that!", "Do you think escaping will be that easy?", "I control EVERYTHING"]
+    fb_changeToWordArrayAfterFinished = true;
+    fb_switchWordArray(response)
     if(fb_circleLoadingTime <10000){
       win = true;
     }
@@ -196,14 +213,24 @@ function fb_defineTopButtons(){
   other_button1.setCollider('circle',0,0,8)
   other_button1.mouseActive = true;
   other_button1.onMousePressed= function(){
-    //trigger text
+    let response = ["HAH! Like I would let you do that!", "Do you think escaping will be that easy?", "I control EVERYTHING"]
+    fb_changeToWordArrayAfterFinished = true;
+    fb_switchWordArray(response)
   }
   other_button1.visible = false;
   other_button2 = createSprite(730,18,12,12)
   other_button2.setCollider('circle',0,0,8)
   other_button2.mouseActive = true;
   other_button2.onMousePressed= function(){
-    //trigger text
+    let response = ["HAH! Like I would let you do that!", "Do you think escaping will be that easy?", "I control EVERYTHING"]
+    fb_changeToWordArrayAfterFinished = true;
+    fb_switchWordArray(response)
   }
   other_button2.visible = false
+}
+
+function fb_countdownText(){
+  textFont(pixel_font, 40)
+  fill(51)
+  text(floor(fb_timeUntilFail/1000) + "s left", 578, 540 )
 }
