@@ -18,6 +18,7 @@ let flySpawnCount;
 function fk_preload(){
   fly_animation = loadAnimation(spriteImgSrc + 'fly1.png',spriteImgSrc + 'fly2.png')
   frog_animation = loadAnimation(spriteImgSrc + 'frog_look_left.png', spriteImgSrc + 'frog_look_up.png', spriteImgSrc + 'frog_look_right.png')
+  //circle_fly_animation = loadAnimation()
 }
 function fk_defineVar(){
 
@@ -31,11 +32,21 @@ function fk_defineVar(){
   startSc = true
 
   //difficulty parameters
-  fk_timeBetweenEnemySpawn = 800;//ms
-  fk_playerValues = {x:width/2 , y:(height-30) , width: 152, height: 108, toungeSpeed: 15, toungeColliderRadius: 20};
-  fk_flySpeed = 2;
-  flyAmount = 100;
-  flySpawnCount = 0;
+  if(!redCircle){
+    fk_timeBetweenEnemySpawn = 800;//ms
+    fk_playerValues = {x:width/2 , y:(height-30) , width: 152, height: 108, toungeSpeed: 15, toungeColliderRadius: 20};
+    fk_flySpeed = 2;
+    flyAmount = 100;
+    flySpawnCount = 0;
+  }else if(redCircle){
+    fk_timeBetweenEnemySpawn = 200;//ms
+    fk_playerValues = {x:width/2 , y:(height-30) , width: 152, height: 108, toungeSpeed: 15, toungeColliderRadius: 40};
+    fk_flySpeed = 1.7;
+    flyAmount = 200;
+    flySpawnCount = 0;
+  }
+
+
 
   //camera
   camera.position.x = width/2;
@@ -95,11 +106,10 @@ function fk_game(){
   //general updates
   background(51);
   fk_time += deltaTime
-  if(fk_score < 20){
+  if(fk_score < 20 && !redCircle){
     spawnFlies(1500)
   }else{
     spawnFlies(fk_timeBetweenEnemySpawn-fk_score*2)
-
   }
   drawSprites();
   checkFrogAnimationState();

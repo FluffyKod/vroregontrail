@@ -18,6 +18,7 @@ var startSc = true;
 let bulletAmount;
 let has_crossbow;
 let has_bow;
+let has_whiteboard_markers;
 
 function i_preload(){
   sheep_anim = loadAnimation(spriteImgSrc + 'sheep1.png', spriteImgSrc + 'sheep2.png');
@@ -33,11 +34,14 @@ function i_preload(){
 function i_defineVar(){
   has_crossbow = false;
   has_bow = false;
+  has_whiteboard_markers = false;
   for (var i = 0; i < player.inventory.length; i++) {
     if(player.inventory[i] == 'Crossbow'){
       has_crossbow = true;
     }else if (player.inventory[i] == 'Bow'){
       has_bow = true;
+    }else if(player.inventory[i] == "whiteboard_markers"){
+      has_whiteboard_markers = true
     }
   }
 
@@ -50,6 +54,12 @@ function i_defineVar(){
     i_enemyspeed = 0.9;
     waveAmount = 1
     i_enemyRows = 3
+  }
+
+  if (redCircle){
+    i_enemyspeed = 0.6
+    waveAmount = 2
+    i_enemyRows = 5
   }
   bulletsize = 10;
   playerdmg = 1;
@@ -81,6 +91,10 @@ function i_defineVar(){
     weapon_reload_animation.looping = false;
     bulletAmount = 1
     bulletspeed = 4
+  }
+  if(has_whiteboard_markers){
+    bulletAmount = 10;
+    bulletspeed = 10;
   }
   i_enemies = new Group();
   bullets = new Group();
@@ -193,9 +207,12 @@ function invadersDraw(){
     i_player.animation.nextFrame();
   if(keyWentDown(' ') && bullets.length < bulletAmount){
     i_player.animation.changeFrame(0)
-    if(has_bow || has_crossbow){
+    if(has_bow || has_crossbow && !has_whiteboard_markers){
       bullet = createSprite(i_player.position.x, i_player.position.y, 12, 38);
       bullet.addImage(crossbow_arrow)
+    }else if (has_whiteboard_markers){
+      bullet = createSprite(i_player.position.x, i_player.position.y, 12, 64)
+      bullet.addImage(random(mj_pen_images))
     }else{
       bullet = createSprite(i_player.position.x+20, i_player.position.y, 12, 12)
       bullet.shapeColor = color(255)

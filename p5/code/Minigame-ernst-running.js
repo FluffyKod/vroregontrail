@@ -25,6 +25,7 @@ function er_preload(){
     loadImage(spriteImgSrc + 'ernstrunner_sign5.png'),
     loadImage(spriteImgSrc + 'ernstrunner_sign6.png')
   ]
+  circle_img_signs = []
 }
 
 
@@ -81,6 +82,13 @@ function er_defineVar(){
     er_score = 50;
     er_spawnrate = 44;
   }
+  if(redCircle){
+    er_score = 50
+    er_spawnrate = 40
+    //img_signs = circle_img_signs
+  }
+
+
 
   win = false;
   er_playersize = 50;

@@ -26,6 +26,9 @@ function tr_defineVar(){
   tr_typedWord = ""
   showUnderline = false
   tr_spawnWord()
+  if(redCircle){
+    tr_spawnWord()
+  }
   // tr_spawnWord()
   // tr_enemies[1].y = -300
 

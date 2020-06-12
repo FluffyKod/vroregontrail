@@ -21,6 +21,8 @@ let drawCanvas;
 let hasSound = true;
 let enterPause = false;
 
+let redCircle = false;
+
 let spriteImgSrc;
 
 var player;
@@ -503,6 +505,34 @@ function draw(){
       case 'wasp_click':
         if(define){wc_defineVar();define=false;}
         wc_draw();
+        break;
+      case 'circle_frog_king':
+        if(define){redCircle = true; fk_defineVar(); define = false}
+        fk_draw();
+        break;
+      case 'circle_type_racer':
+        if(define){redCircle = true; tr_defineVar(); define=false;}
+        tr_draw();
+        break;
+      case 'circle_wasp_invaders':
+        if(define){
+          wasp = true;
+          sheep = false;
+          redCircle = true;
+          i_defineVar();
+          define = false;
+        }
+        i_draw();
+        break;
+      case 'circle_runner':
+        if(define){
+          ernstRun = true;
+          waspRun = false;
+          redCircle = true;
+          er_defineVar();
+          define= false;
+        }
+        er_draw();
         break;
       case 'final_boss':
         if(define){fb_defineVar();define=false;}
