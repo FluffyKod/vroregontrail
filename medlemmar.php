@@ -92,14 +92,22 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
         global $wpdb;
 
+        $current_year = (int)date('Y');
+
         $user_amount = count($wpdb->get_results('SELECT * FROM vro_users WHERE class_id IS NOT NULL'));
         $member_amount = count($wpdb->get_results("SELECT * FROM vro_users WHERE status = 'y'"));
+
+        // Get users currently in school (OBS: MUST FIX WITH YEAR BUG)
+        $school_user_amount = count($wpdb->get_results('SELECT * FROM vro_users WHERE class_id IS NOT NULL AND end_year > ' . ($current_year)));
+        $school_member_amount = count($wpdb->get_results("SELECT * FROM vro_users WHERE status = 'y' AND end_year > " . ($current_year)));
 
         // Only do the calculation if there are any students
         if ($user_amount != 0){
           $percentage = round($member_amount / $user_amount * 100);
+          $school_percentage = round($school_member_amount / $school_user_amount * 100);
         } else {
           $percentage = 0;
+          $school_percentage = 0;
         }
 
         ?>
@@ -171,29 +179,19 @@ $is_member = ($is_member == NULL) ? 'n' : $is_member;
 
         <div class="bow">
 
-          <div class="box white sm center">
+          <div class="box white lg center">
 
             <div class="first-place members">
               <p><b><?php echo $percentage; ?>%</b></p>
-              <p><b>Medlemmar</b></p>
+              <p><?php echo $member_amount ?> / <?php echo $user_amount ?></p>
+              <p><b>Totala Medlemmar</b></p>
             </div>
 
-          </div>
-
-          <!-- Send message box -->
-          <div class="box green md">
-
-            <h4>Skicka mail till elever</h4>
-
-
-            <textarea name="name" placeholder="Meddelande..."></textarea>
-
-              <input type="radio" name="mail-to" value="" checked> <label>Hela skolan</label><br>
-              <input type="radio" name="mail-to" value=""> <label>Årskurs 3</label><br>
-              <input type="radio" name="mail-to" value=""> <label>Årskurs 2</label><br>
-              <input type="radio" name="mail-to" value=""> <label>Årskurs 1</label><br>
-
-              <a href="#" class="btn lg">Skicka</a>
+            <div class="first-place members">
+              <p><b><?php echo $school_percentage; ?>%</b></p>
+              <p><?php echo $school_member_amount ?> / <?php echo $school_user_amount ?></p>
+              <p><b>Medlemmar på skolan</b></p>
+            </div>
 
           </div>
 

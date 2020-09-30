@@ -68,7 +68,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
   <div class="news">
     <h2>Nyheter!</h2>
-    <p>Äntligen är Kommunikationsutskottets textäventyr "Curse of the Circle" här! Nu är även hela Kapitel 2 - The Bog släppt. Så vad väntar du på? Börja spela!</p>
+    <p>Äntligen är Kommunikationsutskottets textäventyr "Curse of the Circle" här! Nu är även hela Kapitel 3 - The Bog släppt. Så vad väntar du på? Börja spela!</p>
   </div>
 
   <a href="/game" class="btn lg">Till Spelet</a>

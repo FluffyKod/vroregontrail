@@ -175,32 +175,7 @@ if (! is_user_logged_in() ){
 
                 <button class="btn lg" type="submit" name="give_class_points">Ge poäng</button>
 
-                <!-- <script>
-
-                function confirmDeletion(button) {
-                  Swal.fire({
-                  title: 'Are you sure?',
-                  text: "You won't be able to revert this!",
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Yes, delete it!'
-                  }).then((result) => {
-                  if (result.value) {
-                    button.click()
-                    Swal.fire(
-                      'Deleted!',
-                      'Your file has been deleted.',
-                      'success'
-                    )
-                  }
-                  })
-                }
-                </script> -->
               </form>
-
-
 
               <?php
               // AUTOCOMPLETE
@@ -236,29 +211,12 @@ if (! is_user_logged_in() ){
 
           </div>
 
-          <!-- Send message box -->
+          <!-- Statistics box -->
           <div class="box green md">
-
-            <h4>Skicka mail till elever</h4>
-
-            <form class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_mail.inc.php'); ?>" method="post">
-
-              <input type="text" name="subject" value="" placeholder="Ämne...">
-              <textarea name="message" placeholder="Meddelande..."></textarea>
-
-              <input type="radio" name="mail-to" value="all" checked> <label>Hela skolan</label><br>
-              <input type="radio" name="mail-to" value="3"> <label>Årskurs 3</label><br>
-              <input type="radio" name="mail-to" value="2"> <label>Årskurs 2</label><br>
-              <input type="radio" name="mail-to" value="1"> <label>Årskurs 1</label><br>
-
-              <button name="send_message_school" class="btn lg">Skicka</button>
-
-            </form>
 
           </div>
 
         <!-- Search for member -->
-
           <div class="box white lg">
             <h4>Sök elev</h4>
 

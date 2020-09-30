@@ -170,11 +170,11 @@ foreach ($waiting_members as $wait_member)
 
 </div>
 
-<?php
-// Only show the event types for admins
-if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){
-?>
-<div class="kommitee-row">
+<?php  if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ) { ?>
+  <div class="kommitee-row admin">
+<?php } else { ?>
+  <div class="kommitee-row">
+<?php } ?>
 
 
   <div class="box white allow-overflow" id="chairman">
@@ -182,9 +182,10 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       <h4><?php echo get_full_studentname( $chairman ); ?></h4>
       <p>Ordförande</p>
 
+      <?php  if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ) : ?>
       <button onclick="showAnswerForm('change_chairman')">Ändra ordförande &#8594;</button>
 
-      <div class="answer" id="change_chairman">
+      <div class="answer allow-overflow" id="change_chairman">
 
         <hr>
 
@@ -200,10 +201,11 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
         </form>
 
       </div>
+    <?php endif; ?>
 
   </div>
 
-  <?php if (current_user_can('administrator') || current_user_can('elevkaren') ){ ?>
+  <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){ ?>
   <div class="box white alert" id="add_member">
     <a href="#addNewMember" class="add-btn lg">+</a>
     <h5>Lägg till medlem</h5>
@@ -211,79 +213,21 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 <?php } ?>
 
   <div class="box green" id="send_message">
+    <h3>Övrig information</h3>
 
-    <h4>Skicka Notis</h4>
-
-    <!-- SEND MAIL -->
-    <!-- <form autocomplete="off"  autocomplete="off" class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/send_mail.inc.php'); ?>" method="post">
-
-      <input type="text" name="subject" value="" placeholder="Ämne...">
-      <textarea name="message" placeholder="Meddelande..."></textarea>
-      <input type="text" name="k_id" value="<?php echo $k_id; ?>" hidden>
-
-      <?php if (current_user_can('administrator') || current_user_can('elevkaren' ) ) { ?>
-        <input type="radio" name="mail-to" value="all_members" checked> <label>Hela kommitéen</label><br>
-        <input type="radio" name="mail-to" value="only_chairman"> <label>Endast ordförande</label><br>
-      <?php } ?>
-
-      <button name="send_message_kommitte" class="btn lg">Skicka</button>
-
-    </form> -->
-
-    <!-- SEND NOTIFICATION -->
-    <form autocomplete="off"  autocomplete="off" class="notis-form" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_notification.inc.php'); ?>" method="post">
-
-      <input type="text" name="title" value="" placeholder="Titel..">
-      <textarea name="content" placeholder="Meddelande..."></textarea>
-
-      <div class="datetime-picker">
-
-        <p><b>Datum då notisen går ut:</b></p>
-
-        <div class="date-picker" id="start-datepicker">
-          <div class="selected-date"></div>
-          <input type="hidden" name="expire-date" value="" id="start_hidden_input"/>
-
-          <div class="dates">
-            <div class="month">
-              <div class="arrows prev-mth">&lt;</div>
-              <div class="mth"></div>
-              <div class="arrows next-mth">&gt;</div>
-            </div>
-
-            <div class="days">
-
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-
-      <input type="text" name="k_id" value="<?php echo $k_id; ?>" hidden>
-
-      <button name="send_notification_kommitte" value="" class="btn lg">Skicka</button>
-
-    </form>
-
+    <p>Denna funktion implementeras just nu! Här kommer man kunna skriva in information som sociala medier etc.!</p>
   </div>
 
 </div>
+
+<!-- Show join kommittée higher up and leave lower down -->
+<?php if (!$is_related_to_kommitte) : ?>
 
 <div class="row">
 
   <div class="box green lg">
 
-    <?php
-    if ($is_waiting) {
-      echo '<h4>Dra tillbaka din kommittéförfrågan</h4>';
-    }
-    elseif ($is_related_to_kommitte){
-      echo '<h4>Gå ut ur denna kommitté</h4>';
-    } else {
-      echo '<h4>Ansök till denna kommitté</h4>';
-    }
-    ?>
+    <h4>Ansök till denna kommitté</h4>
 
     <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
 
@@ -291,69 +235,14 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
       <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
 
-      <?php
-      if ($is_waiting) {
-        echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill dra tillbaka din förfrågan?\');">Klicka för att dra tillbaka din ansökan</button>';
-      }
-      elseif ($is_related_to_kommitte){
-        echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill gå ut ur kommittén?\');">Klicka för att gå ut ur kommittén</button>';
-      } else {
-        echo '<button class="btn lg" type="submit" name="apply_for_kommitte">Klicka för att skicka en ansökan!</button>';
-      }
-
-      ?>
+      <button class="btn lg" type="submit" name="apply_for_kommitte">Klicka för att skicka en ansökan!</button>
 
     </form>
   </div>
 
 </div>
 
-<?php } else { ?>
-
-  <!-- TODO Kommitéeförfrågan -->
-  <div class="row">
-
-    <div class="box white sm" id="chairman">
-        <!-- <?php echo get_avatar( $user->id ); ?> -->
-        <h4><?php echo get_user_meta($chairman_id, 'nickname', true); ?></h4>
-        <p>Ordförande</p>
-    </div>
-
-    <div class="box green md">
-      <?php
-      if ($is_waiting){
-        echo '<h4>Dra tillbaka din kommittéansökan</h4>';
-      }
-      elseif ($is_related_to_kommitte){
-        echo '<h4>Gå ut ur denna kommitté</h4>';
-      } else {
-        echo '<h4>Ansök till denna kommitté</h4>';
-      }
-      ?>
-
-      <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
-        <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
-        <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
-
-        <?php
-
-        if ($is_waiting) {
-          echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill dra tillbaka din förfrågan?\');">Klicka för att dra tillbaka din ansökan</button>';
-        }
-        elseif ($is_related_to_kommitte){
-          echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill gå ut ur kommittén?\');">Klicka för att gå ut ur kommittén</button>';
-        } else {
-          echo '<button class="btn lg" type="submit" name="apply_for_kommitte">Klicka för att skicka en ansökan!</button>';
-        }
-
-        ?>
-
-      </form>
-    </div>
-
-  </div>
-
-<?php } // End check admin ?>
+<?php endif; ?>
 
 <!-- **************************
   ALL MEMBERS
@@ -377,7 +266,7 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
    ?>
 
-    <input type="search" placeholder="Medlem...">
+    <!-- <input type="search" placeholder="Medlem..."> -->
 
     <div class="kommitee_members">
 
@@ -390,23 +279,16 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
       ?>
 
         <div class="kommitee_member">
-          <!-- <div class="kommitee_member_img">
-            <?php echo get_avatar( $member->ID ); ?>
-
-            <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){ ?>
-              <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
-                <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
-                <input type="text" name="student_id" value="<?php echo $member->ID; ?>" hidden>
-
-                <button type="submit" name="leave_kommitte" class="add-btn extra-btn deny">-</button>
-              </form>
-            <?php } ?>
-
-          </div> -->
-
           <div>
             <p><b><?php echo get_full_studentname( $member ); ?></b></p>
+            <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ): ?>
+              <p><?php echo $member->email; ?></p>
+            <?php endif; ?>
+
             <p><?php echo ($wpdb->get_row('SELECT * FROM vro_classes WHERE id=' . $member->class_id ))->name; ?></p>
+
+
+
 
             <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman ){ ?>
               <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
@@ -426,14 +308,13 @@ if (current_user_can('administrator') || current_user_can('elevkaren') || $is_ch
 
 </div>
 
+
+
 <!-- **************************
   ADD NEW MEMBER
 **************************  -->
-<?php
-// Only show the event types for admins
-if (current_user_can('administrator') || current_user_can('elevkaren') ){
-?>
 
+<?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman) : ?>
 <div class="row">
   <div class="box green lg allow-overflow" id="addNewMember">
 
@@ -453,6 +334,52 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
 
   </div>
 </div>
+<?php endif; ?>
+
+<?php if ($is_related_to_kommitte || $is_waiting) : ?>
+
+<div class="row">
+
+  <div class="box green lg">
+
+    <?php
+    if ($is_waiting) {
+      echo '<h4>Dra tillbaka din kommittéförfrågan</h4>';
+    }
+    elseif ($is_related_to_kommitte){
+      echo '<h4>Gå ut ur denna kommitté</h4>';
+    }
+    ?>
+
+    <form autocomplete="off"  class="" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+
+
+      <input type="text" name="kommitte_id" value="<?php echo $k_id; ?>" hidden>
+      <input type="text" name="student_id" value="<?php echo $current_student_id; ?>" hidden>
+
+      <?php
+      if ($is_waiting) {
+        echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill dra tillbaka din förfrågan?\');">Klicka för att dra tillbaka din ansökan</button>';
+      }
+      elseif ($is_related_to_kommitte){
+        echo '<button class="btn lg red" type="submit" name="leave_kommitte" onclick="return confirm(\'Är du säker på att du vill gå ut ur kommittén?\');">Klicka för att gå ut ur kommittén</button>';
+      }
+
+      ?>
+
+    </form>
+  </div>
+
+</div>
+
+<?php endif; ?>
+
+<?php
+// Only show the event types for admins
+if (current_user_can('administrator') || current_user_can('elevkaren') ){
+?>
+
+
 
 <div class="row">
   <form autocomplete="off"  class="expand" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
@@ -460,6 +387,8 @@ if (current_user_can('administrator') || current_user_can('elevkaren') ){
     <button class="btn lg red" type="submit" name="remove_kommitte" onclick="event.stopPropagation(); return confirm('Är du säker på att du vill ta bort denna kommitté?');">Ta bort denna kommitté</button>
   </form>
 </div>
+
+<?php } // End check admin ?>
 
 <?php
 
@@ -490,6 +419,4 @@ echo '</script>'
 
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/datepicker.js" charset="utf-8"></script>
 
-<?php } // End check admin ?>
-
-<?php } // End check admin ?>
+<?php }  ?>

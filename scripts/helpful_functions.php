@@ -270,7 +270,7 @@ function insert_record( $table, $record, $errMsg = false ) {
   global $wpdb;
 
   if( $wpdb->insert($table, $record) == false){
-    send_error( '/panel?insert', $errMsg );
+    send_error( '/panel?insert', $errMsg . $wpdb->last_error );
     // wp_die( $errMsg );
   }
 

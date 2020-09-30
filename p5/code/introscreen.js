@@ -1,4 +1,5 @@
 const tl = new TimelineMax();
+let isBlinking = true;
 
 tl.from('#logo', 3, {
     y: -500,
@@ -15,15 +16,16 @@ tl.from('#logo', 3, {
 .from('.menu', 2, {
     opacity: 0,
     onComplete: function() {
-      setTimeout(blink, 2000)
+      setTimeout(blink, 1000)
     }
 }, '-=1')
 
 function blink() {
-    if ($('#main-choice').hasClass('blink')) {
-        $('#main-choice').toggle();
-        setTimeout(blink, 700)
+    if (isBlinking == true) {
+      $('#main-choice').toggle();
     }
+
+    setTimeout(blink, 700)
 }
 
 function fader() {
@@ -99,16 +101,16 @@ function transition() {
 
 $('#main-choice').mouseover(function() {
     $('#main-choice').css('opacity', 1);
-    $('#main-choice').removeClass('blink');
+    isBlinking = false;
 })
 
 $('#main-choice').mouseleave(function() {
     $('#main-choice').addClass('blink');
-    setTimeout(blink, 700);
+    isBlinking = true;
 })
 
 $('#main-choice').click(function() {
-    $('#main-choice').removeClass('blink');
+    isBlinking = false;
 
     $('#audio-holder').animate({
           volume: 0
