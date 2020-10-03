@@ -216,6 +216,7 @@ function vro_setup() {
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     position_name VARCHAR(100) NOT NULL,
     student INTEGER(10) UNSIGNED,
+    official_mail VARCHAR(100),
     PRIMARY KEY (id),
     FOREIGN KEY (student) REFERENCES vro_users(id)
   )';

@@ -797,18 +797,25 @@ function display_karen( $edit = false ){
         <div class="edit-image">
           <?php echo get_avatar( $vro_student->wpuser_id ); ?>
           <?php if ($edit) { ?>
-            <button type="button" name="button" class="edit-styrelse" onclick="event.stopPropagation();"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
+            <button type="button" name="button" class="edit-styrelse">
+              <img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png">
+            </button>
           <?php } ?>
         </div>
 
 
           <h3><?php echo $s->position_name; ?></h3>
           <p><?php echo get_full_studentname_from_id( $s->student ); ?></p>
-          <p><?php echo $vro_student->email; ?></p>
+          <?php echo ($s->official_mail != NULL) ? "<p>$s->official_mail</p>" : "" ?>
           <input type="text" name="position-id" value="<?php echo $s->id; ?>" hidden>
           <input type="text" name="student-id" value="<?php echo $s->student; ?>" hidden>
+          <input type="text" name="official-mail" value="<?php echo ($s->official_mail == NULL) ? '' : $s->official_mail; ?>" hidden>
           <input class="position-student-email" name="" value="<?php echo $vro_student->email; ?>" hidden>
-          <button class="btn" type="button" name="button">Info</button>
+          <button class="btn" type="button" name="button" onclick="
+            Swal.fire(
+              '<?php echo $s->position_name; ?>',
+              'Namn: <?php echo get_full_studentname_from_id( $s->student ); ?><?php echo ($s->official_mail != NULL) ? "<br>Kontakt: $s->official_mail" : "" ?>'
+            )">Info</button>
       </div>
 
       <?php
@@ -853,7 +860,7 @@ function display_karen( $edit = false ){
           <button class="btn" type="button" name="button" onclick="
             Swal.fire(
               '<?php echo $u->name; ?>',
-              '<?php echo $u->description; ?>'
+              '<?php echo $u->description; ?><br><br>Nuvarande ordförande: <?php echo get_full_studentname( $vro_student ); ?>'
             )">Info</button>
       </div>
 

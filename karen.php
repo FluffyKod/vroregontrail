@@ -83,6 +83,9 @@ if (! is_user_logged_in() ){
                 <input type="text" name="student_id" value="" hidden id="student-id-field">
               </div>
 
+              <label><b>Officiel mail</b></label>
+              <input type="text" name="official_mail" value="" placeholder="Officiel mail..." id="official-mail-field">
+
               <input type="text" name="position_id" value="" id="position-id" hidden>
 
               <div class="button-group">
@@ -97,7 +100,7 @@ if (! is_user_logged_in() ){
         <div class="modal" id="modal-change-utskott">
           <div class="modal-header">
             <div class="title">
-              Exempeltitel
+
             </div>
             <button data-close-button class="close-button" type="button" name="button">&times;</button>
           </div>
@@ -209,10 +212,13 @@ if (! is_user_logged_in() ){
             <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>" method="POST">
 
               <input type="text" name="styrelsepost" value="" placeholder="Namn på styrelseposten (ex. Ordförande)..." required>
+
               <div class="autocomplete">
                 <input type="text" name="student_name" id="student_name" value="" placeholder="Elev...">
                 <input type="text" name="student_id" value="" id="student_id_field" hidden>
               </div>
+
+              <input type="text" name="official_name" value="" placeholder="Officiel mail...">
 
 
              <button type="submit" name="add_new_styrelse_post" class="btn lg">Lägg till posten</button>
@@ -279,33 +285,17 @@ if (! is_user_logged_in() ){
 
         styrelsePositions.forEach( (position) => {
 
-          position.addEventListener('click', function() {
-
-            let modal = document.querySelector('#modal-moreinfo');
-            let position_name = position.querySelector('h3').innerText;
-            // Also remove the Ordförande: part
-            let student_name = position.querySelector('p').innerText;
-            let student_mail = position.querySelector('input.position-student-email').value;
-
-            // Change the modal header
-            document.querySelector('#modal-moreinfo .modal-header .title').textContent = position_name;
-
-            document.querySelector('#modal-moreinfo .modal-body #chairman-field').innerText = student_name + ' - ' + student_mail;
-
-            document.querySelector('#modal-moreinfo .modal-body #description-field').innerText = '';
-
-            // OPen the modal
-            openModal(modal);
-          });
-
           if (isAdmin){
 
             position.querySelector('.edit-image button').addEventListener('click', function() {
+
+              // Get infromation from hiden inputs in display_karen
               let modal = document.querySelector('#modal');
               let position_name = position.querySelector('h3').innerText;
               let student_name = position.querySelector('p').innerText;
               let student_id = position.querySelector('input[name=student-id]').value;
               let position_id = position.querySelector('input[name=position-id]').value;
+              let official_mail = position.querySelector('input[name=official-mail]').value;
 
               // Change the modal header
               document.querySelector('#modal .modal-header .title').textContent = 'Ändra styrelsepositionen ' + position_name;
@@ -316,6 +306,8 @@ if (! is_user_logged_in() ){
 
               document.querySelector('#modal .modal-body form .autocomplete #student-name-field').value = student_name;
               document.querySelector('#modal .modal-body form .autocomplete #student-id-field').value = student_id;
+              
+              document.querySelector('#modal .modal-body form #official-mail-field').value = official_mail;
 
               document.querySelector('#modal .modal-body form .button-group #submit-button').name = 'update_styrelse_post';
 

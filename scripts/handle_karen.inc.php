@@ -59,6 +59,7 @@ elseif (isset($_POST['add_new_styrelse_post'])) {
   $styrelse_post = test_input( $_POST['styrelsepost'] );
   // $student_name = test_input( $_POST['student_name'] );
   $student_id = check_number_value( test_input( $_POST['student_id'] ), $return . '=badStudentId');
+  $official_mail = test_input( $_POST['official_mail'] );
 
   if (empty($styrelse_post)){
     header("Location: /panel/karen?new_styrelse_poste=empty");
@@ -78,6 +79,8 @@ elseif (isset($_POST['add_new_styrelse_post'])) {
   if (count($student) > 0){
     $styrelse['student'] = $student->id;
   }
+
+  $styrelse['official_mail'] = ($official_mail != '') ? $official_mail : NULL;
 
   // Insert the new suggestion into the database
   if($wpdb->insert(
@@ -150,6 +153,7 @@ elseif (isset($_POST['update_styrelse_post'])){
   $styrelse_post = test_input( $_POST['position_name'] );
   $student_id = check_number_value( test_input( $_POST['student_id'] ), $return);
   $position_id = test_input( $_POST['position_id'] );
+  $official_mail = test_input( $_POST['official_mail'] );
 
   if (empty($styrelse_post)){
     header("Location: /panel/karen?alter_styrelse_post=empty");
@@ -181,9 +185,11 @@ elseif (isset($_POST['update_styrelse_post'])){
   }
 
   $styrelse['student'] = $student_id;
+  $styrelse['official_mail'] = ($official_mail != '') ? $official_mail : NULL;
+
 
   // Insert the new suggestion into the database
-  if ( !$wpdb->query( $wpdb->prepare('UPDATE vro_styrelsen SET position_name = %s, student = %s WHERE id = %s', $styrelse['position_name'], $styrelse['student'], $position_id) ) ){
+  if ( !$wpdb->query( $wpdb->prepare('UPDATE vro_styrelsen SET position_name = %s, student = %s, official_mail = %s WHERE id = %s', $styrelse['position_name'], $styrelse['student'], $styrelse['official_mail'], $position_id) ) ){
     send_error( '/panel/karen?alter_styrelse_post', 'Det gick inte att ändra styrelseposten.' );
     // wp_die('database alterartion failed. Alter styrelse member');
   } else{

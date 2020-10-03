@@ -1,0 +1,17 @@
+<button type="button" name="button" class="edit-styrelse" onclick="
+  Swal.fire({
+    title: 'Redigera Ordförande',
+    input: 'text',
+    inputAttributes: {
+      placeholder: 'test'
+    },
+    showCancelButton: true,
+    preConfirm: (name) => {
+      $ajax({
+        url: '<?php echo (get_bloginfo('template_directory') . '/scripts/handle_karen.inc.php'); ?>',
+        type: 'POST',
+        data: { test: 'HEJ DÄR!' }
+      })
+    }
+  })
+">
