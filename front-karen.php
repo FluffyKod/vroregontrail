@@ -38,6 +38,23 @@ get_header();
 
 </section>
 
+<section class="green" id="stadgar-reglementen">
+
+  <h2>Stadgar och Reglementen</h2>
+  <h3>Innehåll:</h3>
+  <ul>
+    <li><a href="#stadgar">Stadgar</a></li>
+    <li><a href="#reglementen">Reglementen</a></li>
+  </ul>
+
+  <h2 class="content-header" id="stadgar">Stadgar</h2>
+  <a class="pdf" href="#" target="_blank">PDF-Version</a>
+
+  <h2 class="content-header" id="reglementen">Reglementen</h2>
+  <a class="pdf" href="#" target="_blank">PDF-Version</a>
+
+</section>
+
 <script src="<?php echo get_bloginfo('template_directory') ?>/js/admin.js" charset="utf-8"></script>
 <script type="text/javascript">
   window.addEventListener('scroll', function() {

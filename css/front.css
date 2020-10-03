@@ -447,6 +447,31 @@ iframe.matsedeln {
 }
 
 /*****************************************
+* Stadgar och reglementen
+*****************************************/
+#stadgar-reglementen {
+  text-align: left;
+}
+
+#stadgar-reglementen h2 {
+  text-align: center;
+}
+
+#stadgar-reglementen h2.content-header {
+  text-align: left;
+  margin-top: 40px;
+  text-decoration: underline;
+}
+
+#stadgar-reglementen ul li a {
+  color: #ddd;
+}
+
+a.pdf {
+  color: #ddd;
+}
+
+/*****************************************
 *Meida queries
 *****************************************/
 
