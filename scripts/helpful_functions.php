@@ -860,7 +860,7 @@ function display_karen( $edit = false ){
           <button class="btn" type="button" name="button" onclick="
             Swal.fire(
               '<?php echo $u->name; ?>',
-              '<?php echo $u->description; ?><br><br>Nuvarande ordförande: <?php echo get_full_studentname( $vro_student ); ?>'
+              'Beskrivning: <?php echo $u->description; ?><br><br>Nuvarande ordförande: <?php echo get_full_studentname( $vro_student ); ?>'
             )">Info</button>
       </div>
 
