@@ -792,7 +792,7 @@ function display_karen( $edit = false ){
 
       ?>
 
-        <div class="box white chairman sm clickable">
+        <?php echo ($edit) ? '<div class="box white chairman sm clickable">' : '<div class="box white chairman sm">'; ?>
 
         <div class="edit-image">
           <?php echo get_avatar( $vro_student->wpuser_id ); ?>
@@ -804,13 +804,11 @@ function display_karen( $edit = false ){
 
           <h3><?php echo $s->position_name; ?></h3>
           <p><?php echo get_full_studentname_from_id( $s->student ); ?></p>
+          <p><?php echo $vro_student->email; ?></p>
           <input type="text" name="position-id" value="<?php echo $s->id; ?>" hidden>
           <input type="text" name="student-id" value="<?php echo $s->student; ?>" hidden>
           <input class="position-student-email" name="" value="<?php echo $vro_student->email; ?>" hidden>
-
-          <?php if ($edit): ?>
           <button class="btn" type="button" name="button">Info</button>
-          <?php endif; ?>
       </div>
 
       <?php
@@ -835,13 +833,7 @@ function display_karen( $edit = false ){
 
       ?>
 
-      <?php
-        if ($edit) {
-          echo '<div class="box white chairman sm clickable">';
-        } else {
-          echo '<div class="box white chairman sm clickable">';
-        }
-      ?>
+          <?php echo ($edit) ? '<div class="box white chairman sm clickable">' : '<div class="box white chairman sm">'; ?>
 
           <?php if ($edit) { ?>
             <div class="edit-image">
@@ -849,7 +841,7 @@ function display_karen( $edit = false ){
               <button type="button" name="button" class="edit"><img src="<?php echo get_bloginfo('template_directory'); ?>/img/editcircle.png"></button>
             </div>
           <?php } else {
-            echo get_avatar( $u->chairman );
+            echo get_avatar( $vro_student->wpuser_id );
           } ?>
 
           <h3><?php echo $u->name; ?></h3>
@@ -858,7 +850,11 @@ function display_karen( $edit = false ){
           <input type="text" name="chairman-id" value="<?php echo $u->chairman; ?>" hidden>
           <input class="utskott-description" type="text" name="" value="<?php echo $u->description; ?>" hidden>
           <input class="utskott-chairman-email" name="" value="<?php echo $vro_student->email; ?>" hidden>
-          <button class="btn" type="button" name="button">Info</button>
+          <button class="btn" type="button" name="button" onclick="
+            Swal.fire(
+              '<?php echo $u->name; ?>',
+              '<?php echo $u->description; ?>'
+            )">Info</button>
       </div>
 
       <?php
