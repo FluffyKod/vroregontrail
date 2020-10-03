@@ -40,8 +40,8 @@ get_header();
 
 <section class="green" id="stadgar-reglementen">
 
-  <!-- <h2>Stadgar och Reglementen</h2>
-  <h3>Innehåll:</h3>
+  <h2>Stadgar och Reglementen</h2>
+  <!-- <h3>Innehåll:</h3>
   <ul>
     <li><a href="#stadgar">Stadgar</a></li>
     <li><a href="#reglementen">Reglementen</a></li>
