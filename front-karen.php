@@ -40,12 +40,12 @@ get_header();
 
 <section class="green" id="stadgar-reglementen">
 
-  <h2>Stadgar och Reglementen</h2>
+  <!-- <h2>Stadgar och Reglementen</h2>
   <h3>Innehåll:</h3>
   <ul>
     <li><a href="#stadgar">Stadgar</a></li>
     <li><a href="#reglementen">Reglementen</a></li>
-  </ul>
+  </ul> -->
 
   <h2 class="content-header" id="stadgar">Stadgar</h2>
   <a class="pdf" href="http://vroelevkar.se/wp-content/uploads/2020/10/Stadgar-2020-2021.pdf" target="_blank">PDF-Version</a>
