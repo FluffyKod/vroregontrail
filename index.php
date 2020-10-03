@@ -4,7 +4,15 @@ get_header();
 
 require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
+
+$s_chairman = $wpdb->get_row('SELECT * FROM vro_styrelsen WHERE position_name = "Ordförande" ');
+$vroelevkar_chairman = get_full_studentname_from_id( $s_chairman->student );
+
+$s_vice_chairman = $wpdb->get_row('SELECT * FROM vro_styrelsen WHERE position_name = "Vice Ordförande" ');
+$vroelevkar_vice_chairman = get_full_studentname_from_id( $s_vice_chairman->student );
+
 ?>
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <!-- <script type="text/javascript">
@@ -80,7 +88,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
     <h2>Om Oss</h2>
     <p>Viktor Rydberg Odenplans Elevkår är Viktor Rydberg Gymnasium Odenplans största förening, till vilken nästan 100 % av skolans elever aktivt valt att ansluta sig. Elevkåren samlar och engagerar elever från alla årskurser, program och klasser för att tillsammans förgylla skoltiden för kårens medlemmar. För oss i kåren är målet enkelt: medlemmarna ska leva sin gymnasietid, inte bara överleva den.</p>
     <p>Vår vision är kort och konkret: Viktor Rydberg Odenplans Elevkår ska vara den bästa elevkåren för kårens medlemmar. Detta åstadkommer vi genom flertalet aktiviteter och arrangemang inom kategorierna service, event, bildning och lobbying.</p>
-    <p>Vår elevkår startades år 2012 av Hedda Tingskog. Kårens nuvarande ordförande är Alexander Storgårds.</p>
+    <p>Vår elevkår startades år 2012 av Hedda Tingskog. Kårens nuvarande Ordförande är <?php echo $vroelevkar_chairman; ?><?php echo ($vroelevkar_vice_chairman != NULL) ? " och Vice Ordförande är $vroelevkar_vice_chairman" : ""; ?>.</p>
   </div>
 
   <a href="/om-karen" class="btn lg">Se elevkåren</a>
@@ -174,7 +182,7 @@ require_once(get_template_directory() . "/scripts/helpful_functions.php");
 
 <section id="karbrev">
 
-  <h2>Kårbrevet</h2>
+  <h2>Senaste Kårbrevet</h2>
 
   <?php
 

@@ -187,7 +187,6 @@ elseif (isset($_POST['update_styrelse_post'])){
   $styrelse['student'] = $student_id;
   $styrelse['official_mail'] = ($official_mail != '') ? $official_mail : NULL;
 
-
   // Insert the new suggestion into the database
   if ( !$wpdb->query( $wpdb->prepare('UPDATE vro_styrelsen SET position_name = %s, student = %s, official_mail = %s WHERE id = %s', $styrelse['position_name'], $styrelse['student'], $styrelse['official_mail'], $position_id) ) ){
     send_error( '/panel/karen?alter_styrelse_post', 'Det gick inte att ändra styrelseposten.' );

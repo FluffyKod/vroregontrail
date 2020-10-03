@@ -218,7 +218,7 @@ if (! is_user_logged_in() ){
                 <input type="text" name="student_id" value="" id="student_id_field" hidden>
               </div>
 
-              <input type="text" name="official_name" value="" placeholder="Officiel mail...">
+              <input type="text" name="official_mail" value="" placeholder="Officiel mail...">
 
 
              <button type="submit" name="add_new_styrelse_post" class="btn lg">Lägg till posten</button>
@@ -306,7 +306,7 @@ if (! is_user_logged_in() ){
 
               document.querySelector('#modal .modal-body form .autocomplete #student-name-field').value = student_name;
               document.querySelector('#modal .modal-body form .autocomplete #student-id-field').value = student_id;
-              
+
               document.querySelector('#modal .modal-body form #official-mail-field').value = official_mail;
 
               document.querySelector('#modal .modal-body form .button-group #submit-button').name = 'update_styrelse_post';
