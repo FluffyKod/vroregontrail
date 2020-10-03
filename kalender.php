@@ -713,9 +713,10 @@ $current_student = wp_get_current_user();
 
     // Get kommittéevents in those kommittées the student is in
     $allowed_kommitte_events = array();
+    $current_student = $wpdb->get_row("SELECT * FROM vro_users WHERE wpuser_id = " . get_current_user_id());
 
     foreach( $kommitte_events as $ke ){
-      if ( $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $ke->kommitte_host_id .' AND user_id = ' . get_current_user_id() ) != NULL ){
+      if ( $wpdb->get_row('SELECT * FROM vro_kommiteer_members WHERE kommitee_id = '. $ke->kommitte_host_id .' AND user_id = ' . $current_student->id ) != NULL ){
         array_push($allowed_kommitte_events, $ke);
       }
     }
