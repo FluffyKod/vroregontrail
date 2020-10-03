@@ -91,6 +91,24 @@ if (! is_user_logged_in() ){
       // Get current user
       $user = wp_get_current_user();
 
+      $current_year = (int)date('Y');
+
+      $user_amount = count($wpdb->get_results('SELECT * FROM vro_users WHERE class_id IS NOT NULL'));
+      $member_amount = count($wpdb->get_results("SELECT * FROM vro_users WHERE status = 'y'"));
+
+      // Get users currently in school (OBS: MUST FIX WITH YEAR BUG)
+      $school_user_amount = count($wpdb->get_results('SELECT * FROM vro_users WHERE class_id IS NOT NULL AND end_year > ' . ($current_year)));
+      $school_member_amount = count($wpdb->get_results("SELECT * FROM vro_users WHERE status = 'y' AND end_year > " . ($current_year)));
+
+      // Only do the calculation if there are any students
+      if ($user_amount != 0){
+        $percentage = round($member_amount / $user_amount * 100);
+        $school_percentage = round($school_member_amount / $school_user_amount * 100);
+      } else {
+        $percentage = 0;
+        $school_percentage = 0;
+      }
+
        ?>
 
        <!-- ***********************************
@@ -212,7 +230,19 @@ if (! is_user_logged_in() ){
           </div>
 
           <!-- Statistics box -->
-          <div class="box green md">
+          <div class="box green md center front-statistics">
+
+            <div class="first-place members">
+              <p><b><?php echo $percentage; ?>%</b></p>
+              <p><?php echo $member_amount ?> / <?php echo $user_amount ?></p>
+              <p><b>Totala Medlemmar</b></p>
+            </div>
+
+            <div class="first-place members">
+              <p><b><?php echo $school_percentage; ?>%</b></p>
+              <p><?php echo $school_member_amount ?> / <?php echo $school_user_amount ?></p>
+              <p><b>Medlemmar på skolan</b></p>
+            </div>
 
           </div>
 

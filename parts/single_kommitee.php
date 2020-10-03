@@ -215,7 +215,17 @@ foreach ($waiting_members as $wait_member)
   <div class="box green" id="send_message">
     <h3>Övrig information</h3>
 
-    <p>Denna funktion implementeras just nu! Här kommer man kunna skriva in information som sociala medier etc.!</p>
+    <?php if (current_user_can('administrator') || current_user_can('elevkaren') || $is_chairman){ ?>
+      <form autocomplete="off" action="<?php echo (get_bloginfo('template_directory') . '/scripts/handle_kommiteer.inc.php'); ?>" method="post">
+        <textarea name="information" placeholder="Här kan du som ordförande skriva in extra information såsom sociala medier etc."><?php echo ($current_kommitee->information != NULL) ? str_replace("<br>", "", $current_kommitee->information) : ""; ?></textarea>
+
+        <input type="text" name="k_id" value="<?php echo $k_id; ?>" hidden>
+
+        <button class="btn" type="submit" name="update_information">Uppdatera informationen</button>
+      </form>
+    <?php } else { ?>
+      <?php echo ($current_kommitee->information != NULL && $current_kommitee->information != "") ? $current_kommitee->information : "Ingen extrainformation har specifierats av ordföranden."; ?>
+    <?php } ?>
   </div>
 
 </div>

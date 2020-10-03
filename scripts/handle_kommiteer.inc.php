@@ -472,6 +472,23 @@
 
   }
 
+  elseif ( isset($_POST['update_information']) ){
+
+    $k_id = $_POST['k_id'];
+    $k_id = check_number_value( $k_id, '"/panel/kommiteer?update_information' );
+
+    $return = "/panel/kommiteer?k_id=$k_id&update_information=";
+
+    $information = test_input( $_POST['information'] );
+    $information = ($information != NULL) ? str_replace("\n", "<br>",trim($information)) : NULL;
+
+    update_record( 'vro_kommiteer', 'information', $information, 'id', $k_id, $return . "failed");
+
+    // Duccess!
+    send_header($return . "success");
+
+  }
+
   else {
     send_header("/panel/kommiteer?kommitte=error");
   } // End post

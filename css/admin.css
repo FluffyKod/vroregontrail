@@ -922,6 +922,10 @@ select.form-select {
   color: var(--lighter);
 }
 
+.box.green .first-place.members p:first-child {
+  color: var(--highlight);
+}
+
 .first-place p:last-child {
   font-size: 1.2rem;
 }
@@ -2506,6 +2510,10 @@ button .btn-description {
   .box.event-types-container {
     position: relative;
     top: -20px;
+  }
+
+  .box.front-statistics {
+    flex-direction: column;
   }
 
 }
