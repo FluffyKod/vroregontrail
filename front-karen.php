@@ -48,10 +48,10 @@ get_header();
   </ul>
 
   <h2 class="content-header" id="stadgar">Stadgar</h2>
-  <a class="pdf" href="#" target="_blank">PDF-Version</a>
+  <a class="pdf" href="http://vroelevkar.se/wp-content/uploads/2020/10/Stadgar-2020-2021.pdf" target="_blank">PDF-Version</a>
 
   <h2 class="content-header" id="reglementen">Reglementen</h2>
-  <a class="pdf" href="#" target="_blank">PDF-Version</a>
+  <a class="pdf" href="http://vroelevkar.se/wp-content/uploads/2020/10/Reglemente-2020-2021.pdf" target="_blank">PDF-Version</a>
 
 </section>
 
