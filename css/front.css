@@ -449,26 +449,33 @@ iframe.matsedeln {
 /*****************************************
 * Stadgar och reglementen
 *****************************************/
-#stadgar-reglementen {
+section.stadgar-reglementen {
   text-align: left;
 }
 
-#stadgar-reglementen h2 {
+section.stadgar-reglementen h2 {
   text-align: center;
 }
 
-#stadgar-reglementen h2.content-header {
+section.stadgar-reglementen h2.content-header {
   text-align: left;
   margin-top: 40px;
   text-decoration: underline;
+  font-size: 28px;
 }
 
-#stadgar-reglementen ul li a {
+section.stadgar-reglementen ul li a {
   color: #ddd;
+}
+
+section.stadgar-reglementen p {
+  margin: 10px 0;
 }
 
 a.pdf {
-  color: #ddd;
+  color: var(--main);
+  display: block;
+  margin-bottom: 20px;
 }
 
 /*****************************************
