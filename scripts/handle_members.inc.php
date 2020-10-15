@@ -374,8 +374,8 @@ elseif (isset($_POST['link_new_user'])) {
       // NOTE:
       // Set status to waiting OR YES HERE
 
-      // If reregister - set to yes. If registering first time - set to wainting
-      $new_register_status = ($studentshell->wpuser_id != NULL) ? 'y' : 'w';
+      // If reregister or studentshell already set to member - set to yes. If registering first time - set to waiting
+      $new_register_status = ($studentshell->wpuser_id != NULL || $studentshell->status == 'y') ? 'y' : 'w';
 
       // Check if already correct status
       if ($studentshell->status != $new_register_status) {
